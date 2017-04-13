@@ -1,0 +1,100 @@
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+@import "http://fonts.googleapis.com/css?family=Noto+Sans:100,400,700";
+@import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+
+$stats-width: 200px;
+$title-height: 40px;
+$editor-padding: 50px;
+
+.Editor {
+  // todo remove this later
+  border: 1px solid black;
+  width: 100%;
+  padding: $editor-padding;
+
+  * {
+    font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif !important;
+  }
+
+  input, textarea {
+    border: none;
+    resize: none;
+    font-size: 30px;
+    padding: 20px;
+
+    &:active, &:focus {
+      outline: none;
+    }
+  }
+
+  .header {
+    margin: 50px 0px 20px 0px;
+    border-bottom: 1px solid grey;
+    width: calc(100vw - #{$editor-padding * 2});
+    $child-margin-top: 20px;
+
+    .title {
+      margin-top: $child-margin-top;
+      padding-top: 0;
+      padding-bottom: 30px;
+      display: inline-block;
+      height: 40px;
+    }
+
+    .stats {
+      margin-top: $child-margin-top;
+
+      $stats-height: 20px;
+      padding: ($title-height - $stats-height)/2 20px;
+      display: inline-block;
+      float: right;
+      color: grey;
+      font-size: 18px;
+      height: $stats-height;
+
+      .stat {
+        display: inline-block;
+        margin-left: 20px;
+        height: 100%;
+        vertical-align: top;
+        overflow: hidden;
+        text-align: right;
+        transition: .4s ease;
+        white-space: nowrap;
+      }
+
+      .chars {
+        width: 5ch;
+        margin-left: 20px;
+      }
+
+      .elapsed, .times {
+        width: 0;
+        margin-left: 0;
+      }
+
+      .times.time {
+        width: 100%;
+
+      }
+
+      &:hover {
+        .elapsed {
+          width: 6ch;
+          margin-left: 20px;
+        }
+
+        .times {
+          width: 12ch;
+          margin-left: 20px;
+        }
+      }
+    }
+  }
+
+  .text-body {
+    font-size: 25px;
+    width: calc(100vw - #{$editor-padding * 2});
+    font-weight: lighter;
+  }
+}
