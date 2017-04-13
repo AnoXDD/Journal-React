@@ -1,0 +1,23 @@
+$blue-light: #82B1FF;
+$blue: #448AFF;
+$blue-dark: #2962FF;
+
+.vertical-align {
+
+  .vertical-align-wrapper {
+    display: block;
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+}
+
+.no-scroll {
+  overflow: hidden;
+
+  .no-scroll-wrapper {
+    padding-right: 20px;
+  }
+}

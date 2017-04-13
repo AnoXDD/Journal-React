@@ -87,11 +87,13 @@ class Editor extends Component {
                         </div>
                     </div>
                 </div>
-                    <textarea className="text-body"
+                <div className="no-scroll text-body-wrapper">
+                    <textarea className="no-scroll-wrapper text-body"
                               value={this.state.body}
                               onChange={this.onBodyChange}
                     >
                     </textarea>
+                </div>
                 <div className="extras">
                     <div className="extra new"></div>
                     <div className="extra tags"></div>
@@ -101,8 +103,9 @@ class Editor extends Component {
                     <div className="extra links"></div>
                 </div>
                 <div className="buttons">
-                    <div className="btn send"></div>
-                    <div className="btn discard"></div>
+                    <a className="vertical-align btn send">
+                        <i className="vertical-align-wrapper material-icons">send</i>
+                    </a>
                 </div>
             </div>
         );

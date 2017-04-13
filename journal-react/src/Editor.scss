@@ -1,10 +1,14 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 @import "http://fonts.googleapis.com/css?family=Noto+Sans:100,400,700";
 @import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+@import "color.scss";
 
 $stats-width: 200px;
 $title-height: 40px;
 $editor-padding: 50px;
+$full-width: calc(100vw - #{$editor-padding * 2});
+$button-width: 120px;
+$button-height: 50px;
 
 .Editor {
   // todo remove this later
@@ -13,7 +17,10 @@ $editor-padding: 50px;
   padding: $editor-padding;
 
   * {
-    font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif !important;
+  }
+
+  input, textarea, a {
+    font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
   }
 
   input, textarea {
@@ -30,7 +37,7 @@ $editor-padding: 50px;
   .header {
     margin: 50px 0px 20px 0px;
     border-bottom: 1px solid grey;
-    width: calc(100vw - #{$editor-padding * 2});
+    width: $full-width;
     $child-margin-top: 20px;
 
     .title {
@@ -92,9 +99,42 @@ $editor-padding: 50px;
     }
   }
 
+  .text-body-wrapper {
+    width: $full-width;
+  }
+
   .text-body {
     font-size: 25px;
-    width: calc(100vw - #{$editor-padding * 2});
+    width: 100%;
     font-weight: lighter;
+    padding-left: 0;
+  }
+
+  .buttons {
+    width: $full-width;
+    text-align: right;
+
+    .btn {
+      display: inline-block;
+      text-transform: uppercase;
+      width: $button-width;
+      height: $button-height;
+      font-weight: lighter;
+      color: white;
+      background: $blue;
+      text-align: center;
+
+      span {
+        transition: opacity .4s ease;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      &:hover {
+        span {
+          opacity: 1;
+        }
+      }
+    }
   }
 }
