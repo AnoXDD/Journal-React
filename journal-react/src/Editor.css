@@ -30,13 +30,17 @@
     padding-top: 40px;
     padding-bottom: 40px; }
 
+.material-icons {
+  user-event: none;
+  pointer-events: none; }
+
 .Editor {
   width: calc(100% - 100px);
   height: calc(100% - 100px);
   display: flex;
   flex-flow: column;
   padding: 50px; }
-  .Editor input, .Editor textarea, .Editor a {
+  .Editor *:not(i) {
     font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
   .Editor input, .Editor textarea {
     border: none;
@@ -104,18 +108,31 @@
     width: calc(100vw - 100px);
     text-align: right;
     flex: 0 1 50px; }
+    .Editor .buttons .tags {
+      text-align: left;
+      flex: 1 1 auto; }
+      .Editor .buttons .tags .tag {
+        margin-right: 20px;
+        display: inline-block;
+        font-size: 16px; }
+      .Editor .buttons .tags .new-tag {
+        font-size: 16px;
+        display: inline-block;
+        height: 20px;
+        padding: 0;
+        width: 100px;
+        border-bottom: 1px solid grey; }
     .Editor .buttons .btn {
+      position: relative;
       display: inline-block;
       text-transform: uppercase;
       height: 50px;
       font-weight: lighter;
       text-align: center;
-      flex: 0 1 60px; }
-      .Editor .buttons .btn.tags {
-        text-align: left;
-        flex: 1 1 auto; }
+      flex: 0 0 60px;
+      transition: .4s ease; }
       .Editor .buttons .btn.accent {
-        flex: 0 1 auto;
+        flex: 0 0 auto;
         width: 120px;
         color: white;
         background: #448AFF;
@@ -124,7 +141,9 @@
         transition: opacity .4s ease;
         opacity: 0;
         pointer-events: none; }
-      .Editor .buttons .btn:hover span {
-        opacity: 1; }
+      .Editor .buttons .btn:hover, .Editor .buttons .btn:active {
+        color: #448AFF; }
+        .Editor .buttons .btn:hover span, .Editor .buttons .btn:active span {
+          opacity: 1; }
 
 /*# sourceMappingURL=Editor.css.map */

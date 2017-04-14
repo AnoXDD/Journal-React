@@ -18,10 +18,7 @@ $button-height: 50px;
   flex-flow: column;
   padding: $editor-padding;
 
-  * {
-  }
-
-  input, textarea, a {
+  *:not(i) {
     font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
   }
 
@@ -123,21 +120,40 @@ $button-height: 50px;
     text-align: right;
     flex: 0 1 $button-height;
 
+    .tags {
+      text-align: left;
+      flex: 1 1 auto;
+
+      $tag-font-size: 16px;
+
+      .tag {
+        margin-right: 20px;
+        display: inline-block;
+        font-size: $tag-font-size;
+      }
+
+      .new-tag {
+        font-size: $tag-font-size;
+        display: inline-block;
+        height: 20px;
+        padding: 0;
+        width: 100px;
+        border-bottom: 1px solid grey;
+      }
+    }
+
     .btn {
+      position: relative;
       display: inline-block;
       text-transform: uppercase;
       height: $button-height;
       font-weight: lighter;
       text-align: center;
-      flex: 0 1 $button-width;
-
-      &.tags {
-        text-align: left;
-        flex: 1 1 auto;
-      }
+      flex: 0 0 $button-width;
+      transition: .4s ease;
 
       &.accent {
-        flex: 0 1 auto;
+        flex: 0 0 auto;
         width: $button-width-accent;
         color: white;
         background: $blue;
@@ -150,7 +166,9 @@ $button-height: 50px;
         pointer-events: none;
       }
 
-      &:hover {
+      &:hover, &:active {
+        color: $blue;
+
         span {
           opacity: 1;
         }

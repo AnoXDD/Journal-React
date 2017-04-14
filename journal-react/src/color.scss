@@ -46,3 +46,8 @@ $scroll-bar-padding: 40px;
     padding-bottom: $scroll-bar-padding;
   }
 }
+
+.material-icons {
+  user-event: none;
+  pointer-events: none;
+}

@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
+
 import './Editor.css';
+
+var Ink = require("react-ink");
 
 class Editor extends Component {
 
@@ -16,7 +19,7 @@ class Editor extends Component {
                 timeEnd    : 0,
             },
             timeElapsed: 0,
-            tags       : [],
+            tags       : ["onme", "two", "threeeeee"],
             photos     : [],
             musics     : [],
             movies     : [],
@@ -31,6 +34,40 @@ class Editor extends Component {
 
         this.onTitleChange = this.onTitleChange.bind(this);
         this.onBodyChange = this.onBodyChange.bind(this);
+        this.onNewTagKeyPress = this.onNewTagKeyPress.bind(this);
+    }
+
+    generateCurrentTags() {
+        const tagItems = this.state.tags.map((tag, index) => {
+            return (
+                <span
+                    key={`tag-${tag}`}
+                    className="vertical-align-wrapper tag"
+                    onClick={(event) => {this.removeTagAtIndex(index);}}
+                >{tag}</span>
+            );
+        });
+        return (
+            <div className="vertical-align tags">
+                { tagItems }
+                <span className="vertical-align-wrapper tag">
+                <input
+                    type="text"
+                    className="new-tag"
+                    onKeyPress={this.onNewTagKeyPress}
+                />
+                </span>
+            </div>
+        );
+    }
+
+    removeTagAtIndex(index) {
+        var tags = this.state.tags;
+        tags.splice(index, 1);
+
+        this.setState({
+            tags: tags
+        });
     }
 
     onTitleChange(event) {
@@ -43,6 +80,23 @@ class Editor extends Component {
         this.setState({
             body: event.target.value
         });
+    }
+
+    onNewTagKeyPress(event) {
+        if (event.key === "Enter") {
+            var newTags = [...this.state.tags],
+                newTag = event.target.value;
+
+            // Only add it when not found
+            if (newTags.length && newTags.indexOf(newTag) === -1) {
+                newTags.push(newTag);
+                this.setState({
+                    tags: newTags
+                });
+            }
+
+            event.target.value = "";
+        }
     }
 
     countChars(str) {
@@ -97,24 +151,32 @@ class Editor extends Component {
                 </div>
                 <div className="buttons">
                     <a className="vertical-align btn tags">
+                        <Ink/>
                         <i className="material-icons vertical-align-wrapper">label_outline</i>
                     </a>
+                    { this.generateCurrentTags() }
                     <a className="vertical-align btn photos">
+                        <Ink/>
                         <i className="material-icons vertical-align-wrapper">photo_library</i>
                     </a>
                     <a className="vertical-align btn musics">
+                        <Ink/>
                         <i className="material-icons vertical-align-wrapper">library_music</i>
                     </a>
                     <a className="vertical-align btn movies">
+                        <Ink/>
                         <i className="material-icons vertical-align-wrapper">movie</i>
                     </a>
                     <a className="vertical-align btn links">
+                        <Ink/>
                         <i className="material-icons vertical-align-wrapper">link</i>
                     </a>
                     <a className="vertical-align btn new">
+                        <Ink/>
                         <i className="material-icons vertical-align-wrapper">more_horiz</i>
                     </a>
                     <a className="vertical-align btn send accent">
+                        <Ink/>
                         <i className="vertical-align-wrapper material-icons">send</i>
                     </a>
                 </div>
