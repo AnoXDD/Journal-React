@@ -9,7 +9,7 @@ class Editor extends Component {
 
         this.state = {
             title      : "This is title 题目",
-            body       : "This is body 正问扽岁卧槽什么情况",
+            body       : "This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文",
             stats      : {
                 timeCreated: 0,
                 timeBegin  : 0,
@@ -23,7 +23,6 @@ class Editor extends Component {
             links      : []
         };
 
-        var t = this;
         setInterval(() => {
             // On purpose: to avoid laggy update
             // eslint-disable-next-line
@@ -96,16 +95,26 @@ class Editor extends Component {
                     </textarea>
                     <span className="wrapper bottom"></span>
                 </div>
-                <div className="extras">
-                    <div className="extra new"></div>
-                    <div className="extra tags"></div>
-                    <div className="extra photos"></div>
-                    <div className="extra musics"></div>
-                    <div className="extra movies"></div>
-                    <div className="extra links"></div>
-                </div>
                 <div className="buttons">
-                    <a className="vertical-align btn send">
+                    <a className="vertical-align btn tags">
+                        <i className="material-icons vertical-align-wrapper">label_outline</i>
+                    </a>
+                    <a className="vertical-align btn photos">
+                        <i className="material-icons vertical-align-wrapper">photo_library</i>
+                    </a>
+                    <a className="vertical-align btn musics">
+                        <i className="material-icons vertical-align-wrapper">library_music</i>
+                    </a>
+                    <a className="vertical-align btn movies">
+                        <i className="material-icons vertical-align-wrapper">movie</i>
+                    </a>
+                    <a className="vertical-align btn links">
+                        <i className="material-icons vertical-align-wrapper">link</i>
+                    </a>
+                    <a className="vertical-align btn new">
+                        <i className="material-icons vertical-align-wrapper">more_horiz</i>
+                    </a>
+                    <a className="vertical-align btn send accent">
                         <i className="vertical-align-wrapper material-icons">send</i>
                     </a>
                 </div>

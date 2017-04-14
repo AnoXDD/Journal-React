@@ -1,0 +1,130 @@
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+@import "http://fonts.googleapis.com/css?family=Noto+Sans:100,400,700";
+@import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+.vertical-align .vertical-align-wrapper {
+  display: block;
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%); }
+
+.no-scroll {
+  position: relative;
+  overflow: hidden;
+  background: white; }
+  .no-scroll .wrapper {
+    position: absolute;
+    width: 100%;
+    height: 40px;
+    background: black; }
+    .no-scroll .wrapper.top {
+      background: linear-gradient(to bottom, white 0, transparent 100%);
+      top: 0; }
+    .no-scroll .wrapper.bottom {
+      background: linear-gradient(to top, white 0, transparent 100%);
+      bottom: 0; }
+  .no-scroll .no-scroll-wrapper {
+    background: white;
+    padding-right: 20px;
+    padding-top: 40px;
+    padding-bottom: 40px; }
+
+.Editor {
+  width: calc(100% - 100px);
+  height: calc(100% - 100px);
+  display: flex;
+  flex-flow: column;
+  padding: 50px; }
+  .Editor input, .Editor textarea, .Editor a {
+    font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
+  .Editor input, .Editor textarea {
+    border: none;
+    resize: none;
+    font-size: 30px;
+    padding: 20px; }
+    .Editor input:active, .Editor input:focus, .Editor textarea:active, .Editor textarea:focus {
+      outline: none; }
+  .Editor .header {
+    flex: 0 1 auto;
+    margin: 50px 0px 20px 0px;
+    border-bottom: 1px solid grey;
+    width: calc(100vw - 100px); }
+    .Editor .header .title {
+      margin-top: 20px;
+      padding-top: 0;
+      padding-bottom: 30px;
+      display: inline-block;
+      height: 40px; }
+    .Editor .header .stats {
+      margin-top: 20px;
+      padding: 10px 20px;
+      display: inline-block;
+      float: right;
+      color: grey;
+      font-size: 18px;
+      height: 20px; }
+      .Editor .header .stats .stat {
+        display: inline-block;
+        margin-left: 20px;
+        height: 100%;
+        vertical-align: top;
+        overflow: hidden;
+        text-align: right;
+        transition: .4s ease;
+        white-space: nowrap; }
+      .Editor .header .stats .chars {
+        width: 5ch;
+        margin-left: 20px; }
+      .Editor .header .stats .elapsed, .Editor .header .stats .times {
+        width: 0;
+        margin-left: 0; }
+      .Editor .header .stats .times.time {
+        width: 100%; }
+      .Editor .header .stats:hover .elapsed {
+        width: 6ch;
+        margin-left: 20px; }
+      .Editor .header .stats:hover .times {
+        width: 12ch;
+        margin-left: 20px; }
+  .Editor .text-body-wrapper {
+    width: calc(100vw - 100px);
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: column; }
+  .Editor .text-body {
+    flex: 1 1 auto;
+    font-size: 25px;
+    width: 100%;
+    font-weight: lighter;
+    padding-left: 0;
+    height: calc(100% - 80px); }
+  .Editor .buttons {
+    display: flex;
+    width: calc(100vw - 100px);
+    text-align: right;
+    flex: 0 1 50px; }
+    .Editor .buttons .btn {
+      display: inline-block;
+      text-transform: uppercase;
+      height: 50px;
+      font-weight: lighter;
+      text-align: center;
+      flex: 0 1 60px; }
+      .Editor .buttons .btn.tags {
+        text-align: left;
+        flex: 1 1 auto; }
+      .Editor .buttons .btn.accent {
+        flex: 0 1 auto;
+        width: 120px;
+        color: white;
+        background: #448AFF;
+        margin-left: 30px; }
+      .Editor .buttons .btn span {
+        transition: opacity .4s ease;
+        opacity: 0;
+        pointer-events: none; }
+      .Editor .buttons .btn:hover span {
+        opacity: 1; }
+
+/*# sourceMappingURL=Editor.css.map */

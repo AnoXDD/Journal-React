@@ -7,14 +7,13 @@ $stats-width: 200px;
 $title-height: 40px;
 $editor-padding: 50px;
 $full-width: calc(100vw - #{$editor-padding * 2});
-$button-width: 120px;
+$button-width-accent: 120px;
+$button-width: 60px;
 $button-height: 50px;
 
 .Editor {
-  // todo remove this later
-  border: 1px solid black;
-  width: 100%;
-  height: 100%;
+  width: calc(100% - #{2 * $editor-padding});
+  height: calc(100% - #{2 * $editor-padding});
   display: flex;
   flex-flow: column;
   padding: $editor-padding;
@@ -119,6 +118,7 @@ $button-height: 50px;
   }
 
   .buttons {
+    display: flex;
     width: $full-width;
     text-align: right;
     flex: 0 1 $button-height;
@@ -126,12 +126,23 @@ $button-height: 50px;
     .btn {
       display: inline-block;
       text-transform: uppercase;
-      width: $button-width;
       height: $button-height;
       font-weight: lighter;
-      color: white;
-      background: $blue;
       text-align: center;
+      flex: 0 1 $button-width;
+
+      &.tags {
+        text-align: left;
+        flex: 1 1 auto;
+      }
+
+      &.accent {
+        flex: 0 1 auto;
+        width: $button-width-accent;
+        color: white;
+        background: $blue;
+        margin-left: $button-width / 2;
+      }
 
       span {
         transition: opacity .4s ease;
