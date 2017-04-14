@@ -14,6 +14,9 @@ $button-height: 50px;
   // todo remove this later
   border: 1px solid black;
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
   padding: $editor-padding;
 
   * {
@@ -35,6 +38,7 @@ $button-height: 50px;
   }
 
   .header {
+    flex: 0 1 auto;
     margin: 50px 0px 20px 0px;
     border-bottom: 1px solid grey;
     width: $full-width;
@@ -82,7 +86,6 @@ $button-height: 50px;
 
       .times.time {
         width: 100%;
-
       }
 
       &:hover {
@@ -101,18 +104,24 @@ $button-height: 50px;
 
   .text-body-wrapper {
     width: $full-width;
+    flex: 1 1 auto;
+    display: flex;
+    flex-flow: column;
   }
 
   .text-body {
+    flex: 1 1 auto;
     font-size: 25px;
     width: 100%;
     font-weight: lighter;
     padding-left: 0;
+    height: calc(100% - #{$scroll-bar-padding * 2});
   }
 
   .buttons {
     width: $full-width;
     text-align: right;
+    flex: 0 1 $button-height;
 
     .btn {
       display: inline-block;

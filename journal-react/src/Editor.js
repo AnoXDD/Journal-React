@@ -25,9 +25,9 @@ class Editor extends Component {
 
         var t = this;
         setInterval(() => {
-            t.setState({
-                timeElapsed: this.state.timeElapsed + 1
-            });
+            // On purpose: to avoid laggy update
+            // eslint-disable-next-line
+            ++this.state.timeElapsed;
         }, 1000);
 
         this.onTitleChange = this.onTitleChange.bind(this);
@@ -88,11 +88,13 @@ class Editor extends Component {
                     </div>
                 </div>
                 <div className="no-scroll text-body-wrapper">
+                    <span className="wrapper top"></span>
                     <textarea className="no-scroll-wrapper text-body"
                               value={this.state.body}
                               onChange={this.onBodyChange}
                     >
                     </textarea>
+                    <span className="wrapper bottom"></span>
                 </div>
                 <div className="extras">
                     <div className="extra new"></div>

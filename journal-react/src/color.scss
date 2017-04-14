@@ -2,6 +2,8 @@ $blue-light: #82B1FF;
 $blue: #448AFF;
 $blue-dark: #2962FF;
 
+$scroll-bar-padding: 40px;
+
 .vertical-align {
 
   .vertical-align-wrapper {
@@ -15,9 +17,32 @@ $blue-dark: #2962FF;
 }
 
 .no-scroll {
+  $background-color: white;
+
+  position: relative;
   overflow: hidden;
+  background: $background-color;
+
+  .wrapper {
+    position: absolute;
+    width: 100%;
+    height: $scroll-bar-padding;
+    background: black;
+
+    &.top {
+      background: linear-gradient(to bottom, $background-color 0, transparent 100%);
+      top: 0;
+    }
+    &.bottom {
+      background: linear-gradient(to top, $background-color 0, transparent 100%);
+      bottom: 0;
+    }
+  }
 
   .no-scroll-wrapper {
+    background: $background-color;
     padding-right: 20px;
+    padding-top: $scroll-bar-padding;
+    padding-bottom: $scroll-bar-padding;
   }
 }
