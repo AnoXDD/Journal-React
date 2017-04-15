@@ -68,6 +68,7 @@ $scroll-bar-padding: 40px;
     width: 100%;
     height: $scroll-bar-padding;
     content: "";
+    left: 0;
   }
 
   &:before {

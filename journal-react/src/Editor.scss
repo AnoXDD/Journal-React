@@ -218,18 +218,18 @@ $button-height: 50px;
     }
 
     .more-info {
+      margin-top: 10px;
       width: inherit;
-      height: 100px;
-      bottom: $button-height + $editor-padding;
+      //bottom: $button-height + $editor-padding;
       text-align: center;
       pointer-events: none;
       background: transparent;
-      overflow: hidden;
-      //transition: .4s ease;
+      transition: .4s ease;
 
       &.hidden {
         height: 0;
         margin: 0;
+        opacity:0;
 
         .more-info-wrapper {
           //display: none;
@@ -237,14 +237,16 @@ $button-height: 50px;
       }
 
       .more-info-wrapper {
+        width: 100%;
+        max-height: 380px;
+        overflow-x: hidden;
+        overflow-y: scroll;
         border-radius: 3px;
-        display: inline-block;
-        height: 100%;
+        display: block;
         pointer-events: auto;
         background: white;
         margin: 0;
-        padding: $scroll-bar-padding 0;
-        width: 100%;
+        text-align: left;
 
         .vertical-align-wrapper {
           height: 100%;
@@ -256,7 +258,7 @@ $button-height: 50px;
       .photo {
         display: inline-block;
         height: 90px;
-        padding: 5px 2.5px;
+        padding: 0 2.5px;
       }
     }
   }

@@ -61,35 +61,99 @@ class Editor extends Component {
                 tags            : ["tag1", "tag2", "tag3"],
                 isDisplayingMore: -1,
                 photos          : [{
-                    id    : 123,
-                    src   : "http://placehold.it/350x150",
+                    id    : 1,
+                    src   : "http://placehold.it/320x150",
                     status: this.PHOTO_STATUS.ADD,
                 }, {
-                    id    : 133,
+                    id    : 2,
                     src   : "http://placehold.it/350x150",
                     status: this.PHOTO_STATUS.NOT_SELECTED,
                 }, {
-                    id    : 137,
-                    src   : "http://placehold.it/350x150",
+                    id    : 3,
+                    src   : "http://placehold.it/330x150",
                     status: this.PHOTO_STATUS.SELECTED,
                 }, {
-                    id    : 111,
-                    src   : "http://placehold.it/350x150",
+                    id    : 4,
+                    src   : "http://placehold.it/350x120",
                     status: this.PHOTO_STATUS.REMOVE,
                 }, {
-                    id    : 2123,
-                    src   : "http://placehold.it/350x150",
+                    id    : 5,
+                    src   : "http://placehold.it/30x150",
                     status: this.PHOTO_STATUS.ADD,
                 }, {
-                    id    : 1333,
-                    src   : "http://placehold.it/350x150",
+                    id    : 6,
+                    src   : "http://placehold.it/150x150",
                     status: this.PHOTO_STATUS.NOT_SELECTED,
                 }, {
-                    id    : 1317,
+                    id    : 7,
                     src   : "http://placehold.it/350x150",
                     status: this.PHOTO_STATUS.SELECTED,
                 }, {
-                    id    : 1113,
+                    id    : 8,
+                    src   : "http://placehold.it/350x150",
+                    status: this.PHOTO_STATUS.REMOVE,
+                },{
+                    id    : 11,
+                    src   : "http://placehold.it/320x150",
+                    status: this.PHOTO_STATUS.ADD,
+                }, {
+                    id    : 21,
+                    src   : "http://placehold.it/350x150",
+                    status: this.PHOTO_STATUS.NOT_SELECTED,
+                }, {
+                    id    : 31,
+                    src   : "http://placehold.it/330x150",
+                    status: this.PHOTO_STATUS.SELECTED,
+                }, {
+                    id    : 41,
+                    src   : "http://placehold.it/350x120",
+                    status: this.PHOTO_STATUS.REMOVE,
+                }, {
+                    id    : 51,
+                    src   : "http://placehold.it/30x150",
+                    status: this.PHOTO_STATUS.ADD,
+                }, {
+                    id    : 61,
+                    src   : "http://placehold.it/150x150",
+                    status: this.PHOTO_STATUS.NOT_SELECTED,
+                }, {
+                    id    : 71,
+                    src   : "http://placehold.it/350x150",
+                    status: this.PHOTO_STATUS.SELECTED,
+                }, {
+                    id    : 81,
+                    src   : "http://placehold.it/350x150",
+                    status: this.PHOTO_STATUS.REMOVE,
+                },{
+                    id    : 12,
+                    src   : "http://placehold.it/320x150",
+                    status: this.PHOTO_STATUS.ADD,
+                }, {
+                    id    : 22,
+                    src   : "http://placehold.it/350x150",
+                    status: this.PHOTO_STATUS.NOT_SELECTED,
+                }, {
+                    id    : 32,
+                    src   : "http://placehold.it/330x150",
+                    status: this.PHOTO_STATUS.SELECTED,
+                }, {
+                    id    : 42,
+                    src   : "http://placehold.it/350x120",
+                    status: this.PHOTO_STATUS.REMOVE,
+                }, {
+                    id    : 52,
+                    src   : "http://placehold.it/30x150",
+                    status: this.PHOTO_STATUS.ADD,
+                }, {
+                    id    : 62,
+                    src   : "http://placehold.it/150x150",
+                    status: this.PHOTO_STATUS.NOT_SELECTED,
+                }, {
+                    id    : 72,
+                    src   : "http://placehold.it/350x150",
+                    status: this.PHOTO_STATUS.SELECTED,
+                }, {
+                    id    : 82,
                     src   : "http://placehold.it/350x150",
                     status: this.PHOTO_STATUS.REMOVE,
                 }
@@ -161,19 +225,20 @@ class Editor extends Component {
                 const SortableList = SortableContainer(({items}) => {
                     return (
                         <div
-                            className="vertical-align-wrapper more-info-wrapper no-scroll horizontal photos">
+                            className="more-info-wrapper photos no-scroll-wrapper">
                             {items.map((photo, index) => (
                                 <SortableItem key={`photo-${index}`}
                                               index={index}
                                               photo={photo}/>
                             ))}
+                            <div className="wrapper"></div>
                         </div>
                     );
                 });
 
                 return (
                     <SortableList items={this.state.photos}
-                                  axis="x"
+                                  axis="xy"
                                   onSortEnd={this.onPhotoSortEnd}/>
                 );
         }
@@ -220,9 +285,9 @@ class Editor extends Component {
         }
     }
 
-    onPhotoSortEnd(oldIndex, newIndex) {
+    onPhotoSortEnd(obj) {
         this.setState({
-            photos: arrayMove(this.state.photos, oldIndex, newIndex),
+            photos: arrayMove([...this.state.photos], obj.oldIndex, obj.newIndex),
         });
     }
 
@@ -318,7 +383,7 @@ class Editor extends Component {
                         </a>
                     </div>
                     <div
-                        className={`more-info vertical-align ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>
+                        className={`more-info no-scroll ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>
                         {this.generateMoreInfo()}
                     </div>
                 </div>
