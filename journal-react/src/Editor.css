@@ -13,17 +13,45 @@
   position: relative;
   overflow: hidden;
   background: white; }
-  .no-scroll .wrapper {
+  .no-scroll.horizontal {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 20px; }
+    .no-scroll.horizontal:before, .no-scroll.horizontal:after {
+      height: 100%;
+      width: 40px; }
+    .no-scroll.horizontal:before {
+      background: linear-gradient(to right, white 0, transparent 100%);
+      left: 0; }
+    .no-scroll.horizontal:after {
+      background: linear-gradient(to left, white 0, transparent 100%);
+      right: 0; }
+    .no-scroll.horizontal .wrapper {
+      bottom: 0px;
+      height: 40px;
+      width: 100%; }
+    .no-scroll.horizontal > * {
+      margin-left: 0; }
+    .no-scroll.horizontal > *:first-child {
+      margin-left: 40px; }
+  .no-scroll:before, .no-scroll:after {
     position: absolute;
     width: 100%;
     height: 40px;
-    background: black; }
-    .no-scroll .wrapper.top {
-      background: linear-gradient(to bottom, white 0, transparent 100%);
-      top: 0; }
-    .no-scroll .wrapper.bottom {
-      background: linear-gradient(to top, white 0, transparent 100%);
-      bottom: 0; }
+    content: ""; }
+  .no-scroll:before {
+    background: linear-gradient(to bottom, white 0, transparent 100%);
+    top: 0; }
+  .no-scroll:after {
+    background: linear-gradient(to top, white 0, transparent 100%);
+    bottom: 0; }
+  .no-scroll .wrapper {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 40px;
+    background: white; }
   .no-scroll .no-scroll-wrapper {
     background: white;
     padding-right: 20px;
@@ -31,8 +59,14 @@
     padding-bottom: 40px; }
 
 .material-icons {
-  user-event: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   pointer-events: none; }
+
+.shadow {
+  box-shadow: 3px 2px 9px grey; }
 
 .Editor {
   width: calc(100% - 100px);
@@ -96,33 +130,45 @@
     flex: 1 1 auto;
     display: flex;
     flex-flow: column; }
+    .Editor .text-body-wrapper .wrapper.right {
+      width: 50px; }
   .Editor .text-body {
+    margin: 0 50px;
     flex: 1 1 auto;
     font-size: 25px;
-    width: 100%;
+    width: calc(100% - 100px);
     font-weight: lighter;
     padding-left: 0;
     height: calc(100% - 80px); }
-  .Editor .buttons {
+  .Editor .extras .buttons {
     display: flex;
     width: calc(100vw - 100px);
     text-align: right;
     flex: 0 1 50px; }
-    .Editor .buttons .tags {
+    .Editor .extras .buttons .tags {
       text-align: left;
       flex: 1 1 auto; }
-      .Editor .buttons .tags .tag {
-        margin-right: 20px;
+      .Editor .extras .buttons .tags .tag {
+        padding: 2px 8px;
+        color: white;
+        border-radius: 3px;
+        margin: 2px 20px 2px 0;
         display: inline-block;
-        font-size: 16px; }
-      .Editor .buttons .tags .new-tag {
+        font-size: 16px;
+        transition: background .4s ease; }
+        .Editor .extras .buttons .tags .tag:not(.white-background) {
+          background: #448AFF; }
+          .Editor .extras .buttons .tags .tag:not(.white-background):hover {
+            background: #82B1FF; }
+      .Editor .extras .buttons .tags .new-tag {
+        background: white;
         font-size: 16px;
         display: inline-block;
         height: 20px;
         padding: 0;
         width: 100px;
         border-bottom: 1px solid grey; }
-    .Editor .buttons .btn {
+    .Editor .extras .buttons .btn {
       position: relative;
       display: inline-block;
       text-transform: uppercase;
@@ -131,19 +177,59 @@
       text-align: center;
       flex: 0 0 60px;
       transition: .4s ease; }
-      .Editor .buttons .btn.accent {
+      .Editor .extras .buttons .btn.accent {
         flex: 0 0 auto;
         width: 120px;
         color: white;
         background: #448AFF;
         margin-left: 30px; }
-      .Editor .buttons .btn span {
+      .Editor .extras .buttons .btn:after {
+        pointer-events: none;
+        content: "";
+        width: 100%;
+        height: 4px;
+        position: absolute;
+        z-index: 100;
+        bottom: 0;
+        left: 0;
+        transition: background .4s ease; }
+      .Editor .extras .buttons .btn.active {
+        color: #448AFF; }
+        .Editor .extras .buttons .btn.active:after {
+          background: #448AFF; }
+      .Editor .extras .buttons .btn span {
         transition: opacity .4s ease;
         opacity: 0;
         pointer-events: none; }
-      .Editor .buttons .btn:hover, .Editor .buttons .btn:active {
-        color: #448AFF; }
-        .Editor .buttons .btn:hover span, .Editor .buttons .btn:active span {
+      .Editor .extras .buttons .btn:not(.accent):hover, .Editor .extras .buttons .btn:not(.accent):active {
+        color: #1976D2; }
+        .Editor .extras .buttons .btn:not(.accent):hover span, .Editor .extras .buttons .btn:not(.accent):active span {
           opacity: 1; }
+  .Editor .extras .more-info {
+    width: inherit;
+    height: 100px;
+    bottom: 100px;
+    text-align: center;
+    pointer-events: none;
+    background: transparent;
+    overflow: hidden; }
+    .Editor .extras .more-info.hidden {
+      height: 0;
+      margin: 0; }
+    .Editor .extras .more-info .more-info-wrapper {
+      border-radius: 3px;
+      display: inline-block;
+      height: 100%;
+      pointer-events: auto;
+      background: white;
+      margin: 0;
+      padding: 40px 0;
+      width: 100%; }
+      .Editor .extras .more-info .more-info-wrapper .vertical-align-wrapper {
+        height: 100%; }
+  .Editor .extras .photos .photo {
+    display: inline-block;
+    height: 90px;
+    padding: 5px 2.5px; }
 
 /*# sourceMappingURL=Editor.css.map */

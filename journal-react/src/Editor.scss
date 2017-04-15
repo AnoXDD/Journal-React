@@ -103,75 +103,160 @@ $button-height: 50px;
     flex: 1 1 auto;
     display: flex;
     flex-flow: column;
+
+    .wrapper.right {
+      width: $editor-padding;
+    }
   }
 
   .text-body {
+    margin: 0 $editor-padding;
     flex: 1 1 auto;
     font-size: 25px;
-    width: 100%;
+    width: calc(100% - #{2 * $editor-padding});
     font-weight: lighter;
     padding-left: 0;
     height: calc(100% - #{$scroll-bar-padding * 2});
   }
 
-  .buttons {
-    display: flex;
-    width: $full-width;
-    text-align: right;
-    flex: 0 1 $button-height;
+  .extras {
+    .buttons {
+      display: flex;
+      width: $full-width;
+      text-align: right;
+      flex: 0 1 $button-height;
 
-    .tags {
-      text-align: left;
-      flex: 1 1 auto;
+      .tags {
+        text-align: left;
+        flex: 1 1 auto;
 
-      $tag-font-size: 16px;
+        $tag-font-size: 16px;
 
-      .tag {
-        margin-right: 20px;
-        display: inline-block;
-        font-size: $tag-font-size;
+        .tag {
+          padding: 2px 8px;
+          color: white;
+          border-radius: 3px;
+          margin: 2px 20px 2px 0;
+          display: inline-block;
+          font-size: $tag-font-size;
+          transition: background .4s ease;
+
+          &:not(.white-background) {
+            background: $blue;
+
+            &:hover {
+              background: $blue-light;
+            }
+          }
+        }
+
+        .new-tag {
+          background: white;
+          font-size: $tag-font-size;
+          display: inline-block;
+          height: 20px;
+          padding: 0;
+          width: 100px;
+          border-bottom: 1px solid grey;
+        }
       }
 
-      .new-tag {
-        font-size: $tag-font-size;
+      .btn {
+        position: relative;
         display: inline-block;
-        height: 20px;
-        padding: 0;
-        width: 100px;
-        border-bottom: 1px solid grey;
+        text-transform: uppercase;
+        height: $button-height;
+        font-weight: lighter;
+        text-align: center;
+        flex: 0 0 $button-width;
+        transition: .4s ease;
+
+        &.accent {
+          flex: 0 0 auto;
+          width: $button-width-accent;
+          color: white;
+          background: $blue;
+          margin-left: $button-width / 2;
+        }
+
+        &:after {
+          pointer-events: none;
+          content: "";
+          width: 100%;
+          height: 4px;
+          position: absolute;
+          z-index: 100;
+          bottom: 0;
+          left: 0;
+          transition: background .4s ease;
+        }
+
+        &.active {
+          color: $blue;
+
+          &:after {
+            background: $blue;
+          }
+        }
+
+        span {
+          transition: opacity .4s ease;
+          opacity: 0;
+          pointer-events: none;
+        }
+
+        &:not(.accent) {
+          &:hover, &:active {
+            color: $blue-dark;
+
+            span {
+              opacity: 1;
+            }
+          }
+        }
       }
     }
 
-    .btn {
-      position: relative;
-      display: inline-block;
-      text-transform: uppercase;
-      height: $button-height;
-      font-weight: lighter;
+    .more-info {
+      width: inherit;
+      height: 100px;
+      bottom: $button-height + $editor-padding;
       text-align: center;
-      flex: 0 0 $button-width;
-      transition: .4s ease;
+      pointer-events: none;
+      background: transparent;
+      overflow: hidden;
+      //transition: .4s ease;
 
-      &.accent {
-        flex: 0 0 auto;
-        width: $button-width-accent;
-        color: white;
-        background: $blue;
-        margin-left: $button-width / 2;
-      }
+      &.hidden {
+        height: 0;
+        margin: 0;
 
-      span {
-        transition: opacity .4s ease;
-        opacity: 0;
-        pointer-events: none;
-      }
-
-      &:hover, &:active {
-        color: $blue;
-
-        span {
-          opacity: 1;
+        .more-info-wrapper {
+          //display: none;
         }
+      }
+
+      .more-info-wrapper {
+        border-radius: 3px;
+        display: inline-block;
+        height: 100%;
+        pointer-events: auto;
+        background: white;
+        margin: 0;
+        padding: $scroll-bar-padding 0;
+        width: 100%;
+
+        .vertical-align-wrapper {
+          height: 100%;
+        }
+      }
+    }
+
+    .photos {
+      .photo {
+        display: inline-block;
+        height: 90px;
+        padding: 5px 2.5px;
       }
     }
   }

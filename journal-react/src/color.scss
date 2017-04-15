@@ -1,6 +1,6 @@
 $blue-light: #82B1FF;
 $blue: #448AFF;
-$blue-dark: #2962FF;
+$blue-dark: #1976D2;
 
 $scroll-bar-padding: 40px;
 
@@ -23,20 +23,69 @@ $scroll-bar-padding: 40px;
   overflow: hidden;
   background: $background-color;
 
-  .wrapper {
+  &.horizontal {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 20px;
+
+    &:before, &:after {
+      height: 100%;
+      width: $scroll-bar-padding;
+    }
+
+    &:before {
+      background: linear-gradient(to right, $background-color 0, transparent 100%);
+      left: 0;
+    }
+
+    &:after {
+      background: linear-gradient(to left, $background-color 0, transparent 100%);
+      right: 0;
+    }
+
+    .wrapper {
+      bottom: 0px;
+      height: $scroll-bar-padding;
+      width: 100%;
+    }
+
+    > * {
+      margin-left: 0;
+    }
+
+    > *:first-child {
+      margin-left: $scroll-bar-padding;
+    }
+
+    > *:last-child {
+      margin-right: $scroll-bar-padding;
+    }
+  }
+
+  &:before, &:after {
     position: absolute;
     width: 100%;
     height: $scroll-bar-padding;
-    background: black;
+    content: "";
+  }
 
-    &.top {
-      background: linear-gradient(to bottom, $background-color 0, transparent 100%);
-      top: 0;
-    }
-    &.bottom {
-      background: linear-gradient(to top, $background-color 0, transparent 100%);
-      bottom: 0;
-    }
+  &:before {
+    background: linear-gradient(to bottom, $background-color 0, transparent 100%);
+    top: 0;
+  }
+
+  &:after {
+    background: linear-gradient(to top, $background-color 0, transparent 100%);
+    bottom: 0;
+  }
+
+  .wrapper {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: $scroll-bar-padding;
+    background: white;
   }
 
   .no-scroll-wrapper {
@@ -48,6 +97,14 @@ $scroll-bar-padding: 40px;
 }
 
 .material-icons {
-  user-event: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   pointer-events: none;
+}
+
+.shadow {
+  box-shadow: 3px 2px 9px grey;
+
 }
