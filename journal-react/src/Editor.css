@@ -235,6 +235,9 @@
   .Editor .extras .photos .photo {
     display: inline-block;
     height: 90px;
-    padding: 0 2.5px; }
+    padding: 0 2.5px;
+    opacity: .5; }
+    .Editor .extras .photos .photo.selected {
+      opacity: 1; }
 
 /*# sourceMappingURL=Editor.css.map */

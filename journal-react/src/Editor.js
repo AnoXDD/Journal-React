@@ -20,11 +20,17 @@ class Editor extends Component {
         NEW   : 10,
     };
 
+    /**
+     * The specific number is designed such that each toggle just need to flip
+     * the last two bits
+     * @type {{NOT_SELECTED: number, ADD: number, REMOVE: number, SELECTED:
+     *     number}}
+     */
     PHOTO_STATUS = {
-        NOT_SELECTED: 1,
-        ADD         : 2,
-        REMOVE      : 3,
-        SELECTED    : 4,
+        NOT_SELECTED: 0b10,
+        ADD         : 0b01,
+        REMOVE      : 0b00,
+        SELECTED    : 0b11,
     };
 
     constructor(props) {
@@ -92,71 +98,72 @@ class Editor extends Component {
                     id    : 8,
                     src   : "http://placehold.it/350x150",
                     status: this.PHOTO_STATUS.REMOVE,
-                },{
-                    id    : 11,
-                    src   : "http://placehold.it/320x150",
-                    status: this.PHOTO_STATUS.ADD,
-                }, {
-                    id    : 21,
-                    src   : "http://placehold.it/350x150",
-                    status: this.PHOTO_STATUS.NOT_SELECTED,
-                }, {
-                    id    : 31,
-                    src   : "http://placehold.it/330x150",
-                    status: this.PHOTO_STATUS.SELECTED,
-                }, {
-                    id    : 41,
-                    src   : "http://placehold.it/350x120",
-                    status: this.PHOTO_STATUS.REMOVE,
-                }, {
-                    id    : 51,
-                    src   : "http://placehold.it/30x150",
-                    status: this.PHOTO_STATUS.ADD,
-                }, {
-                    id    : 61,
-                    src   : "http://placehold.it/150x150",
-                    status: this.PHOTO_STATUS.NOT_SELECTED,
-                }, {
-                    id    : 71,
-                    src   : "http://placehold.it/350x150",
-                    status: this.PHOTO_STATUS.SELECTED,
-                }, {
-                    id    : 81,
-                    src   : "http://placehold.it/350x150",
-                    status: this.PHOTO_STATUS.REMOVE,
-                },{
-                    id    : 12,
-                    src   : "http://placehold.it/320x150",
-                    status: this.PHOTO_STATUS.ADD,
-                }, {
-                    id    : 22,
-                    src   : "http://placehold.it/350x150",
-                    status: this.PHOTO_STATUS.NOT_SELECTED,
-                }, {
-                    id    : 32,
-                    src   : "http://placehold.it/330x150",
-                    status: this.PHOTO_STATUS.SELECTED,
-                }, {
-                    id    : 42,
-                    src   : "http://placehold.it/350x120",
-                    status: this.PHOTO_STATUS.REMOVE,
-                }, {
-                    id    : 52,
-                    src   : "http://placehold.it/30x150",
-                    status: this.PHOTO_STATUS.ADD,
-                }, {
-                    id    : 62,
-                    src   : "http://placehold.it/150x150",
-                    status: this.PHOTO_STATUS.NOT_SELECTED,
-                }, {
-                    id    : 72,
-                    src   : "http://placehold.it/350x150",
-                    status: this.PHOTO_STATUS.SELECTED,
-                }, {
-                    id    : 82,
-                    src   : "http://placehold.it/350x150",
-                    status: this.PHOTO_STATUS.REMOVE,
                 }
+                    // ,{
+                    //     id    : 11,
+                    //     src   : "http://placehold.it/320x150",
+                    //     status: this.PHOTO_STATUS.ADD,
+                    // }, {
+                    //     id    : 21,
+                    //     src   : "http://placehold.it/350x150",
+                    //     status: this.PHOTO_STATUS.NOT_SELECTED,
+                    // }, {
+                    //     id    : 31,
+                    //     src   : "http://placehold.it/330x150",
+                    //     status: this.PHOTO_STATUS.SELECTED,
+                    // }, {
+                    //     id    : 41,
+                    //     src   : "http://placehold.it/350x120",
+                    //     status: this.PHOTO_STATUS.REMOVE,
+                    // }, {
+                    //     id    : 51,
+                    //     src   : "http://placehold.it/30x150",
+                    //     status: this.PHOTO_STATUS.ADD,
+                    // }, {
+                    //     id    : 61,
+                    //     src   : "http://placehold.it/150x150",
+                    //     status: this.PHOTO_STATUS.NOT_SELECTED,
+                    // }, {
+                    //     id    : 71,
+                    //     src   : "http://placehold.it/350x150",
+                    //     status: this.PHOTO_STATUS.SELECTED,
+                    // }, {
+                    //     id    : 81,
+                    //     src   : "http://placehold.it/350x150",
+                    //     status: this.PHOTO_STATUS.REMOVE,
+                    // },{
+                    //     id    : 12,
+                    //     src   : "http://placehold.it/320x150",
+                    //     status: this.PHOTO_STATUS.ADD,
+                    // }, {
+                    //     id    : 22,
+                    //     src   : "http://placehold.it/350x150",
+                    //     status: this.PHOTO_STATUS.NOT_SELECTED,
+                    // }, {
+                    //     id    : 32,
+                    //     src   : "http://placehold.it/330x150",
+                    //     status: this.PHOTO_STATUS.SELECTED,
+                    // }, {
+                    //     id    : 42,
+                    //     src   : "http://placehold.it/350x120",
+                    //     status: this.PHOTO_STATUS.REMOVE,
+                    // }, {
+                    //     id    : 52,
+                    //     src   : "http://placehold.it/30x150",
+                    //     status: this.PHOTO_STATUS.ADD,
+                    // }, {
+                    //     id    : 62,
+                    //     src   : "http://placehold.it/150x150",
+                    //     status: this.PHOTO_STATUS.NOT_SELECTED,
+                    // }, {
+                    //     id    : 72,
+                    //     src   : "http://placehold.it/350x150",
+                    //     status: this.PHOTO_STATUS.SELECTED,
+                    // }, {
+                    //     id    : 82,
+                    //     src   : "http://placehold.it/350x150",
+                    //     status: this.PHOTO_STATUS.REMOVE,
+                    // }
                 ],
                 musics          : [],
                 movies          : [],
@@ -211,12 +218,26 @@ class Editor extends Component {
         });
     }
 
+    /**
+     * Toggles the photo status - whether it's going to be added or removed
+     */
+    togglePhotoStatus(i) {
+        var newPhotos = this.state.photos;
+        newPhotos[i].status = ~newPhotos[i].status & 0b11;
+        this.setState({
+            photos: newPhotos
+        });
+    }
+
     generateMoreInfo() {
         switch (this.state.isDisplayingMore) {
             case this.DISPLAYING.PHOTOS:
-                const SortableItem = SortableElement(({photo}) =>
-                    <div className="photo">
-                        <img src={photo.src}
+                const SortableItem = SortableElement(({item}) =>
+                    <div
+                        className={`photo ${(item.status === this.PHOTO_STATUS.ADD || item.status === this.PHOTO_STATUS.SELECTED) ? "selected" : ""} `}
+                        onClick={() => {this.togglePhotoStatus(item.index)}}
+                    >
+                        <img src={item.src}
                              alt=""
                              height="90px"/>
                     </div>
@@ -226,11 +247,14 @@ class Editor extends Component {
                     return (
                         <div
                             className="more-info-wrapper photos no-scroll-wrapper">
-                            {items.map((photo, index) => (
-                                <SortableItem key={`photo-${index}`}
-                                              index={index}
-                                              photo={photo}/>
-                            ))}
+                            {items.map((item, index) => {
+                                item.index = index;
+                                return (
+                                    <SortableItem key={`photo-${index}`}
+                                                  index={index}
+                                                  item={item}/>
+                                );
+                            })}
                             <div className="wrapper"></div>
                         </div>
                     );
@@ -238,6 +262,7 @@ class Editor extends Component {
 
                 return (
                     <SortableList items={this.state.photos}
+                                  distance={5}
                                   axis="xy"
                                   onSortEnd={this.onPhotoSortEnd}/>
                 );
@@ -287,7 +312,9 @@ class Editor extends Component {
 
     onPhotoSortEnd(obj) {
         this.setState({
-            photos: arrayMove([...this.state.photos], obj.oldIndex, obj.newIndex),
+            photos: arrayMove([...this.state.photos],
+                obj.oldIndex,
+                obj.newIndex),
         });
     }
 
