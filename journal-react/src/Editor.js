@@ -434,22 +434,36 @@ class Editor extends Component {
 
   onNewTagKeyDown(event) {
     if (event.key === "Tab") {
+
       event.preventDefault();
       event.target.value = this.state.tagPrediction;
+
     } else if (event.key === "Enter") {
-      var newTags = [...this.state.tags],
+
+      let newTags = [...this.state.tags],
           newTag = event.target.value.trim();
 
       // Only add it when not found
       if (newTag.length && newTags.indexOf(newTag) === -1) {
         newTags.push(newTag);
         this.setState({
-          tags: newTags,
+          tags         : newTags,
           tagPrediction: "",
         });
       }
 
       event.target.value = "";
+
+    } else if (event.key === "Backspace") {
+
+      if (!event.target.value && this.state.tags.length) {
+        let newTags = [...this.state.tags];
+        event.target.value = (newTags.pop() || "") + " ";
+
+        this.setState({
+          tags: newTags
+        });
+      }
     }
   }
 

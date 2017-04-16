@@ -1,6 +1,9 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 @import "http://fonts.googleapis.com/css?family=Noto+Sans:100,400,700";
 @import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+input :disabled, textarea :disabled {
+  background-color: inherit; }
+
 .vertical-align .vertical-align-wrapper {
   display: block;
   position: relative;
@@ -157,6 +160,11 @@
           color: white;
           background: #448AFF;
           margin-left: 30px; }
+          .Editor .extras .buttons .btn.accent:hover:not(:active) {
+            background: #82B1FF;
+            color: white; }
+          .Editor .extras .buttons .btn.accent:active {
+            color: white; }
         .Editor .extras .buttons .btn:after {
           pointer-events: none;
           content: "";

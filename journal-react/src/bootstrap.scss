@@ -4,6 +4,12 @@ $blue-dark: #1976D2;
 
 $scroll-bar-padding: 40px;
 
+input, textarea {
+  :disabled {
+    background-color: inherit;
+  }
+}
+
 .vertical-align {
 
   .vertical-align-wrapper {

@@ -191,6 +191,15 @@ $button-height: 50px;
           color: white;
           background: $blue;
           margin-left: $button-width / 2;
+
+          &:hover:not(:active) {
+            background: $blue-light;
+            color: white;
+          }
+
+          &:active {
+            color: white;
+          }
         }
 
         &:after {
