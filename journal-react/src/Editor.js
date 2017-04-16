@@ -17,7 +17,8 @@ class ExtraButton extends Component {
            onClick={this.props.onClick}
         >
           <Ink/>
-          <i className="material-icons vertical-align-wrapper">{this.props.icon}</i>
+          <i className="material-icons vertical-align-wrapper original">{this.props.icon}</i>
+          <i className="material-icons vertical-align-wrapper add-circle">add_circle_outline</i>
         </a>
     );
   }
@@ -201,6 +202,8 @@ class Editor extends Component {
 
     this.setIsDisplaying = this.setIsDisplaying.bind(this);
     this.generateMoreInfo = this.generateMoreInfo.bind(this);
+    this.generateAddPanelFor = this.generateAddPanelFor.bind(this);
+    this.generateRemovePanelFor = this.generateRemovePanelFor.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onBodyChange = this.onBodyChange.bind(this);
     this.onNewTagKeyPress = this.onNewTagKeyPress.bind(this);
@@ -256,6 +259,30 @@ class Editor extends Component {
     });
   }
 
+  generateAddPanelFor(tag, state) {
+    return (
+        <div className="more-info-wrapper">
+          <a className="icon-wrapper"
+             onClick={() => { this.setState(state); }}
+          >
+            <i className="material-icons">add_circle_outline</i>
+          </a>
+        </div>
+    )
+  }
+
+  generateRemovePanelFor(tag) {
+    var state = {};
+    state[tag] = [];
+    return (
+        <a className="icon"
+           onClick={() => {this.state.isDisplayingMore = this.DISPLAYING.NONE; this.setState(state);} }
+        >
+          <i className="material-icons">remove_circle_outline</i>
+        </a>
+    );
+  }
+
   generateMoreInfo() {
     switch (this.state.isDisplayingMore) {
       case this.DISPLAYING.PHOTOS:
@@ -296,43 +323,58 @@ class Editor extends Component {
                           onSortEnd={this.onPhotoSortEnd}/>
         );
       case this.DISPLAYING.MUSICS:
+        if (this.state.musics.length === 0) {
+          // eslint-disable-next-line
+          this.state.musics = [{title: "", by: ""}];
+        }
         return (
             <div className="music more-info-wrapper">
               <AutosizeInput
                   className="title normal underlined"
                   onChange={this.onMusicTitleChange}
-                  value={this.state.musics[0].title}/>
+                  value={this.state.musics[0].title || ""}/>
               <span className="text">By</span>
               <AutosizeInput
                   type="text"
                   className="by normal underlined"
                   onChange={this.onMusicByChange}
-                  value={this.state.musics[0].by}/>
+                  value={this.state.musics[0].by || ""}/>
+              {this.generateRemovePanelFor("musics")}
             </div>
         );
       case this.DISPLAYING.MOVIES:
+        if (this.state.movies.length === 0) {
+          // eslint-disable-next-line
+          this.state.movies = [{title: ""}];
+        }
         return (
             <div className="movie more-info-wrapper">
               <AutosizeInput
                   className="title normal underlined"
                   onChange={this.onMovieTitleChange}
-                  value={this.state.movies[0].title}
-              ></AutosizeInput>
+                  value={this.state.movies[0].title || ""}
+              />
+              { this.generateRemovePanelFor("movies") }
             </div>
         );
       case this.DISPLAYING.LINKS:
+        if (this.state.links.length === 0) {
+          // eslint-disable-next-line
+          this.state.links = [{title: "", url: ""}];
+        }
         return (
             <div className="link more-info-wrapper">
               <AutosizeInput
                   className="title normal underlined"
                   onChange={this.onLinkTitleChange}
-                  value={this.state.links[0].title}/>
+                  value={this.state.links[0].title || ""}/>
               <span className="text"> - ://</span>
               <AutosizeInput
                   type="text"
                   className="url normal underlined"
                   onChange={this.onLinkUrlChange}
-                  value={this.state.links[0].url}/>
+                  value={this.state.links[0].url || ""}/>
+              { this.generateRemovePanelFor("links") }
             </div>
         );
     }
@@ -436,14 +478,14 @@ class Editor extends Component {
   }
 
   convertToElapsed(seconds) {
-    return `${parseInt(seconds / 60)}:${("0" + seconds % 60).slice(-2)}`;
+    return `${parseInt(seconds / 60, 10)}:${("0" + seconds % 60).slice(-2)}`;
   }
 
   render() {
     return (
         <div className="Editor">
           <div className="header">
-            <input className="title"
+            <input className="title underlined"
                    value={this.state.title}
                    onChange={this.onTitleChange}
             >
@@ -474,7 +516,7 @@ class Editor extends Component {
                               onChange={this.onBodyChange}
                     >
                     </textarea>
-            <span className="wrapper right"></span>
+            <span className="wrapper right"/>
           </div>
           <div className="shadow up"></div>
           <div className="extras">
@@ -497,7 +539,7 @@ class Editor extends Component {
                             isActive={this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()]}
                             onClick={() => { this.setIsDisplaying(this.DISPLAYING[tag[0].toUpperCase()]) }}
                             icon={tag[1]}
-                        ></ExtraButton>
+                        />
                     );
                   }) }
               <a className={`vertical-align btn new ${this.state.isDisplayingMore === this.DISPLAYING.NEW ? "active" : "" }`}

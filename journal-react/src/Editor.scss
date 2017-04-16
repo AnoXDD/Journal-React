@@ -197,20 +197,46 @@ $button-height: 50px;
           &:after {
             background: black;
           }
+
+          &.active, &:hover {
+            &:after {
+              background: $blue;
+            }
+          }
         }
 
         &.active, &:hover {
           color: $blue;
-
-          &:after {
-            background: $blue;
-          }
         }
 
         span {
           transition: opacity .4s ease;
           opacity: 0;
           pointer-events: none;
+        }
+
+        .add-circle {
+          opacity: 0;
+          position: relative;
+          bottom: $button-height;
+          top: 0;
+          transition: opacity .4s ease;
+        }
+
+        .original {
+          opacity: 1;
+          transition: opacity .4s ease;
+        }
+
+        &:not(.attached) {
+          &:hover {
+            .add-circle {
+              opacity: 1;
+            }
+            .original {
+              opacity: 0;
+            }
+          }
         }
 
         &:not(.accent) {
@@ -248,6 +274,21 @@ $button-height: 50px;
         background: white;
         margin: 0;
 
+        .icon {
+          padding: 6px 0 0 6px;
+          font-size: 18px;
+          position: relative;
+          pointer-events: auto;
+
+          .material-icons {
+            font-size: 18px;
+          }
+
+          &:hover {
+            color: $blue;
+          }
+        }
+
         .vertical-align-wrapper {
           height: 100%;
         }
@@ -277,7 +318,7 @@ $button-height: 50px;
       flex: 1 1 auto;
     }
 
-    .music, .link {
+    .music, .link, .movie {
       text-align: center;
       justify-content: center;
       display: flex;
