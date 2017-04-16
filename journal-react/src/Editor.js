@@ -186,7 +186,10 @@ class Editor extends Component {
         movies          : [{
           title: "Rose and Jack"
         }],
-        links           : []
+        links           : [{
+          url  : "anoxic.me",
+          title: "I'm awesome!"
+        }]
       };
     }
 
@@ -204,6 +207,9 @@ class Editor extends Component {
     this.onPhotoSortEnd = this.onPhotoSortEnd.bind(this);
     this.onMusicByChange = this.onMusicByChange.bind(this);
     this.onMusicTitleChange = this.onMusicTitleChange.bind(this);
+    this.onMovieTitleChange = this.onMovieTitleChange.bind(this);
+    this.onLinkTitleChange = this.onLinkTitleChange.bind(this);
+    this.onLinkUrlChange = this.onLinkUrlChange.bind(this);
   }
 
   generateCurrentTags() {
@@ -303,7 +309,32 @@ class Editor extends Component {
                   onChange={this.onMusicByChange}
                   value={this.state.musics[0].by}/>
             </div>
-        )
+        );
+      case this.DISPLAYING.MOVIES:
+        return (
+            <div className="movie more-info-wrapper">
+              <AutosizeInput
+                  className="title normal underlined"
+                  onChange={this.onMovieTitleChange}
+                  value={this.state.movies[0].title}
+              ></AutosizeInput>
+            </div>
+        );
+      case this.DISPLAYING.LINKS:
+        return (
+            <div className="link more-info-wrapper">
+              <AutosizeInput
+                  className="title normal underlined"
+                  onChange={this.onLinkTitleChange}
+                  value={this.state.links[0].title}/>
+              <span className="text"> - ://</span>
+              <AutosizeInput
+                  type="text"
+                  className="url normal underlined"
+                  onChange={this.onLinkUrlChange}
+                  value={this.state.links[0].url}/>
+            </div>
+        );
     }
   }
 
@@ -372,6 +403,30 @@ class Editor extends Component {
     });
   }
 
+  onMovieTitleChange(e) {
+    var movie = this.state.movies[0];
+    movie.title = e.target.value;
+    this.setState({
+      movies: [movie]
+    });
+  }
+
+  onLinkTitleChange(e) {
+    var link = this.state.links[0];
+    link.title = e.target.value;
+    this.setState({
+      links: [link]
+    });
+  }
+
+  onLinkUrlChange(e) {
+    var link = this.state.links[0];
+    link.url = e.target.value;
+    this.setState({
+      links: [link]
+    });
+  }
+
   countChars(str) {
     return (str.match(/[\u00ff-\uffff]|\S+/g) || []).length;
   }
@@ -421,6 +476,7 @@ class Editor extends Component {
                     </textarea>
             <span className="wrapper right"></span>
           </div>
+          <div className="shadow up"></div>
           <div className="extras">
             <div className="buttons">
               <a className="vertical-align btn tags">
@@ -435,6 +491,7 @@ class Editor extends Component {
                   tag => {
                     return (
                         <ExtraButton
+                            key={tag[0]}
                             className={tag[0]}
                             isAttached={this.state[tag[0]].length}
                             isActive={this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()]}

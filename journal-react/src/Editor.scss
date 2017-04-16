@@ -119,6 +119,10 @@ $button-height: 50px;
   }
 
   .extras {
+    position: relative;
+    background: white;
+    z-index: 2;
+
     .buttons {
       display: flex;
       width: $full-width;
@@ -273,28 +277,52 @@ $button-height: 50px;
       flex: 1 1 auto;
     }
 
-    .music {
+    .music, .link {
       text-align: center;
       justify-content: center;
       display: flex;
 
-      .title, .by {
-
+      input {
+        max-width: 30vw;
       }
 
       .title {
         text-align: right;
       }
+    }
 
+    .title, .by {
+      max-width: 30vw;
+    }
+
+    .url {
+      max-width: 40vw;
+    }
+
+    .movie input {
+      max-width: 50vw;
+    }
+
+    .link {
       .text {
-        font-size: 15px;
-        padding: 5px 5px 6px;
-        color: $blue;
-      }
-
-      .by {
-
+        padding: 5px 0px 1px 10px;
       }
     }
+
+    .text {
+      font-size: 15px;
+      padding: 5px 10px 1px;
+      color: $blue;
+    }
+  }
+
+  .shadow {
+    $shadow-grey: #f2f2f2;
+
+    width: 100%;
+    background-color: $shadow-grey;
+    position: relative;
+    bottom: 2px;
+    height: 1px;
   }
 }
