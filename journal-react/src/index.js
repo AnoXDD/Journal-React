@@ -4,6 +4,7 @@ import Editor from './Editor';
 import './index.css';
 
 ReactDOM.render(
-  <Editor />,
+  <Editor tagPrediction="journal idea friendship this that id"
+  />,
   document.getElementById('root')
 );

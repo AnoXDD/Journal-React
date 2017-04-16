@@ -120,6 +120,7 @@ $button-height: 50px;
     position: relative;
     background: white;
     z-index: 2;
+    margin-top: 3px;
 
     .buttons {
       display: flex;
@@ -137,6 +138,10 @@ $button-height: 50px;
           max-height: 30px;
         }
 
+        .new-tag-wrapper {
+          position: relative;
+        }
+
         .tag {
           padding: 4px 12px;
           color: white;
@@ -145,6 +150,11 @@ $button-height: 50px;
           display: inline-block;
           font-size: $tag-font-size;
           transition: background .4s ease;
+
+          .prediction {
+            color: lightgrey;
+            position: absolute;
+          }
 
           &:not(.white-background) {
             background: $blue;
@@ -156,7 +166,7 @@ $button-height: 50px;
         }
 
         .new-tag {
-          background: white;
+          background: transparent;
           font-size: $tag-font-size;
           display: inline-block;
           height: 20px;

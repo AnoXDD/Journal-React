@@ -49,6 +49,8 @@ class Editor extends Component {
     SELECTED    : 0b11,
   };
 
+  tagPrediction = this.props.tagPrediction.split(" ");
+
   constructor(props) {
     // todo use props to pre-fill the area
     super(props);
@@ -81,6 +83,7 @@ class Editor extends Component {
         },
         timeElapsed     : 0,
         tags            : ["tag1", "tag2", "tag3"],
+        tagPrediction   : "",
         isDisplayingMore: -1,
         photos          : [{
           id    : 1,
@@ -205,9 +208,11 @@ class Editor extends Component {
     this.generateMoreInfo = this.generateMoreInfo.bind(this);
     this.generateAddPanelFor = this.generateAddPanelFor.bind(this);
     this.generateRemovePanelFor = this.generateRemovePanelFor.bind(this);
+    this.getTagPrediction = this.getTagPrediction.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onBodyChange = this.onBodyChange.bind(this);
-    this.onNewTagKeyPress = this.onNewTagKeyPress.bind(this);
+    this.onNewTagKeyDown = this.onNewTagKeyDown.bind(this);
+    this.onNewTagChange = this.onNewTagChange.bind(this);
     this.onPhotoSortEnd = this.onPhotoSortEnd.bind(this);
     this.onMusicByChange = this.onMusicByChange.bind(this);
     this.onMusicTitleChange = this.onMusicTitleChange.bind(this);
@@ -231,12 +236,14 @@ class Editor extends Component {
           <div className="tags-wrapper">
             <div className="tags">
               { tagItems }
-                <span className="tag white-background">
-                <input
-                    type="text"
-                    className="new-tag normal underlined"
-                    onKeyPress={this.onNewTagKeyPress}
-                />
+                <span className="tag white-background new-tag-wrapper">
+                  <span className="prediction">{this.state.tagPrediction}</span>
+                  <input
+                      type="text"
+                      className="new-tag normal underlined"
+                      onKeyDown={this.onNewTagKeyDown}
+                      onChange={this.onNewTagChange}
+                  />
                 </span>
             </div>
           </div>
@@ -399,6 +406,20 @@ class Editor extends Component {
     }
   }
 
+  getTagPrediction(value) {
+    if (value) {
+      for (let prediction of this.tagPrediction) {
+        if (prediction.startsWith(value)) {
+          if (this.state.tags.indexOf(prediction) === -1) {
+            return prediction;
+          }
+        }
+      }
+    }
+
+    return value;
+  }
+
   onTitleChange(event) {
     this.setState({
       title: event.target.value
@@ -411,8 +432,11 @@ class Editor extends Component {
     });
   }
 
-  onNewTagKeyPress(event) {
-    if (event.key === "Enter") {
+  onNewTagKeyDown(event) {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      event.target.value = this.state.tagPrediction;
+    } else if (event.key === "Enter") {
       var newTags = [...this.state.tags],
           newTag = event.target.value.trim();
 
@@ -420,12 +444,19 @@ class Editor extends Component {
       if (newTag.length && newTags.indexOf(newTag) === -1) {
         newTags.push(newTag);
         this.setState({
-          tags: newTags
+          tags: newTags,
+          tagPrediction: "",
         });
       }
 
       event.target.value = "";
     }
+  }
+
+  onNewTagChange(event) {
+    this.setState({
+      tagPrediction: this.getTagPrediction(event.target.value),
+    });
   }
 
   onPhotoSortEnd(obj) {
@@ -493,8 +524,8 @@ class Editor extends Component {
         <div className="Editor">
           <div className="header">
             <AutosizeInput className="title normal underlined"
-                   value={this.state.title}
-                   onChange={this.onTitleChange}
+                           value={this.state.title}
+                           onChange={this.onTitleChange}
             />
             <div className="stats">
               <div className="stat chars">

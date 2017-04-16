@@ -106,7 +106,8 @@
   .Editor .extras {
     position: relative;
     background: white;
-    z-index: 2; }
+    z-index: 2;
+    margin-top: 3px; }
     .Editor .extras .buttons {
       display: flex;
       width: calc(100vw - 100px);
@@ -117,6 +118,8 @@
         flex: 1 1 auto; }
         .Editor .extras .buttons .tags-wrapper .tags {
           max-height: 30px; }
+        .Editor .extras .buttons .tags-wrapper .new-tag-wrapper {
+          position: relative; }
         .Editor .extras .buttons .tags-wrapper .tag {
           padding: 4px 12px;
           color: white;
@@ -125,12 +128,15 @@
           display: inline-block;
           font-size: 16px;
           transition: background .4s ease; }
+          .Editor .extras .buttons .tags-wrapper .tag .prediction {
+            color: lightgrey;
+            position: absolute; }
           .Editor .extras .buttons .tags-wrapper .tag:not(.white-background) {
             background: #448AFF; }
             .Editor .extras .buttons .tags-wrapper .tag:not(.white-background):hover {
               background: #82B1FF; }
         .Editor .extras .buttons .tags-wrapper .new-tag {
-          background: white;
+          background: transparent;
           font-size: 16px;
           display: inline-block;
           height: 20px;
