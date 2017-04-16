@@ -1,10 +1,10 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 @import "http://fonts.googleapis.com/css?family=Noto+Sans:100,400,700";
 @import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
-@import "color.scss";
+@import "bootstrap.scss";
 
 $stats-width: 200px;
-$title-height: 40px;
+$title-height: 50px;
 $editor-padding: 50px;
 $full-width: calc(100vw - #{$editor-padding * 2});
 $button-width-accent: 120px;
@@ -35,21 +35,18 @@ $button-height: 50px;
 
   .header {
     flex: 0 1 auto;
-    margin: 50px 0px 20px 0px;
+    margin: 0px 0px 10px;
     width: $full-width;
-    $child-margin-top: 20px;
 
     .title {
-      margin-top: $child-margin-top;
       padding-top: 0;
       padding-bottom: 30px;
       display: inline-block;
       height: 40px;
+      border-bottom: none !important;
     }
 
     .stats {
-      margin-top: $child-margin-top;
-
       $stats-height: 20px;
       padding: ($title-height - $stats-height)/2 20px;
       display: inline-block;
@@ -100,19 +97,20 @@ $button-height: 50px;
   .text-body-wrapper {
     width: $full-width;
     flex: 1 1 auto;
-    display: flex;
-    flex-flow: column;
+    position: relative;
+    text-align: center;
 
-    .wrapper.right {
-      width: $editor-padding;
+    .text-body-wrapper-2 {
+      position: absolute;
+      height: 100%;
+      padding: 0 50px;
+      width: calc(100% - 100px);
     }
   }
 
   .text-body {
-    margin: 0 $editor-padding;
     flex: 1 1 auto;
     font-size: 25px;
-    width: calc(100% - #{2 * $editor-padding});
     font-weight: lighter;
     padding-left: 0;
     height: calc(100% - #{$scroll-bar-padding * 2});
@@ -129,11 +127,15 @@ $button-height: 50px;
       text-align: right;
       flex: 0 1 $button-height;
 
-      .tags {
+      .tags-wrapper {
+        $tag-font-size: 16px;
+
         text-align: left;
         flex: 1 1 auto;
 
-        $tag-font-size: 16px;
+        .tags {
+          max-height: 30px;
+        }
 
         .tag {
           padding: 4px 12px;
@@ -268,7 +270,7 @@ $button-height: 50px;
 
       .more-info-wrapper {
         width: 100%;
-        max-height: 380px;
+        max-height: 275px;
         border-radius: 3px;
         pointer-events: auto;
         background: white;

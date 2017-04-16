@@ -4,6 +4,7 @@ import {
     SortableElement,
     arrayMove
 } from 'react-sortable-hoc';
+import NoScrollArea from "./NoScrollArea"
 
 import './Editor.css';
 
@@ -220,22 +221,26 @@ class Editor extends Component {
       return (
           <span
               key={`tag-${tag}`}
-              className="vertical-align-wrapper tag"
+              className="tag"
               onClick={(event) => {this.removeTagAtIndex(index);}}
           >{tag}</span>
       );
     });
     return (
-        <div className="vertical-align tags">
-          { tagItems }
-                <span className="vertical-align-wrapper tag white-background">
+        <NoScrollArea padding="10px">
+          <div className="tags-wrapper">
+            <div className="tags">
+              { tagItems }
+                <span className="tag white-background">
                 <input
                     type="text"
                     className="new-tag normal underlined"
                     onKeyPress={this.onNewTagKeyPress}
                 />
                 </span>
-        </div>
+            </div>
+          </div>
+        </NoScrollArea>
     );
   }
 
@@ -299,20 +304,22 @@ class Editor extends Component {
 
         const SortableList = SortableContainer(({items}) => {
           return (
-              <div className="no-scroll more-info-wrapper">
-                <div
-                    className="photos no-scroll-wrapper">
-                  {items.map((item, index) => {
-                    item.index = index;
-                    return (
-                        <SortableItem key={`photo-${index}`}
-                                      index={index}
-                                      item={item}/>
-                    );
-                  })}
-                  <div className="wrapper"></div>
+              <NoScrollArea padding="10px">
+                <div className="more-info-wrapper">
+                  <div
+                      className="photos">
+                    {items.map((item, index) => {
+                      item.index = index;
+                      return (
+                          <SortableItem key={`photo-${index}`}
+                                        index={index}
+                                        item={item}/>
+                      );
+                    })}
+                    <div className="wrapper"></div>
+                  </div>
                 </div>
-              </div>
+              </NoScrollArea>
           );
         });
 
@@ -485,11 +492,10 @@ class Editor extends Component {
     return (
         <div className="Editor">
           <div className="header">
-            <input className="title underlined"
+            <AutosizeInput className="title normal underlined"
                    value={this.state.title}
                    onChange={this.onTitleChange}
-            >
-            </input>
+            />
             <div className="stats">
               <div className="stat chars">
                 { this.countChars(this.state.body) }
@@ -510,12 +516,16 @@ class Editor extends Component {
               </div>
             </div>
           </div>
-          <div className="no-scroll text-body-wrapper">
-                    <textarea className="no-scroll-wrapper text-body"
-                              value={this.state.body}
-                              onChange={this.onBodyChange}
-                    >
-                    </textarea>
+          <div className="text-body-wrapper">
+            <div className="text-body-wrapper-2">
+              <NoScrollArea>
+                <textarea className="text-body"
+                          value={this.state.body}
+                          onChange={this.onBodyChange}
+                >
+                </textarea>
+              </NoScrollArea>
+            </div>
             <span className="wrapper right"/>
           </div>
           <div className="shadow up"></div>
