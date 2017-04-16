@@ -42,7 +42,8 @@
     width: 100%;
     height: 40px;
     content: "";
-    left: 0; }
+    left: 0;
+    pointer-events: none; }
   .no-scroll:before {
     background: linear-gradient(to bottom, white 0, transparent 100%);
     top: 0; }
@@ -71,6 +72,19 @@
 .shadow {
   box-shadow: 3px 2px 9px grey; }
 
+.normal, .normal input {
+  background: white;
+  font-size: 16px;
+  display: block;
+  height: 20px;
+  padding: 0;
+  position: relative; }
+  .normal.underlined, .normal.underlined input, .normal input.underlined, .normal input.underlined input {
+    border-bottom: 1px solid grey !important;
+    transition: border-bottom .4s ease; }
+    .normal.underlined:focus, .normal.underlined:active, .normal.underlined input:focus, .normal.underlined input:active, .normal input.underlined:focus, .normal input.underlined:active, .normal input.underlined input:focus, .normal input.underlined input:active {
+      border-bottom: 1px solid #448AFF !important; }
+
 .Editor {
   width: calc(100% - 100px);
   height: calc(100% - 100px);
@@ -89,7 +103,6 @@
   .Editor .header {
     flex: 0 1 auto;
     margin: 50px 0px 20px 0px;
-    border-bottom: 1px solid grey;
     width: calc(100vw - 100px); }
     .Editor .header .title {
       margin-top: 20px;
@@ -152,7 +165,7 @@
       text-align: left;
       flex: 1 1 auto; }
       .Editor .extras .buttons .tags .tag {
-        padding: 2px 8px;
+        padding: 4px 12px;
         color: white;
         border-radius: 3px;
         margin: 2px 20px 2px 0;
@@ -169,8 +182,7 @@
         display: inline-block;
         height: 20px;
         padding: 0;
-        width: 100px;
-        border-bottom: 1px solid grey; }
+        width: 100px; }
     .Editor .extras .buttons .btn {
       position: relative;
       display: inline-block;
@@ -196,9 +208,11 @@
         bottom: 0;
         left: 0;
         transition: background .4s ease; }
-      .Editor .extras .buttons .btn.active {
+      .Editor .extras .buttons .btn.attached:after {
+        background: black; }
+      .Editor .extras .buttons .btn.active, .Editor .extras .buttons .btn:hover {
         color: #448AFF; }
-        .Editor .extras .buttons .btn.active:after {
+        .Editor .extras .buttons .btn.active:after, .Editor .extras .buttons .btn:hover:after {
           background: #448AFF; }
       .Editor .extras .buttons .btn span {
         transition: opacity .4s ease;
@@ -222,22 +236,36 @@
     .Editor .extras .more-info .more-info-wrapper {
       width: 100%;
       max-height: 380px;
-      overflow-x: hidden;
-      overflow-y: scroll;
       border-radius: 3px;
-      display: block;
       pointer-events: auto;
       background: white;
-      margin: 0;
-      text-align: left; }
+      margin: 0; }
       .Editor .extras .more-info .more-info-wrapper .vertical-align-wrapper {
         height: 100%; }
-  .Editor .extras .photos .photo {
-    display: inline-block;
-    height: 90px;
-    padding: 0 2.5px;
-    opacity: .5; }
-    .Editor .extras .photos .photo.selected {
-      opacity: 1; }
+  .Editor .extras .photos {
+    text-align: left;
+    display: block; }
+    .Editor .extras .photos .photo {
+      display: inline-block;
+      height: 90px;
+      padding: 0 2.5px;
+      opacity: .5; }
+      .Editor .extras .photos .photo.selected {
+        opacity: 1; }
+  .Editor .extras input {
+    font-size: 16px;
+    display: block;
+    padding: 5px;
+    flex: 1 1 auto; }
+  .Editor .extras .music {
+    text-align: center;
+    justify-content: center;
+    display: flex; }
+    .Editor .extras .music .title {
+      text-align: right; }
+    .Editor .extras .music .text {
+      font-size: 15px;
+      padding: 5px 5px 6px;
+      color: #448AFF; }
 
 /*# sourceMappingURL=Editor.css.map */

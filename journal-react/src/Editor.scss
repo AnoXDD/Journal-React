@@ -36,7 +36,6 @@ $button-height: 50px;
   .header {
     flex: 0 1 auto;
     margin: 50px 0px 20px 0px;
-    border-bottom: 1px solid grey;
     width: $full-width;
     $child-margin-top: 20px;
 
@@ -133,7 +132,7 @@ $button-height: 50px;
         $tag-font-size: 16px;
 
         .tag {
-          padding: 2px 8px;
+          padding: 4px 12px;
           color: white;
           border-radius: 3px;
           margin: 2px 20px 2px 0;
@@ -157,7 +156,6 @@ $button-height: 50px;
           height: 20px;
           padding: 0;
           width: 100px;
-          border-bottom: 1px solid grey;
         }
       }
 
@@ -191,7 +189,13 @@ $button-height: 50px;
           transition: background .4s ease;
         }
 
-        &.active {
+        &.attached {
+          &:after {
+            background: black;
+          }
+        }
+
+        &.active, &:hover {
           color: $blue;
 
           &:after {
@@ -230,23 +234,15 @@ $button-height: 50px;
         height: 0;
         margin: 0;
         opacity: 0;
-
-        .more-info-wrapper {
-          //display: none;
-        }
       }
 
       .more-info-wrapper {
         width: 100%;
         max-height: 380px;
-        overflow-x: hidden;
-        overflow-y: scroll;
         border-radius: 3px;
-        display: block;
         pointer-events: auto;
         background: white;
         margin: 0;
-        text-align: left;
 
         .vertical-align-wrapper {
           height: 100%;
@@ -255,6 +251,9 @@ $button-height: 50px;
     }
 
     .photos {
+      text-align: left;
+      display: block;
+
       .photo {
         display: inline-block;
         height: 90px;
@@ -264,6 +263,37 @@ $button-height: 50px;
         &.selected {
           opacity: 1;
         }
+      }
+    }
+
+    input {
+      font-size: 16px;
+      display: block;
+      padding: 5px;
+      flex: 1 1 auto;
+    }
+
+    .music {
+      text-align: center;
+      justify-content: center;
+      display: flex;
+
+      .title, .by {
+
+      }
+
+      .title {
+        text-align: right;
+      }
+
+      .text {
+        font-size: 15px;
+        padding: 5px 5px 6px;
+        color: $blue;
+      }
+
+      .by {
+
       }
     }
   }

@@ -69,6 +69,7 @@ $scroll-bar-padding: 40px;
     height: $scroll-bar-padding;
     content: "";
     left: 0;
+    pointer-events: none;
   }
 
   &:before {
@@ -107,5 +108,22 @@ $scroll-bar-padding: 40px;
 
 .shadow {
   box-shadow: 3px 2px 9px grey;
+}
 
+.normal, .normal input {
+  background: white;
+  font-size: 16px;
+  display: block;
+  height: 20px;
+  padding: 0;
+  position: relative;
+  
+  &.underlined, &.underlined input {
+    border-bottom: 1px solid grey !important;
+    transition: border-bottom .4s ease;
+
+    &:focus, &:active {
+      border-bottom: 1px solid $blue !important;
+    }
+  }
 }

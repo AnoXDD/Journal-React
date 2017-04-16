@@ -8,6 +8,20 @@ import {
 import './Editor.css';
 
 var Ink = require("react-ink");
+var AutosizeInput = require("react-input-autosize");
+
+class TagButton extends Component {
+    render() {
+        return (
+            <a className={`vertical-align btn ${this.props.className} ${this.props.isAttached ? "attached" : ""} ${this.props.isActive ? "active" : ""} `}
+               onClick={this.props.onClick}
+            >
+                <Ink/>
+                <i className="material-icons vertical-align-wrapper">{this.props.icon}</i>
+            </a>
+        );
+    }
+}
 
 class Editor extends Component {
 
@@ -165,8 +179,13 @@ class Editor extends Component {
                     //     status: this.PHOTO_STATUS.REMOVE,
                     // }
                 ],
-                musics          : [],
-                movies          : [],
+                musics          : [{
+                    title: "Never Gonna Give You Up",
+                    by   : "Rick Astley"
+                }],
+                movies          : [{
+                    title: "Rose and Jack"
+                }],
                 links           : []
             };
         }
@@ -183,6 +202,8 @@ class Editor extends Component {
         this.onBodyChange = this.onBodyChange.bind(this);
         this.onNewTagKeyPress = this.onNewTagKeyPress.bind(this);
         this.onPhotoSortEnd = this.onPhotoSortEnd.bind(this);
+        this.onMusicByChange = this.onMusicByChange.bind(this);
+        this.onMusicTitleChange = this.onMusicTitleChange.bind(this);
     }
 
     generateCurrentTags() {
@@ -201,7 +222,7 @@ class Editor extends Component {
                 <span className="vertical-align-wrapper tag white-background">
                 <input
                     type="text"
-                    className="new-tag"
+                    className="new-tag normal underlined"
                     onKeyPress={this.onNewTagKeyPress}
                 />
                 </span>
@@ -245,17 +266,19 @@ class Editor extends Component {
 
                 const SortableList = SortableContainer(({items}) => {
                     return (
-                        <div
-                            className="more-info-wrapper photos no-scroll-wrapper">
-                            {items.map((item, index) => {
-                                item.index = index;
-                                return (
-                                    <SortableItem key={`photo-${index}`}
-                                                  index={index}
-                                                  item={item}/>
-                                );
-                            })}
-                            <div className="wrapper"></div>
+                        <div className="no-scroll more-info-wrapper">
+                            <div
+                                className="photos no-scroll-wrapper">
+                                {items.map((item, index) => {
+                                    item.index = index;
+                                    return (
+                                        <SortableItem key={`photo-${index}`}
+                                                      index={index}
+                                                      item={item}/>
+                                    );
+                                })}
+                                <div className="wrapper"></div>
+                            </div>
                         </div>
                     );
                 });
@@ -266,6 +289,21 @@ class Editor extends Component {
                                   axis="xy"
                                   onSortEnd={this.onPhotoSortEnd}/>
                 );
+            case this.DISPLAYING.MUSICS:
+                return (
+                    <div className="music more-info-wrapper">
+                        <AutosizeInput
+                            className="title normal underlined"
+                            onChange={this.onMusicTitleChange}
+                            value={this.state.musics[0].title}/>
+                        <span className="text">By</span>
+                        <AutosizeInput
+                            type="text"
+                            className="by normal underlined"
+                            onChange={this.onMusicByChange}
+                            value={this.state.musics[0].by}/>
+                    </div>
+                )
         }
     }
 
@@ -315,6 +353,22 @@ class Editor extends Component {
             photos: arrayMove([...this.state.photos],
                 obj.oldIndex,
                 obj.newIndex),
+        });
+    }
+
+    onMusicTitleChange(e) {
+        var music = this.state.musics[0];
+        music.title = e.target.value;
+        this.setState({
+            musics: [music]
+        });
+    }
+
+    onMusicByChange(e) {
+        var music = this.state.musics[0];
+        music.by = e.target.value;
+        this.setState({
+            musics: [music]
         });
     }
 
@@ -374,25 +428,25 @@ class Editor extends Component {
                             <i className="material-icons vertical-align-wrapper">label_outline</i>
                         </a>
                         { this.generateCurrentTags() }
-                        <a className={`vertical-align btn photos ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS ? "active" : "" }`}
+                        <a className={`vertical-align btn photos ${this.state.photos.length ? "attached" : ""} ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS ? "active" : "" }`}
                            onClick={() => {this.setIsDisplaying(this.DISPLAYING.PHOTOS);}}
                         >
                             <Ink/>
                             <i className="material-icons vertical-align-wrapper">photo_library</i>
                         </a>
-                        <a className={`vertical-align btn musics ${this.state.isDisplayingMore === this.DISPLAYING.MUSICS ? "active" : "" }`}
+                        <a className={`vertical-align btn musics ${this.state.musics.length ? "attached" : ""} ${this.state.isDisplayingMore === this.DISPLAYING.MUSICS ? "active" : "" }`}
                            onClick={() => {this.setIsDisplaying(this.DISPLAYING.MUSICS);}}
                         >
                             <Ink/>
                             <i className="material-icons vertical-align-wrapper">library_music</i>
                         </a>
-                        <a className={`vertical-align btn movies ${this.state.isDisplayingMore === this.DISPLAYING.MOVIES ? "active" : "" }`}
+                        <a className={`vertical-align btn movies ${this.state.movies.length ? "attached" : ""} ${this.state.isDisplayingMore === this.DISPLAYING.MOVIES ? "active" : "" }`}
                            onClick={() => {this.setIsDisplaying(this.DISPLAYING.MOVIES);}}
                         >
                             <Ink/>
                             <i className="material-icons vertical-align-wrapper">movie</i>
                         </a>
-                        <a className={`vertical-align btn links ${this.state.isDisplayingMore === this.DISPLAYING.LINKS ? "active" : "" }`}
+                        <a className={`vertical-align btn links ${this.state.links.length ? "attached" : ""} ${this.state.isDisplayingMore === this.DISPLAYING.LINKS ? "active" : "" }`}
                            onClick={() => {this.setIsDisplaying(this.DISPLAYING.LINKS);}}
                         >
                             <Ink/>
@@ -410,7 +464,7 @@ class Editor extends Component {
                         </a>
                     </div>
                     <div
-                        className={`more-info no-scroll ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>
+                        className={`more-info ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>
                         {this.generateMoreInfo()}
                     </div>
                 </div>
