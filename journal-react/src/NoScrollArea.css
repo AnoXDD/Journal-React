@@ -1,0 +1,54 @@
+.no-scroll {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%; }
+  .no-scroll.horizontal {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 20px; }
+    .no-scroll.horizontal:before, .no-scroll.horizontal:after {
+      height: 100%;
+      width: 20px; }
+    .no-scroll.horizontal:before {
+      background: linear-gradient(to right, white 0, transparent 100%);
+      left: 0; }
+    .no-scroll.horizontal:after {
+      background: linear-gradient(to left, white 0, transparent 100%);
+      right: 0; }
+    .no-scroll.horizontal .wrapper {
+      bottom: 0px;
+      height: 20px;
+      width: 100%; }
+    .no-scroll.horizontal > * {
+      margin-left: 0; }
+    .no-scroll.horizontal > *:first-child {
+      margin-left: 20px; }
+    .no-scroll.horizontal > *:last-child {
+      margin-right: 20px; }
+  .no-scroll .before, .no-scroll .after {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    content: "";
+    left: 0;
+    pointer-events: none;
+    z-index: 100; }
+  .no-scroll .before {
+    top: 0; }
+  .no-scroll .after {
+    bottom: 0; }
+  .no-scroll .wrapper {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 20px;
+    background: white; }
+  .no-scroll .no-scroll-wrapper {
+    padding-right: 20px;
+    width: 100%;
+    height: 100%; }
+
+/*# sourceMappingURL=NoScrollArea.css.map */
