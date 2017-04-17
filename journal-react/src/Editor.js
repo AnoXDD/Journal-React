@@ -88,8 +88,42 @@ class ExtraAttachments extends Component {
   }
 }
 
-class Editor extends Component {
+//onClick={() => {this.togglePhotoStatus(item.index)}}
 
+const SortableItem = SortableElement(({item, status, isSelected}) =>
+    <div
+        className={`photo ${isSelected(status) ? "selected" : ""} `}
+    >
+      <img src={item.src}
+           alt=""
+           height="90px"/>
+    </div>
+);
+
+const SortableList = SortableContainer(({items, isEditing, isSelected}) => {
+  return (
+      <NoScrollArea padding="10px">
+        <div className="more-info-wrapper">
+          <div
+              className={`photos ${isEditing ? "show-all" : ""} `}>
+            {items.map((item, index) => {
+              return (
+                  <SortableItem key={`photo-${item.id}`}
+                                status={item.status}
+                                isSelected={isSelected}
+                                index={index}
+                                disabled={!isEditing}
+                                item={item}/>
+              );
+            })}
+            <div className="wrapper"></div>
+          </div>
+        </div>
+      </NoScrollArea>
+  );
+});
+
+class Editor extends Component {
   DISPLAYING = {
     NONE  : -1,
     PHOTOS: 1,
@@ -389,40 +423,11 @@ class Editor extends Component {
   generateMoreInfo() {
     switch (this.state.isDisplayingMore) {
       case this.DISPLAYING.PHOTOS:
-        const SortableItem = SortableElement(({item}) =>
-            <div
-                className={`photo ${(item.status === this.PHOTO_STATUS.ADD || item.status === this.PHOTO_STATUS.SELECTED) ? "selected" : ""} `}
-                onClick={() => {this.togglePhotoStatus(item.index)}}
-            >
-              <img src={item.src}
-                   alt=""
-                   height="90px"/>
-            </div>
-        );
-
-        const SortableList = SortableContainer(({items}) => {
-          return (
-              <NoScrollArea padding="10px">
-                <div className="more-info-wrapper">
-                  <div
-                      className={`photos ${this.state.isEditing ? "show-all" : ""} `}>
-                    {items.map((item, index) => {
-                      item.index = index;
-                      return (
-                          <SortableItem key={`photo-${item.id}`}
-                                        index={index}
-                                        item={item}/>
-                      );
-                    })}
-                    <div className="wrapper"></div>
-                  </div>
-                </div>
-              </NoScrollArea>
-          );
-        });
 
         return (
             <SortableList items={this.state.photos}
+                          isEditing={this.state.isEditing}
+                          isSelected={(status) => {return (status === this.PHOTO_STATUS.ADD || status === this.PHOTO_STATUS.SELECTED)}}
                           distance={5}
                           axis="xy"
                           onSortEnd={this.onPhotoSortEnd}/>
