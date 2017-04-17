@@ -5,6 +5,7 @@ import './index.css';
 
 ReactDOM.render(
   <Editor tagPrediction="journal idea friendship this that id"
+          debug={true}
   />,
   document.getElementById('root')
 );

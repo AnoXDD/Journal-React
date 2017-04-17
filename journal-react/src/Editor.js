@@ -33,7 +33,7 @@ class Editor extends Component {
     MUSICS: 2,
     MOVIES: 3,
     LINKS : 4,
-    NEW   : 10,
+    OTHERS: 10,
   };
 
   /**
@@ -70,10 +70,12 @@ class Editor extends Component {
       musics          : [],
       movies          : [],
       links           : [],
+      others          : [],
       isEditing       : false,
     };
 
-    if (!(props && props.release)) {
+    if (this.props.debug) {
+
       this.state = {
         title           : "This is title 题目",
         body            : "This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文",
@@ -195,6 +197,19 @@ class Editor extends Component {
         links           : [{
           url  : "anoxic.me",
           title: "I'm awesome!"
+        }],
+        others          : [{
+          type  : "book",
+          author: "My Ass",
+          title : "A Random Book",
+        }, {
+          type : "audio",
+          url  : "http://anoxic.me",
+          title: "My personal site",
+        }, {
+          type : "video",
+          url  : "https://google.com",
+          title: "This is actually a Google website"
         }],
         isEditing       : false,
       };
@@ -408,6 +423,57 @@ class Editor extends Component {
               { this.generateRemovePanelFor("links") }
             </div>
         );
+      case this.DISPLAYING.OTHERS:
+        if (this.state.links.length === 0) {
+
+        }
+
+        const OtherProps = (({props, obj, index}) =>
+                <div className="other-props">
+                  { props.map((prop) => {
+                    if (prop !== "name") {
+                      return (
+                          <div key={`other-${index}-${prop}`}
+                               className="other-prop">
+                            <span className="text">{prop}:</span>
+                            <AutosizeInput
+                                type="text"
+                                className={`url normal underlined ${this.state.isEditing ? "" : "disabled"}`}
+                                onChange={() => {//todo
+                                
+                                }}
+                                disabled={!this.state.isEditing}
+                                value={this.state.others[index][prop] || ""}/>
+                          </div>
+                      );
+                    }
+                  })}
+                </div>
+        );
+
+        return (
+            <NoScrollArea>
+              <div className="others more-info-wrapper">
+                { this.state.others.map((other, index) => {
+                  if (!other || !other.type) {
+                    return;
+                  }
+
+                  // todo make this editable
+                  return (
+                      <div key={`other-${index}`}
+                           className="other">
+                        <div className="type">{other.type}</div>
+                        <OtherProps props={Object.keys(other)}
+                                    obj={other}
+                                    index={index}
+                        />
+                      </div>
+                  );
+                }) }
+              </div>
+            </NoScrollArea>
+        )
     }
   }
 
@@ -436,6 +502,8 @@ class Editor extends Component {
 
     return value;
   }
+
+  // region Listeners (on...Change)
 
   onTitleChange(event) {
     this.setState({
@@ -538,6 +606,8 @@ class Editor extends Component {
     });
   }
 
+  // endregion listeners
+
   countChars(str) {
     return (str.match(/[\u00ff-\uffff]|\S+/g) || []).length;
   }
@@ -609,7 +679,8 @@ class Editor extends Component {
               { [["photos", "photo_library"],
                 ["musics", "library_music"],
                 ["movies", "movie"],
-                ["links", "link"]].map(
+                ["links", "link"],
+                ["others", "more_horiz"]].map(
                   tag => {
                     return (
                         <ExtraButton
@@ -622,12 +693,6 @@ class Editor extends Component {
                         />
                     );
                   }) }
-              <a className={`vertical-align btn new ${this.state.isDisplayingMore === this.DISPLAYING.NEW ? "active" : "" }`}
-                 onClick={() => {this.setIsDisplaying(this.DISPLAYING.NEW);}}
-              >
-                <Ink/>
-                <i className="material-icons vertical-align-wrapper">more_horiz</i>
-              </a>
               <a className={`vertical-align btn send-edit accent ${this.state.isEditing ? "send" : "edit"} `}
                  onClick={this.toggleEditMode}
               >
