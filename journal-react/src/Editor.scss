@@ -337,6 +337,7 @@ $button-height: 50px;
         padding: 0 2.5px;
         opacity: .5;
         display: none;
+        transition: opacity .4s ease;
 
         &.selected {
           opacity: 1;

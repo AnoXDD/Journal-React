@@ -90,9 +90,10 @@ class ExtraAttachments extends Component {
 
 //onClick={() => {this.togglePhotoStatus(item.index)}}
 
-const SortableItem = SortableElement(({item, status, isSelected}) =>
+const SortableItem = SortableElement(({item, status, i, isSelected, handleClick}) =>
     <div
         className={`photo ${isSelected(status) ? "selected" : ""} `}
+        onClick={() => {handleClick(i);}}
     >
       <img src={item.src}
            alt=""
@@ -100,23 +101,25 @@ const SortableItem = SortableElement(({item, status, isSelected}) =>
     </div>
 );
 
-const SortableList = SortableContainer(({items, isEditing, isSelected}) => {
+const SortableList = SortableContainer(({items, isEditing, isSelected, handleClick}) => {
   return (
       <NoScrollArea padding="10px">
         <div className="more-info-wrapper">
           <div
               className={`photos ${isEditing ? "show-all" : ""} `}>
             {items.map((item, index) => {
+              
               return (
                   <SortableItem key={`photo-${item.id}`}
                                 status={item.status}
                                 isSelected={isSelected}
                                 index={index}
+                                i={index}
+                                handleClick={handleClick}
                                 disabled={!isEditing}
                                 item={item}/>
               );
             })}
-            <div className="wrapper"></div>
           </div>
         </div>
       </NoScrollArea>
@@ -423,15 +426,16 @@ class Editor extends Component {
   generateMoreInfo() {
     switch (this.state.isDisplayingMore) {
       case this.DISPLAYING.PHOTOS:
-
         return (
             <SortableList items={this.state.photos}
                           isEditing={this.state.isEditing}
                           isSelected={(status) => {return (status === this.PHOTO_STATUS.ADD || status === this.PHOTO_STATUS.SELECTED)}}
                           distance={5}
+                          handleClick={(i) => {this.togglePhotoStatus(i)}}
                           axis="xy"
                           onSortEnd={this.onPhotoSortEnd}/>
         );
+
       case this.DISPLAYING.MUSICS:
         if (this.state.musics.length === 0) {
           // eslint-disable-next-line
@@ -703,7 +707,6 @@ class Editor extends Component {
                 </textarea>
               </NoScrollArea>
             </div>
-            <span className="wrapper right"/>
           </div>
           <div className="shadow up"></div>
           <div className="extras">
