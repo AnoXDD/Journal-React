@@ -321,13 +321,20 @@ $button-height: 50px;
       display: block;
 
       .photo {
-        display: inline-block;
         height: 90px;
         padding: 0 2.5px;
         opacity: .5;
+        display: none;
 
         &.selected {
           opacity: 1;
+          display: inline-block;
+        }
+      }
+
+      &.show-all {
+        .photo:not(.selected) {
+          display: inline-block;
         }
       }
     }

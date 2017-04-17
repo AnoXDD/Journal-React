@@ -69,7 +69,8 @@ class Editor extends Component {
       photos          : [],
       musics          : [],
       movies          : [],
-      links           : []
+      links           : [],
+      isEditing       : false,
     };
 
     if (!(props && props.release)) {
@@ -194,14 +195,15 @@ class Editor extends Component {
         links           : [{
           url  : "anoxic.me",
           title: "I'm awesome!"
-        }]
+        }],
+        isEditing       : false,
       };
     }
 
     setInterval(() => {
       // On purpose: to avoid laggy update
       // eslint-disable-next-line
-      ++this.state.timeElapsed;
+      this.state.timeElapsed = this.state.isEditing ? (this.state.timeElapsed + 1) : 0;
     }, 1000);
 
     this.setIsDisplaying = this.setIsDisplaying.bind(this);
@@ -219,6 +221,7 @@ class Editor extends Component {
     this.onMovieTitleChange = this.onMovieTitleChange.bind(this);
     this.onLinkTitleChange = this.onLinkTitleChange.bind(this);
     this.onLinkUrlChange = this.onLinkUrlChange.bind(this);
+    this.toggleEditMode = this.toggleEditMode.bind(this);
   }
 
   generateCurrentTags() {
@@ -243,6 +246,7 @@ class Editor extends Component {
                       className="new-tag normal underlined"
                       onKeyDown={this.onNewTagKeyDown}
                       onChange={this.onNewTagChange}
+                      disabled={!this.state.isEditing}
                   />
                 </span>
             </div>
@@ -252,6 +256,10 @@ class Editor extends Component {
   }
 
   removeTagAtIndex(index) {
+    if (!this.state.isEditing) {
+      return false;
+    }
+
     var tags = this.state.tags;
     tags.splice(index, 1);
 
@@ -264,6 +272,10 @@ class Editor extends Component {
    * Toggles the photo status - whether it's going to be added or removed
    */
   togglePhotoStatus(i) {
+    if (!this.state.isEditing) {
+      return false;
+    }
+
     var newPhotos = this.state.photos;
     newPhotos[i].status = ~newPhotos[i].status & 0b11;
     this.setState({
@@ -287,7 +299,7 @@ class Editor extends Component {
     var state = {};
     state[tag] = [];
     return (
-        <a className="icon"
+        <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
            onClick={() => {this.state.isDisplayingMore = this.DISPLAYING.NONE; this.setState(state);} }
         >
           <i className="material-icons">remove_circle_outline</i>
@@ -314,7 +326,7 @@ class Editor extends Component {
               <NoScrollArea padding="10px">
                 <div className="more-info-wrapper">
                   <div
-                      className="photos">
+                      className={`photos ${this.state.isEditing ? "show-all" : ""} `}>
                     {items.map((item, index) => {
                       item.index = index;
                       return (
@@ -344,14 +356,16 @@ class Editor extends Component {
         return (
             <div className="music more-info-wrapper">
               <AutosizeInput
-                  className="title normal underlined"
+                  className={`title normal underlined ${this.state.isEditing ? "" : "disabled"}`}
                   onChange={this.onMusicTitleChange}
+                  disabled={!this.state.isEditing}
                   value={this.state.musics[0].title || ""}/>
               <span className="text">By</span>
               <AutosizeInput
                   type="text"
-                  className="by normal underlined"
+                  className={`by normal underlined ${this.state.isEditing ? "" : "disabled"}`}
                   onChange={this.onMusicByChange}
+                  disabled={!this.state.isEditing}
                   value={this.state.musics[0].by || ""}/>
               {this.generateRemovePanelFor("musics")}
             </div>
@@ -364,8 +378,9 @@ class Editor extends Component {
         return (
             <div className="movie more-info-wrapper">
               <AutosizeInput
-                  className="title normal underlined"
+                  className={`title normal underlined ${this.state.isEditing ? "" : "disabled"}`}
                   onChange={this.onMovieTitleChange}
+                  disabled={!this.state.isEditing}
                   value={this.state.movies[0].title || ""}
               />
               { this.generateRemovePanelFor("movies") }
@@ -379,14 +394,16 @@ class Editor extends Component {
         return (
             <div className="link more-info-wrapper">
               <AutosizeInput
-                  className="title normal underlined"
+                  className={`title normal underlined ${this.state.isEditing ? "" : "disabled"}`}
                   onChange={this.onLinkTitleChange}
+                  disabled={!this.state.isEditing}
                   value={this.state.links[0].title || ""}/>
               <span className="text"> - ://</span>
               <AutosizeInput
                   type="text"
-                  className="url normal underlined"
+                  className={`url normal underlined ${this.state.isEditing ? "" : "disabled"}`}
                   onChange={this.onLinkUrlChange}
+                  disabled={!this.state.isEditing}
                   value={this.state.links[0].url || ""}/>
               { this.generateRemovePanelFor("links") }
             </div>
@@ -533,6 +550,12 @@ class Editor extends Component {
     return `${parseInt(seconds / 60, 10)}:${("0" + seconds % 60).slice(-2)}`;
   }
 
+  toggleEditMode() {
+    this.setState({
+      isEditing: !this.state.isEditing
+    });
+  }
+
   render() {
     return (
         <div className="Editor">
@@ -540,6 +563,7 @@ class Editor extends Component {
             <AutosizeInput className="title normal underlined"
                            value={this.state.title}
                            onChange={this.onTitleChange}
+                           disabled={!this.state.isEditing}
             />
             <div className="stats">
               <div className="stat chars">
@@ -567,6 +591,7 @@ class Editor extends Component {
                 <textarea className="text-body"
                           value={this.state.body}
                           onChange={this.onBodyChange}
+                          disabled={!this.state.isEditing}
                 >
                 </textarea>
               </NoScrollArea>
@@ -603,7 +628,9 @@ class Editor extends Component {
                 <Ink/>
                 <i className="material-icons vertical-align-wrapper">more_horiz</i>
               </a>
-              <a className="vertical-align btn send accent">
+              <a className="vertical-align btn send accent"
+                 onClick={this.toggleEditMode}
+              >
                 <Ink/>
                 <i className="vertical-align-wrapper material-icons">send</i>
               </a>

@@ -5,7 +5,8 @@ $blue-dark: #1976D2;
 $scroll-bar-padding: 40px;
 
 input, textarea {
-  :disabled {
+  &:disabled {
+    color: black;
     background-color: inherit;
   }
 }
@@ -21,7 +22,6 @@ input, textarea {
     transform: translateY(-50%);
   }
 }
-
 
 .material-icons {
   -webkit-user-select: none;
@@ -42,7 +42,7 @@ input, textarea {
   height: 20px;
   padding: 0;
   position: relative;
-  
+
   &.underlined, &.underlined input {
     border-bottom: 1px solid grey !important;
     transition: border-bottom .4s ease;
@@ -51,4 +51,17 @@ input, textarea {
       border-bottom: 1px solid $blue !important;
     }
   }
+
+  &.disabled, &:disabled {
+    border-bottom-color: transparent !important;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+.transparent {
+  opacity: 0;
+  pointer-events: none !important;
 }
