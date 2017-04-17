@@ -431,7 +431,7 @@ class Editor extends Component {
         const OtherProps = (({props, obj, index}) =>
                 <div className="other-props">
                   { props.map((prop) => {
-                    if (prop !== "name") {
+                    if (prop !== "type") {
                       return (
                           <div key={`other-${index}-${prop}`}
                                className="other-prop">
@@ -439,8 +439,10 @@ class Editor extends Component {
                             <AutosizeInput
                                 type="text"
                                 className={`url normal underlined ${this.state.isEditing ? "" : "disabled"}`}
-                                onChange={() => {//todo
-                                
+                                onChange={(e) => {
+                                  let others = this.state.others;
+                                  others[index][prop] = e.target.value;
+                                  this.setState({others:others});
                                 }}
                                 disabled={!this.state.isEditing}
                                 value={this.state.others[index][prop] || ""}/>
