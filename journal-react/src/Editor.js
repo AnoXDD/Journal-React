@@ -25,6 +25,69 @@ class ExtraButton extends Component {
   }
 }
 
+class ExtraAttachments extends Component {
+  constructor(props) {
+    super(props);
+    let {others} = props;
+
+    this.state = {
+      others: others
+    };
+  }
+
+  render() {
+    const OtherProps = (({props, obj, index}) =>
+            <div className="other-props">
+              { props.map((prop) => {
+                if (prop !== "type") {
+                  return (
+                      <div key={`other-${index}-${prop}`}
+                           className="other-prop">
+                        <span className="text">{prop}:</span>
+                        <AutosizeInput
+                            type="text"
+                            className={`url normal underlined ${this.props.isEditing ? "" : "disabled"}`}
+                            onChange={(e) => {this.props.onChange(index, prop, e.target.value);}}
+                            disabled={!this.props.isEditing}
+                            value={this.state.others[index][prop] || ""}/>
+                      </div>
+                  );
+                }
+              })}
+            </div>
+    );
+
+    // <OtherProps props={Object.keys(other)}
+    //             obj={other}
+    //             index={index}
+    // />
+    return (
+        <NoScrollArea>
+          <div className="others more-info-wrapper">
+            { this.state.others.map((other, index) => {
+              // todo make this editable
+              return (
+                  <div key={`other-${index}`}
+                       className="other">
+                    <AutosizeInput
+                        className={`type normal underlined ${this.props.isEditing ? "" : "disabled"}`}
+                        value={other.type}
+                        onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
+                        disabled={!this.props.isEditing}
+                    />
+                    <OtherProps props={Object.keys(other)}
+                                obj={other}
+                                index={index}
+                    />
+                  </div>
+              );
+            }) }
+          </div>
+        </NoScrollArea>
+    );
+  }
+}
+
 class Editor extends Component {
 
   DISPLAYING = {
@@ -222,6 +285,7 @@ class Editor extends Component {
     }, 1000);
 
     this.setIsDisplaying = this.setIsDisplaying.bind(this);
+    this.setOthersProperty = this.setOthersProperty.bind(this);
     this.generateMoreInfo = this.generateMoreInfo.bind(this);
     this.generateAddPanelFor = this.generateAddPanelFor.bind(this);
     this.generateRemovePanelFor = this.generateRemovePanelFor.bind(this);
@@ -345,7 +409,7 @@ class Editor extends Component {
                     {items.map((item, index) => {
                       item.index = index;
                       return (
-                          <SortableItem key={`photo-${index}`}
+                          <SortableItem key={`photo-${item.id}`}
                                         index={index}
                                         item={item}/>
                       );
@@ -428,53 +492,10 @@ class Editor extends Component {
 
         }
 
-        const OtherProps = (({props, obj, index}) =>
-                <div className="other-props">
-                  { props.map((prop) => {
-                    if (prop !== "type") {
-                      return (
-                          <div key={`other-${index}-${prop}`}
-                               className="other-prop">
-                            <span className="text">{prop}:</span>
-                            <AutosizeInput
-                                type="text"
-                                className={`url normal underlined ${this.state.isEditing ? "" : "disabled"}`}
-                                onChange={(e) => {
-                                  let others = this.state.others;
-                                  others[index][prop] = e.target.value;
-                                  this.setState({others:others});
-                                }}
-                                disabled={!this.state.isEditing}
-                                value={this.state.others[index][prop] || ""}/>
-                          </div>
-                      );
-                    }
-                  })}
-                </div>
-        );
-
         return (
-            <NoScrollArea>
-              <div className="others more-info-wrapper">
-                { this.state.others.map((other, index) => {
-                  if (!other || !other.type) {
-                    return;
-                  }
-
-                  // todo make this editable
-                  return (
-                      <div key={`other-${index}`}
-                           className="other">
-                        <div className="type">{other.type}</div>
-                        <OtherProps props={Object.keys(other)}
-                                    obj={other}
-                                    index={index}
-                        />
-                      </div>
-                  );
-                }) }
-              </div>
-            </NoScrollArea>
+            <ExtraAttachments others={this.state.others}
+                              isEditing={this.state.isEditing}
+                              onChange={this.setOthersProperty}/>
         )
     }
   }
@@ -489,6 +510,15 @@ class Editor extends Component {
         isDisplayingMore: isDisplaying
       });
     }
+  }
+
+  setOthersProperty(index, prop, value) {
+    let {others} = this.state;
+    others[index][prop] = value;
+
+    this.setState({
+      others: others
+    });
   }
 
   getTagPrediction(value) {
