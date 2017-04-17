@@ -195,15 +195,15 @@ input:disabled, textarea:disabled {
           transition: opacity .4s ease;
           opacity: 0;
           pointer-events: none; }
-        .Editor .extras .buttons .btn .add-circle {
-          opacity: 0;
-          position: relative;
-          bottom: 50px;
-          top: 0;
+        .Editor .extras .buttons .btn .material-icons {
           transition: opacity .4s ease; }
+          .Editor .extras .buttons .btn .material-icons:nth-child(3) {
+            opacity: 0;
+            position: relative;
+            bottom: 50px;
+            top: 0; }
         .Editor .extras .buttons .btn .original {
-          opacity: 1;
-          transition: opacity .4s ease; }
+          opacity: 1; }
         .Editor .extras .buttons .btn:not(.attached):hover .add-circle {
           opacity: 1; }
         .Editor .extras .buttons .btn:not(.attached):hover .original {
@@ -212,6 +212,10 @@ input:disabled, textarea:disabled {
           color: #1976D2; }
           .Editor .extras .buttons .btn:not(.accent):hover span, .Editor .extras .buttons .btn:not(.accent):active span {
             opacity: 1; }
+        .Editor .extras .buttons .btn.send-edit.edit .send {
+          opacity: 0; }
+        .Editor .extras .buttons .btn.send-edit.edit .edit {
+          opacity: 1; }
     .Editor .extras .more-info {
       margin-top: 10px;
       width: inherit;
@@ -283,7 +287,7 @@ input:disabled, textarea:disabled {
     width: 100%;
     background-color: #f2f2f2;
     position: relative;
-    bottom: 2px;
+    bottom: -2px;
     height: 1px; }
 
 /*# sourceMappingURL=Editor.css.map */

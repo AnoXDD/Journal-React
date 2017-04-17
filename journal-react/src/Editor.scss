@@ -236,17 +236,19 @@ $button-height: 50px;
           pointer-events: none;
         }
 
-        .add-circle {
-          opacity: 0;
-          position: relative;
-          bottom: $button-height;
-          top: 0;
+        .material-icons {
           transition: opacity .4s ease;
+          
+          &:nth-child(3) {
+            opacity: 0;
+            position: relative;
+            bottom: $button-height;
+            top: 0;
+          }
         }
 
         .original {
           opacity: 1;
-          transition: opacity .4s ease;
         }
 
         &:not(.attached) {
@@ -267,6 +269,16 @@ $button-height: 50px;
             span {
               opacity: 1;
             }
+          }
+        }
+
+        &.send-edit.edit {
+          .send {
+            opacity: 0;
+          }
+
+          .edit {
+            opacity: 1;
           }
         }
       }
@@ -391,7 +403,7 @@ $button-height: 50px;
     width: 100%;
     background-color: $shadow-grey;
     position: relative;
-    bottom: 2px;
+    bottom: -2px;
     height: 1px;
   }
 }

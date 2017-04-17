@@ -628,11 +628,12 @@ class Editor extends Component {
                 <Ink/>
                 <i className="material-icons vertical-align-wrapper">more_horiz</i>
               </a>
-              <a className="vertical-align btn send accent"
+              <a className={`vertical-align btn send-edit accent ${this.state.isEditing ? "send" : "edit"} `}
                  onClick={this.toggleEditMode}
               >
                 <Ink/>
-                <i className="vertical-align-wrapper material-icons">send</i>
+                <i className="vertical-align-wrapper send material-icons">send</i>
+                <i className="vertical-align-wrapper edit material-icons">mode_edit</i>
               </a>
             </div>
             <div
