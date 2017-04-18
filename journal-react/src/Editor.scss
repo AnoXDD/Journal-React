@@ -397,13 +397,26 @@ $button-height: 50px;
       color: $blue;
     }
 
-    .other {
-      display: flex;
+    .others{
+    }
+
+    .other-wrapper {
+      $other-prop-length: 400px;
+      $other-prop-padding: 10px;
+      $other-props-width: 2*$other-prop-length + 4*$other-prop-padding;
+      $type-width: 100px;
+
+      display: inline-block;
       padding: 5px 0;
+      width: $other-props-width + $type-width;
+
+      .other {
+        display: flex;
+      }
 
       .type-wrapper {
         flex: 0 0 100px;
-        width: 100px;
+        width: $type-width;
         background: $blue;
         color: white;
         position: relative;
@@ -425,15 +438,17 @@ $button-height: 50px;
       }
 
       .other-props {
-        $other-prop-length: 400px;
-        $other-prop-padding: 10px;
-        display: flex;
-        width: 2*$other-prop-length + 4*$other-prop-padding;
+        display: block;
+        width: $other-props-width;
 
         .other-prop {
           padding: $other-prop-padding;
-          flex: 0 0 $other-prop-length;
-          display: flex;
+          width: $other-prop-length;
+          display: inline-block;
+
+          .other-prop-wrapper {
+            display: flex;
+          }
 
           .text {
             text-align: left;

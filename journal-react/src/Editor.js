@@ -43,13 +43,15 @@ class ExtraAttachments extends Component {
                   return (
                       <div key={`other-${index}-${prop}`}
                            className="other-prop">
-                        <span className="text">{prop}:</span>
-                        <input
-                            type="text"
-                            className={`normal underlined ${this.props.isEditing ? "" : "disabled"}`}
-                            onBlur={(e) => {this.props.onChange(index, prop, e.target.value);}}
-                            disabled={!this.props.isEditing}
-                            defaultValue={this.state.others[index][prop] || ""}/>
+                        <div className="other-prop-wrapper">
+                          <span className="text">{prop}:</span>
+                          <input
+                              type="text"
+                              className={`normal underlined ${this.props.isEditing ? "" : "disabled"}`}
+                              onBlur={(e) => {this.props.onChange(index, prop, e.target.value);}}
+                              disabled={!this.props.isEditing}
+                              defaultValue={this.state.others[index][prop] || ""}/>
+                        </div>
                       </div>
                   );
                 }
@@ -62,26 +64,27 @@ class ExtraAttachments extends Component {
     //             index={index}
     // />
     return (
-        <NoScrollArea>
+        <NoScrollArea padding="10px">
           <div className="others more-info-wrapper">
             { this.state.others.map((other, index) => {
               // todo make this editable
               return (
                   <div key={`other-${index}`}
-                       className="other">
-                    <div className="type-wrapper">
-                      <input
-                          className={`type normal ${this.props.isEditing ? "" : "disabled"}`}
-                          value={other.type}
-                          onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
-                          disabled={!this.props.isEditing}
-                      />
-                    </div>
+                       className="other-wrapper">
+                    <div className="other">
+                      <div className="type-wrapper">
+                        <input
+                            className={`type normal ${this.props.isEditing ? "" : "disabled"}`}
+                            value={other.type}
+                            onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
+                            disabled={!this.props.isEditing}
+                        />
+                      </div>
 
-                    <OtherProps props={Object.keys(other)}
-                                obj={other}
-                                index={index}
-                    />
+                      <OtherProps props={Object.keys(other)}
+                                  obj={other}
+                                  index={index}
+                      /></div>
                   </div>
               );
             }) }
