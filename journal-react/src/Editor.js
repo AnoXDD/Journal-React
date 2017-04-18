@@ -36,7 +36,7 @@ class ExtraAttachments extends Component {
   }
 
   render() {
-    const OtherProps = (({props, obj, index}) =>
+    const OtherProps = (({props, obj, index, removePanel}) =>
             <div className="other-props">
               { props.map((prop) => {
                 if (prop !== "type") {
@@ -51,6 +51,7 @@ class ExtraAttachments extends Component {
                               onBlur={(e) => {this.props.onChange(index, prop, e.target.value);}}
                               disabled={!this.props.isEditing}
                               defaultValue={this.state.others[index][prop] || ""}/>
+                          { removePanel(index, prop) }
                         </div>
                       </div>
                   );
@@ -79,11 +80,13 @@ class ExtraAttachments extends Component {
                             onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
                             disabled={!this.props.isEditing}
                         />
+                        { this.props.removePanel(index) }
                       </div>
 
                       <OtherProps props={Object.keys(other)}
                                   obj={other}
                                   index={index}
+                                  removePanel={this.props.removePanel}
                       /></div>
                   </div>
               );
@@ -334,6 +337,8 @@ class Editor extends Component {
     this.generateMoreInfo = this.generateMoreInfo.bind(this);
     this.generateAddPanelFor = this.generateAddPanelFor.bind(this);
     this.generateRemovePanelFor = this.generateRemovePanelFor.bind(this);
+    this.generateRemovePanelForOthers = this.generateRemovePanelForOthers.bind(
+        this);
     this.getTagPrediction = this.getTagPrediction.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onBodyChange = this.onBodyChange.bind(this);
@@ -419,16 +424,54 @@ class Editor extends Component {
     )
   }
 
-  generateRemovePanelFor(tag) {
-    var state = {};
-    state[tag] = [];
+  generateRemovePanelFor(tag, handleClick) {
+    if (typeof handleClick !== "function") {
+      handleClick = () => {
+        let state = {};
+        state[tag] = [];
+
+        // eslint-disable-next-line
+        this.state.isDisplayingMore = this.DISPLAYING.NONE;
+        this.setState(state);
+      };
+    }
+
     return (
         <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
-           onClick={() => {this.state.isDisplayingMore = this.DISPLAYING.NONE; this.setState(state);} }
+           onClick={handleClick}
         >
           <i className="material-icons">remove_circle_outline</i>
         </a>
     );
+  }
+
+  /**
+   * Generates the remove panel for others. Used to pass in to generate in
+   * `ExtraAttachments`
+   * @param otherIndex - the index of the attachment to be removed
+   * @param propKey - (Optional) the key to be removed
+   * @returns {*}
+   */
+  generateRemovePanelForOthers(otherIndex, propKey) {
+    let handleClick = () => {
+      if (propKey) {
+        let others = this.state.others;
+        delete others[otherIndex][propKey];
+
+        this.setState({others: others});
+      } else {
+        let others = this.state.others;
+        others.splice(otherIndex, 1);
+
+        if (others.length === 0) {
+          // eslint-disable-next-line
+          this.state.isDisplayingMore = this.DISPLAYING.NONE;
+        }
+        this.setState({others: others});
+      }
+    };
+
+    return this.generateRemovePanelFor(null, handleClick);
   }
 
   generateMoreInfo() {
@@ -512,7 +555,9 @@ class Editor extends Component {
         return (
             <ExtraAttachments others={this.state.others}
                               isEditing={this.state.isEditing}
-                              onChange={this.setOthersProperty}/>
+                              onChange={this.setOthersProperty}
+                              removePanel={this.generateRemovePanelForOthers}
+            />
         )
     }
   }
@@ -759,4 +804,6 @@ class Editor extends Component {
   }
 }
 
-export default Editor;
+export
+default
+Editor;

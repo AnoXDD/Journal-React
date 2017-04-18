@@ -397,9 +397,6 @@ $button-height: 50px;
       color: $blue;
     }
 
-    .others{
-    }
-
     .other-wrapper {
       $other-prop-length: 400px;
       $other-prop-padding: 10px;
@@ -442,7 +439,7 @@ $button-height: 50px;
         width: $other-props-width;
 
         .other-prop {
-          padding: $other-prop-padding;
+          padding: $other-prop-padding/2 $other-prop-padding;
           width: $other-prop-length;
           display: inline-block;
 
