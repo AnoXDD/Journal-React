@@ -396,6 +396,57 @@ $button-height: 50px;
       padding: 5px 10px 1px;
       color: $blue;
     }
+
+    .other {
+      display: flex;
+      padding: 5px 0;
+
+      .type-wrapper {
+        flex: 0 0 100px;
+        width: 100px;
+        background: $blue;
+        color: white;
+        position: relative;
+
+        .type {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          left: 0;
+          top: 0;
+          background: transparent;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          padding: 0;
+          text-align: center;
+        }
+      }
+
+      .other-props {
+        $other-prop-length: 400px;
+        $other-prop-padding: 10px;
+        display: flex;
+        width: 2*$other-prop-length + 4*$other-prop-padding;
+
+        .other-prop {
+          padding: $other-prop-padding;
+          flex: 0 0 $other-prop-length;
+          display: flex;
+
+          .text {
+            text-align: left;
+            float: left;
+            flex: 0 0 auto;
+          }
+
+          .normal {
+            flex: 1 1 auto;
+          }
+        }
+      }
+    }
   }
 
   .shadow {

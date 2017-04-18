@@ -44,12 +44,12 @@ class ExtraAttachments extends Component {
                       <div key={`other-${index}-${prop}`}
                            className="other-prop">
                         <span className="text">{prop}:</span>
-                        <AutosizeInput
+                        <input
                             type="text"
-                            className={`url normal underlined ${this.props.isEditing ? "" : "disabled"}`}
-                            onChange={(e) => {this.props.onChange(index, prop, e.target.value);}}
+                            className={`normal underlined ${this.props.isEditing ? "" : "disabled"}`}
+                            onBlur={(e) => {this.props.onChange(index, prop, e.target.value);}}
                             disabled={!this.props.isEditing}
-                            value={this.state.others[index][prop] || ""}/>
+                            defaultValue={this.state.others[index][prop] || ""}/>
                       </div>
                   );
                 }
@@ -69,12 +69,15 @@ class ExtraAttachments extends Component {
               return (
                   <div key={`other-${index}`}
                        className="other">
-                    <AutosizeInput
-                        className={`type normal underlined ${this.props.isEditing ? "" : "disabled"}`}
-                        value={other.type}
-                        onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
-                        disabled={!this.props.isEditing}
-                    />
+                    <div className="type-wrapper">
+                      <input
+                          className={`type normal ${this.props.isEditing ? "" : "disabled"}`}
+                          value={other.type}
+                          onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
+                          disabled={!this.props.isEditing}
+                      />
+                    </div>
+
                     <OtherProps props={Object.keys(other)}
                                 obj={other}
                                 index={index}
@@ -87,8 +90,6 @@ class ExtraAttachments extends Component {
     );
   }
 }
-
-//onClick={() => {this.togglePhotoStatus(item.index)}}
 
 const SortableItem = SortableElement(({item, status, i, isSelected, handleClick}) =>
     <div
@@ -108,7 +109,7 @@ const SortableList = SortableContainer(({items, isEditing, isSelected, handleCli
           <div
               className={`photos ${isEditing ? "show-all" : ""} `}>
             {items.map((item, index) => {
-              
+
               return (
                   <SortableItem key={`photo-${item.id}`}
                                 status={item.status}
@@ -187,7 +188,7 @@ class Editor extends Component {
         timeElapsed     : 0,
         tags            : ["tag1", "tag2", "tag3"],
         tagPrediction   : "",
-        isDisplayingMore: -1,
+        isDisplayingMore: this.DISPLAYING.OTHERS,
         photos          : [{
           id    : 1,
           src   : "http://placehold.it/320x150",
@@ -303,9 +304,13 @@ class Editor extends Component {
           author: "My Ass",
           title : "A Random Book",
         }, {
-          type : "audio",
-          url  : "http://anoxic.me",
-          title: "My personal site",
+          type  : "audio",
+          url   : "http://anoxic.me",
+          title : "My personal site",
+          extra1: "lol",
+          extra2: "lol",
+          extra3: "lol",
+          extra4: "lol",
         }, {
           type : "video",
           url  : "https://google.com",

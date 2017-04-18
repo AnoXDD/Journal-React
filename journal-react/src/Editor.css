@@ -284,6 +284,41 @@ input:disabled, textarea:disabled {
       font-size: 15px;
       padding: 5px 10px 1px;
       color: #448AFF; }
+    .Editor .extras .other {
+      display: flex;
+      padding: 5px 0; }
+      .Editor .extras .other .type-wrapper {
+        flex: 0 0 100px;
+        width: 100px;
+        background: #448AFF;
+        color: white;
+        position: relative; }
+        .Editor .extras .other .type-wrapper .type {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          left: 0;
+          top: 0;
+          background: transparent;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          padding: 0;
+          text-align: center; }
+      .Editor .extras .other .other-props {
+        display: flex;
+        width: 840px; }
+        .Editor .extras .other .other-props .other-prop {
+          padding: 10px;
+          flex: 0 0 400px;
+          display: flex; }
+          .Editor .extras .other .other-props .other-prop .text {
+            text-align: left;
+            float: left;
+            flex: 0 0 auto; }
+          .Editor .extras .other .other-props .other-prop .normal {
+            flex: 1 1 auto; }
   .Editor .shadow {
     width: 100%;
     background-color: #f2f2f2;
