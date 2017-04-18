@@ -56,6 +56,8 @@ class ExtraAttachments extends Component {
                       </div>
                   );
                 }
+
+                return "";
               })}
             </div>
     );
@@ -453,21 +455,29 @@ class Editor extends Component {
    * @returns {*}
    */
   generateRemovePanelForOthers(otherIndex, propKey) {
+    let removeEntireProp = (index) => {
+      let others = this.state.others;
+      others.splice(otherIndex, 1);
+
+      if (others.length === 0) {
+        // eslint-disable-next-line
+        this.state.isDisplayingMore = this.DISPLAYING.NONE;
+      }
+      this.setState({others: others});
+    };
+
     let handleClick = () => {
       if (propKey) {
         let others = this.state.others;
         delete others[otherIndex][propKey];
 
-        this.setState({others: others});
-      } else {
-        let others = this.state.others;
-        others.splice(otherIndex, 1);
-
-        if (others.length === 0) {
-          // eslint-disable-next-line
-          this.state.isDisplayingMore = this.DISPLAYING.NONE;
+        if (Object.keys(others[otherIndex]).length === 1) {
+          removeEntireProp(otherIndex);
+        } else {
+          this.setState({others: others});
         }
-        this.setState({others: others});
+      } else {
+        removeEntireProp(otherIndex);
       }
     };
 

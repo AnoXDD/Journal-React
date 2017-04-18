@@ -312,6 +312,7 @@ $button-height: 50px;
           font-size: 18px;
           position: relative;
           pointer-events: auto;
+          transition: color .4s ease;
 
           .material-icons {
             font-size: 18px;
@@ -432,11 +433,23 @@ $button-height: 50px;
           padding: 0;
           text-align: center;
         }
+
+        .icon {
+          position: absolute;
+          top: 0;
+          right: 0;
+          padding: 0;
+
+          &:hover {
+            color: $blue-light;
+          }
+        }
       }
 
       .other-props {
         display: block;
         width: $other-props-width;
+        text-align: left;
 
         .other-prop {
           padding: $other-prop-padding/2 $other-prop-padding;
