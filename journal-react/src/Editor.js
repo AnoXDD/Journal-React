@@ -134,6 +134,41 @@ class ExtraAttachments extends Component {
   }
 }
 
+class PhotoPreview extends Component {
+
+  state = {
+    previewIndex: 0,
+  };
+
+  render() {
+    if (this.props.photos.length === 0) {
+      return;
+    }
+
+    let {photos, isSelected, isEditing} = this.props;
+
+    return (
+        <div className="photo-preview">
+          <div className="photo-preview-wrapper">
+            <img src={photos[this.state.previewIndex].src} alt=""/>
+          </div>
+          <NoScrollArea padding="10px">
+            <div className={`photos ${isEditing ? "show-all" : ""} `}>
+              {photos.map((photo, index) =>
+                  <div key={`photo-preview-${photo.id}`}
+                       className={`photo ${isSelected(photo.status) ? "selected": ""} `}
+                       onMouseOver={() => {this.setState({previewIndex: index})}}
+                  >
+                    <img src={photo.src} alt="" height="90px"/>
+                  </div>
+              )}
+            </div>
+          </NoScrollArea>
+        </div>
+    );
+  }
+}
+
 const SortableItem = SortableElement(({item, status, i, isSelected, handleClick}) =>
     <div
         className={`photo ${isSelected(status) ? "selected" : ""} `}
@@ -172,12 +207,13 @@ const SortableList = SortableContainer(({items, isEditing, isSelected, handleCli
 
 class Editor extends Component {
   DISPLAYING = {
-    NONE  : -1,
-    PHOTOS: 1,
-    MUSICS: 2,
-    MOVIES: 3,
-    LINKS : 4,
-    OTHERS: 10,
+    NONE          : -1,
+    PHOTOS        : 1,
+    MUSICS        : 2,
+    MOVIES        : 3,
+    LINKS         : 4,
+    OTHERS        : 10,
+    PHOTOS_PREVIEW: 15,
   };
 
   /**
@@ -389,6 +425,7 @@ class Editor extends Component {
     this.onLinkTitleChange = this.onLinkTitleChange.bind(this);
     this.onLinkUrlChange = this.onLinkUrlChange.bind(this);
     this.toggleEditMode = this.toggleEditMode.bind(this);
+    this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
   }
 
   generateCurrentTags() {
@@ -432,6 +469,18 @@ class Editor extends Component {
 
     this.setState({
       tags: tags
+    });
+  }
+
+  /**
+   * Toggles the photo preview - whether the user is presented with a larger
+   * preview of the photo
+   */
+  togglePhotoPreview() {
+    let state = this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? this.DISPLAYING.PHOTOS : this.DISPLAYING.PHOTOS_PREVIEW;
+
+    this.setState({
+      isDisplayingMore: state,
     });
   }
 
@@ -590,6 +639,15 @@ class Editor extends Component {
                           onSortEnd={this.onPhotoSortEnd}/>
         );
 
+      case this.DISPLAYING.PHOTOS_PREVIEW:
+        return (
+            <PhotoPreview
+                photos={this.state.photos}
+                isSelected={(status) => {return (status === this.PHOTO_STATUS.ADD || status === this.PHOTO_STATUS.SELECTED)}}
+                isEditing={this.state.isEditing}
+            ></PhotoPreview>
+        );
+
       case this.DISPLAYING.MUSICS:
         if (this.state.musics.length === 0) {
           // eslint-disable-next-line
@@ -612,6 +670,7 @@ class Editor extends Component {
               {this.generateRemovePanelFor("musics")}
             </div>
         );
+
       case this.DISPLAYING.MOVIES:
         if (this.state.movies.length === 0) {
           // eslint-disable-next-line
@@ -628,6 +687,7 @@ class Editor extends Component {
               { this.generateRemovePanelFor("movies") }
             </div>
         );
+
       case this.DISPLAYING.LINKS:
         if (this.state.links.length === 0) {
           // eslint-disable-next-line
@@ -650,6 +710,7 @@ class Editor extends Component {
               { this.generateRemovePanelFor("links") }
             </div>
         );
+
       case this.DISPLAYING.OTHERS:
         if (this.state.links.length === 0) {
 
@@ -663,6 +724,8 @@ class Editor extends Component {
                               addPanel={this.generateAddPanelForOthers}
             >{this.state.isEditing}</ExtraAttachments>
         )
+      default:
+        // Not doing anything else since nothing is to be shown
     }
   }
 
@@ -884,6 +947,9 @@ class Editor extends Component {
               <div className="flex-last-item"></div>
               <Toggle
                   className="btn"
+                  isHidden={this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW}
+                  isChanging={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW}
+                  onClick={this.togglePhotoPreview}
                   firstIcon="expand_less"
                   secondIcon="expand_more"
               ></Toggle>

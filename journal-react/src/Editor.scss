@@ -295,6 +295,11 @@ $button-height: 50px;
         opacity: 0;
       }
 
+      .photo-preview {
+        pointer-events: auto;
+
+      }
+
       .more-info-wrapper {
         width: 100%;
         max-height: 275px;

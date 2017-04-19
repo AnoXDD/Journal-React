@@ -25,7 +25,7 @@ export default class NoScrollArea extends Component {
     });
 
     return (
-        <div className={`no-scroll ${this.props.className}`}
+        <div className={`no-scroll ${this.props.className || ""}`}
              style={{background: backgroundColor}}>
 
           <div className="no-scroll-wrapper"
