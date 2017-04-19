@@ -297,6 +297,14 @@ input:disabled, textarea:disabled {
         background: #448AFF;
         color: white;
         position: relative; }
+        .Editor .extras .other-wrapper .type-wrapper.add {
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center; }
+          .Editor .extras .other-wrapper .type-wrapper.add .icon {
+            position: relative;
+            padding: 0; }
         .Editor .extras .other-wrapper .type-wrapper .type {
           position: absolute;
           height: 100%;
@@ -314,7 +322,7 @@ input:disabled, textarea:disabled {
           position: absolute;
           top: 0;
           right: 0;
-          padding: 0; }
+          padding: 11px 6px; }
           .Editor .extras .other-wrapper .type-wrapper .icon:hover {
             color: #82B1FF; }
       .Editor .extras .other-wrapper .other-props {

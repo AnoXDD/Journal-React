@@ -93,6 +93,12 @@ class ExtraAttachments extends Component {
                   </div>
               );
             }) }
+
+            <div className={` ${this.props.isEditing ? "" : "hidden"} other-wrapper`}>
+              <div className="type-wrapper add">
+                {this.props.addPanel()}
+              </div>
+            </div>
           </div>
         </NoScrollArea>
     );
@@ -338,6 +344,7 @@ class Editor extends Component {
     this.setOthersProperty = this.setOthersProperty.bind(this);
     this.generateMoreInfo = this.generateMoreInfo.bind(this);
     this.generateAddPanelFor = this.generateAddPanelFor.bind(this);
+    this.generateAddPanelForOthers = this.generateAddPanelForOthers.bind(this);
     this.generateRemovePanelFor = this.generateRemovePanelFor.bind(this);
     this.generateRemovePanelForOthers = this.generateRemovePanelForOthers.bind(
         this);
@@ -471,17 +478,49 @@ class Editor extends Component {
         let others = this.state.others;
         delete others[otherIndex][propKey];
 
-        if (Object.keys(others[otherIndex]).length === 1) {
-          removeEntireProp(otherIndex);
-        } else {
-          this.setState({others: others});
-        }
+        this.setState({others: others});
       } else {
         removeEntireProp(otherIndex);
       }
     };
 
     return this.generateRemovePanelFor(null, handleClick);
+  }
+
+  /**
+   * Genereates an icon to add a property or a new "other" attachment
+   * @param otherIndex - the index of the attachment
+   * @param propKey - the name of the key to be added
+   */
+  generateAddPanelForOthers(otherIndex, propKey) {
+    let handleClick = () => {
+      if (typeof otherIndex === "undefined") {
+        // Just generate a new one
+        let others = [...this.state.others, {type: ""}];
+        this.setState({
+          others: others
+        });
+      } else {
+        let others = this.state.others;
+        if (typeof others[otherIndex][propKey] === "undefined") {
+          // Only create it if the key doesn't exist
+          others[otherIndex][propKey] = "";
+
+          this.setState({
+            others: others
+          });
+        }
+      }
+    };
+
+    return (
+        <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
+           onClick={handleClick}
+        >
+          <i className="material-icons">add_circle_outline</i>
+        </a>
+    );
+
   }
 
   generateMoreInfo() {
@@ -567,6 +606,7 @@ class Editor extends Component {
                               isEditing={this.state.isEditing}
                               onChange={this.setOthersProperty}
                               removePanel={this.generateRemovePanelForOthers}
+                              addPanel={this.generateAddPanelForOthers}
             />
         )
     }
