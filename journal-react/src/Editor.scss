@@ -392,9 +392,10 @@ $button-height: 50px;
       }
     }
 
+    $text-padding-left: 10px;
     .text {
       font-size: 15px;
-      padding: 5px 10px 1px;
+      padding: 5px $text-padding-left 1px;
       color: $blue;
     }
 
@@ -402,7 +403,7 @@ $button-height: 50px;
       $other-prop-length: 400px;
       $other-prop-padding: 10px;
       $other-props-width: 2*$other-prop-length + 4*$other-prop-padding;
-      $type-width: 100px;
+      $type-width: 120px;
 
       display: inline-block;
       padding: 5px 0;
@@ -413,7 +414,7 @@ $button-height: 50px;
       }
 
       .type-wrapper {
-        flex: 0 0 100px;
+        flex: 0 0 $type-width;
         width: $type-width;
         background: $blue;
         color: white;
@@ -426,7 +427,8 @@ $button-height: 50px;
           justify-content: center;
 
           .icon {
-            position: relative;
+            color: white;
+            position: static;
             padding: 0;
             height: 18px;
           }
@@ -449,12 +451,13 @@ $button-height: 50px;
 
         .icon {
           position: absolute;
-          top: 0;
-          right: 0;
-          padding: 11px 6px;
+          top: -11px;
+          right: -9px;
+          color: black;
+          padding: 0;
 
           &:hover {
-            color: $blue-light;
+            color: $blue-dark;
           }
         }
       }
@@ -469,6 +472,10 @@ $button-height: 50px;
           width: $other-prop-length;
           display: inline-block;
 
+          &.add .other-prop-wrapper {
+            padding-left:$text-padding-left;
+          }
+
           .other-prop-wrapper {
             display: flex;
           }
@@ -481,6 +488,15 @@ $button-height: 50px;
 
           .normal {
             flex: 1 1 auto;
+
+            &.new-key{
+              flex: none;
+
+              input {
+                color:$blue;
+                font-size: 15px;
+              }
+            }
           }
         }
       }

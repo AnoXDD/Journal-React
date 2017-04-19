@@ -25,6 +25,49 @@ class ExtraButton extends Component {
   }
 }
 
+class ExtraAttachmentsAddProp extends Component {
+
+  state = {
+    key  : "",
+    value: ""
+  };
+
+  render() {
+    let {onClick, isEditing} = this.props;
+    const onClickAdd = () => {
+      onClick(this.state.key, this.state.value);
+    };
+
+    return (
+        <div className={`other-prop add ${isEditing ? "" : "hidden"} `}>
+          <div className="other-prop-wrapper">
+            <AutosizeInput
+                type="text"
+                className={`new-key normal underlined ${isEditing ? "" : "disabled"}`}
+                value={this.state.key}
+                onChange={(e) => {this.setState({key: e.target.value});}}
+                disabled={!isEditing}
+            />
+            <span className="text">:</span>
+            <input
+                type="text"
+                className={`normal underlined ${isEditing ? "" : "disabled"}`}
+                value={this.state.value}
+                onChange={(e) => {this.setState({value: e.target.value});}}
+                disabled={!isEditing}
+                onKeyDown={(e) => {if (e.key === "Enter") {onClickAdd();}}}
+            />
+            <a className={`icon ${isEditing ? "" : "transparent"} `}
+               onClick={onClickAdd}
+            >
+              <i className="material-icons">add_circle_outline</i>
+            </a>
+          </div>
+        </div>
+    );
+  }
+}
+
 class ExtraAttachments extends Component {
   constructor(props) {
     super(props);
@@ -36,7 +79,7 @@ class ExtraAttachments extends Component {
   }
 
   render() {
-    const OtherProps = (({props, obj, index, removePanel}) =>
+    const OtherProps = (({props, obj, index, removePanel, addPanel}) =>
             <div className="other-props">
               { props.map((prop) => {
                 if (prop !== "type") {
@@ -59,6 +102,7 @@ class ExtraAttachments extends Component {
 
                 return "";
               })}
+              { addPanel(index) }
             </div>
     );
 
@@ -89,6 +133,7 @@ class ExtraAttachments extends Component {
                                   obj={other}
                                   index={index}
                                   removePanel={this.props.removePanel}
+                                  addPanel={this.props.addPanel}
                       /></div>
                   </div>
               );
@@ -463,29 +508,44 @@ class Editor extends Component {
    * @returns {*}
    */
   generateRemovePanelForOthers(otherIndex, propKey) {
-    let removeEntireProp = (index) => {
-      let others = this.state.others;
-      others.splice(otherIndex, 1);
-
-      if (others.length === 0) {
-        // eslint-disable-next-line
-        this.state.isDisplayingMore = this.DISPLAYING.NONE;
-      }
-      this.setState({others: others});
-    };
-
-    let handleClick = () => {
-      if (propKey) {
+    if (propKey) {
+      // Remove a specific property
+      let handleClick = () => {
         let others = this.state.others;
         delete others[otherIndex][propKey];
 
         this.setState({others: others});
-      } else {
-        removeEntireProp(otherIndex);
-      }
-    };
+      };
 
-    return this.generateRemovePanelFor(null, handleClick);
+      return (
+          <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
+             onClick={handleClick}
+          >
+            <i className="material-icons">remove_circle_outline</i>
+          </a>
+      );
+    } else {
+      // Remove the entire entry
+      let handleClick = () => {
+        let others = this.state.others;
+        others.splice(otherIndex, 1);
+
+        if (others.length === 0) {
+          // eslint-disable-next-line
+          this.state.isDisplayingMore = this.DISPLAYING.NONE;
+        }
+        this.setState({others: others});
+      };
+
+      return (
+          <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
+             onClick={handleClick}
+          >
+            <i className="material-icons">remove_circle</i>
+          </a>
+      );
+    }
+
   }
 
   /**
@@ -494,34 +554,43 @@ class Editor extends Component {
    * @param propKey - the name of the key to be added
    */
   generateAddPanelForOthers(otherIndex, propKey) {
-    let handleClick = () => {
-      if (typeof otherIndex === "undefined") {
+    if (typeof otherIndex === "undefined") {
+      // Generate a new entry
+      let handleClick = () => {
         // Just generate a new one
         let others = this.state.others;
-        others.push({type: "321"});
+        others.push({type: ""});
         this.setState({
           others: others
         });
-      } else {
+      };
+
+      return (
+          <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
+             onClick={handleClick}
+          >
+            <i className="material-icons">add_circle_outline</i>
+          </a>
+      );
+    } else {
+      // Generate a new property
+      let handleClick = (propKey, value) => {
         let others = this.state.others;
-        if (typeof others[otherIndex][propKey] === "undefined") {
-          // Only create it if the key doesn't exist
-          others[otherIndex][propKey] = "";
+        others[otherIndex][propKey] = value;
 
-          this.setState({
-            others: others
-          });
-        }
-      }
-    };
+        this.setState({
+          others: others
+        });
+      };
 
-    return (
-        <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
-           onClick={handleClick}
-        >
-          <i className="material-icons">add_circle_outline</i>
-        </a>
-    );
+      return (
+          <ExtraAttachmentsAddProp
+              onClick={handleClick}
+              isEditing={this.state.isEditing}
+          />
+      );
+    }
+
 
   }
 

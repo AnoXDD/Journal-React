@@ -288,12 +288,12 @@ input:disabled, textarea:disabled {
     .Editor .extras .other-wrapper {
       display: inline-block;
       padding: 5px 0;
-      width: 940px; }
+      width: 960px; }
       .Editor .extras .other-wrapper .other {
         display: flex; }
       .Editor .extras .other-wrapper .type-wrapper {
-        flex: 0 0 100px;
-        width: 100px;
+        flex: 0 0 120px;
+        width: 120px;
         background: #448AFF;
         color: white;
         position: relative; }
@@ -303,7 +303,8 @@ input:disabled, textarea:disabled {
           align-items: center;
           justify-content: center; }
           .Editor .extras .other-wrapper .type-wrapper.add .icon {
-            position: relative;
+            color: white;
+            position: static;
             padding: 0;
             height: 18px; }
         .Editor .extras .other-wrapper .type-wrapper .type {
@@ -321,11 +322,12 @@ input:disabled, textarea:disabled {
           text-align: center; }
         .Editor .extras .other-wrapper .type-wrapper .icon {
           position: absolute;
-          top: 0;
-          right: 0;
-          padding: 11px 6px; }
+          top: -11px;
+          right: -9px;
+          color: black;
+          padding: 0; }
           .Editor .extras .other-wrapper .type-wrapper .icon:hover {
-            color: #82B1FF; }
+            color: #1976D2; }
       .Editor .extras .other-wrapper .other-props {
         display: block;
         width: 840px;
@@ -334,6 +336,8 @@ input:disabled, textarea:disabled {
           padding: 5px 10px;
           width: 400px;
           display: inline-block; }
+          .Editor .extras .other-wrapper .other-props .other-prop.add .other-prop-wrapper {
+            padding-left: 10px; }
           .Editor .extras .other-wrapper .other-props .other-prop .other-prop-wrapper {
             display: flex; }
           .Editor .extras .other-wrapper .other-props .other-prop .text {
@@ -342,6 +346,11 @@ input:disabled, textarea:disabled {
             flex: 0 0 auto; }
           .Editor .extras .other-wrapper .other-props .other-prop .normal {
             flex: 1 1 auto; }
+            .Editor .extras .other-wrapper .other-props .other-prop .normal.new-key {
+              flex: none; }
+              .Editor .extras .other-wrapper .other-props .other-prop .normal.new-key input {
+                color: #448AFF;
+                font-size: 15px; }
   .Editor .shadow {
     width: 100%;
     background-color: #f2f2f2;
