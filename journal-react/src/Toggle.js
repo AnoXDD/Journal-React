@@ -15,12 +15,12 @@ export default class Toggle extends Component {
   };
 
   render() {
-    let {className, isChangingOnHover, isChanging, onClick, height, firstIcon, secondIcon} = this.props;
+    let {className, isHidden, isChangingOnHover, isChanging, onClick, height, firstIcon, secondIcon} = this.props;
 
     height = height || "50px";
 
     return (
-        <a className={`vertical-align toggle ${className || ""} ${isChangingOnHover ? "change-hover" : ""} ${isChanging ? "show-second" : ""} `}
+        <a className={`vertical-align toggle ${className || ""} ${isHidden ? "hidden" : ""} ${isChangingOnHover ? "change-hover" : ""} ${isChanging ? "show-second" : ""} `}
            onClick={onClick}
            style={{height: height}}
         >

@@ -827,7 +827,7 @@ class Editor extends Component {
   render() {
     return (
         <div className="Editor">
-          <div className="header">
+          <header>
             <AutosizeInput className="title normal underlined"
                            value={this.state.title}
                            onChange={this.onTitleChange}
@@ -852,7 +852,13 @@ class Editor extends Component {
                 {this.convertToElapsed(this.state.timeElapsed)}
               </div>
             </div>
-          </div>
+            <Toggle
+                className="btn"
+                isChanging={this.state.isFullscreen}
+                firstIcon="fullscreen"
+                secondIcon="fullscreen_exit"
+            ></Toggle>
+          </header>
           <div className="text-body-wrapper">
             <div className="text-body-wrapper-2">
               <NoScrollArea>
@@ -876,7 +882,11 @@ class Editor extends Component {
                 { this.generateCurrentTags() }
               </div>
               <div className="flex-last-item"></div>
-
+              <Toggle
+                  className="btn"
+                  firstIcon="expand_less"
+                  secondIcon="expand_more"
+              ></Toggle>
               <span className="breaker"></span>
               { [["photos", "photo_library"],
                 ["musics", "library_music"],
@@ -910,7 +920,6 @@ class Editor extends Component {
                   secondIcon="mode_edit"
                   onClick={this.toggleEditMode}
               />
-
             </div>
             <div
                 className={`more-info ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>

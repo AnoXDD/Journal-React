@@ -63,24 +63,24 @@ input:disabled, textarea:disabled {
     padding: 20px; }
     .Editor input:active, .Editor input:focus, .Editor textarea:active, .Editor textarea:focus {
       outline: none; }
-  .Editor .header {
+  .Editor header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
     width: calc(100vw - 100px); }
-    .Editor .header .title {
+    .Editor header .title {
       padding-top: 0;
       padding-bottom: 30px;
       display: inline-block;
       height: 40px;
       border-bottom: none !important; }
-    .Editor .header .stats {
+    .Editor header .stats {
       padding: 15px 20px;
       display: inline-block;
       float: right;
       color: grey;
       font-size: 18px;
       height: 20px; }
-      .Editor .header .stats .stat {
+      .Editor header .stats .stat {
         display: inline-block;
         margin-left: 20px;
         height: 100%;
@@ -89,18 +89,18 @@ input:disabled, textarea:disabled {
         text-align: right;
         transition: .4s ease;
         white-space: nowrap; }
-      .Editor .header .stats .chars {
+      .Editor header .stats .chars {
         width: 5ch;
         margin-left: 20px; }
-      .Editor .header .stats .elapsed, .Editor .header .stats .times {
+      .Editor header .stats .elapsed, .Editor header .stats .times {
         width: 0;
         margin-left: 0; }
-      .Editor .header .stats .times.time {
+      .Editor header .stats .times.time {
         width: 100%; }
-      .Editor .header .stats:hover .elapsed {
+      .Editor header .stats:hover .elapsed {
         width: 6ch;
         margin-left: 20px; }
-      .Editor .header .stats:hover .times {
+      .Editor header .stats:hover .times {
         width: 12ch;
         margin-left: 20px; }
   .Editor .text-body-wrapper {
