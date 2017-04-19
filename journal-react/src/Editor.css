@@ -125,6 +125,7 @@ input:disabled, textarea:disabled {
     z-index: 2;
     margin-top: 3px; }
     .Editor .extras .buttons {
+      justify-content: flex-end;
       display: flex;
       width: calc(100vw - 100px);
       text-align: right;
@@ -202,13 +203,6 @@ input:disabled, textarea:disabled {
           transition: opacity .4s ease;
           opacity: 0;
           pointer-events: none; }
-        .Editor .extras .buttons .btn .material-icons {
-          transition: opacity .4s ease; }
-          .Editor .extras .buttons .btn .material-icons:nth-child(3) {
-            opacity: 0;
-            position: relative;
-            bottom: 50px;
-            top: 0; }
         .Editor .extras .buttons .btn .original {
           opacity: 1; }
         .Editor .extras .buttons .btn:not(.attached):hover .add-circle {
@@ -256,6 +250,10 @@ input:disabled, textarea:disabled {
     .Editor .extras .current-tags-wrapper {
       flex: 1 0 auto;
       width: calc(100% - 60px); }
+    .Editor .extras .breaker {
+      margin: 10px 10px;
+      width: 1px;
+      background: lightgrey; }
     .Editor .extras .photos {
       text-align: left;
       display: block; }

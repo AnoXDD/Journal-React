@@ -5,25 +5,12 @@ import {
     arrayMove
 } from 'react-sortable-hoc';
 import NoScrollArea from "./NoScrollArea"
+import Toggle from "./Toggle"
 
 import './Editor.css';
 
 var Ink = require("react-ink");
 var AutosizeInput = require("react-input-autosize");
-
-class ExtraButton extends Component {
-  render() {
-    return (
-        <a className={`vertical-align btn ${this.props.className || ""} ${this.props.isAttached ? "attached" : ""} ${this.props.isActive ? "active" : ""} `}
-           onClick={this.props.onClick}
-        >
-          <Ink/>
-          <i className="material-icons vertical-align-wrapper original">{this.props.icon}</i>
-          <i className="material-icons vertical-align-wrapper add-circle">add_circle_outline</i>
-        </a>
-    );
-  }
-}
 
 class ExtraAttachmentsAddProp extends Component {
 
@@ -889,6 +876,8 @@ class Editor extends Component {
                 { this.generateCurrentTags() }
               </div>
               <div className="flex-last-item"></div>
+
+              <span className="breaker"></span>
               { [["photos", "photo_library"],
                 ["musics", "library_music"],
                 ["movies", "movie"],
@@ -896,32 +885,32 @@ class Editor extends Component {
                 ["others", "more_horiz"]].map(
                   tag => {
                     return (
-                        <ExtraButton
+                        <Toggle
                             key={tag[0]}
-                            className={tag[0]}
-                            isAttached={this.state[tag[0]].length}
-                            isActive={this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()]}
+                            className={`${tag[0]} btn ${this.props.className || ""} ${this.state[tag[0]].length ? "attached" : ""} ${this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
                             onClick={() => { this.setIsDisplaying(this.DISPLAYING[tag[0].toUpperCase()]) }}
-                            icon={tag[1]}
+                            firstIcon={tag[1]}
+                            secondIcon="add_circle_outline"
+                            isChangingOnHover={true}
+                            isChanging={!this.state[tag[0]].length}
                         />
                     );
                   }) }
-              <div className="breaker"></div>
-              <div className="send-wrapper">
-                <a className={`vertical-align btn ${this.state.isEditing ? "" : "hidden"} `}
-                   onClick={()=>{/*todo implement this*/console.log("todo");}}
-                >
-                  <Ink/>
-                  <i className="vertical-align-wrapper material-icons">delete</i>
-                </a>
-                <a className={`vertical-align btn send-edit accent ${this.state.isEditing ? "send" : "edit"} `}
-                   onClick={this.toggleEditMode}
-                >
-                  <Ink/>
-                  <i className="vertical-align-wrapper send material-icons">send</i>
-                  <i className="vertical-align-wrapper edit material-icons">mode_edit</i>
-                </a>
-              </div>
+              <span className="breaker"></span>
+              <a className={`vertical-align btn ${this.state.isEditing ? "" : "hidden"} `}
+                 onClick={()=>{/*todo implement this*/console.log("todo");}}
+              >
+                <Ink/>
+                <i className="vertical-align-wrapper material-icons">delete</i>
+              </a>
+              <Toggle
+                  className="btn send-edit accent"
+                  isChanging={!this.state.isEditing}
+                  firstIcon="send"
+                  secondIcon="mode_edit"
+                  onClick={this.toggleEditMode}
+              />
+
             </div>
             <div
                 className={`more-info ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>

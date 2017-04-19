@@ -1,0 +1,30 @@
+@import "bootstrap.scss";
+
+.toggle.vertical-align {
+  position: relative;
+  display: inline-block;
+
+  .first, .second {
+    transition: opacity .4s ease;
+  }
+
+  .first {
+    opacity: 1;
+  }
+
+  .second {
+    top: 0;
+    position: relative;
+    opacity: 0;
+  }
+
+  &.change-hover:hover.show-second, &:not(.change-hover).show-second {
+    .first {
+      opacity: 0;
+    }
+
+    .second {
+      opacity: 1;
+    }
+  }
+}

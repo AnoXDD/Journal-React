@@ -123,6 +123,7 @@ $button-height: 50px;
     margin-top: 3px;
 
     .buttons {
+      justify-content: flex-end;
       display: flex;
       width: $full-width;
       text-align: right;
@@ -242,17 +243,6 @@ $button-height: 50px;
           pointer-events: none;
         }
 
-        .material-icons {
-          transition: opacity .4s ease;
-
-          &:nth-child(3) {
-            opacity: 0;
-            position: relative;
-            bottom: $button-height;
-            top: 0;
-          }
-        }
-
         .original {
           opacity: 1;
         }
@@ -341,7 +331,9 @@ $button-height: 50px;
     }
 
     .breaker {
-
+      margin: 10px 10px;
+      width: 1px;
+      background: lightgrey;
     }
 
     .photos {
