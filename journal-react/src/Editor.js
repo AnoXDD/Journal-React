@@ -94,7 +94,8 @@ class ExtraAttachments extends Component {
               );
             }) }
 
-            <div className={` ${this.props.isEditing ? "" : "hidden"} other-wrapper`}>
+            <div
+                className={` ${this.props.isEditing ? "" : "hidden"} other-wrapper`}>
               <div className="type-wrapper add">
                 {this.props.addPanel()}
               </div>
@@ -496,7 +497,8 @@ class Editor extends Component {
     let handleClick = () => {
       if (typeof otherIndex === "undefined") {
         // Just generate a new one
-        let others = [...this.state.others, {type: ""}];
+        let others = this.state.others;
+        others.push({type: "321"});
         this.setState({
           others: others
         });
@@ -607,7 +609,7 @@ class Editor extends Component {
                               onChange={this.setOthersProperty}
                               removePanel={this.generateRemovePanelForOthers}
                               addPanel={this.generateAddPanelForOthers}
-            />
+            >{this.state.isEditing}</ExtraAttachments>
         )
     }
   }

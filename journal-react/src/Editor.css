@@ -304,7 +304,8 @@ input:disabled, textarea:disabled {
           justify-content: center; }
           .Editor .extras .other-wrapper .type-wrapper.add .icon {
             position: relative;
-            padding: 0; }
+            padding: 0;
+            height: 18px; }
         .Editor .extras .other-wrapper .type-wrapper .type {
           position: absolute;
           height: 100%;
