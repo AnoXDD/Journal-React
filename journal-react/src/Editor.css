@@ -45,6 +45,9 @@ input:disabled, textarea:disabled {
   opacity: 0;
   pointer-events: none !important; }
 
+.flex-last-item {
+  width: 100%; }
+
 .Editor {
   width: calc(100% - 100px);
   height: calc(100% - 100px);
@@ -125,7 +128,8 @@ input:disabled, textarea:disabled {
       display: flex;
       width: calc(100vw - 100px);
       text-align: right;
-      flex: 0 1 50px; }
+      flex: 0 1 50px;
+      flex-wrap: wrap; }
       .Editor .extras .buttons .tags-wrapper {
         text-align: left;
         flex: 1 1 auto; }
@@ -155,6 +159,9 @@ input:disabled, textarea:disabled {
           height: 20px;
           padding: 0;
           width: 100px; }
+      .Editor .extras .buttons .send-wrapper {
+        flex: 1 0 auto;
+        text-align: right; }
       .Editor .extras .buttons .btn {
         position: relative;
         display: inline-block;
@@ -246,6 +253,9 @@ input:disabled, textarea:disabled {
             color: #448AFF; }
         .Editor .extras .more-info .more-info-wrapper .vertical-align-wrapper {
           height: 100%; }
+    .Editor .extras .current-tags-wrapper {
+      flex: 1 0 auto;
+      width: calc(100% - 60px); }
     .Editor .extras .photos {
       text-align: left;
       display: block; }

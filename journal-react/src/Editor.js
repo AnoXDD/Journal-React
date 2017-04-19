@@ -14,7 +14,7 @@ var AutosizeInput = require("react-input-autosize");
 class ExtraButton extends Component {
   render() {
     return (
-        <a className={`vertical-align btn ${this.props.className} ${this.props.isAttached ? "attached" : ""} ${this.props.isActive ? "active" : ""} `}
+        <a className={`vertical-align btn ${this.props.className || ""} ${this.props.isAttached ? "attached" : ""} ${this.props.isActive ? "active" : ""} `}
            onClick={this.props.onClick}
         >
           <Ink/>
@@ -106,10 +106,6 @@ class ExtraAttachments extends Component {
             </div>
     );
 
-    // <OtherProps props={Object.keys(other)}
-    //             obj={other}
-    //             index={index}
-    // />
     return (
         <NoScrollArea padding="10px">
           <div className="others more-info-wrapper">
@@ -248,26 +244,26 @@ class Editor extends Component {
         timeElapsed     : 0,
         tags            : ["tag1", "tag2", "tag3"],
         tagPrediction   : "",
-        isDisplayingMore: this.DISPLAYING.OTHERS,
+        isDisplayingMore: this.DISPLAYING.NONE,
         photos          : [{
           id    : 1,
-          src   : "http://placehold.it/320x150",
+          src   : "http://placehold.it/120x150",
           status: this.PHOTO_STATUS.ADD,
         }, {
           id    : 2,
-          src   : "http://placehold.it/350x150",
+          src   : "http://placehold.it/150x150",
           status: this.PHOTO_STATUS.NOT_SELECTED,
         }, {
           id    : 3,
-          src   : "http://placehold.it/330x150",
+          src   : "http://placehold.it/130x150",
           status: this.PHOTO_STATUS.SELECTED,
         }, {
           id    : 4,
-          src   : "http://placehold.it/350x120",
+          src   : "http://placehold.it/150x120",
           status: this.PHOTO_STATUS.REMOVE,
         }, {
           id    : 5,
-          src   : "http://placehold.it/30x150",
+          src   : "http://placehold.it/130x150",
           status: this.PHOTO_STATUS.ADD,
         }, {
           id    : 6,
@@ -275,11 +271,11 @@ class Editor extends Component {
           status: this.PHOTO_STATUS.NOT_SELECTED,
         }, {
           id    : 7,
-          src   : "http://placehold.it/350x150",
+          src   : "http://placehold.it/150x150",
           status: this.PHOTO_STATUS.SELECTED,
         }, {
           id    : 8,
-          src   : "http://placehold.it/350x150",
+          src   : "http://placehold.it/120x150",
           status: this.PHOTO_STATUS.REMOVE,
         }
           // ,{
@@ -419,7 +415,7 @@ class Editor extends Component {
       );
     });
     return (
-        <NoScrollArea padding="10px">
+        <NoScrollArea className="current-tags" padding="10px">
           <div className="tags-wrapper">
             <div className="tags">
               { tagItems }
@@ -549,7 +545,7 @@ class Editor extends Component {
   }
 
   /**
-   * Genereates an icon to add a property or a new "other" attachment
+   * Generates an icon to add a property or a new "other" attachment
    * @param otherIndex - the index of the attachment
    * @param propKey - the name of the key to be added
    */
@@ -889,7 +885,10 @@ class Editor extends Component {
                 <Ink/>
                 <i className="material-icons vertical-align-wrapper">label_outline</i>
               </a>
-              { this.generateCurrentTags() }
+              <div className="current-tags-wrapper">
+                { this.generateCurrentTags() }
+              </div>
+              <div className="flex-last-item"></div>
               { [["photos", "photo_library"],
                 ["musics", "library_music"],
                 ["movies", "movie"],
@@ -907,13 +906,22 @@ class Editor extends Component {
                         />
                     );
                   }) }
-              <a className={`vertical-align btn send-edit accent ${this.state.isEditing ? "send" : "edit"} `}
-                 onClick={this.toggleEditMode}
-              >
-                <Ink/>
-                <i className="vertical-align-wrapper send material-icons">send</i>
-                <i className="vertical-align-wrapper edit material-icons">mode_edit</i>
-              </a>
+              <div className="breaker"></div>
+              <div className="send-wrapper">
+                <a className={`vertical-align btn ${this.state.isEditing ? "" : "hidden"} `}
+                   onClick={()=>{/*todo implement this*/console.log("todo");}}
+                >
+                  <Ink/>
+                  <i className="vertical-align-wrapper material-icons">delete</i>
+                </a>
+                <a className={`vertical-align btn send-edit accent ${this.state.isEditing ? "send" : "edit"} `}
+                   onClick={this.toggleEditMode}
+                >
+                  <Ink/>
+                  <i className="vertical-align-wrapper send material-icons">send</i>
+                  <i className="vertical-align-wrapper edit material-icons">mode_edit</i>
+                </a>
+              </div>
             </div>
             <div
                 className={`more-info ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>

@@ -127,6 +127,7 @@ $button-height: 50px;
       width: $full-width;
       text-align: right;
       flex: 0 1 $button-height;
+      flex-wrap: wrap;
 
       .tags-wrapper {
         $tag-font-size: 16px;
@@ -173,6 +174,11 @@ $button-height: 50px;
           padding: 0;
           width: 100px;
         }
+      }
+
+      .send-wrapper {
+        flex: 1 0 auto;
+        text-align: right;
       }
 
       .btn {
@@ -329,6 +335,15 @@ $button-height: 50px;
       }
     }
 
+    .current-tags-wrapper {
+      flex: 1 0 auto;
+      width: calc(100% - #{$button-width});
+    }
+
+    .breaker {
+
+    }
+
     .photos {
       text-align: left;
       display: block;
@@ -473,7 +488,7 @@ $button-height: 50px;
           display: inline-block;
 
           &.add .other-prop-wrapper {
-            padding-left:$text-padding-left;
+            padding-left: $text-padding-left;
           }
 
           .other-prop-wrapper {
@@ -489,11 +504,11 @@ $button-height: 50px;
           .normal {
             flex: 1 1 auto;
 
-            &.new-key{
+            &.new-key {
               flex: none;
 
               input {
-                color:$blue;
+                color: $blue;
                 font-size: 15px;
               }
             }
