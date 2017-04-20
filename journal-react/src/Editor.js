@@ -146,15 +146,18 @@ class PhotoPreview extends Component {
     }
 
     let {photos, isSelected, isEditing} = this.props;
+    let src = photos[this.state.previewIndex].src;
 
     return (
         <div className="photo-preview flex-extend-inner-wrapper">
           <div className="flex-extend-inner-wrapper flex column">
             <div className="photo-previewed-wrapper">
               <div className="flex-extend-inner-wrapper">
-                <div className=" photo-wrapper">
+                <div
+                    onClick={() => {window.open(src)}}
+                    className=" photo-wrapper">
                   <img className="center"
-                       src={photos[this.state.previewIndex].src} alt=""/>
+                       src={src} alt=""/>
                 </div>
               </div>
             </div>
