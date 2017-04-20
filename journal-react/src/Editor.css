@@ -70,10 +70,45 @@ img.center {
   right: 0;
   margin: auto; }
 
+.btn {
+  position: relative;
+  display: inline-block;
+  text-transform: uppercase;
+  height: 50px;
+  width: 60px;
+  font-weight: lighter;
+  text-align: center;
+  transition: .4s ease; }
+  .btn:after {
+    pointer-events: none;
+    content: "";
+    width: 100%;
+    height: 4px;
+    position: absolute;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    transition: background .4s ease; }
+  .btn.underlined:after {
+    background: black; }
+  .btn.underlined.active:after, .btn.underlined:hover:after {
+    background: #448AFF; }
+  .btn.active, .btn:hover {
+    color: #448AFF; }
+  .btn:not(.underlined):hover .add-circle {
+    opacity: 1; }
+  .btn:not(.underlined):hover .original {
+    opacity: 0; }
+  .btn:not(.accent):hover, .btn:not(.accent):active {
+    color: #1976D2; }
+    .btn:not(.accent):hover span, .btn:not(.accent):active span {
+      opacity: 1; }
+
 .Editor {
   width: calc(100% - 100px);
   height: calc(100% - 100px);
   display: flex;
+  position: absolute;
   flex-flow: column;
   padding: 50px; }
   .Editor *:not(i) {
@@ -91,7 +126,6 @@ img.center {
     width: calc(100vw - 100px); }
     .Editor header .title {
       padding-top: 0;
-      padding-bottom: 30px;
       display: inline-block;
       height: 40px;
       border-bottom: none !important; }
@@ -125,6 +159,10 @@ img.center {
       .Editor header .stats:hover .times {
         width: 12ch;
         margin-left: 20px; }
+    .Editor header .fullscreen {
+      position: absolute;
+      right: 0;
+      top: 0; }
   .Editor .text-body-wrapper {
     width: calc(100vw - 100px);
     flex: 1 1 auto;
@@ -193,14 +231,8 @@ img.center {
         flex: 1 0 auto;
         text-align: right; }
       .Editor .extras .buttons .btn {
-        position: relative;
-        display: inline-block;
-        text-transform: uppercase;
-        height: 50px;
-        font-weight: lighter;
         text-align: center;
-        flex: 0 0 60px;
-        transition: .4s ease; }
+        flex: 0 0 60px; }
         .Editor .extras .buttons .btn.accent {
           flex: 0 0 auto;
           width: 120px;
@@ -212,40 +244,10 @@ img.center {
             color: white; }
           .Editor .extras .buttons .btn.accent:active {
             color: white; }
-        .Editor .extras .buttons .btn:after {
-          pointer-events: none;
-          content: "";
-          width: 100%;
-          height: 4px;
-          position: absolute;
-          z-index: 100;
-          bottom: 0;
-          left: 0;
-          transition: background .4s ease; }
-        .Editor .extras .buttons .btn.attached:after {
-          background: black; }
-        .Editor .extras .buttons .btn.attached.active:after, .Editor .extras .buttons .btn.attached:hover:after {
-          background: #448AFF; }
-        .Editor .extras .buttons .btn.active, .Editor .extras .buttons .btn:hover {
-          color: #448AFF; }
         .Editor .extras .buttons .btn span {
           transition: opacity .4s ease;
           opacity: 0;
           pointer-events: none; }
-        .Editor .extras .buttons .btn .original {
-          opacity: 1; }
-        .Editor .extras .buttons .btn:not(.attached):hover .add-circle {
-          opacity: 1; }
-        .Editor .extras .buttons .btn:not(.attached):hover .original {
-          opacity: 0; }
-        .Editor .extras .buttons .btn:not(.accent):hover, .Editor .extras .buttons .btn:not(.accent):active {
-          color: #1976D2; }
-          .Editor .extras .buttons .btn:not(.accent):hover span, .Editor .extras .buttons .btn:not(.accent):active span {
-            opacity: 1; }
-        .Editor .extras .buttons .btn.send-edit.edit .send {
-          opacity: 0; }
-        .Editor .extras .buttons .btn.send-edit.edit .edit {
-          opacity: 1; }
     .Editor .extras .more-info {
       margin-top: 10px;
       width: inherit;

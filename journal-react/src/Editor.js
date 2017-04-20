@@ -264,10 +264,10 @@ class Editor extends Component {
       links           : [],
       others          : [],
       isEditing       : false,
+      isFullscreen    : false,
     };
 
     if (this.props.debug) {
-
       this.state = {
         title           : "This is title 题目",
         body            : "This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文",
@@ -313,71 +313,71 @@ class Editor extends Component {
           src   : "http://placehold.it/120x150",
           status: this.PHOTO_STATUS.REMOVE,
         }
-          , {
-            id    : 11,
-            src   : "http://placehold.it/320x150",
-            status: this.PHOTO_STATUS.ADD,
-          }, {
-            id    : 21,
-            src   : "http://placehold.it/350x150",
-            status: this.PHOTO_STATUS.NOT_SELECTED,
-          }, {
-            id    : 31,
-            src   : "http://placehold.it/330x150",
-            status: this.PHOTO_STATUS.SELECTED,
-          }, {
-            id    : 41,
-            src   : "http://placehold.it/350x120",
-            status: this.PHOTO_STATUS.REMOVE,
-          }, {
-            id    : 51,
-            src   : "http://placehold.it/30x150",
-            status: this.PHOTO_STATUS.ADD,
-          }, {
-            id    : 61,
-            src   : "http://placehold.it/150x150",
-            status: this.PHOTO_STATUS.NOT_SELECTED,
-          }, {
-            id    : 71,
-            src   : "http://placehold.it/350x150",
-            status: this.PHOTO_STATUS.SELECTED,
-          }, {
-            id    : 81,
-            src   : "http://placehold.it/350x150",
-            status: this.PHOTO_STATUS.REMOVE,
-          }, {
-            id    : 12,
-            src   : "http://placehold.it/320x150",
-            status: this.PHOTO_STATUS.ADD,
-          }, {
-            id    : 22,
-            src   : "http://placehold.it/350x150",
-            status: this.PHOTO_STATUS.NOT_SELECTED,
-          }, {
-            id    : 32,
-            src   : "http://placehold.it/330x150",
-            status: this.PHOTO_STATUS.SELECTED,
-          }, {
-            id    : 42,
-            src   : "http://placehold.it/350x120",
-            status: this.PHOTO_STATUS.REMOVE,
-          }, {
-            id    : 52,
-            src   : "http://placehold.it/2048x1980",
-            status: this.PHOTO_STATUS.ADD,
-          }, {
-            id    : 62,
-            src   : "http://placehold.it/1500x3500",
-            status: this.PHOTO_STATUS.NOT_SELECTED,
-          }, {
-            id    : 72,
-            src   : "http://placehold.it/3500x1500",
-            status: this.PHOTO_STATUS.SELECTED,
-          }, {
-            id    : 82,
-            src   : "http://placehold.it/3500x2350",
-            status: this.PHOTO_STATUS.REMOVE,
-          }
+          // , {
+          //   id    : 11,
+          //   src   : "http://placehold.it/320x150",
+          //   status: this.PHOTO_STATUS.ADD,
+          // }, {
+          //   id    : 21,
+          //   src   : "http://placehold.it/350x150",
+          //   status: this.PHOTO_STATUS.NOT_SELECTED,
+          // }, {
+          //   id    : 31,
+          //   src   : "http://placehold.it/330x150",
+          //   status: this.PHOTO_STATUS.SELECTED,
+          // }, {
+          //   id    : 41,
+          //   src   : "http://placehold.it/350x120",
+          //   status: this.PHOTO_STATUS.REMOVE,
+          // }, {
+          //   id    : 51,
+          //   src   : "http://placehold.it/30x150",
+          //   status: this.PHOTO_STATUS.ADD,
+          // }, {
+          //   id    : 61,
+          //   src   : "http://placehold.it/150x150",
+          //   status: this.PHOTO_STATUS.NOT_SELECTED,
+          // }, {
+          //   id    : 71,
+          //   src   : "http://placehold.it/350x150",
+          //   status: this.PHOTO_STATUS.SELECTED,
+          // }, {
+          //   id    : 81,
+          //   src   : "http://placehold.it/350x150",
+          //   status: this.PHOTO_STATUS.REMOVE,
+          // }, {
+          //   id    : 12,
+          //   src   : "http://placehold.it/320x150",
+          //   status: this.PHOTO_STATUS.ADD,
+          // }, {
+          //   id    : 22,
+          //   src   : "http://placehold.it/350x150",
+          //   status: this.PHOTO_STATUS.NOT_SELECTED,
+          // }, {
+          //   id    : 32,
+          //   src   : "http://placehold.it/330x150",
+          //   status: this.PHOTO_STATUS.SELECTED,
+          // }, {
+          //   id    : 42,
+          //   src   : "http://placehold.it/350x120",
+          //   status: this.PHOTO_STATUS.REMOVE,
+          // }, {
+          //   id    : 52,
+          //   src   : "http://placehold.it/2048x1980",
+          //   status: this.PHOTO_STATUS.ADD,
+          // }, {
+          //   id    : 62,
+          //   src   : "http://placehold.it/1500x3500",
+          //   status: this.PHOTO_STATUS.NOT_SELECTED,
+          // }, {
+          //   id    : 72,
+          //   src   : "http://placehold.it/3500x1500",
+          //   status: this.PHOTO_STATUS.SELECTED,
+          // }, {
+          //   id    : 82,
+          //   src   : "http://placehold.it/3500x2350",
+          //   status: this.PHOTO_STATUS.REMOVE,
+          // }
         ],
         musics          : [{
           title: "Never Gonna Give You Up",
@@ -408,6 +408,7 @@ class Editor extends Component {
           title: "This is actually a Google website"
         }],
         isEditing       : false,
+        isFullscreen    : false,
       };
     }
 
@@ -438,6 +439,7 @@ class Editor extends Component {
     this.onLinkUrlChange = this.onLinkUrlChange.bind(this);
     this.toggleEditMode = this.toggleEditMode.bind(this);
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
+    this.toggleFullscreen = this.toggleFullscreen.bind(this);
   }
 
   generateCurrentTags() {
@@ -493,6 +495,14 @@ class Editor extends Component {
 
     this.setState({
       isDisplayingMore: state,
+    });
+  }
+
+  toggleFullscreen() {
+    let state = this.state.isFullscreen;
+
+    this.setState({
+      isFullscreen: !state
     });
   }
 
@@ -886,7 +896,14 @@ class Editor extends Component {
   }
 
   convertToDateTime(seconds) {
-    return "131333 2323";
+    const c = (i) => {
+      return ("0" + i % 60).slice(-2);
+    };
+
+    let date = new Date(seconds);
+
+    return c(date.getMonth() + 1) + c(date.getDate()) + (date.getFullYear() % 100) + " "
+        + c(date.getHours()) + c(date.getMinutes());
   }
 
   convertToElapsed(seconds) {
@@ -929,8 +946,9 @@ class Editor extends Component {
               </div>
             </div>
             <Toggle
-                className="btn"
+                className="btn fullscreen"
                 isChanging={this.state.isFullscreen}
+                onClick={this.toggleFullscreen}
                 firstIcon="fullscreen"
                 secondIcon="fullscreen_exit"
             ></Toggle>
@@ -950,7 +968,7 @@ class Editor extends Component {
           </div>
           <div className="shadow up"></div>
           <div
-              className={`extras ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "extend" : ""}`}>
+              className={`extras ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "extend" : ""} ${this.state.isFullscreen ? "hidden" : ""} `}>
             <div className="buttons">
               <a className="vertical-align btn tags">
                 <Ink/>
@@ -978,7 +996,7 @@ class Editor extends Component {
                     return (
                         <Toggle
                             key={tag[0]}
-                            className={`${tag[0]} btn ${this.props.className || ""} ${this.state[tag[0]].length ? "attached" : ""} ${this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
+                            className={`${tag[0]} btn ${this.props.className || ""} ${this.state[tag[0]].length ? "underlined" : ""} ${this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
                             onClick={() => { this.setIsDisplaying(this.DISPLAYING[tag[0].toUpperCase()]) }}
                             firstIcon={tag[1]}
                             secondIcon="add_circle_outline"

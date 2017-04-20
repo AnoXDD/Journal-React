@@ -8,13 +8,12 @@ $title-height: 50px;
 $editor-padding: 50px;
 $full-width: calc(100vw - #{$editor-padding * 2});
 $button-width-accent: 120px;
-$button-width: 60px;
-$button-height: 50px;
 
 .Editor {
   width: calc(100% - #{2 * $editor-padding});
   height: calc(100% - #{2 * $editor-padding});
   display: flex;
+  position: absolute;
   flex-flow: column;
   padding: $editor-padding;
 
@@ -40,7 +39,6 @@ $button-height: 50px;
 
     .title {
       padding-top: 0;
-      padding-bottom: 30px;
       display: inline-block;
       height: 40px;
       border-bottom: none !important;
@@ -91,6 +89,12 @@ $button-height: 50px;
           margin-left: 20px;
         }
       }
+    }
+
+    .fullscreen {
+      position: absolute;
+      right: 0;
+      top: 0;
     }
   }
 
@@ -194,14 +198,8 @@ $button-height: 50px;
       }
 
       .btn {
-        position: relative;
-        display: inline-block;
-        text-transform: uppercase;
-        height: $button-height;
-        font-weight: lighter;
         text-align: center;
         flex: 0 0 $button-width;
-        transition: .4s ease;
 
         &.accent {
           flex: 0 0 auto;
@@ -220,73 +218,10 @@ $button-height: 50px;
           }
         }
 
-        &:after {
-          pointer-events: none;
-          content: "";
-          width: 100%;
-          height: 4px;
-          position: absolute;
-          z-index: 100;
-          bottom: 0;
-          left: 0;
-          transition: background .4s ease;
-        }
-
-        &.attached {
-          &:after {
-            background: black;
-          }
-
-          &.active, &:hover {
-            &:after {
-              background: $blue;
-            }
-          }
-        }
-
-        &.active, &:hover {
-          color: $blue;
-        }
-
         span {
           transition: opacity .4s ease;
           opacity: 0;
           pointer-events: none;
-        }
-
-        .original {
-          opacity: 1;
-        }
-
-        &:not(.attached) {
-          &:hover {
-            .add-circle {
-              opacity: 1;
-            }
-            .original {
-              opacity: 0;
-            }
-          }
-        }
-
-        &:not(.accent) {
-          &:hover, &:active {
-            color: $blue-dark;
-
-            span {
-              opacity: 1;
-            }
-          }
-        }
-
-        &.send-edit.edit {
-          .send {
-            opacity: 0;
-          }
-
-          .edit {
-            opacity: 1;
-          }
         }
       }
     }
