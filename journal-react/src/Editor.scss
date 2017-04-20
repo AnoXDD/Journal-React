@@ -122,12 +122,22 @@ $button-height: 50px;
     z-index: 2;
     margin-top: 3px;
 
+    &.extend {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .more-info {
+        flex: 1 0 auto;
+      }
+    }
+
     .buttons {
       justify-content: flex-end;
       display: flex;
       width: $full-width;
       text-align: right;
-      flex: 0 1 $button-height;
+      flex: 0 1 $button-height * 2;
       flex-wrap: wrap;
 
       .tags-wrapper {
@@ -297,7 +307,22 @@ $button-height: 50px;
 
       .photo-preview {
         pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
 
+        .photo-previewed-wrapper {
+          width: 100%;
+          flex: 1 0 auto;
+
+          .photo-previewed {
+            max-width: 100%;
+          }
+        }
+
+        .no-scroll {
+          flex: 0 0 auto;
+        }
       }
 
       .more-info-wrapper {
@@ -447,11 +472,6 @@ $button-height: 50px;
         }
 
         .type {
-          position: absolute;
-          height: 100%;
-          width: 100%;
-          left: 0;
-          top: 0;
           background: transparent;
           display: flex;
           align-items: center;

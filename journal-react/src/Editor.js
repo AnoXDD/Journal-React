@@ -104,7 +104,7 @@ class ExtraAttachments extends Component {
                     <div className="other">
                       <div className="type-wrapper">
                         <input
-                            className={`type normal ${this.props.isEditing ? "" : "disabled"}`}
+                            className={`flex-extend-inner-wrapper type normal ${this.props.isEditing ? "" : "disabled"}`}
                             value={other.type}
                             onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
                             disabled={!this.props.isEditing}
@@ -149,21 +149,24 @@ class PhotoPreview extends Component {
 
     return (
         <div className="photo-preview">
-          <div className="photo-preview-wrapper">
-            <img src={photos[this.state.previewIndex].src} alt=""/>
-          </div>
-          <NoScrollArea padding="10px">
-            <div className={`photos ${isEditing ? "show-all" : ""} `}>
-              {photos.map((photo, index) =>
-                  <div key={`photo-preview-${photo.id}`}
-                       className={`photo ${isSelected(photo.status) ? "selected": ""} `}
-                       onMouseOver={() => {this.setState({previewIndex: index})}}
-                  >
-                    <img src={photo.src} alt="" height="90px"/>
-                  </div>
-              )}
+          <div className="flex-extend-inner-wrapper">
+            <div className="photo-previewed-wrapper">
+              <img className="photo-previewed"
+                   src={photos[this.state.previewIndex].src} alt=""/>
             </div>
-          </NoScrollArea>
+            <NoScrollArea padding="10px">
+              <div className={`photos ${isEditing ? "show-all" : ""} `}>
+                {photos.map((photo, index) =>
+                    <div key={`photo-preview-${photo.id}`}
+                         className={`photo ${isSelected(photo.status) ? "selected": ""} `}
+                         onMouseOver={() => {this.setState({previewIndex: index})}}
+                    >
+                      <img src={photo.src} alt="" height="90px"/>
+                    </div>
+                )}
+              </div>
+            </NoScrollArea>
+          </div>
         </div>
     );
   }
@@ -301,71 +304,71 @@ class Editor extends Component {
           src   : "http://placehold.it/120x150",
           status: this.PHOTO_STATUS.REMOVE,
         }
-          // ,{
-          //     id    : 11,
-          //     src   : "http://placehold.it/320x150",
-          //     status: this.PHOTO_STATUS.ADD,
-          // }, {
-          //     id    : 21,
-          //     src   : "http://placehold.it/350x150",
-          //     status: this.PHOTO_STATUS.NOT_SELECTED,
-          // }, {
-          //     id    : 31,
-          //     src   : "http://placehold.it/330x150",
-          //     status: this.PHOTO_STATUS.SELECTED,
-          // }, {
-          //     id    : 41,
-          //     src   : "http://placehold.it/350x120",
-          //     status: this.PHOTO_STATUS.REMOVE,
-          // }, {
-          //     id    : 51,
-          //     src   : "http://placehold.it/30x150",
-          //     status: this.PHOTO_STATUS.ADD,
-          // }, {
-          //     id    : 61,
-          //     src   : "http://placehold.it/150x150",
-          //     status: this.PHOTO_STATUS.NOT_SELECTED,
-          // }, {
-          //     id    : 71,
-          //     src   : "http://placehold.it/350x150",
-          //     status: this.PHOTO_STATUS.SELECTED,
-          // }, {
-          //     id    : 81,
-          //     src   : "http://placehold.it/350x150",
-          //     status: this.PHOTO_STATUS.REMOVE,
-          // },{
-          //     id    : 12,
-          //     src   : "http://placehold.it/320x150",
-          //     status: this.PHOTO_STATUS.ADD,
-          // }, {
-          //     id    : 22,
-          //     src   : "http://placehold.it/350x150",
-          //     status: this.PHOTO_STATUS.NOT_SELECTED,
-          // }, {
-          //     id    : 32,
-          //     src   : "http://placehold.it/330x150",
-          //     status: this.PHOTO_STATUS.SELECTED,
-          // }, {
-          //     id    : 42,
-          //     src   : "http://placehold.it/350x120",
-          //     status: this.PHOTO_STATUS.REMOVE,
-          // }, {
-          //     id    : 52,
-          //     src   : "http://placehold.it/30x150",
-          //     status: this.PHOTO_STATUS.ADD,
-          // }, {
-          //     id    : 62,
-          //     src   : "http://placehold.it/150x150",
-          //     status: this.PHOTO_STATUS.NOT_SELECTED,
-          // }, {
-          //     id    : 72,
-          //     src   : "http://placehold.it/350x150",
-          //     status: this.PHOTO_STATUS.SELECTED,
-          // }, {
-          //     id    : 82,
-          //     src   : "http://placehold.it/350x150",
-          //     status: this.PHOTO_STATUS.REMOVE,
-          // }
+          , {
+            id    : 11,
+            src   : "http://placehold.it/320x150",
+            status: this.PHOTO_STATUS.ADD,
+          }, {
+            id    : 21,
+            src   : "http://placehold.it/350x150",
+            status: this.PHOTO_STATUS.NOT_SELECTED,
+          }, {
+            id    : 31,
+            src   : "http://placehold.it/330x150",
+            status: this.PHOTO_STATUS.SELECTED,
+          }, {
+            id    : 41,
+            src   : "http://placehold.it/350x120",
+            status: this.PHOTO_STATUS.REMOVE,
+          }, {
+            id    : 51,
+            src   : "http://placehold.it/30x150",
+            status: this.PHOTO_STATUS.ADD,
+          }, {
+            id    : 61,
+            src   : "http://placehold.it/150x150",
+            status: this.PHOTO_STATUS.NOT_SELECTED,
+          }, {
+            id    : 71,
+            src   : "http://placehold.it/350x150",
+            status: this.PHOTO_STATUS.SELECTED,
+          }, {
+            id    : 81,
+            src   : "http://placehold.it/350x150",
+            status: this.PHOTO_STATUS.REMOVE,
+          }, {
+            id    : 12,
+            src   : "http://placehold.it/320x150",
+            status: this.PHOTO_STATUS.ADD,
+          }, {
+            id    : 22,
+            src   : "http://placehold.it/350x150",
+            status: this.PHOTO_STATUS.NOT_SELECTED,
+          }, {
+            id    : 32,
+            src   : "http://placehold.it/330x150",
+            status: this.PHOTO_STATUS.SELECTED,
+          }, {
+            id    : 42,
+            src   : "http://placehold.it/350x120",
+            status: this.PHOTO_STATUS.REMOVE,
+          }, {
+            id    : 52,
+            src   : "http://placehold.it/2048x1980",
+            status: this.PHOTO_STATUS.ADD,
+          }, {
+            id    : 62,
+            src   : "http://placehold.it/150x150",
+            status: this.PHOTO_STATUS.NOT_SELECTED,
+          }, {
+            id    : 72,
+            src   : "http://placehold.it/3500x1500",
+            status: this.PHOTO_STATUS.SELECTED,
+          }, {
+            id    : 82,
+            src   : "http://placehold.it/3500x2350",
+            status: this.PHOTO_STATUS.REMOVE,
+          }
         ],
         musics          : [{
           title: "Never Gonna Give You Up",
@@ -890,7 +893,8 @@ class Editor extends Component {
   render() {
     return (
         <div className="Editor">
-          <header>
+          <header
+              className={`${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}`}>
             <AutosizeInput className="title normal underlined"
                            value={this.state.title}
                            onChange={this.onTitleChange}
@@ -922,7 +926,8 @@ class Editor extends Component {
                 secondIcon="fullscreen_exit"
             ></Toggle>
           </header>
-          <div className="text-body-wrapper">
+          <div
+              className={`text-body-wrapper ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}`}>
             <div className="text-body-wrapper-2">
               <NoScrollArea>
                 <textarea className="text-body"
@@ -935,7 +940,8 @@ class Editor extends Component {
             </div>
           </div>
           <div className="shadow up"></div>
-          <div className="extras">
+          <div
+              className={`extras ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "extend" : ""}`}>
             <div className="buttons">
               <a className="vertical-align btn tags">
                 <Ink/>

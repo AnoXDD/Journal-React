@@ -48,6 +48,11 @@ input:disabled, textarea:disabled {
 .flex-last-item {
   width: 100%; }
 
+.flex-extend-inner-wrapper {
+  position: absolute;
+  height: 100%;
+  width: 100%; }
+
 .Editor {
   width: calc(100% - 100px);
   height: calc(100% - 100px);
@@ -124,12 +129,18 @@ input:disabled, textarea:disabled {
     background: white;
     z-index: 2;
     margin-top: 3px; }
+    .Editor .extras.extend {
+      height: 100%;
+      display: flex;
+      flex-direction: column; }
+      .Editor .extras.extend .more-info {
+        flex: 1 0 auto; }
     .Editor .extras .buttons {
       justify-content: flex-end;
       display: flex;
       width: calc(100vw - 100px);
       text-align: right;
-      flex: 0 1 50px;
+      flex: 0 1 100px;
       flex-wrap: wrap; }
       .Editor .extras .buttons .tags-wrapper {
         text-align: left;
@@ -229,7 +240,17 @@ input:disabled, textarea:disabled {
         margin: 0;
         opacity: 0; }
       .Editor .extras .more-info .photo-preview {
-        pointer-events: auto; }
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        height: 100%; }
+        .Editor .extras .more-info .photo-preview .photo-previewed-wrapper {
+          width: 100%;
+          flex: 1 0 auto; }
+          .Editor .extras .more-info .photo-preview .photo-previewed-wrapper .photo-previewed {
+            max-width: 100%; }
+        .Editor .extras .more-info .photo-preview .no-scroll {
+          flex: 0 0 auto; }
       .Editor .extras .more-info .more-info-wrapper {
         width: 100%;
         max-height: 275px;
@@ -318,11 +339,6 @@ input:disabled, textarea:disabled {
             padding: 0;
             height: 18px; }
         .Editor .extras .other-wrapper .type-wrapper .type {
-          position: absolute;
-          height: 100%;
-          width: 100%;
-          left: 0;
-          top: 0;
           background: transparent;
           display: flex;
           align-items: center;
