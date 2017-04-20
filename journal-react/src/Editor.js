@@ -426,6 +426,7 @@ class Editor extends Component {
         this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onBodyChange = this.onBodyChange.bind(this);
+    this.onBodyKeyDown = this.onBodyKeyDown.bind(this);
     this.onNewTagKeyDown = this.onNewTagKeyDown.bind(this);
     this.onPhotoSortEnd = this.onPhotoSortEnd.bind(this);
     this.onMusicByChange = this.onMusicByChange.bind(this);
@@ -779,6 +780,22 @@ class Editor extends Component {
     });
   }
 
+  onBodyKeyDown(e) {
+    if (e.key === "Tab") {
+      e.preventDefault();
+
+      let t = e.target,
+          start = t.selectionStart,
+          end = t.selectionEnd;
+
+      // Set textarea value to text before caret + tab + text after caret
+      t.value = t.value.substring(0, start) + "\t" + t.value.substring(end);
+
+      // Put caret at right position again
+      t.selectionStart = (t.selectionEnd) = start + 1;
+    }
+  }
+
   onNewTagKeyDown(event, prediction) {
     const onEnter = (event) => {
       let newTags = [...this.state.tags],
@@ -941,6 +958,7 @@ class Editor extends Component {
                 <textarea className="text-body"
                           value={this.state.body}
                           onChange={this.onBodyChange}
+                          onKeyDown={this.onBodyKeyDown}
                           disabled={!this.state.isEditing}
                 >
                 </textarea>

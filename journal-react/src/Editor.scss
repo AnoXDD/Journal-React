@@ -113,6 +113,9 @@ $button-width-accent: 120px;
   }
 
   .text-body {
+    -moz-tab-size: 2em;
+    -o-tab-size: 2em;
+    tab-size: 2em;
     flex: 1 1 auto;
     font-size: 25px;
     font-weight: lighter;
