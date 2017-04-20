@@ -129,6 +129,7 @@ $button-height: 50px;
 
       .more-info {
         flex: 1 0 auto;
+        position: relative;
       }
     }
 
@@ -314,14 +315,18 @@ $button-height: 50px;
         .photo-previewed-wrapper {
           width: 100%;
           flex: 1 0 auto;
+          position: relative;
 
-          .photo-previewed {
-            max-width: 100%;
+          .photo-wrapper {
+            width: 100%;
+            height: 100%;
           }
         }
 
-        .no-scroll {
+        .photo-no-scroll {
+          margin-top: 10px;
           flex: 0 0 auto;
+          height: 105px;
         }
       }
 

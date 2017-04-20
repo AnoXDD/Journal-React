@@ -19,6 +19,7 @@ export default class NoScrollArea extends Component {
         paddingBottom: padding,
         paddingRight : "20px",
         width        : "100%",
+        height       : `calc(100% - ${padding} - ${padding})`,
         overflowY    : "scroll",
         overflowX    : "hidden",
       }

@@ -148,24 +148,30 @@ class PhotoPreview extends Component {
     let {photos, isSelected, isEditing} = this.props;
 
     return (
-        <div className="photo-preview">
-          <div className="flex-extend-inner-wrapper">
+        <div className="photo-preview flex-extend-inner-wrapper">
+          <div className="flex-extend-inner-wrapper flex column">
             <div className="photo-previewed-wrapper">
-              <img className="photo-previewed"
-                   src={photos[this.state.previewIndex].src} alt=""/>
-            </div>
-            <NoScrollArea padding="10px">
-              <div className={`photos ${isEditing ? "show-all" : ""} `}>
-                {photos.map((photo, index) =>
-                    <div key={`photo-preview-${photo.id}`}
-                         className={`photo ${isSelected(photo.status) ? "selected": ""} `}
-                         onMouseOver={() => {this.setState({previewIndex: index})}}
-                    >
-                      <img src={photo.src} alt="" height="90px"/>
-                    </div>
-                )}
+              <div className="flex-extend-inner-wrapper">
+                <div className=" photo-wrapper">
+                  <img className="center"
+                       src={photos[this.state.previewIndex].src} alt=""/>
+                </div>
               </div>
-            </NoScrollArea>
+            </div>
+            <div className="photo-no-scroll">
+              <NoScrollArea padding="10px">
+                <div className={`photos ${isEditing ? "show-all" : ""} `}>
+                  {photos.map((photo, index) =>
+                      <div key={`photo-preview-${photo.id}`}
+                           className={`photo ${isSelected(photo.status) ? "selected": ""} `}
+                           onMouseOver={() => {this.setState({previewIndex: index})}}
+                      >
+                        <img src={photo.src} alt="" height="90px"/>
+                      </div>
+                  )}
+                </div>
+              </NoScrollArea>
+            </div>
           </div>
         </div>
     );
@@ -358,7 +364,7 @@ class Editor extends Component {
             status: this.PHOTO_STATUS.ADD,
           }, {
             id    : 62,
-            src   : "http://placehold.it/150x150",
+            src   : "http://placehold.it/1500x3500",
             status: this.PHOTO_STATUS.NOT_SELECTED,
           }, {
             id    : 72,
