@@ -1,5 +1,5 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
-@import "http://fonts.googleapis.com/css?family=Noto+Sans:100,400,700";
+@import "http://fonts.googleapis.com/css?family=Noto+Sans";
 @import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
 @import "bootstrap.scss";
 
@@ -41,7 +41,7 @@ $button-width-accent: 120px;
       padding-top: 0;
       display: inline-block;
       height: 40px;
-      border-bottom: none !important;
+      width: 50%;
     }
 
     .stats {
@@ -155,10 +155,6 @@ $button-width-accent: 120px;
           max-height: 30px;
         }
 
-        .new-tag-wrapper {
-          position: relative;
-        }
-
         .tag {
           padding: 4px 12px;
           color: white;
@@ -168,11 +164,6 @@ $button-width-accent: 120px;
           font-size: $tag-font-size;
           transition: background .4s ease;
 
-          .prediction {
-            color: lightgrey;
-            position: absolute;
-          }
-
           &:not(.white-background) {
             background: $blue;
 
@@ -180,15 +171,6 @@ $button-width-accent: 120px;
               background: $blue-light;
             }
           }
-        }
-
-        .new-tag {
-          background: transparent;
-          font-size: $tag-font-size;
-          display: inline-block;
-          height: 20px;
-          padding: 0;
-          width: 100px;
         }
       }
 
@@ -234,6 +216,13 @@ $button-width-accent: 120px;
       pointer-events: none;
       background: transparent;
       transition: .4s ease;
+
+      input {
+        font-size: 16px;
+        display: block;
+        padding: 5px;
+        flex: 1 1 auto;
+      }
 
       &.hidden {
         height: 0;
@@ -328,13 +317,6 @@ $button-width-accent: 120px;
           display: inline-block;
         }
       }
-    }
-
-    input {
-      font-size: 16px;
-      display: block;
-      padding: 5px;
-      flex: 1 1 auto;
     }
 
     .music, .link, .movie {

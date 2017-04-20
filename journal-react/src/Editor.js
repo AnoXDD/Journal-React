@@ -6,6 +6,7 @@ import {
 } from 'react-sortable-hoc';
 import NoScrollArea from "./NoScrollArea"
 import Toggle from "./Toggle"
+import PredictionInput from "./PredictionInput"
 
 import './Editor.css';
 
@@ -241,14 +242,12 @@ class Editor extends Component {
     SELECTED    : 0b11,
   };
 
-  tagPrediction = this.props.tagPrediction.split(" ");
-
   constructor(props) {
     // todo use props to pre-fill the area
     super(props);
 
     this.state = {
-      title           : "",
+      title           : this.convertToDateTime(new Date()).substr(0, 7),
       body            : "",
       stats           : {
         timeCreated: 0,
@@ -278,7 +277,6 @@ class Editor extends Component {
         },
         timeElapsed     : 0,
         tags            : ["tag1", "tag2", "tag3"],
-        tagPrediction   : "",
         isDisplayingMore: this.DISPLAYING.NONE,
         photos          : [{
           id    : 1,
@@ -426,11 +424,9 @@ class Editor extends Component {
     this.generateRemovePanelFor = this.generateRemovePanelFor.bind(this);
     this.generateRemovePanelForOthers = this.generateRemovePanelForOthers.bind(
         this);
-    this.getTagPrediction = this.getTagPrediction.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onBodyChange = this.onBodyChange.bind(this);
     this.onNewTagKeyDown = this.onNewTagKeyDown.bind(this);
-    this.onNewTagChange = this.onNewTagChange.bind(this);
     this.onPhotoSortEnd = this.onPhotoSortEnd.bind(this);
     this.onMusicByChange = this.onMusicByChange.bind(this);
     this.onMusicTitleChange = this.onMusicTitleChange.bind(this);
@@ -457,16 +453,13 @@ class Editor extends Component {
           <div className="tags-wrapper">
             <div className="tags">
               { tagItems }
-                <span className="tag white-background new-tag-wrapper">
-                  <span className="prediction">{this.state.tagPrediction}</span>
-                  <input
-                      type="text"
-                      className="new-tag normal underlined"
-                      onKeyDown={this.onNewTagKeyDown}
-                      onChange={this.onNewTagChange}
-                      disabled={!this.state.isEditing}
-                  />
-                </span>
+              <PredictionInput
+                  className={`tag white-background new-tag-wrapper ${!this.state.isEditing ? "hidden" : ""}`}
+                  inputClassName="normal underlined"
+                  onKeyDown={this.onNewTagKeyDown}
+                  candidates={this.props.tagPrediction}
+                  blacklist={this.state.tags}
+              />
             </div>
           </div>
         </NoScrollArea>
@@ -772,20 +765,6 @@ class Editor extends Component {
     });
   }
 
-  getTagPrediction(value) {
-    if (value) {
-      for (let prediction of this.tagPrediction) {
-        if (prediction.startsWith(value)) {
-          if (this.state.tags.indexOf(prediction) === -1) {
-            return prediction;
-          }
-        }
-      }
-    }
-
-    return value;
-  }
-
   // region Listeners (on...Change)
 
   onTitleChange(event) {
@@ -800,14 +779,8 @@ class Editor extends Component {
     });
   }
 
-  onNewTagKeyDown(event) {
-    if (event.key === "Tab") {
-
-      event.preventDefault();
-      event.target.value = this.state.tagPrediction;
-
-    } else if (event.key === "Enter") {
-
+  onNewTagKeyDown(event, prediction) {
+    const onEnter = (event) => {
       let newTags = [...this.state.tags],
           newTag = event.target.value.trim();
 
@@ -821,6 +794,19 @@ class Editor extends Component {
       }
 
       event.target.value = "";
+    }
+
+    if (event.key === "Tab") {
+
+      event.preventDefault();
+      if (event.target.value === prediction) {
+        onEnter(event);
+      } else {
+        event.target.value = prediction;
+      }
+
+    } else if (event.key === "Enter") {
+      onEnter(event);
 
     } else if (event.key === "Backspace") {
 
@@ -833,12 +819,6 @@ class Editor extends Component {
         });
       }
     }
-  }
-
-  onNewTagChange(event) {
-    this.setState({
-      tagPrediction: this.getTagPrediction(event.target.value),
-    });
   }
 
   onPhotoSortEnd(obj) {
@@ -921,10 +901,11 @@ class Editor extends Component {
         <div className="Editor">
           <header
               className={`${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}`}>
-            <AutosizeInput className="title normal underlined"
-                           value={this.state.title}
-                           onChange={this.onTitleChange}
-                           disabled={!this.state.isEditing}
+            <input className="title normal underlined"
+                   value={this.state.title}
+                   onChange={this.onTitleChange}
+                   disabled={!this.state.isEditing}
+                   defaultValue={this.convertToDateTime(new Date()).substr(0, 7)}
             />
             <div className="stats">
               <div className="stat chars">
@@ -1030,6 +1011,4 @@ class Editor extends Component {
   }
 }
 
-export
-default
-Editor;
+export default Editor;

@@ -1,5 +1,5 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
-@import "http://fonts.googleapis.com/css?family=Noto+Sans:100,400,700";
+@import "http://fonts.googleapis.com/css?family=Noto+Sans";
 @import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
 input:disabled, textarea:disabled {
   color: black;
@@ -128,7 +128,7 @@ img.center {
       padding-top: 0;
       display: inline-block;
       height: 40px;
-      border-bottom: none !important; }
+      width: 50%; }
     .Editor header .stats {
       padding: 15px 20px;
       display: inline-block;
@@ -203,8 +203,6 @@ img.center {
         flex: 1 1 auto; }
         .Editor .extras .buttons .tags-wrapper .tags {
           max-height: 30px; }
-        .Editor .extras .buttons .tags-wrapper .new-tag-wrapper {
-          position: relative; }
         .Editor .extras .buttons .tags-wrapper .tag {
           padding: 4px 12px;
           color: white;
@@ -213,20 +211,10 @@ img.center {
           display: inline-block;
           font-size: 16px;
           transition: background .4s ease; }
-          .Editor .extras .buttons .tags-wrapper .tag .prediction {
-            color: lightgrey;
-            position: absolute; }
           .Editor .extras .buttons .tags-wrapper .tag:not(.white-background) {
             background: #448AFF; }
             .Editor .extras .buttons .tags-wrapper .tag:not(.white-background):hover {
               background: #82B1FF; }
-        .Editor .extras .buttons .tags-wrapper .new-tag {
-          background: transparent;
-          font-size: 16px;
-          display: inline-block;
-          height: 20px;
-          padding: 0;
-          width: 100px; }
       .Editor .extras .buttons .send-wrapper {
         flex: 1 0 auto;
         text-align: right; }
@@ -255,6 +243,11 @@ img.center {
       pointer-events: none;
       background: transparent;
       transition: .4s ease; }
+      .Editor .extras .more-info input {
+        font-size: 16px;
+        display: block;
+        padding: 5px;
+        flex: 1 1 auto; }
       .Editor .extras .more-info.hidden {
         height: 0;
         margin: 0;
@@ -315,11 +308,6 @@ img.center {
           display: inline-block; }
       .Editor .extras .photos.show-all .photo:not(.selected) {
         display: inline-block; }
-    .Editor .extras input {
-      font-size: 16px;
-      display: block;
-      padding: 5px;
-      flex: 1 1 auto; }
     .Editor .extras .music, .Editor .extras .link, .Editor .extras .movie {
       text-align: center;
       justify-content: center;
