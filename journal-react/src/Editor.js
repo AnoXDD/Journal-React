@@ -793,6 +793,41 @@ class Editor extends Component {
 
       // Put caret at right position again
       t.selectionStart = (t.selectionEnd) = start + 1;
+    } else if (e.key === "Enter") {
+      // Process the body
+      let t = e.target,
+          lines = t.value.split(/\r*\n/),
+          isChanged = false,
+          {stats} = this.state;
+
+      const tags = [["Begin @ ", "timeBegin"],
+        ["End @ ", "timeEnd"],
+        ["Created @ ", "timeCreated"]];
+
+      for (let i = 0; i < lines.length; ++i) {
+        let line = lines[i];
+
+        for (let pair of tags) {
+          if (line.startsWith(pair[0])) {
+            let time = this.convertFromDateTime(line.substring(pair[0].length));
+            if (time && new Date(time).getFullYear() === this.props.year) {
+              stats[pair[1]] = time;
+              isChanged = true;
+
+              lines.splice(i--, 1);
+
+              break;
+            }
+          }
+        }
+      }
+
+      if (isChanged) {
+        this.setState({
+          stats: stats,
+          body : lines.join("\r\n"),
+        });
+      }
     }
   }
 
@@ -901,6 +936,21 @@ class Editor extends Component {
 
     return c(date.getMonth() + 1) + c(date.getDate()) + (date.getFullYear() % 100) + " "
         + c(date.getHours()) + c(date.getMinutes());
+  }
+
+  convertFromDateTime(time) {
+    var month = parseInt(time.substring(0, 2), 10),
+        day = parseInt(time.substring(2, 4), 10),
+        year = parseInt(time.substring(4, 6), 10),
+        hour = 0,
+        minute = 0;
+    if (time.length > 6) {
+      hour = parseInt(time.substring(7, 9), 10);
+      minute = parseInt(time.substring(9, 11), 10);
+    }
+
+    var date = new Date(2000 + year, month - 1, day, hour, minute);
+    return date.getTime();
   }
 
   convertToElapsed(seconds) {
