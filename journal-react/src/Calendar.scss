@@ -1,11 +1,12 @@
 @import "./bootstrap.scss";
 
 .Calendar {
-  $day-block-length: 20px;
+  $day-block-size: 20px;
   $day-block-margin: 1px;
   $month-list-width: 50px;
 
   $default-background-color: #f4f4f4;
+  $day-block-border-color: white;
   $delimitor-border-color: lightgrey;
 
   .calendar-table {
@@ -17,17 +18,21 @@
     }
 
     .day-blocks {
+      height: 53*$day-block-size;
+      margin-bottom: 1*$day-block-size;
+      position: relative;
       flex: 0 0 auto;
       display: flex;
-      width: $day-block-length * 7;
+      width: $day-block-size * 7;
       flex-wrap: wrap;
       background: $delimitor-border-color;
+      justify-content: space-around;
 
       .month-first {
         &:before {
           content: "month";
           position: absolute;
-          left: 0;
+          left: -$month-list-width - 10px;
           width: $month-list-width;
           text-align: right;
         }
@@ -41,10 +46,23 @@
         }
       }
     }
+
+    @for $i from 1 through 6 {
+      .first-padding-#{$i} {
+        flex: 0 0 calc(#{$i} * 14.2857142857142857142857%);
+        background: $day-block-border-color;
+      }
+    }
+
+    .last-padding {
+      flex: 1;
+      background: $day-block-border-color;
+    }
+
     .day-block {
       background: $default-background-color;
       //margin: 0 $day-block-margin $day-block-margin 0;
-      border: $day-block-margin solid white;
+      border: $day-block-margin solid $day-block-border-color;
       flex: 0 0 calc(14.2857142857142857142857% - #{$day-block-margin * 2});
       transition: background .4s ease;
 

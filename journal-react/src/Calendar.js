@@ -3,6 +3,7 @@
  */
 
 import React, {Component} from "react";
+import NoScrollArea from "./NoScrollArea"
 
 import "./Calendar.css";
 
@@ -23,36 +24,59 @@ export default class Calendar extends Component {
     super(props);
 
     // Set the state of heatmap
+    if (this.props.debug) {
+      this.state = {
+        heatmap: [[2, 2, 1, null, 2, 2, 3, null, null, null, null, 2, 3, 2, 4, null, 1, null, 1, null, null, null, 1, null, null, null, 2, 1, null, 1], [3, null, 1, 3, 4, 1, null, 2, null, 2, 2, 1, null, 1, 2, 1, 2, 3, 1, null, null, 1, 1, null, 4, 2, 1], [null, null, 1, 4, 1, 3, 1, null, null, 3, 1, 4, 1, 2, null, null, 3, 3, 1, 3, 5, null, 1, 3, 2, 1, 2, 2, 1, 1, 5], [1, 1, 1, 2, 1, 1, 4, 5, 1, 1, null, null, 2, 3, 1, 3, 4, 5, 4, 2, 1, 5, 6, 4, 5, 5, 7, 6, 6, 6], [8, 5, 3, 3, 1, 4, 8, 3, 9, 1, 1, 2, 1, 5, 3, 1, null, 1, 4, 3, 4, 2, 2, null, 1, 3, null, 1, 1, 2], [2, 1, 1, 1, 1, 1, null, null, 1, 2, null, 5, 1, null, 1, 1, 3, 2, 2, null, 1, null, 1, 3, null, 1, 3, 2, 1, 2], [6, 1, 1, null, null, 1, 1, 2, null, null, 1, 1, 1, 1, null, null, null, null, 1, 1, 2, null, 1, 2, 1, 6, 1, 2, 1, 3], [null, 3, 1, 1, 1, null, null, null, 1, 2, 2, 1, null, null, null, null, 1, null, 1, 2, null, null, null, null, 1, 1, null, null, 1], [1, 3, 3, 1, 1, 1, 1, 2, 2, 2, 1, 2, null, 1, 2, 2, 2, null, 2, null, 2, 5, 4, 2, null, null, null, 1, 2], [2, 1, null, null, null, 1, 1, 1, 1, null, null, null, 2, 2, null, null, null, 2, 2, 3, 1, 1, null, null, null, 2, 2, 1, null, null, 1], [null, null, null, 1, null, 1, null, null, null, null, 1, null, null, null, null, null, null, 1, null, null, null, null, null, null, 1], [null, null, null, null, null, null, null, 1, 1, null, null, null, null, null, 1, null, null, null, null, null, null, 1, 1, null, null, null, null, null, null, 1]]
+      };
+    }
   }
 
+  generateFirstPadding() {
+    let day = new Date(this.props.year, 0).getDay();
+    return (
+        <span className={`first-padding-${day}`}></span>
+    );
+  }
+
+  generateLastPadding() {
+    return (
+        <span className="last-padding"></span>
+    )
+  }
 
   render() {
     return (
         <div className="Calendar">
-          <div className="calendar-table">
-            <span className="month-list"></span>
-            <div className="day-blocks">
-              {yearBlocks.map((month, im) =>
-                  monthBlocks.map((day, id) => {
-                        if (id >= this.MONTH_DAY[im]) {
-                          return "";
-                        }
+          <NoScrollArea padding="10px">
+            <div className="calendar-table">
+              <span className="month-list"></span>
+              <div className="day-blocks">
+                {this.generateFirstPadding()}
+                {yearBlocks.map((month, im) =>
+                    monthBlocks.map((day, id) => {
+                          if (id >= this.MONTH_DAY[im]) {
+                            return "";
+                          }
 
-                        return (
-                            <div key={`calendar-${month}-${day}`}
-                                 className={`day-block accent-${Math.min(9, this.state.heatmap[im][id] || 0)}${id === 0 ? ` month-first month-${im} ` : " "}${id >= this.MONTH_DAY[im] - 7 ? " last-seven" : " "}${id === this.MONTH_DAY[im] - 1 ? " last-one": " "}`}
-                                 onMouseOver={()=>{var {heatmap}=this.state;heatmap[im][id]=heatmap[im][id]||0;++heatmap[im][id];this.setState({heatmap:heatmap});}}>
-                              <div className="day-block-wrapper">
-                                <div className="text">
+                          //onMouseOver={()=>{var
+                          // {heatmap}=this.state;heatmap[im][id]=heatmap[im][id]||0;++heatmap[im][id];this.setState({heatmap:heatmap});}}
+                          return (
+                              <div key={`calendar-${month}-${day}`}
+                                   className={`day-block accent-${Math.min(9, this.state.heatmap[im][id] || 0)}${id === 0 ? ` month-first month-${im} ` : " "}${id >= this.MONTH_DAY[im] - 7 ? " last-seven" : " "}${id === this.MONTH_DAY[im] - 1 ? " last-one": " "}`}
+                              >
+                                <div className="day-block-wrapper">
+                                  <div className="text">
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                        );
-                      }
-                  )
-              )}
+                          );
+                        }
+                    )
+                )}
+                {this.generateLastPadding()}
+              </div>
             </div>
-          </div>
+          </NoScrollArea>
         </div>
     );
   }

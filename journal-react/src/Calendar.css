@@ -113,15 +113,19 @@ img.center {
     flex: 0 0 50px;
     padding-right: 10px; }
   .Calendar .calendar-table .day-blocks {
+    height: 1060px;
+    margin-bottom: 20px;
+    position: relative;
     flex: 0 0 auto;
     display: flex;
     width: 140px;
     flex-wrap: wrap;
-    background: lightgrey; }
+    background: lightgrey;
+    justify-content: space-around; }
     .Calendar .calendar-table .day-blocks .month-first:before {
       content: "month";
       position: absolute;
-      left: 0;
+      left: -60px;
       width: 50px;
       text-align: right; }
     .Calendar .calendar-table .day-blocks .month-0:before {
@@ -148,6 +152,27 @@ img.center {
       content: "Nov"; }
     .Calendar .calendar-table .day-blocks .month-11:before {
       content: "Dec"; }
+  .Calendar .calendar-table .first-padding-1 {
+    flex: 0 0 calc(1 * 14.2857142857142857142857%);
+    background: white; }
+  .Calendar .calendar-table .first-padding-2 {
+    flex: 0 0 calc(2 * 14.2857142857142857142857%);
+    background: white; }
+  .Calendar .calendar-table .first-padding-3 {
+    flex: 0 0 calc(3 * 14.2857142857142857142857%);
+    background: white; }
+  .Calendar .calendar-table .first-padding-4 {
+    flex: 0 0 calc(4 * 14.2857142857142857142857%);
+    background: white; }
+  .Calendar .calendar-table .first-padding-5 {
+    flex: 0 0 calc(5 * 14.2857142857142857142857%);
+    background: white; }
+  .Calendar .calendar-table .first-padding-6 {
+    flex: 0 0 calc(6 * 14.2857142857142857142857%);
+    background: white; }
+  .Calendar .calendar-table .last-padding {
+    flex: 1;
+    background: white; }
   .Calendar .calendar-table .day-block {
     background: #f4f4f4;
     border: 1px solid white;
