@@ -1,0 +1,189 @@
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+@import "http://fonts.googleapis.com/css?family=Noto+Sans";
+@import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+*:not(i) {
+  font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
+
+input:disabled, textarea:disabled {
+  color: black;
+  background-color: inherit; }
+
+.vertical-align .vertical-align-wrapper {
+  display: block;
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%); }
+
+.material-icons {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none; }
+
+.shadow {
+  box-shadow: 3px 2px 9px grey; }
+
+.normal, .normal input {
+  background: white;
+  font-size: 16px;
+  display: block;
+  height: 20px;
+  padding: 0;
+  position: relative; }
+  .normal.underlined, .normal.underlined input, .normal input.underlined, .normal input.underlined input {
+    border-bottom: 1px solid grey !important;
+    transition: border-bottom .4s ease; }
+    .normal.underlined:focus, .normal.underlined:active, .normal.underlined input:focus, .normal.underlined input:active, .normal input.underlined:focus, .normal input.underlined:active, .normal input.underlined input:focus, .normal input.underlined input:active {
+      border-bottom: 1px solid #448AFF !important; }
+  .normal.disabled, .normal:disabled, .normal input.disabled, .normal input:disabled {
+    border-bottom-color: transparent !important; }
+
+.hidden {
+  display: none !important; }
+
+.transparent {
+  opacity: 0;
+  pointer-events: none !important; }
+
+.flex {
+  display: flex; }
+  .flex.column {
+    flex-direction: column; }
+
+.flex-last-item {
+  width: 100%; }
+
+.flex-extend-inner-wrapper {
+  position: absolute;
+  height: 100%;
+  width: 100%; }
+
+img.center {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto; }
+
+.btn {
+  position: relative;
+  display: inline-block;
+  text-transform: uppercase;
+  height: 50px;
+  width: 60px;
+  font-weight: lighter;
+  text-align: center;
+  transition: .4s ease; }
+  .btn:after {
+    pointer-events: none;
+    content: "";
+    width: 100%;
+    height: 4px;
+    position: absolute;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    transition: background .4s ease; }
+  .btn.underlined:after {
+    background: black; }
+  .btn.underlined.active:after, .btn.underlined:hover:after {
+    background: #448AFF; }
+  .btn.active, .btn:hover {
+    color: #448AFF; }
+  .btn:not(.underlined):hover .add-circle {
+    opacity: 1; }
+  .btn:not(.underlined):hover .original {
+    opacity: 0; }
+  .btn:not(.accent):hover, .btn:not(.accent):active {
+    color: #1976D2; }
+    .btn:not(.accent):hover span, .btn:not(.accent):active span {
+      opacity: 1; }
+
+.Calendar .calendar-table {
+  display: flex; }
+  .Calendar .calendar-table .month-list {
+    flex: 0 0 50px;
+    padding-right: 10px; }
+  .Calendar .calendar-table .day-blocks {
+    flex: 0 0 auto;
+    display: flex;
+    width: 140px;
+    flex-wrap: wrap;
+    background: lightgrey; }
+    .Calendar .calendar-table .day-blocks .month-first:before {
+      content: "month";
+      position: absolute;
+      left: 0;
+      width: 50px;
+      text-align: right; }
+    .Calendar .calendar-table .day-blocks .month-0:before {
+      content: "Jan"; }
+    .Calendar .calendar-table .day-blocks .month-1:before {
+      content: "Feb"; }
+    .Calendar .calendar-table .day-blocks .month-2:before {
+      content: "Mar"; }
+    .Calendar .calendar-table .day-blocks .month-3:before {
+      content: "Apr"; }
+    .Calendar .calendar-table .day-blocks .month-4:before {
+      content: "May"; }
+    .Calendar .calendar-table .day-blocks .month-5:before {
+      content: "Jun"; }
+    .Calendar .calendar-table .day-blocks .month-6:before {
+      content: "Jul"; }
+    .Calendar .calendar-table .day-blocks .month-7:before {
+      content: "Aug"; }
+    .Calendar .calendar-table .day-blocks .month-8:before {
+      content: "Sep"; }
+    .Calendar .calendar-table .day-blocks .month-9:before {
+      content: "Oct"; }
+    .Calendar .calendar-table .day-blocks .month-10:before {
+      content: "Nov"; }
+    .Calendar .calendar-table .day-blocks .month-11:before {
+      content: "Dec"; }
+  .Calendar .calendar-table .day-block {
+    background: #f4f4f4;
+    border: 1px solid white;
+    flex: 0 0 calc(14.2857142857142857142857% - 2px);
+    transition: background .4s ease; }
+    .Calendar .calendar-table .day-block.last-seven {
+      margin-bottom: 1px;
+      border-bottom: none; }
+    .Calendar .calendar-table .day-block.last-one {
+      margin-right: 1px;
+      border-right: none; }
+    .Calendar .calendar-table .day-block.accent-1 {
+      background: #FFECB3; }
+    .Calendar .calendar-table .day-block.accent-2 {
+      background: #FFE082; }
+    .Calendar .calendar-table .day-block.accent-3 {
+      background: #FFD54F; }
+    .Calendar .calendar-table .day-block.accent-4 {
+      background: #FFCA28; }
+    .Calendar .calendar-table .day-block.accent-5 {
+      background: #FFC107; }
+    .Calendar .calendar-table .day-block.accent-6 {
+      background: #FFB300; }
+    .Calendar .calendar-table .day-block.accent-7 {
+      background: #FFA000; }
+    .Calendar .calendar-table .day-block.accent-8 {
+      background: #FF8F00; }
+    .Calendar .calendar-table .day-block.accent-9 {
+      background: #FF6F00; }
+    .Calendar .calendar-table .day-block .day-block-wrapper {
+      width: 100%;
+      padding-top: 100%;
+      position: relative; }
+      .Calendar .calendar-table .day-block .day-block-wrapper .text {
+        position: absolute;
+        top: 0;
+        left: 0; }
+
+/*# sourceMappingURL=Calendar.css.map */
