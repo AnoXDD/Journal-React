@@ -1,0 +1,80 @@
+@import "./bootstrap.scss";
+
+.Calendar {
+  $day-block-length: 20px;
+  $day-block-margin: 1px;
+  $month-list-width: 50px;
+
+  $default-background-color: #f4f4f4;
+  $delimitor-border-color: lightgrey;
+
+  .calendar-table {
+    display: flex;
+
+    .month-list {
+      flex: 0 0 $month-list-width;
+      padding-right: 10px;
+    }
+
+    .day-blocks {
+      flex: 0 0 auto;
+      display: flex;
+      width: $day-block-length * 7;
+      flex-wrap: wrap;
+      background: $delimitor-border-color;
+
+      .month-first {
+        &:before {
+          content: "month";
+          position: absolute;
+          left: 0;
+          width: $month-list-width;
+          text-align: right;
+        }
+      }
+
+      $MONTH: ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+
+      @for $i from 1 through 12 {
+        .month-#{$i - 1}:before {
+          content: nth($MONTH, $i);
+        }
+      }
+    }
+    .day-block {
+      background: $default-background-color;
+      //margin: 0 $day-block-margin $day-block-margin 0;
+      border: $day-block-margin solid white;
+      flex: 0 0 calc(14.2857142857142857142857% - #{$day-block-margin * 2});
+      transition: background .4s ease;
+
+      &.last-seven {
+        margin-bottom: $day-block-margin;
+        border-bottom: none;
+      }
+
+      &.last-one {
+        margin-right: $day-block-margin;
+        border-right: none;
+      }
+
+      @for $i from 1 through 9 {
+        &.accent-#{$i} {
+          background: nth($cs, $i);
+        }
+      }
+
+      .day-block-wrapper {
+        width: 100%;
+        padding-top: 100%;
+        position: relative;
+
+        .text {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
+    }
+  }
+}

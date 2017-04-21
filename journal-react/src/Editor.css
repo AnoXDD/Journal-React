@@ -1,6 +1,9 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 @import "http://fonts.googleapis.com/css?family=Noto+Sans";
 @import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+*:not(i) {
+  font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
+
 input:disabled, textarea:disabled {
   color: black;
   background-color: inherit; }
@@ -111,8 +114,6 @@ img.center {
   position: absolute;
   flex-flow: column;
   padding: 50px; }
-  .Editor *:not(i) {
-    font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
   .Editor input, .Editor textarea {
     border: none;
     resize: none;

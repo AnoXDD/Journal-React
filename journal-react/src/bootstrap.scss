@@ -1,11 +1,46 @@
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+@import "http://fonts.googleapis.com/css?family=Noto+Sans";
+@import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+
 $blue-light: #82B1FF;
 $blue: #448AFF;
 $blue-dark: #1976D2;
+
+$amber-0: #FFF8E1;
+$amber-1: #FFECB3;
+$amber-2: #FFE082;
+$amber-3: #FFD54F;
+$amber-4: #FFCA28;
+$amber-5: #FFC107;
+$amber-6: #FFB300;
+$amber-7: #FFA000;
+$amber-8: #FF8F00;
+$amber-9: #FF6F00;
+
+$cp: $blue;
+$cpl: $blue-light;
+$cpd: $blue-dark;
+
+$cs0: #FFF8E1;
+$cs1: #FFECB3;
+$cs2: #FFE082;
+$cs3: #FFD54F;
+$cs4: #FFCA28;
+$cs5: #FFC107;
+$cs6: #FFB300;
+$cs7: #FFA000;
+$cs8: #FF8F00;
+$cs9: #FF6F00;
+$cs: ($cs1, $cs2, $cs3, $cs4, $cs5, $cs6, $cs7, $cs8, $cs9);
 
 $scroll-bar-padding: 40px;
 
 $button-width: 60px;
 $button-height: 50px;
+
+*:not(i) {
+  font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+}
 
 input, textarea {
   &:disabled {
