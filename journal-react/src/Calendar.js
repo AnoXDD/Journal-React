@@ -17,16 +17,20 @@ export default class Calendar extends Component {
   WEEKDAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   state = {
-    heatmap: [[], [], [], [], [], [], [], [], [], [], [], []]
+    squares  : [[], [], [], [], [], [], [], [], [], [], [], []],
+    triangles: [[], [], [], [], [], [], [], [], [], [], [], []],
   };
+
+  now = new Date().getTime();
 
   constructor(props) {
     super(props);
 
-    // Set the state of heatmap
+    // Set the state of squares
     if (this.props.debug) {
       this.state = {
-        heatmap: [[2, 2, 1, null, 2, 2, 3, null, null, null, null, 2, 3, 2, 4, null, 1, null, 1, null, null, null, 1, null, null, null, 2, 1, null, 1], [3, null, 1, 3, 4, 1, null, 2, null, 2, 2, 1, null, 1, 2, 1, 2, 3, 1, null, null, 1, 1, null, 4, 2, 1], [null, null, 1, 4, 1, 3, 1, null, null, 3, 1, 4, 1, 2, null, null, 3, 3, 1, 3, 5, null, 1, 3, 2, 1, 2, 2, 1, 1, 5], [1, 1, 1, 2, 1, 1, 4, 5, 1, 1, null, null, 2, 3, 1, 3, 4, 5, 4, 2, 1, 5, 6, 4, 5, 5, 7, 6, 6, 6], [8, 5, 3, 3, 1, 4, 8, 3, 9, 1, 1, 2, 1, 5, 3, 1, null, 1, 4, 3, 4, 2, 2, null, 1, 3, null, 1, 1, 2], [2, 1, 1, 1, 1, 1, null, null, 1, 2, null, 5, 1, null, 1, 1, 3, 2, 2, null, 1, null, 1, 3, null, 1, 3, 2, 1, 2], [6, 1, 1, null, null, 1, 1, 2, null, null, 1, 1, 1, 1, null, null, null, null, 1, 1, 2, null, 1, 2, 1, 6, 1, 2, 1, 3], [null, 3, 1, 1, 1, null, null, null, 1, 2, 2, 1, null, null, null, null, 1, null, 1, 2, null, null, null, null, 1, 1, null, null, 1], [1, 3, 3, 1, 1, 1, 1, 2, 2, 2, 1, 2, null, 1, 2, 2, 2, null, 2, null, 2, 5, 4, 2, null, null, null, 1, 2], [2, 1, null, null, null, 1, 1, 1, 1, null, null, null, 2, 2, null, null, null, 2, 2, 3, 1, 1, null, null, null, 2, 2, 1, null, null, 1], [null, null, null, 1, null, 1, null, null, null, null, 1, null, null, null, null, null, null, 1, null, null, null, null, null, null, 1], [null, null, null, null, null, null, null, 1, 1, null, null, null, null, null, 1, null, null, null, null, null, null, 1, 1, null, null, null, null, null, null, 1]]
+        squares  : [[2, 2, 1, null, 2, 2, 3, null, null, null, null, 2, 3, 2, 4, null, 1, null, 1, null, null, null, 1, null, null, null, 2, 1, null, 1], [3, null, 1, 3, 4, 1, null, 2, null, 2, 2, 1, null, 1, 2, 1, 2, 3, 1, null, null, 1, 1, null, 4, 2, 1], [null, null, 1, 4, 1, 3, 1, null, null, 3, 1, 4, 1, 2, null, null, 3, 3, 1, 3, 5, null, 1, 3, 2, 1, 2, 2, 1, 1, 5], [1, 1, 1, 2, 1, 1, 4, 5, 1, 1, null, null, 2, 3, 1, 3, 4, 5, 4, 2, 1, 5, 6, 4, 5, 5, 7, 6, 6, 6], [8, 5, 3, 3, 1, 4, 8, 3, 9, 1, 1, 2, 1, 5, 3, 1, null, 1, 4, 3, 4, 2, 2, null, 1, 3, null, 1, 1, 2], [2, 1, 1, 1, 1, 1, null, null, 1, 2, null, 5, 1, null, 1, 1, 3, 2, 2, null, 1, null, 1, 3, null, 1, 3, 2, 1, 2], [6, 1, 1, null, null, 1, 1, 2, null, null, 1, 1, 1, 1, null, null, null, null, 1, 1, 2, null, 1, 2, 1, 6, 1, 2, 1, 3], [null, 3, 1, 1, 1, null, null, null, 1, 2, 2, 1, null, null, null, null, 1, null, 1, 2, null, null, null, null, 1, 1, null, null, 1], [1, 3, 3, 1, 1, 1, 1, 2, 2, 2, 1, 2, null, 1, 2, 2, 2, null, 2, null, 2, 5, 4, 2, null, null, null, 1, 2], [2, 1, null, null, null, 1, 1, 1, 1, null, null, null, 2, 2, null, null, null, 2, 2, 3, 1, 1, null, null, null, 2, 2, 1, null, null, 1], [null, null, null, 1, null, 1, null, null, null, null, 1, null, null, null, null, null, null, 1, null, null, null, null, null, null, 1], [null, null, null, null, null, null, null, 1, 1, null, null, null, null, null, 1, null, null, null, null, null, null, 1, 1, null, null, null, null, null, null, 1]],
+        triangles: [[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1], [null, 1, null, null, 1], [null, null, null, 1, null, 1, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, 1, null, null, 1, null, 1, null, 1], [null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, 1, 1], [null, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, null, 1], [null, 1, null, null, 1, null, null, null, null, null, null, null, null, null, 1, null, 1, null, null, null, null, 1, null, 1, null, 1, null, null, 1], [null, null, null, 1, null, 1, null, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, 1, 1, null, 1, null, null, 1, null, 1], [null, null, null, null, null, null, 1, 1, 1], [1, 1, null, 1], [1, null, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, 1, null, 1, null, null, 1, null, 1], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, 1]],
       };
     }
   }
@@ -45,6 +49,8 @@ export default class Calendar extends Component {
   }
 
   render() {
+    this.now = new Date().getTime();
+
     return (
         <div className="Calendar">
           <NoScrollArea padding="10px">
@@ -54,15 +60,15 @@ export default class Calendar extends Component {
                 {this.generateFirstPadding()}
                 {yearBlocks.map((month, im) =>
                     monthBlocks.map((day, id) => {
-                          if (id >= this.MONTH_DAY[im]) {
+                          if (new Date(this.props.year, im, id + 2) > this.now || id >= this.MONTH_DAY[im]) {
                             return "";
                           }
 
                           //onMouseOver={()=>{var
-                          // {heatmap}=this.state;heatmap[im][id]=heatmap[im][id]||0;++heatmap[im][id];this.setState({heatmap:heatmap});}}
+                          // {squares}=this.state;squares[im][id]=squares[im][id]||0;++squares[im][id];this.setState({squares:squares});}}
                           return (
                               <div key={`calendar-${month}-${day}`}
-                                   className={`day-block accent-${Math.min(9, this.state.heatmap[im][id] || 0)}${id === 0 ? ` month-first month-${im} ` : " "}${id >= this.MONTH_DAY[im] - 7 ? " last-seven" : " "}${id === this.MONTH_DAY[im] - 1 ? " last-one": " "}`}
+                                   className={`day-block accent-${Math.min(9, this.state.squares[im][id] || 0)}${id === 0 ? ` month-first month-${im} ` : " "}${this.state.triangles[im][id] ? "triangle " : " "}${id >= this.MONTH_DAY[im] - 7 ? " last-seven" : " "}${id === this.MONTH_DAY[im] - 1 ? " last-one": " "}`}
                               >
                                 <div className="day-block-wrapper">
                                   <div className="text">

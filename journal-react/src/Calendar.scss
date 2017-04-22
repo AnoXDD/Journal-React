@@ -5,9 +5,12 @@
   $day-block-margin: 1px;
   $month-list-width: 50px;
 
-  $default-background-color: #f4f4f4;
-  $day-block-border-color: white;
-  $delimitor-border-color: lightgrey;
+  $default-background-color: white;
+  $padding-background-color: #f4f4f4;
+  $day-block-border-color: #f4f4f4;
+  $delimitor-border-color: black;
+
+  height: 100%;
 
   .calendar-table {
     display: flex;
@@ -18,14 +21,12 @@
     }
 
     .day-blocks {
-      height: 53*$day-block-size;
-      margin-bottom: 1*$day-block-size;
       position: relative;
       flex: 0 0 auto;
       display: flex;
       width: $day-block-size * 7;
       flex-wrap: wrap;
-      background: $delimitor-border-color;
+      background: $default-background-color;
       justify-content: space-around;
 
       .month-first {
@@ -42,6 +43,8 @@
 
       @for $i from 1 through 12 {
         .month-#{$i - 1}:before {
+          color: $cp;
+          font-weight: bold;
           content: nth($MONTH, $i);
         }
       }
@@ -50,36 +53,43 @@
     @for $i from 1 through 6 {
       .first-padding-#{$i} {
         flex: 0 0 calc(#{$i} * 14.2857142857142857142857%);
-        background: $day-block-border-color;
+        background: $padding-background-color;
       }
     }
 
     .last-padding {
       flex: 1;
-      background: $day-block-border-color;
+      background: $padding-background-color;
     }
 
     .day-block {
       background: $default-background-color;
-      //margin: 0 $day-block-margin $day-block-margin 0;
-      border: $day-block-margin solid $day-block-border-color;
-      flex: 0 0 calc(14.2857142857142857142857% - #{$day-block-margin * 2});
+      height: $day-block-size;
+      flex: 0 0 calc(100% / 7);
       transition: background .4s ease;
 
-      &.last-seven {
-        margin-bottom: $day-block-margin;
-        border-bottom: none;
+      &.last-seven .day-block-wrapper {
+        border-bottom: 1px solid $delimitor-border-color;
+        padding-top: calc(100% - 1px);
       }
 
-      &.last-one {
-        margin-right: $day-block-margin;
-        border-right: none;
+      &.last-one .day-block-wrapper {
+        border-right: 1px solid $delimitor-border-color;
+        width: calc(100% - 1px);
       }
 
       @for $i from 1 through 9 {
         &.accent-#{$i} {
           background: nth($cs, $i);
         }
+      }
+
+      &.triangle .day-block-wrapper:after {
+        content: "\25e5";
+        position: absolute;
+        right: 0;
+        top: -2px;
+        font-size: 7px;
       }
 
       .day-block-wrapper {

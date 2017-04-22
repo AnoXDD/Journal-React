@@ -9,7 +9,7 @@ ReactDOM.render(
     //         year={2017}
     //         debug={true}
     // />,
-    <Calendar year={2015} debug={true}/>,
+    <Calendar year={2016} debug={true}/>,
     document.getElementById('root')
 )
 ;

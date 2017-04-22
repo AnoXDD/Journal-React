@@ -107,108 +107,138 @@ img.center {
     .btn:not(.accent):hover span, .btn:not(.accent):active span {
       opacity: 1; }
 
-.Calendar .calendar-table {
-  display: flex; }
-  .Calendar .calendar-table .month-list {
-    flex: 0 0 50px;
-    padding-right: 10px; }
-  .Calendar .calendar-table .day-blocks {
-    height: 1060px;
-    margin-bottom: 20px;
-    position: relative;
-    flex: 0 0 auto;
-    display: flex;
-    width: 140px;
-    flex-wrap: wrap;
-    background: lightgrey;
-    justify-content: space-around; }
-    .Calendar .calendar-table .day-blocks .month-first:before {
-      content: "month";
-      position: absolute;
-      left: -60px;
-      width: 50px;
-      text-align: right; }
-    .Calendar .calendar-table .day-blocks .month-0:before {
-      content: "Jan"; }
-    .Calendar .calendar-table .day-blocks .month-1:before {
-      content: "Feb"; }
-    .Calendar .calendar-table .day-blocks .month-2:before {
-      content: "Mar"; }
-    .Calendar .calendar-table .day-blocks .month-3:before {
-      content: "Apr"; }
-    .Calendar .calendar-table .day-blocks .month-4:before {
-      content: "May"; }
-    .Calendar .calendar-table .day-blocks .month-5:before {
-      content: "Jun"; }
-    .Calendar .calendar-table .day-blocks .month-6:before {
-      content: "Jul"; }
-    .Calendar .calendar-table .day-blocks .month-7:before {
-      content: "Aug"; }
-    .Calendar .calendar-table .day-blocks .month-8:before {
-      content: "Sep"; }
-    .Calendar .calendar-table .day-blocks .month-9:before {
-      content: "Oct"; }
-    .Calendar .calendar-table .day-blocks .month-10:before {
-      content: "Nov"; }
-    .Calendar .calendar-table .day-blocks .month-11:before {
-      content: "Dec"; }
-  .Calendar .calendar-table .first-padding-1 {
-    flex: 0 0 calc(1 * 14.2857142857142857142857%);
-    background: white; }
-  .Calendar .calendar-table .first-padding-2 {
-    flex: 0 0 calc(2 * 14.2857142857142857142857%);
-    background: white; }
-  .Calendar .calendar-table .first-padding-3 {
-    flex: 0 0 calc(3 * 14.2857142857142857142857%);
-    background: white; }
-  .Calendar .calendar-table .first-padding-4 {
-    flex: 0 0 calc(4 * 14.2857142857142857142857%);
-    background: white; }
-  .Calendar .calendar-table .first-padding-5 {
-    flex: 0 0 calc(5 * 14.2857142857142857142857%);
-    background: white; }
-  .Calendar .calendar-table .first-padding-6 {
-    flex: 0 0 calc(6 * 14.2857142857142857142857%);
-    background: white; }
-  .Calendar .calendar-table .last-padding {
-    flex: 1;
-    background: white; }
-  .Calendar .calendar-table .day-block {
-    background: #f4f4f4;
-    border: 1px solid white;
-    flex: 0 0 calc(14.2857142857142857142857% - 2px);
-    transition: background .4s ease; }
-    .Calendar .calendar-table .day-block.last-seven {
-      margin-bottom: 1px;
-      border-bottom: none; }
-    .Calendar .calendar-table .day-block.last-one {
-      margin-right: 1px;
-      border-right: none; }
-    .Calendar .calendar-table .day-block.accent-1 {
-      background: #B2EBF2; }
-    .Calendar .calendar-table .day-block.accent-2 {
-      background: #80DEEA; }
-    .Calendar .calendar-table .day-block.accent-3 {
-      background: #4DD0E1; }
-    .Calendar .calendar-table .day-block.accent-4 {
-      background: #26C6DA; }
-    .Calendar .calendar-table .day-block.accent-5 {
-      background: #00BCD4; }
-    .Calendar .calendar-table .day-block.accent-6 {
-      background: #00ACC1; }
-    .Calendar .calendar-table .day-block.accent-7 {
-      background: #0097A7; }
-    .Calendar .calendar-table .day-block.accent-8 {
-      background: #00838F; }
-    .Calendar .calendar-table .day-block.accent-9 {
-      background: #006064; }
-    .Calendar .calendar-table .day-block .day-block-wrapper {
-      width: 100%;
-      padding-top: 100%;
-      position: relative; }
-      .Calendar .calendar-table .day-block .day-block-wrapper .text {
+.Calendar {
+  height: 100%; }
+  .Calendar .calendar-table {
+    display: flex; }
+    .Calendar .calendar-table .month-list {
+      flex: 0 0 50px;
+      padding-right: 10px; }
+    .Calendar .calendar-table .day-blocks {
+      position: relative;
+      flex: 0 0 auto;
+      display: flex;
+      width: 140px;
+      flex-wrap: wrap;
+      background: white;
+      justify-content: space-around; }
+      .Calendar .calendar-table .day-blocks .month-first:before {
+        content: "month";
         position: absolute;
-        top: 0;
-        left: 0; }
+        left: -60px;
+        width: 50px;
+        text-align: right; }
+      .Calendar .calendar-table .day-blocks .month-0:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Jan"; }
+      .Calendar .calendar-table .day-blocks .month-1:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Feb"; }
+      .Calendar .calendar-table .day-blocks .month-2:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Mar"; }
+      .Calendar .calendar-table .day-blocks .month-3:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Apr"; }
+      .Calendar .calendar-table .day-blocks .month-4:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "May"; }
+      .Calendar .calendar-table .day-blocks .month-5:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Jun"; }
+      .Calendar .calendar-table .day-blocks .month-6:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Jul"; }
+      .Calendar .calendar-table .day-blocks .month-7:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Aug"; }
+      .Calendar .calendar-table .day-blocks .month-8:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Sep"; }
+      .Calendar .calendar-table .day-blocks .month-9:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Oct"; }
+      .Calendar .calendar-table .day-blocks .month-10:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Nov"; }
+      .Calendar .calendar-table .day-blocks .month-11:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Dec"; }
+    .Calendar .calendar-table .first-padding-1 {
+      flex: 0 0 calc(1 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-2 {
+      flex: 0 0 calc(2 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-3 {
+      flex: 0 0 calc(3 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-4 {
+      flex: 0 0 calc(4 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-5 {
+      flex: 0 0 calc(5 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-6 {
+      flex: 0 0 calc(6 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .last-padding {
+      flex: 1;
+      background: #f4f4f4; }
+    .Calendar .calendar-table .day-block {
+      background: white;
+      height: 20px;
+      flex: 0 0 calc(100% / 7);
+      transition: background .4s ease; }
+      .Calendar .calendar-table .day-block.last-seven .day-block-wrapper {
+        border-bottom: 1px solid black;
+        padding-top: calc(100% - 1px); }
+      .Calendar .calendar-table .day-block.last-one .day-block-wrapper {
+        border-right: 1px solid black;
+        width: calc(100% - 1px); }
+      .Calendar .calendar-table .day-block.accent-1 {
+        background: #B2EBF2; }
+      .Calendar .calendar-table .day-block.accent-2 {
+        background: #80DEEA; }
+      .Calendar .calendar-table .day-block.accent-3 {
+        background: #4DD0E1; }
+      .Calendar .calendar-table .day-block.accent-4 {
+        background: #26C6DA; }
+      .Calendar .calendar-table .day-block.accent-5 {
+        background: #00BCD4; }
+      .Calendar .calendar-table .day-block.accent-6 {
+        background: #00ACC1; }
+      .Calendar .calendar-table .day-block.accent-7 {
+        background: #0097A7; }
+      .Calendar .calendar-table .day-block.accent-8 {
+        background: #00838F; }
+      .Calendar .calendar-table .day-block.accent-9 {
+        background: #006064; }
+      .Calendar .calendar-table .day-block.triangle .day-block-wrapper:after {
+        content: "\25e5";
+        position: absolute;
+        right: 0;
+        top: -2px;
+        font-size: 7px; }
+      .Calendar .calendar-table .day-block .day-block-wrapper {
+        width: 100%;
+        padding-top: 100%;
+        position: relative; }
+        .Calendar .calendar-table .day-block .day-block-wrapper .text {
+          position: absolute;
+          top: 0;
+          left: 0; }
 
 /*# sourceMappingURL=Calendar.css.map */
