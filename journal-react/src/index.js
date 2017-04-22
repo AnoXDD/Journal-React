@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Editor from './Editor';
 import Calendar from "./Calendar";
+
+import TestData from "./TestData";
+
 import './index.css';
 
 ReactDOM.render(
@@ -9,7 +12,7 @@ ReactDOM.render(
     //         year={2017}
     //         debug={true}
     // />,
-    <Calendar year={2016} debug={true}/>,
+    <Calendar data={TestData.data} year={2016}/>,
     document.getElementById('root')
 )
 ;

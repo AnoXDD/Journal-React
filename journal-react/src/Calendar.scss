@@ -8,9 +8,10 @@
   $default-background-color: white;
   $padding-background-color: #f4f4f4;
   $day-block-border-color: #f4f4f4;
-  $delimitor-border-color: black;
+  $delimitor-border-color: #bfbfbf;
 
   height: 100%;
+  max-height: 1000px; // todo maybe change this?
 
   .calendar-table {
     display: flex;
@@ -36,6 +37,7 @@
           left: -$month-list-width - 10px;
           width: $month-list-width;
           text-align: right;
+          padding-top: $day-block-size;
         }
       }
 

@@ -33,6 +33,22 @@ export default class Calendar extends Component {
         triangles: [[null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1], [null, 1, null, null, 1], [null, null, null, 1, null, 1, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, 1, null, null, 1, null, 1, null, 1], [null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, 1, 1], [null, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, null, 1], [null, 1, null, null, 1, null, null, null, null, null, null, null, null, null, 1, null, 1, null, null, null, null, 1, null, 1, null, 1, null, null, 1], [null, null, null, 1, null, 1, null, null, null, null, null, null, null, 1, null, null, null, null, null, null, null, 1, 1, null, 1, null, null, 1, null, 1], [null, null, null, null, null, null, 1, 1, 1], [1, 1, null, 1], [1, null, null, null, null, null, 1, null, null, null, null, null, null, null, null, null, null, 1, null, 1, null, null, 1, null, 1], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1], [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1, null, null, 1]],
       };
     }
+
+    let {squares, triangles} = this.state;
+    for (let d of this.props.data) {
+      let time =  new Date(d.time.created),
+          month = time.getMonth(),
+          day = time.getDate() - 1;
+
+      if (d.contentType) {
+        squares[month][day] = (squares[month][day] + 1) || 1;
+      } else{
+        triangles[month][day] = 1;
+      }
+    }
+
+    this.state.squares = squares;
+    this.state.triangles = triangles;
   }
 
   generateFirstPadding() {
