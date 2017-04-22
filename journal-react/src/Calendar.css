@@ -205,11 +205,11 @@ img.center {
       flex: 0 0 calc(100% / 7);
       transition: background .4s ease; }
       .Calendar .calendar-table .day-block.last-seven .day-block-wrapper {
-        border-bottom: 1px solid #bfbfbf;
+        border-bottom: 2px solid black;
         padding-top: calc(100% - 1px); }
       .Calendar .calendar-table .day-block.last-one .day-block-wrapper {
-        border-right: 1px solid #bfbfbf;
-        width: calc(100% - 1px); }
+        border-right: 2px solid black;
+        width: calc(100% - 2px); }
       .Calendar .calendar-table .day-block.accent-1 {
         background: #B2EBF2; }
       .Calendar .calendar-table .day-block.accent-2 {
