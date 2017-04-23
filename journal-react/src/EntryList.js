@@ -22,6 +22,7 @@ export default class EntryList extends Component {
    * @type {{}}
    */
   articles = {};
+  articleMargin = [];
 
   constructor(props) {
     super(props);
@@ -33,6 +34,10 @@ export default class EntryList extends Component {
       articleMargin: {},
       bulbMargin   : {}
     }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    // nextState.articleMargin = this.articleMargin;
   }
 
   /**
@@ -121,29 +126,17 @@ export default class EntryList extends Component {
       className: className,
       style    : {
         backgroundImage: background,
-        marginTop      : this.state.articleMargin[index] || "30px",
+        marginTop      : this.articleMargin[index] || "30px",
       },
     };
   }
 
   generateArticleList() {
-    this.articles = [];
-    let lastBottom = 0;
-
     return (
         <div className="article-list">
           <div className="flex-extend-inner-wrapper">
             {this.props.data.map((article, index) => {
               if (!(article.contentType)) {
-                lastBottom += article.images ? this.ARTICLE_IMAGE_HEIGHT : this.ARTICLE_NO_IMAGE_HEIGHT;
-
-                this.articles.push({
-                  index : index,
-                  bottom: lastBottom,
-                  time  : article.time.created,
-                  title : article.title,
-                });
-
                 return (
                     <article
                         className="shadow"
@@ -180,15 +173,18 @@ export default class EntryList extends Component {
     let nextArticleIndex = 0,
         currentBulbBottom = 0,
         accumulatedArticleAdjustedTop = 0,
-        articleMargin = {},
-        adjustedArticle = 0;
+        adjustedArticle = 0,
+        lastBottom = 0;
+
+    this.articleMargin = {};
+    this.articles = [];
 
     return (
         <div className="bulb-list">
           <div className="flex-extend-inner-wrapper">
             {this.props.data.map((bulb, index) => {
               if (bulb.contentType) {
-                if (this.articles[nextArticleIndex].time > bulb.time.created) {
+                if (this.articles[nextArticleIndex] && this.articles[nextArticleIndex].time > bulb.time.created) {
                   // The bulb above it is formed a group
                   // Adjust the top margin of the last article
                   if (currentBulbBottom > this.articles[nextArticleIndex].bottom + accumulatedArticleAdjustedTop) {
@@ -196,17 +192,13 @@ export default class EntryList extends Component {
                     // article block
                     let adjusted = currentBulbBottom - (accumulatedArticleAdjustedTop + this.articles[nextArticleIndex].bottom) - this.BULB_HEIGHT_MARGIN + this.ARTICLE_MARGIN_TOP * (++adjustedArticle);
                     accumulatedArticleAdjustedTop += adjusted;
-                    articleMargin[this.articles[nextArticleIndex].index] = adjusted + "px";
+                    this.articleMargin[this.articles[nextArticleIndex].index] = adjusted + "px";
                   }
 
                   ++nextArticleIndex;
                 }
 
                 currentBulbBottom += this.BULB_HEIGHT;
-
-                if (index === this.props.data.length - 1) {
-                  this.state.articleMargin = articleMargin;
-                }
 
                 return (
                     <article key={`bulb-preview-${bulb.time.created}`}>
@@ -219,9 +211,16 @@ export default class EntryList extends Component {
                     </article>
                 )
               }
-              if (index === this.props.data.length - 1) {
-                this.state.articleMargin = articleMargin;
-              }
+
+              // This is an article
+              let article = bulb;
+              lastBottom += article.images ? this.ARTICLE_IMAGE_HEIGHT : this.ARTICLE_NO_IMAGE_HEIGHT;
+
+              this.articles.push({
+                index : index,
+                bottom: lastBottom,
+                time  : article.time.created,
+              });
 
               return null;
             })}
@@ -231,8 +230,8 @@ export default class EntryList extends Component {
   }
 
   render() {
-
-    console.log(R);
+    // Do this to process the article height
+    let bulbList = this.generateBulbList();
 
     return (
         <div className="EntryList">
