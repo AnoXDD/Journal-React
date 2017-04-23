@@ -6,8 +6,7 @@ import EntryList from "./EntryList";
 
 import TestData from "./TestData";
 
-import "./base.css";
-
+import './index.css';
 
 ReactDOM.render(
     // <Editor tagPrediction="journal idea friendship this that id"

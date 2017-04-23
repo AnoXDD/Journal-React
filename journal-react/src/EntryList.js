@@ -10,11 +10,22 @@ import R from "./R";
 
 export default class EntryList extends Component {
 
+  /**
+   * Stores the original positions and times of articles
+   * @type {{}}
+   */
+  articles = {};
+
   constructor(props) {
     super(props);
 
     this.generateArticleList = this.generateArticleList.bind(this);
     this.generateBulbList = this.generateBulbList.bind(this);
+
+    this.state = {
+      articleMargin: {},
+      bulbMargin   : {}
+    }
   }
 
   /**
@@ -91,7 +102,7 @@ export default class EntryList extends Component {
     return dateHeader;
   }
 
-  generateArticleStyle(article) {
+  generateArticleStyle(article, index) {
     let background = "", className = "shadow";
     if (article.images) {
       background = `url('${this.props.imageMap[article.images[0]] || "https://unsplash.it/300/200/?random"}')`;
@@ -101,22 +112,36 @@ export default class EntryList extends Component {
 
     return {
       className: className,
-      style    : {backgroundImage: background}
+      style    : {
+        backgroundImage: background,
+        marginTop      : this.state.articleMargin[index] || "30px",
+      },
     };
   }
 
   generateArticleList() {
+    this.articles = [];
+    let lastBottom = 0;
+
     return (
         <div className="article-list">
           <div className="flex-extend-inner-wrapper">
-            {this.props.data.map(article => {
+            {this.props.data.map((article, index) => {
               if (!(article.contentType)) {
+                lastBottom += article.images ? 330 : 135;
+
+                this.articles.push({
+                  index : index,
+                  bottom: lastBottom,
+                  time  : article.time.created,
+                  title : article.title,
+                });
+
                 return (
                     <article
-                        ref={e => console.log(e)}
                         className="shadow"
                         key={`article-preview-${article.time.created}`}
-                        {...this.generateArticleStyle(article)}
+                        {...this.generateArticleStyle(article, index)}
                     >
                       <div className="text">
                         <header>
@@ -131,9 +156,8 @@ export default class EntryList extends Component {
                       </div>
                       <Button className="dark">delete</Button>
                     </article>
-                )
+                );
               }
-
               return null;
             })}
           </div>
@@ -141,12 +165,42 @@ export default class EntryList extends Component {
     );
   }
 
+  generateBulb(bulb, index) {
+
+  }
+
   generateBulbList() {
+    let nextArticleIndex = 0,
+        currentBulbBottom = 0,
+        accumulatedArticleAdjustedTop = 0,
+        articleMargin = {},
+        adjustedArticle = 0;
+
     return (
         <div className="bulb-list">
           <div className="flex-extend-inner-wrapper">
-            {this.props.data.map(bulb => {
+            {this.props.data.map((bulb, index) => {
               if (bulb.contentType) {
+                if (this.articles[nextArticleIndex].time > bulb.time.created) {
+                  // The bulb above it is formed a group
+                  // Adjust the top margin of the last article
+                  if (currentBulbBottom > this.articles[nextArticleIndex].bottom + accumulatedArticleAdjustedTop) {
+                    // The bottom of current bulb group is lower than the last
+                    // article block
+                    let adjusted = currentBulbBottom - (accumulatedArticleAdjustedTop + this.articles[nextArticleIndex].bottom) - 5 + 30 * (++adjustedArticle);
+                    accumulatedArticleAdjustedTop += adjusted;
+                    articleMargin[this.articles[nextArticleIndex].index] = adjusted + "px";
+                  }
+
+                  ++nextArticleIndex;
+                }
+
+                currentBulbBottom += 32;
+
+                if (index === this.props.data.length - 1) {
+                  this.state.articleMargin = articleMargin;
+                }
+
                 return (
                     <article key={`bulb-preview-${bulb.time.created}`}>
                       <header className="shadow-light">
@@ -157,6 +211,9 @@ export default class EntryList extends Component {
                       <div className="details">{bulb.text.body}</div>
                     </article>
                 )
+              }
+              if (index === this.props.data.length - 1) {
+                this.state.articleMargin = articleMargin;
               }
 
               return null;

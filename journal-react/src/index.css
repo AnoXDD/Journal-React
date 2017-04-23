@@ -704,7 +704,8 @@ html, body {
     .EntryList .bulb-list article {
       font-size: 13px;
       display: flex;
-      margin-bottom: 5px; }
+      margin-bottom: 5px;
+      height: 27px; }
     .EntryList .bulb-list header {
       flex: 0 0 80px;
       text-align: center;
