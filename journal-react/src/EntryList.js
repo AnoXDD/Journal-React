@@ -10,6 +10,13 @@ import R from "./R";
 
 export default class EntryList extends Component {
 
+  ARTICLE_MARGIN_TOP = 30;
+  ARTICLE_IMAGE_HEIGHT = 300 + this.ARTICLE_MARGIN_TOP;
+  ARTICLE_NO_IMAGE_HEIGHT = 105 + this.ARTICLE_MARGIN_TOP;
+  BULB_HEIGHT_ORIGINAL = 27;
+  BULB_HEIGHT_MARGIN = 5;
+  BULB_HEIGHT = this.BULB_HEIGHT_ORIGINAL + this.BULB_HEIGHT_MARGIN;
+
   /**
    * Stores the original positions and times of articles
    * @type {{}}
@@ -128,7 +135,7 @@ export default class EntryList extends Component {
           <div className="flex-extend-inner-wrapper">
             {this.props.data.map((article, index) => {
               if (!(article.contentType)) {
-                lastBottom += article.images ? 330 : 135;
+                lastBottom += article.images ? this.ARTICLE_IMAGE_HEIGHT : this.ARTICLE_NO_IMAGE_HEIGHT;
 
                 this.articles.push({
                   index : index,
@@ -187,7 +194,7 @@ export default class EntryList extends Component {
                   if (currentBulbBottom > this.articles[nextArticleIndex].bottom + accumulatedArticleAdjustedTop) {
                     // The bottom of current bulb group is lower than the last
                     // article block
-                    let adjusted = currentBulbBottom - (accumulatedArticleAdjustedTop + this.articles[nextArticleIndex].bottom) - 5 + 30 * (++adjustedArticle);
+                    let adjusted = currentBulbBottom - (accumulatedArticleAdjustedTop + this.articles[nextArticleIndex].bottom) - this.BULB_HEIGHT_MARGIN + this.ARTICLE_MARGIN_TOP * (++adjustedArticle);
                     accumulatedArticleAdjustedTop += adjusted;
                     articleMargin[this.articles[nextArticleIndex].index] = adjusted + "px";
                   }
@@ -195,7 +202,7 @@ export default class EntryList extends Component {
                   ++nextArticleIndex;
                 }
 
-                currentBulbBottom += 32;
+                currentBulbBottom += this.BULB_HEIGHT;
 
                 if (index === this.props.data.length - 1) {
                   this.state.articleMargin = articleMargin;
