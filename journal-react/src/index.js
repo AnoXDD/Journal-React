@@ -13,7 +13,6 @@ ReactDOM.render(
     //         year={2017}
     //         debug={true}
     // />,
-    // <Calendar data={TestData.data} year={2016}/>,
     <EntryList data={TestData.data}
                imageMap={{}}
                year={2016}/>,

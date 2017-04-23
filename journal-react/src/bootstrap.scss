@@ -1,5 +1,5 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
-@import "http://fonts.googleapis.com/css?family=Noto+Sans";
+@import "http://fonts.googleapis.com/css?family=Lato";
 @import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
 
 $blue-light: #82B1FF;
@@ -47,7 +47,7 @@ $button-width: 60px;
 $button-height: 50px;
 
 *:not(i) {
-  font-family: "Noto Sans", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  font-family: "Lato", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
 }
 
 input, textarea {
@@ -79,6 +79,10 @@ input, textarea {
 
 .shadow {
   box-shadow: 3px 2px 9px grey;
+}
+
+.shadow-light {
+  box-shadow: 1px 1px 4px grey;
 }
 
 .normal, .normal input {
@@ -152,6 +156,11 @@ img.center {
   font-weight: lighter;
   text-align: center;
   transition: .4s ease;
+
+  &.dark {
+    background: $darkgrey;
+    color: white;
+  }
 
   &:after {
     pointer-events: none;

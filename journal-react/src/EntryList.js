@@ -5,6 +5,7 @@
 
 import React, {Component} from "react";
 import NoScrollArea from "./NoScrollArea";
+import Button from "./Button";
 import R from "./R";
 
 import "./EntryList.css";
@@ -114,6 +115,7 @@ export default class EntryList extends Component {
               if (!(article.contentType)) {
                 return (
                     <article
+                        ref={e => console.log(e)}
                         className="shadow"
                         key={`article-preview-${article.time.created}`}
                         {...this.generateArticleStyle(article)}
@@ -128,9 +130,8 @@ export default class EntryList extends Component {
                         <div className="details">
                           {article.text.body}
                         </div>
-                        <footer>
-                        </footer>
                       </div>
+                      <Button className="dark">delete</Button>
                     </article>
                 )
               }
@@ -150,7 +151,7 @@ export default class EntryList extends Component {
               if (bulb.contentType) {
                 return (
                     <article key={`bulb-preview-${bulb.time.created}`}>
-                      <header>
+                      <header className="shadow-light">
                         <div className="time">
                           {this.generateHumanFormTimeFromArticle(bulb.time)}
                         </div>

@@ -43,8 +43,14 @@
       position: relative;
 
       &.no-image {
-        height: 110px;
+        height: 105px;
         background: $darkgrey;
+
+        &:hover {
+          .title {
+            opacity: 0;
+          }
+        }
       }
 
       .text {
@@ -55,8 +61,13 @@
         transition: opacity .4s ease;
       }
 
+      .btn {
+        float: right;
+        opacity: 0;
+      }
+
       header {
-        padding-top: 10px;
+        padding-top: 8px;
         background: $darkgrey;
 
         .title {
@@ -68,7 +79,6 @@
 
         .time {
           color: $css;
-
           padding-top: 5px;
         }
       }
@@ -85,14 +95,18 @@
 
       &:not(.no-image):hover {
         .text {
-          opacity: 0.1;
+          opacity: 0;
+        }
+
+        .btn {
+          opacity: 1;
         }
       }
     }
   }
 
   .bulb-list {
-    $padding: 5px;
+    $padding: 4px;
 
     flex: 1 0 50%;
     position: relative;
@@ -100,21 +114,26 @@
     article {
       font-size: 13px;
       display: flex;
-      margin: 5px 0;
+      margin-bottom: 5px;
     }
 
     header {
       flex: 0 0 80px;
       text-align: center;
-      padding: $padding 10px;
+      padding: 6px 10px;
       background: $darkgrey;
       color: white;
     }
 
     .details {
       font-weight: lighter;
-      padding: $padding;
+      margin: $padding 2*$padding;
+      background: white;
 
+      &:hover {
+        overflow: visible;
+        white-space: normal;
+      }
     }
   }
 }
