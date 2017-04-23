@@ -1,9 +1,10 @@
 /**
  * Created by Anoxic on 042017.
+ * A calendar class to show the heatmap
  */
 
 import React, {Component} from "react";
-import NoScrollArea from "./NoScrollArea"
+import NoScrollArea from "./NoScrollArea";
 
 import "./Calendar.css";
 
@@ -12,9 +13,7 @@ const yearBlocks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
 export default class Calendar extends Component {
 
-  MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   MONTH_DAY = [31, 28 + ((this.props.year % 4) || ((this.props.year % 100 === 0) && (this.props.year % 400)) ? 0 : 1), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  WEEKDAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   state = {
     squares  : [[], [], [], [], [], [], [], [], [], [], [], []],
@@ -36,19 +35,21 @@ export default class Calendar extends Component {
 
     let {squares, triangles} = this.state;
     for (let d of this.props.data) {
-      let time =  new Date(d.time.created),
+      let time = new Date(d.time.created),
           month = time.getMonth(),
           day = time.getDate() - 1;
 
       if (d.contentType) {
         squares[month][day] = (squares[month][day] + 1) || 1;
-      } else{
+      } else {
         triangles[month][day] = 1;
       }
     }
 
-    this.state.squares = squares;
-    this.state.triangles = triangles;
+    this.state = {
+      squares  : squares,
+      triangles: triangles
+    };
   }
 
   generateFirstPadding() {

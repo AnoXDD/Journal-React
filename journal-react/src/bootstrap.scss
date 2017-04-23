@@ -17,6 +17,8 @@ $cyan-7: #0097A7;
 $cyan-8: #00838F;
 $cyan-9: #006064;
 
+$darkgrey: #212121;
+
 $cp: $blue;
 $cpl: $blue-light;
 $cpd: $blue-dark;
@@ -32,6 +34,10 @@ $cs7: $cyan-7;
 $cs8: $cyan-8;
 $cs9: $cyan-9;
 $cs: ($cs1, $cs2, $cs3, $cs4, $cs5, $cs6, $cs7, $cs8, $cs9);
+
+$css: $cs5;
+$csl: $cs2;
+$csd: $cs8;
 
 $amber: #FFC107;
 

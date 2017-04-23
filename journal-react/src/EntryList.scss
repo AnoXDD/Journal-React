@@ -1,0 +1,120 @@
+@import "./bootstrap.scss";
+
+.EntryList {
+  $timeline-width: 50px;
+
+  height: 100%;
+  width: 100%;
+
+  .entries {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .time {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .details {
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+  }
+
+  .article-list {
+    flex: 0 0 30%;
+    margin-right: $timeline-width;
+    position: relative;
+
+    article {
+      $article-margin: 30px;
+      $detail-padding: 25px;
+      $detail-height: 20px;
+
+      margin: 30px;
+      width: calc(100% - #{2*$article-margin});
+      height: 300px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+
+      &.no-image {
+        height: 110px;
+        background: $darkgrey;
+      }
+
+      .text {
+        overflow: hidden;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        transition: opacity .4s ease;
+      }
+
+      header {
+        padding-top: 10px;
+        background: $darkgrey;
+
+        .title {
+          width: 100%;
+          text-align: center;
+          font-size: 25px;
+          color: white;
+        }
+
+        .time {
+          color: $css;
+
+          padding-top: 5px;
+        }
+      }
+
+      .details {
+        color: white;
+        font-size: 14px;
+        font-weight: lighter;
+        width: calc(100% - #{$detail-padding*2});
+        background: $darkgrey;
+        padding: 10px $detail-padding;
+        height: $detail-height;
+      }
+
+      &:not(.no-image):hover {
+        .text {
+          opacity: 0.1;
+        }
+      }
+    }
+  }
+
+  .bulb-list {
+    $padding: 5px;
+
+    flex: 1 0 50%;
+    position: relative;
+
+    article {
+      font-size: 13px;
+      display: flex;
+      margin: 5px 0;
+    }
+
+    header {
+      flex: 0 0 80px;
+      text-align: center;
+      padding: $padding 10px;
+      background: $darkgrey;
+      color: white;
+    }
+
+    .details {
+      font-weight: lighter;
+      padding: $padding;
+
+    }
+  }
+}
