@@ -1,10 +1,722 @@
-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    font-family: sans-serif;
-}
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+@import "http://fonts.googleapis.com/css?family=Lato";
+@import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+*:not(i) {
+  font-family: "Lato", "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
+
+input:disabled, textarea:disabled {
+  color: black;
+  background-color: inherit; }
+
+.vertical-align .vertical-align-wrapper {
+  display: block;
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%); }
+
+.material-icons {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none; }
+
+.shadow {
+  box-shadow: 3px 2px 9px grey; }
+
+.shadow-light {
+  box-shadow: 1px 1px 4px grey; }
+
+.normal, .normal input {
+  background: white;
+  font-size: 16px;
+  display: block;
+  height: 20px;
+  padding: 0;
+  position: relative; }
+  .normal.underlined, .normal.underlined input, .normal input.underlined, .normal input.underlined input {
+    border-bottom: 1px solid grey !important;
+    transition: border-bottom .4s ease; }
+    .normal.underlined:focus, .normal.underlined:active, .normal.underlined input:focus, .normal.underlined input:active, .normal input.underlined:focus, .normal input.underlined:active, .normal input.underlined input:focus, .normal input.underlined input:active {
+      border-bottom: 1px solid #448AFF !important; }
+  .normal.disabled, .normal:disabled, .normal input.disabled, .normal input:disabled {
+    border-bottom-color: transparent !important; }
+
+.hidden {
+  display: none !important; }
+
+.transparent {
+  opacity: 0;
+  pointer-events: none !important; }
+
+.flex {
+  display: flex; }
+  .flex.column {
+    flex-direction: column; }
+
+.flex-last-item {
+  width: 100%; }
+
+.flex-extend-inner-wrapper {
+  position: absolute;
+  height: 100%;
+  width: 100%; }
+
+img.center {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto; }
+
+.btn {
+  position: relative;
+  display: inline-block;
+  text-transform: uppercase;
+  height: 50px;
+  width: 60px;
+  font-weight: lighter;
+  text-align: center;
+  transition: .4s ease; }
+  .btn.dark {
+    background: #212121;
+    color: white; }
+  .btn:after {
+    pointer-events: none;
+    content: "";
+    width: 100%;
+    height: 4px;
+    position: absolute;
+    z-index: 100;
+    bottom: 0;
+    left: 0;
+    transition: background .4s ease; }
+  .btn.underlined:after {
+    background: black; }
+  .btn.underlined.active:after, .btn.underlined:hover:after {
+    background: #448AFF; }
+  .btn.active, .btn:hover {
+    color: #448AFF; }
+  .btn:not(.underlined):hover .add-circle {
+    opacity: 1; }
+  .btn:not(.underlined):hover .original {
+    opacity: 0; }
+  .btn:not(.accent):hover, .btn:not(.accent):active {
+    color: #1976D2; }
+    .btn:not(.accent):hover span, .btn:not(.accent):active span {
+      opacity: 1; }
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0; }
 
 #root {
+  height: 100%;
+  width: 100%; }
+
+.no-scroll {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%; }
+  .no-scroll.horizontal {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 20px; }
+    .no-scroll.horizontal:before, .no-scroll.horizontal:after {
+      height: 100%;
+      width: 20px; }
+    .no-scroll.horizontal:before {
+      background: linear-gradient(to right, white 0, transparent 100%);
+      left: 0; }
+    .no-scroll.horizontal:after {
+      background: linear-gradient(to left, white 0, transparent 100%);
+      right: 0; }
+    .no-scroll.horizontal .wrapper {
+      bottom: 0px;
+      height: 20px;
+      width: 100%; }
+    .no-scroll.horizontal > * {
+      margin-left: 0; }
+    .no-scroll.horizontal > *:first-child {
+      margin-left: 20px; }
+    .no-scroll.horizontal > *:last-child {
+      margin-right: 20px; }
+  .no-scroll .before, .no-scroll .after {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    content: "";
+    left: 0;
+    pointer-events: none;
+    z-index: 100; }
+  .no-scroll .before {
+    top: 0; }
+  .no-scroll .after {
+    bottom: 0; }
+  .no-scroll .wrapper {
+    position: absolute;
+    right: 0;
     height: 100%;
-}
+    width: 20px;
+    background: white; }
+  .no-scroll .no-scroll-wrapper {
+    padding-right: 20px;
+    width: 100%;
+    height: 100%; }
+
+.toggle.vertical-align {
+  position: relative;
+  display: inline-block; }
+  .toggle.vertical-align .first, .toggle.vertical-align .second {
+    transition: opacity .4s ease; }
+  .toggle.vertical-align .first {
+    opacity: 1; }
+  .toggle.vertical-align .second {
+    top: 0;
+    position: relative;
+    opacity: 0; }
+  .toggle.vertical-align.change-hover:hover.show-second .first, .toggle.vertical-align:not(.change-hover).show-second .first {
+    opacity: 0; }
+  .toggle.vertical-align.change-hover:hover.show-second .second, .toggle.vertical-align:not(.change-hover).show-second .second {
+    opacity: 1; }
+
+.PredictionInput {
+  position: relative; }
+  .PredictionInput .prediction {
+    color: lightgrey;
+    font-size: inherit;
+    position: absolute; }
+  .PredictionInput .input {
+    background: transparent;
+    font-size: inherit;
+    display: inline-block;
+    height: 100%;
+    padding: 0;
+    width: 100%; }
+
+.Calendar {
+  height: 100%;
+  max-height: 1000px; }
+  .Calendar .calendar-table {
+    display: flex; }
+    .Calendar .calendar-table .month-list {
+      flex: 0 0 50px;
+      padding-right: 10px; }
+    .Calendar .calendar-table .day-blocks {
+      position: relative;
+      flex: 0 0 auto;
+      display: flex;
+      width: 140px;
+      flex-wrap: wrap;
+      background: white;
+      justify-content: space-around; }
+      .Calendar .calendar-table .day-blocks .month-first:before {
+        content: "month";
+        position: absolute;
+        left: -60px;
+        width: 50px;
+        text-align: right;
+        padding-top: 20px; }
+      .Calendar .calendar-table .day-blocks .month-0:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Jan"; }
+      .Calendar .calendar-table .day-blocks .month-1:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Feb"; }
+      .Calendar .calendar-table .day-blocks .month-2:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Mar"; }
+      .Calendar .calendar-table .day-blocks .month-3:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Apr"; }
+      .Calendar .calendar-table .day-blocks .month-4:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "May"; }
+      .Calendar .calendar-table .day-blocks .month-5:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Jun"; }
+      .Calendar .calendar-table .day-blocks .month-6:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Jul"; }
+      .Calendar .calendar-table .day-blocks .month-7:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Aug"; }
+      .Calendar .calendar-table .day-blocks .month-8:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Sep"; }
+      .Calendar .calendar-table .day-blocks .month-9:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Oct"; }
+      .Calendar .calendar-table .day-blocks .month-10:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Nov"; }
+      .Calendar .calendar-table .day-blocks .month-11:before {
+        color: #448AFF;
+        font-weight: bold;
+        content: "Dec"; }
+    .Calendar .calendar-table .first-padding-1 {
+      flex: 0 0 calc(1 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-2 {
+      flex: 0 0 calc(2 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-3 {
+      flex: 0 0 calc(3 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-4 {
+      flex: 0 0 calc(4 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-5 {
+      flex: 0 0 calc(5 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .first-padding-6 {
+      flex: 0 0 calc(6 * 14.2857142857142857142857%);
+      background: #f4f4f4; }
+    .Calendar .calendar-table .last-padding {
+      flex: 1;
+      background: #f4f4f4; }
+    .Calendar .calendar-table .day-block {
+      background: white;
+      height: 20px;
+      flex: 0 0 calc(100% / 7);
+      transition: background .4s ease; }
+      .Calendar .calendar-table .day-block.last-seven .day-block-wrapper {
+        border-bottom: 2px solid black;
+        padding-top: calc(100% - 1px); }
+      .Calendar .calendar-table .day-block.last-one .day-block-wrapper {
+        border-right: 2px solid black;
+        width: calc(100% - 2px); }
+      .Calendar .calendar-table .day-block.accent-1 {
+        background: #B2EBF2; }
+      .Calendar .calendar-table .day-block.accent-2 {
+        background: #80DEEA; }
+      .Calendar .calendar-table .day-block.accent-3 {
+        background: #4DD0E1; }
+      .Calendar .calendar-table .day-block.accent-4 {
+        background: #26C6DA; }
+      .Calendar .calendar-table .day-block.accent-5 {
+        background: #00BCD4; }
+      .Calendar .calendar-table .day-block.accent-6 {
+        background: #00ACC1; }
+      .Calendar .calendar-table .day-block.accent-7 {
+        background: #0097A7; }
+      .Calendar .calendar-table .day-block.accent-8 {
+        background: #00838F; }
+      .Calendar .calendar-table .day-block.accent-9 {
+        background: #006064; }
+      .Calendar .calendar-table .day-block.triangle .day-block-wrapper:after {
+        content: "\25e5";
+        position: absolute;
+        right: 0;
+        top: -2px;
+        font-size: 7px; }
+      .Calendar .calendar-table .day-block .day-block-wrapper {
+        width: 100%;
+        padding-top: 100%;
+        position: relative; }
+        .Calendar .calendar-table .day-block .day-block-wrapper .text {
+          position: absolute;
+          top: 0;
+          left: 0; }
+
+.Editor {
+  width: calc(100% - 100px);
+  height: calc(100% - 100px);
+  display: flex;
+  position: absolute;
+  flex-flow: column;
+  padding: 50px; }
+  .Editor input, .Editor textarea {
+    border: none;
+    resize: none;
+    font-size: 30px;
+    padding: 20px; }
+    .Editor input:active, .Editor input:focus, .Editor textarea:active, .Editor textarea:focus {
+      outline: none; }
+  .Editor header {
+    flex: 0 1 auto;
+    margin: 0px 0px 10px;
+    width: calc(100vw - 100px); }
+    .Editor header .title {
+      padding-top: 0;
+      display: inline-block;
+      height: 40px;
+      width: 50%; }
+    .Editor header .stats {
+      padding: 15px 20px;
+      display: inline-block;
+      float: right;
+      color: grey;
+      font-size: 18px;
+      height: 20px; }
+      .Editor header .stats .stat {
+        display: inline-block;
+        margin-left: 20px;
+        height: 100%;
+        vertical-align: top;
+        overflow: hidden;
+        text-align: right;
+        transition: .4s ease;
+        white-space: nowrap; }
+      .Editor header .stats .chars {
+        width: 5ch;
+        margin-left: 20px; }
+      .Editor header .stats .elapsed, .Editor header .stats .times {
+        width: 0;
+        margin-left: 0; }
+      .Editor header .stats .times.time {
+        width: 100%; }
+      .Editor header .stats:hover .elapsed {
+        width: 6ch;
+        margin-left: 20px; }
+      .Editor header .stats:hover .times {
+        width: 12ch;
+        margin-left: 20px; }
+    .Editor header .fullscreen {
+      position: absolute;
+      right: 0;
+      top: 0; }
+  .Editor .text-body-wrapper {
+    width: calc(100vw - 100px);
+    flex: 1 1 auto;
+    position: relative;
+    text-align: center; }
+    .Editor .text-body-wrapper .text-body-wrapper-2 {
+      position: absolute;
+      height: 100%;
+      padding: 0 50px;
+      width: calc(100% - 100px); }
+  .Editor .text-body {
+    -moz-tab-size: 2em;
+    -o-tab-size: 2em;
+    tab-size: 2em;
+    flex: 1 1 auto;
+    font-size: 25px;
+    font-weight: lighter;
+    padding-left: 0;
+    height: calc(100% - 80px); }
+  .Editor .extras {
+    position: relative;
+    background: white;
+    z-index: 2;
+    margin-top: 3px; }
+    .Editor .extras.extend {
+      height: 100%;
+      display: flex;
+      flex-direction: column; }
+      .Editor .extras.extend .more-info {
+        flex: 1 0 auto;
+        position: relative; }
+    .Editor .extras .buttons {
+      justify-content: flex-end;
+      display: flex;
+      width: calc(100vw - 100px);
+      text-align: right;
+      flex: 0 1 100px;
+      flex-wrap: wrap; }
+      .Editor .extras .buttons .tags-wrapper {
+        text-align: left;
+        flex: 1 1 auto; }
+        .Editor .extras .buttons .tags-wrapper .tags {
+          max-height: 30px; }
+        .Editor .extras .buttons .tags-wrapper .tag {
+          padding: 4px 12px;
+          color: white;
+          border-radius: 3px;
+          margin: 2px 20px 2px 0;
+          display: inline-block;
+          font-size: 16px;
+          transition: background .4s ease; }
+          .Editor .extras .buttons .tags-wrapper .tag:not(.white-background) {
+            background: #448AFF; }
+            .Editor .extras .buttons .tags-wrapper .tag:not(.white-background):hover {
+              background: #82B1FF; }
+      .Editor .extras .buttons .send-wrapper {
+        flex: 1 0 auto;
+        text-align: right; }
+      .Editor .extras .buttons .btn {
+        text-align: center;
+        flex: 0 0 60px; }
+        .Editor .extras .buttons .btn.accent {
+          flex: 0 0 auto;
+          width: 120px;
+          color: white;
+          background: #448AFF;
+          margin-left: 30px; }
+          .Editor .extras .buttons .btn.accent:hover:not(:active) {
+            background: #82B1FF;
+            color: white; }
+          .Editor .extras .buttons .btn.accent:active {
+            color: white; }
+        .Editor .extras .buttons .btn span {
+          transition: opacity .4s ease;
+          opacity: 0;
+          pointer-events: none; }
+    .Editor .extras .more-info {
+      margin-top: 10px;
+      width: inherit;
+      text-align: center;
+      pointer-events: none;
+      background: transparent;
+      transition: .4s ease; }
+      .Editor .extras .more-info input {
+        font-size: 16px;
+        display: block;
+        padding: 5px;
+        flex: 1 1 auto; }
+      .Editor .extras .more-info.hidden {
+        height: 0;
+        margin: 0;
+        opacity: 0; }
+      .Editor .extras .more-info .photo-preview {
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        height: 100%; }
+        .Editor .extras .more-info .photo-preview .photo-previewed-wrapper {
+          width: 100%;
+          flex: 1 0 auto;
+          position: relative; }
+          .Editor .extras .more-info .photo-preview .photo-previewed-wrapper .photo-wrapper {
+            width: 100%;
+            height: 100%; }
+        .Editor .extras .more-info .photo-preview .photo-no-scroll {
+          margin-top: 10px;
+          flex: 0 0 auto;
+          height: 105px; }
+      .Editor .extras .more-info .more-info-wrapper {
+        width: 100%;
+        max-height: 275px;
+        border-radius: 3px;
+        pointer-events: auto;
+        background: white;
+        margin: 0; }
+        .Editor .extras .more-info .more-info-wrapper .icon {
+          padding: 6px 0 0 6px;
+          font-size: 18px;
+          position: relative;
+          pointer-events: auto;
+          transition: color .4s ease; }
+          .Editor .extras .more-info .more-info-wrapper .icon .material-icons {
+            font-size: 18px; }
+          .Editor .extras .more-info .more-info-wrapper .icon:hover {
+            color: #448AFF; }
+        .Editor .extras .more-info .more-info-wrapper .vertical-align-wrapper {
+          height: 100%; }
+    .Editor .extras .current-tags-wrapper {
+      flex: 1 0 auto;
+      width: calc(100% - 60px); }
+    .Editor .extras .breaker {
+      margin: 10px 10px;
+      width: 1px;
+      background: lightgrey; }
+    .Editor .extras .photos {
+      text-align: left;
+      display: block; }
+      .Editor .extras .photos .photo {
+        height: 90px;
+        padding: 0 2.5px;
+        opacity: .5;
+        display: none;
+        transition: opacity .4s ease; }
+        .Editor .extras .photos .photo.selected {
+          opacity: 1;
+          display: inline-block; }
+      .Editor .extras .photos.show-all .photo:not(.selected) {
+        display: inline-block; }
+    .Editor .extras .music, .Editor .extras .link, .Editor .extras .movie {
+      text-align: center;
+      justify-content: center;
+      display: flex; }
+      .Editor .extras .music input, .Editor .extras .link input, .Editor .extras .movie input {
+        max-width: 30vw; }
+      .Editor .extras .music .title, .Editor .extras .link .title, .Editor .extras .movie .title {
+        text-align: right; }
+    .Editor .extras .title, .Editor .extras .by {
+      max-width: 30vw; }
+    .Editor .extras .url {
+      max-width: 40vw; }
+    .Editor .extras .movie input {
+      max-width: 50vw; }
+    .Editor .extras .link .text {
+      padding: 5px 0px 1px 10px; }
+    .Editor .extras .text {
+      font-size: 15px;
+      padding: 5px 10px 1px;
+      color: #448AFF; }
+    .Editor .extras .other-wrapper {
+      display: inline-block;
+      padding: 5px 0;
+      width: 960px; }
+      .Editor .extras .other-wrapper .other {
+        display: flex; }
+      .Editor .extras .other-wrapper .type-wrapper {
+        flex: 0 0 120px;
+        width: 120px;
+        background: #448AFF;
+        color: white;
+        position: relative; }
+        .Editor .extras .other-wrapper .type-wrapper.add {
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center; }
+          .Editor .extras .other-wrapper .type-wrapper.add .icon {
+            color: white;
+            position: static;
+            padding: 0;
+            height: 18px; }
+        .Editor .extras .other-wrapper .type-wrapper .type {
+          background: transparent;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          padding: 0;
+          text-align: center; }
+        .Editor .extras .other-wrapper .type-wrapper .icon {
+          position: absolute;
+          top: -11px;
+          right: -9px;
+          color: black;
+          padding: 0; }
+          .Editor .extras .other-wrapper .type-wrapper .icon:hover {
+            color: #1976D2; }
+      .Editor .extras .other-wrapper .other-props {
+        display: block;
+        width: 840px;
+        text-align: left; }
+        .Editor .extras .other-wrapper .other-props .other-prop {
+          padding: 5px 10px;
+          width: 400px;
+          display: inline-block; }
+          .Editor .extras .other-wrapper .other-props .other-prop.add .other-prop-wrapper {
+            padding-left: 10px; }
+          .Editor .extras .other-wrapper .other-props .other-prop .other-prop-wrapper {
+            display: flex; }
+          .Editor .extras .other-wrapper .other-props .other-prop .text {
+            text-align: left;
+            float: left;
+            flex: 0 0 auto; }
+          .Editor .extras .other-wrapper .other-props .other-prop .normal {
+            flex: 1 1 auto; }
+            .Editor .extras .other-wrapper .other-props .other-prop .normal.new-key {
+              flex: none; }
+              .Editor .extras .other-wrapper .other-props .other-prop .normal.new-key input {
+                color: #448AFF;
+                font-size: 15px; }
+  .Editor .shadow {
+    width: 100%;
+    background-color: #f2f2f2;
+    position: relative;
+    bottom: -2px;
+    height: 1px; }
+
+.EntryList {
+  height: 100%;
+  width: 100%; }
+  .EntryList .entries {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; }
+  .EntryList .time {
+    font-size: 12px;
+    text-align: center; }
+  .EntryList .details {
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis; }
+  .EntryList .article-list {
+    flex: 0 0 30%;
+    margin-right: 50px;
+    position: relative; }
+    .EntryList .article-list article {
+      margin: 30px;
+      width: calc(100% - 60px);
+      height: 300px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative; }
+      .EntryList .article-list article.no-image {
+        height: 105px;
+        background: #212121; }
+        .EntryList .article-list article.no-image:hover .title {
+          opacity: 0; }
+      .EntryList .article-list article .text {
+        overflow: hidden;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        transition: opacity .4s ease; }
+      .EntryList .article-list article .btn {
+        float: right;
+        opacity: 0; }
+      .EntryList .article-list article header {
+        padding-top: 8px;
+        background: #212121; }
+        .EntryList .article-list article header .title {
+          width: 100%;
+          text-align: center;
+          font-size: 25px;
+          color: white; }
+        .EntryList .article-list article header .time {
+          color: #00BCD4;
+          padding-top: 5px; }
+      .EntryList .article-list article .details {
+        color: white;
+        font-size: 14px;
+        font-weight: lighter;
+        width: calc(100% - 50px);
+        background: #212121;
+        padding: 10px 25px;
+        height: 20px; }
+      .EntryList .article-list article:not(.no-image):hover .text {
+        opacity: 0; }
+      .EntryList .article-list article:not(.no-image):hover .btn {
+        opacity: 1; }
+  .EntryList .bulb-list {
+    flex: 1 0 50%;
+    position: relative; }
+    .EntryList .bulb-list article {
+      font-size: 13px;
+      display: flex;
+      margin-bottom: 5px; }
+    .EntryList .bulb-list header {
+      flex: 0 0 80px;
+      text-align: center;
+      padding: 6px 10px;
+      background: #212121;
+      color: white; }
+    .EntryList .bulb-list .details {
+      font-weight: lighter;
+      margin: 4px 8px;
+      background: white; }
+      .EntryList .bulb-list .details:hover {
+        overflow: visible;
+        white-space: normal; }
+
+/*# sourceMappingURL=index.css.map */

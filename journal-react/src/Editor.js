@@ -8,8 +8,6 @@ import NoScrollArea from "./NoScrollArea"
 import Toggle from "./Toggle"
 import PredictionInput from "./PredictionInput"
 
-import './Editor.css';
-
 var Ink = require("react-ink");
 var AutosizeInput = require("react-input-autosize");
 

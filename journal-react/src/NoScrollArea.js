@@ -4,8 +4,6 @@
 
 import React, {Component} from "react";
 
-import "./NoScrollArea.css";
-
 export default class NoScrollArea extends Component {
 
   render() {

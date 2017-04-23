@@ -8,8 +8,6 @@ import NoScrollArea from "./NoScrollArea";
 import Button from "./Button";
 import R from "./R";
 
-import "./EntryList.css";
-
 export default class EntryList extends Component {
 
   constructor(props) {

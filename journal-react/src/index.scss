@@ -1,12 +1,262 @@
-@import "bootstrap.scss";
+@import "./base.scss";
 
-$stats-width: 200px;
-$title-height: 50px;
-$editor-padding: 50px;
-$full-width: calc(100vw - #{$editor-padding * 2});
-$button-width-accent: 120px;
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+.no-scroll {
+  $scroll-bar-padding: 20px;
+  $background-color: white;
+
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+
+  &.horizontal {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding-bottom: 20px;
+
+    &:before, &:after {
+      height: 100%;
+      width: $scroll-bar-padding;
+    }
+
+    &:before {
+      background: linear-gradient(to right, $background-color 0, transparent 100%);
+      left: 0;
+    }
+
+    &:after {
+      background: linear-gradient(to left, $background-color 0, transparent 100%);
+      right: 0;
+    }
+
+    .wrapper {
+      bottom: 0px;
+      height: $scroll-bar-padding;
+      width: 100%;
+    }
+
+    > * {
+      margin-left: 0;
+    }
+
+    > *:first-child {
+      margin-left: $scroll-bar-padding;
+    }
+
+    > *:last-child {
+      margin-right: $scroll-bar-padding;
+    }
+  }
+
+  .before, .after {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: $scroll-bar-padding;
+    content: "";
+    left: 0;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .before {
+    top: 0;
+  }
+
+  .after {
+    bottom: 0;
+  }
+
+  .wrapper {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: $scroll-bar-padding;
+    background: white;
+  }
+
+  .no-scroll-wrapper {
+    padding-right: 20px;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.toggle.vertical-align {
+  position: relative;
+  display: inline-block;
+
+  .first, .second {
+    transition: opacity .4s ease;
+  }
+
+  .first {
+    opacity: 1;
+  }
+
+  .second {
+    top: 0;
+    position: relative;
+    opacity: 0;
+  }
+
+  &.change-hover:hover.show-second, &:not(.change-hover).show-second {
+    .first {
+      opacity: 0;
+    }
+
+    .second {
+      opacity: 1;
+    }
+  }
+}
+
+.PredictionInput {
+  position: relative;
+
+  .prediction {
+    color: lightgrey;
+    font-size: inherit;
+    position: absolute;
+  }
+
+  .input {
+    background: transparent;
+    font-size: inherit;
+    display: inline-block;
+    height: 100%;
+    padding: 0;
+    width: 100%;
+  }
+}
+
+.Calendar {
+  $day-block-size: 20px;
+  $day-block-margin: 2px;
+  $month-list-width: 50px;
+
+  $default-background-color: white;
+  $padding-background-color: #f4f4f4;
+  $delimitor-border-color: black;
+
+  height: 100%;
+  max-height: 1000px; // todo maybe change this?
+
+  .calendar-table {
+    display: flex;
+
+    .month-list {
+      flex: 0 0 $month-list-width;
+      padding-right: 10px;
+    }
+
+    .day-blocks {
+      position: relative;
+      flex: 0 0 auto;
+      display: flex;
+      width: $day-block-size * 7;
+      flex-wrap: wrap;
+      background: $default-background-color;
+      justify-content: space-around;
+
+      .month-first {
+        &:before {
+          content: "month";
+          position: absolute;
+          left: -$month-list-width - 10px;
+          width: $month-list-width;
+          text-align: right;
+          padding-top: $day-block-size;
+        }
+      }
+
+      $MONTH: ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+
+      @for $i from 1 through 12 {
+        .month-#{$i - 1}:before {
+          color: $cp;
+          font-weight: bold;
+          content: nth($MONTH, $i);
+        }
+      }
+    }
+
+    @for $i from 1 through 6 {
+      .first-padding-#{$i} {
+        flex: 0 0 calc(#{$i} * 14.2857142857142857142857%);
+        background: $padding-background-color;
+      }
+    }
+
+    .last-padding {
+      flex: 1;
+      background: $padding-background-color;
+    }
+
+    .day-block {
+      background: $default-background-color;
+      height: $day-block-size;
+      flex: 0 0 calc(100% / 7);
+      transition: background .4s ease;
+
+      &.last-seven .day-block-wrapper {
+        border-bottom: $day-block-margin solid $delimitor-border-color;
+        padding-top: calc(100% - 1px);
+      }
+
+      &.last-one .day-block-wrapper {
+        border-right: $day-block-margin solid $delimitor-border-color;
+        width: calc(100% - #{$day-block-margin});
+      }
+
+      @for $i from 1 through 9 {
+        &.accent-#{$i} {
+          background: nth($cs, $i);
+        }
+      }
+
+      &.triangle .day-block-wrapper:after {
+        content: "\25e5";
+        position: absolute;
+        right: 0;
+        top: -2px;
+        font-size: 7px;
+      }
+
+      .day-block-wrapper {
+        width: 100%;
+        padding-top: 100%;
+        position: relative;
+
+        .text {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
+    }
+  }
+}
 
 .Editor {
+  $stats-width: 200px;
+  $title-height: 50px;
+  $editor-padding: 50px;
+  $full-width: calc(100vw - #{$editor-padding * 2});
+  $button-width-accent: 120px;
+
   width: calc(100% - #{2 * $editor-padding});
   height: calc(100% - #{2 * $editor-padding});
   display: flex;
@@ -461,5 +711,143 @@ $button-width-accent: 120px;
     position: relative;
     bottom: -2px;
     height: 1px;
+  }
+}
+
+.EntryList {
+  $timeline-width: 50px;
+
+  height: 100%;
+  width: 100%;
+
+  .entries {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .time {
+    font-size: 12px;
+    text-align: center;
+  }
+
+  .details {
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+  }
+
+  .article-list {
+    flex: 0 0 30%;
+    margin-right: $timeline-width;
+    position: relative;
+
+    article {
+      $article-margin: 30px;
+      $detail-padding: 25px;
+      $detail-height: 20px;
+
+      margin: 30px;
+      width: calc(100% - #{2*$article-margin});
+      height: 300px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+
+      &.no-image {
+        height: 105px;
+        background: $darkgrey;
+
+        &:hover {
+          .title {
+            opacity: 0;
+          }
+        }
+      }
+
+      .text {
+        overflow: hidden;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        transition: opacity .4s ease;
+      }
+
+      .btn {
+        float: right;
+        opacity: 0;
+      }
+
+      header {
+        padding-top: 8px;
+        background: $darkgrey;
+
+        .title {
+          width: 100%;
+          text-align: center;
+          font-size: 25px;
+          color: white;
+        }
+
+        .time {
+          color: $css;
+          padding-top: 5px;
+        }
+      }
+
+      .details {
+        color: white;
+        font-size: 14px;
+        font-weight: lighter;
+        width: calc(100% - #{$detail-padding*2});
+        background: $darkgrey;
+        padding: 10px $detail-padding;
+        height: $detail-height;
+      }
+
+      &:not(.no-image):hover {
+        .text {
+          opacity: 0;
+        }
+
+        .btn {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .bulb-list {
+    $padding: 4px;
+
+    flex: 1 0 50%;
+    position: relative;
+
+    article {
+      font-size: 13px;
+      display: flex;
+      margin-bottom: 5px;
+    }
+
+    header {
+      flex: 0 0 80px;
+      text-align: center;
+      padding: 6px 10px;
+      background: $darkgrey;
+      color: white;
+    }
+
+    .details {
+      font-weight: lighter;
+      margin: $padding 2*$padding;
+      background: white;
+
+      &:hover {
+        overflow: visible;
+        white-space: normal;
+      }
+    }
   }
 }

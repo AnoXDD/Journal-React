@@ -6,8 +6,6 @@
 import React, {Component} from "react";
 import Ink from "react-ink";
 
-import "./Button.css";
-
 export default class Button extends Component {
   render() {
     return (

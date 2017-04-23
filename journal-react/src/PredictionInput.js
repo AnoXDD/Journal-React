@@ -4,8 +4,6 @@
 
 import React, {Component} from 'react';
 
-import "./PredictionInput.css";
-
 export default class PredictionInput extends Component {
 
   state = {

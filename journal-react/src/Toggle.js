@@ -6,8 +6,6 @@
 import React, {Component} from "react";
 import Ink from "react-ink";
 
-import "./Toggle.css";
-
 export default class Toggle extends Component {
  
   state = { 
