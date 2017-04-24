@@ -654,7 +654,7 @@ html, body {
     margin-right: 50px;
     position: relative; }
     .EntryList .article-list article {
-      margin: 30px;
+      margin: 0 30px;
       width: calc(100% - 60px);
       height: 300px;
       background-size: cover;
@@ -682,7 +682,10 @@ html, body {
           width: 100%;
           text-align: center;
           font-size: 25px;
-          color: white; }
+          color: white;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden; }
         .EntryList .article-list article header .time {
           color: #00BCD4;
           padding-top: 5px; }
@@ -706,6 +709,8 @@ html, body {
       display: flex;
       margin-bottom: 5px;
       height: 27px; }
+      .EntryList .bulb-list article.bulb-first {
+        color: red; }
     .EntryList .bulb-list header {
       flex: 0 0 80px;
       text-align: center;

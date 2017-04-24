@@ -748,7 +748,7 @@ html, body {
       $detail-padding: 25px;
       $detail-height: 20px;
 
-      margin: 30px;
+      margin: 0 30px;
       width: calc(100% - #{2*$article-margin});
       height: 300px;
       background-size: cover;
@@ -789,6 +789,9 @@ html, body {
           text-align: center;
           font-size: 25px;
           color: white;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
 
         .time {
@@ -830,6 +833,10 @@ html, body {
       display: flex;
       margin-bottom: 5px;
       height: 27px;
+
+      &.bulb-first {
+        color: red;
+      }
     }
 
     header {

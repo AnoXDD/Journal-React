@@ -14,8 +14,8 @@ export default class EntryList extends Component {
   ARTICLE_IMAGE_HEIGHT = 300 + this.ARTICLE_MARGIN_TOP;
   ARTICLE_NO_IMAGE_HEIGHT = 105 + this.ARTICLE_MARGIN_TOP;
   BULB_HEIGHT_ORIGINAL = 27;
-  BULB_HEIGHT_MARGIN = 5;
-  BULB_HEIGHT = this.BULB_HEIGHT_ORIGINAL + this.BULB_HEIGHT_MARGIN;
+  BULB_MARGIN_TOP = 5;
+  BULB_HEIGHT = this.BULB_HEIGHT_ORIGINAL + this.BULB_MARGIN_TOP;
 
   /**
    * Stores the original positions and times of articles
@@ -23,8 +23,9 @@ export default class EntryList extends Component {
    */
   articles = {};
   articleMargin = [];
-
   articleList = [];
+
+  bulbMargin = [];
   bulbList = [];
 
   constructor(props) {
@@ -48,15 +49,19 @@ export default class EntryList extends Component {
     var {data} = props;
 
     this.bulbList = [];
+    this.bulbMargin = {};
     this.articleList = [];
     this.articleMargin = {};
     this.articles = [];
 
-    let nextArticleIndex = 0,
-        currentBulbBottom = 0,
-        accumulatedArticleAdjustedTop = 0,
-        adjustedArticle = 0,
-        lastBottom = 0;
+    let nextOlderArticleIndex = 0,
+        adjustedArticleTop = 0,
+        adjustedBulbTop = 0,
+        adjustedArticles = 0,
+        adjustedBulbs = 0,
+        lastBulbLeadIndex = 0,
+        currentBulbBottom = -this.BULB_MARGIN_TOP,
+        currentArticleBottom = -this.ARTICLE_MARGIN_TOP;
 
     for (let index = 0; index < data.length; ++index) {
       let content = data[index];
@@ -65,19 +70,34 @@ export default class EntryList extends Component {
         // Bulb
         this.bulbList.push(content);
 
-        if (this.articles[nextArticleIndex] && this.articles[nextArticleIndex].time > content.time.created) {
+        if (this.articles[nextOlderArticleIndex] && this.articles[nextOlderArticleIndex].time > content.time.created) {
           // The bulbs above it form a group
-          // Adjust the top margin of the last article
-          if (currentBulbBottom > this.articles[nextArticleIndex].bottom + accumulatedArticleAdjustedTop) {
-            // The bottom of current bulb group is lower than the last
-            // article block
-            let adjusted = currentBulbBottom - (accumulatedArticleAdjustedTop + this.articles[nextArticleIndex].bottom) - this.BULB_HEIGHT_MARGIN + this.ARTICLE_MARGIN_TOP * (++adjustedArticle);
+          let nextOlderArticle = this.articles[nextOlderArticleIndex],
+              adjustedBulbBottom = currentBulbBottom + adjustedBulbTop,
+              adjustedArticleBottom = nextOlderArticle.bottom + adjustedArticleTop;
 
-            accumulatedArticleAdjustedTop += adjusted;
-            this.articleMargin[this.articles[nextArticleIndex].propIndex] = adjusted + "px";
+          // Adjust the top margin of the last article
+          if (adjustedBulbBottom > adjustedArticleBottom) {
+            // The bottom of current bulb group is lower than the bottom of the
+            // last article block
+            let adjusted = adjustedBulbBottom - adjustedArticleBottom + this.ARTICLE_MARGIN_TOP * (adjustedArticles++);
+
+            adjustedArticleTop += adjusted;
+            this.articleMargin[nextOlderArticle.propIndex] = adjusted + "px";
+
+          } else if (adjustedBulbBottom - this.BULB_HEIGHT <
+              adjustedArticleBottom - nextOlderArticle.height) {
+            // The bottom of the current bulb group is higher than the top of
+            // the last article block
+
+            let adjusted = adjustedArticleBottom - nextOlderArticle.height - (adjustedBulbBottom - this.BULB_HEIGHT) + this.BULB_MARGIN_TOP * (adjustedBulbs++);
+
+            adjustedBulbTop += adjusted;
+            this.bulbMargin[lastBulbLeadIndex] = adjusted + "px";
           }
 
-          ++nextArticleIndex;
+          ++nextOlderArticleIndex;
+          lastBulbLeadIndex = this.bulbList.length - 1;
         }
 
         currentBulbBottom += this.BULB_HEIGHT;
@@ -85,12 +105,15 @@ export default class EntryList extends Component {
         // Journal
         this.articleList.push(content);
 
-        lastBottom += content.images ? this.ARTICLE_IMAGE_HEIGHT : this.ARTICLE_NO_IMAGE_HEIGHT;
+        let height = content.images ? this.ARTICLE_IMAGE_HEIGHT : this.ARTICLE_NO_IMAGE_HEIGHT;
+        currentArticleBottom += height;
 
         this.articles.push({
           propIndex: index,
-          bottom   : lastBottom,
+          height   : height,
+          bottom   : currentArticleBottom,
           time     : content.time.created,
+          title    : content.title,
         });
 
       }
@@ -101,7 +124,7 @@ export default class EntryList extends Component {
    * Generate a form list "Yesterday 12:34 - 12:56"
    */
   generateHumanFormTimeFromArticle(time) {
-    var date = new Date(time.start || time.created),
+    var date = new Date(time.created || time.start),
         hour = date.getHours(),
         minute = date.getMinutes(),
         year = date.getFullYear(),
@@ -183,7 +206,7 @@ export default class EntryList extends Component {
       className: className,
       style    : {
         backgroundImage: background,
-        marginTop      : this.articleMargin[this.articles [index].propIndex] || "30px",
+        marginTop      : this.articleMargin[this.articles[index].propIndex] || "30px",
       },
     };
   }
@@ -219,13 +242,26 @@ export default class EntryList extends Component {
     );
   }
 
+  generateBulbStyle(index) {
+    if (this.bulbMargin[index]) {
+      return {
+        className: "bulb-first",
+        style    : {marginTop: this.bulbMargin[index]}
+      };
+    }
+
+    return {};
+  }
+
   generateBulbList() {
     return (
         <div className="bulb-list">
           <div className="flex-extend-inner-wrapper">
             {this.bulbList.map((bulb, index) => {
               return (
-                  <article key={`bulb-preview-${bulb.time.created}`}>
+                  <article key={`bulb-preview-${bulb.time.created}`}
+                      {...this.generateBulbStyle(index)}
+                  >
                     <header className="shadow-light">
                       <div className="time">
                         {this.generateHumanFormTimeFromArticle(bulb.time)}
