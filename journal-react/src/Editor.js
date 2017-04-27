@@ -994,11 +994,12 @@ class Editor extends Component {
 
           <header
               className={`${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}`}>
-            <input className="title normal underlined"
-                   value={this.state.title}
-                   onChange={this.onTitleChange}
-                   disabled={!this.state.isEditing}
-                   defaultValue={this.convertToDateTime(new Date()).substr(0, 7)}
+            <input
+                className={`title normal underlined ${this.state.isFullscreen ? "hidden" : ""}`}
+                value={this.state.title}
+                onChange={this.onTitleChange}
+                disabled={!this.state.isEditing}
+                defaultValue={this.convertToDateTime(new Date()).substr(0, 7)}
             />
             <div className="stats">
               <div className="stat chars">
@@ -1037,7 +1038,8 @@ class Editor extends Component {
               </NoScrollArea>
             </div>
           </div>
-          <div className="shadow up"></div>
+          <div
+              className={`shadow up ${this.state.isFullscreen ? "hidden" : ""}`}></div>
           <div
               className={`extras ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "extend" : ""} ${this.state.isFullscreen ? "hidden" : ""} `}>
             <div className="buttons">

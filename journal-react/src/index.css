@@ -408,7 +408,8 @@ html, body {
       position: absolute;
       height: 100%;
       padding: 0 50px;
-      width: calc(100% - 100px); }
+      width: calc(100% - 100px);
+      transition: .4s ease; }
   .Editor .text-body {
     -moz-tab-size: 2em;
     -o-tab-size: 2em;
@@ -418,8 +419,7 @@ html, body {
     font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
     font-weight: lighter;
     padding-left: 0;
-    height: calc(100% - 80px);
-    resize: y; }
+    height: calc(100% - 80px); }
   .Editor .extras {
     position: relative;
     background: white;
