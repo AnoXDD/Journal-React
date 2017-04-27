@@ -94,6 +94,9 @@ export default class EntryList extends Component {
 
             adjustedBulbTop += adjusted;
             this.bulbMargin[lastBulbLeadIndex] = adjusted + "px";
+          } else {
+            // ++adjustedBulbs;
+            this.bulbMargin[lastBulbLeadIndex] = "0px";
           }
 
           ++nextOlderArticleIndex;
@@ -113,7 +116,7 @@ export default class EntryList extends Component {
           height   : height,
           bottom   : currentArticleBottom,
           time     : content.time.created,
-          title    : content.title,
+          title    : content.title, // todo remove this line for release
         });
 
       }

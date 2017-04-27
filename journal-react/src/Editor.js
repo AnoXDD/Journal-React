@@ -7,6 +7,7 @@ import {
 import NoScrollArea from "./NoScrollArea"
 import Toggle from "./Toggle"
 import PredictionInput from "./PredictionInput"
+import Button from "./Button"
 
 var Ink = require("react-ink");
 var AutosizeInput = require("react-input-autosize");
@@ -247,6 +248,7 @@ class Editor extends Component {
     this.state = {
       title           : this.convertToDateTime(new Date()).substr(0, 7),
       body            : "",
+      bodyWidth       : this.props.bodyWidth || 80,
       stats           : {
         timeCreated: 0,
         timeBegin  : 0,
@@ -422,6 +424,8 @@ class Editor extends Component {
     this.generateRemovePanelFor = this.generateRemovePanelFor.bind(this);
     this.generateRemovePanelForOthers = this.generateRemovePanelForOthers.bind(
         this);
+    this.onIncreasingTextBodyWidth = this.onIncreasingTextBodyWidth.bind(this);
+    this.onDecreasingTextBodyWidth = this.onDecreasingTextBodyWidth.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onBodyChange = this.onBodyChange.bind(this);
     this.onBodyKeyDown = this.onBodyKeyDown.bind(this);
@@ -766,6 +770,18 @@ class Editor extends Component {
 
   // region Listeners (on...Change)
 
+  onDecreasingTextBodyWidth() {
+    this.setState({
+      bodyWidth: Math.max(this.state.bodyWidth - 5, 10)
+    });
+  }
+
+  onIncreasingTextBodyWidth() {
+    this.setState({
+      bodyWidth: Math.min(this.state.bodyWidth + 5, 100)
+    });
+  }
+
   onTitleChange(event) {
     this.setState({
       title: event.target.value
@@ -964,6 +980,18 @@ class Editor extends Component {
   render() {
     return (
         <div className="Editor">
+          <nav className="nav">
+            <Button onClick={this.onDecreasingTextBodyWidth}>format_indent_decrease</Button>
+            <Button onClick={this.onIncreasingTextBodyWidth}>format_indent_increase</Button>
+            <Toggle
+                className="btn fullscreen"
+                isChanging={this.state.isFullscreen}
+                onClick={this.toggleFullscreen}
+                firstIcon="fullscreen"
+                secondIcon="fullscreen_exit"
+            />
+          </nav>
+
           <header
               className={`${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}`}>
             <input className="title normal underlined"
@@ -991,17 +1019,13 @@ class Editor extends Component {
                 {this.convertToElapsed(this.state.timeElapsed)}
               </div>
             </div>
-            <Toggle
-                className="btn fullscreen"
-                isChanging={this.state.isFullscreen}
-                onClick={this.toggleFullscreen}
-                firstIcon="fullscreen"
-                secondIcon="fullscreen_exit"
-            ></Toggle>
           </header>
+
           <div
               className={`text-body-wrapper ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}`}>
-            <div className="text-body-wrapper-2">
+            <div className="text-body-wrapper-2"
+                 style={{padding: `0 ${50-this.state.bodyWidth/2}%`, width: `${this.state.bodyWidth}%`}}
+            >
               <NoScrollArea>
                 <textarea className="text-body"
                           value={this.state.body}
@@ -1053,12 +1077,8 @@ class Editor extends Component {
                     );
                   }) }
               <span className="breaker"></span>
-              <a className={`vertical-align btn ${this.state.isEditing ? "" : "hidden"} `}
-                 onClick={()=>{/*todo implement this*/console.log("todo");}}
-              >
-                <Ink/>
-                <i className="vertical-align-wrapper material-icons">delete</i>
-              </a>
+              <Button className={`${this.state.isEditing ? "" : "hidden"}`}
+                      onClick={()=>{console.log("TOdo")}}>delete</Button>
               <Toggle
                   className="btn send-edit accent"
                   isChanging={!this.state.isEditing}

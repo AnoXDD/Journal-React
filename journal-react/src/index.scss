@@ -275,6 +275,13 @@ html, body {
     }
   }
 
+  nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+  }
+
   header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
@@ -333,12 +340,6 @@ html, body {
         }
       }
     }
-
-    .fullscreen {
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
   }
 
   .text-body-wrapper {
@@ -361,9 +362,11 @@ html, body {
     tab-size: 2em;
     flex: 1 1 auto;
     font-size: 25px;
+    font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
     font-weight: lighter;
     padding-left: 0;
     height: calc(100% - #{$scroll-bar-padding * 2});
+    resize: y;
   }
 
   .extras {

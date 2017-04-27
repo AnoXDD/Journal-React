@@ -355,6 +355,11 @@ html, body {
     padding: 20px; }
     .Editor input:active, .Editor input:focus, .Editor textarea:active, .Editor textarea:focus {
       outline: none; }
+  .Editor nav {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex; }
   .Editor header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
@@ -394,10 +399,6 @@ html, body {
       .Editor header .stats:hover .times {
         width: 12ch;
         margin-left: 20px; }
-    .Editor header .fullscreen {
-      position: absolute;
-      right: 0;
-      top: 0; }
   .Editor .text-body-wrapper {
     width: calc(100vw - 100px);
     flex: 1 1 auto;
@@ -414,9 +415,11 @@ html, body {
     tab-size: 2em;
     flex: 1 1 auto;
     font-size: 25px;
+    font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
     font-weight: lighter;
     padding-left: 0;
-    height: calc(100% - 80px); }
+    height: calc(100% - 80px);
+    resize: y; }
   .Editor .extras {
     position: relative;
     background: white;
