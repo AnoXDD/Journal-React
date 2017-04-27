@@ -717,6 +717,27 @@ html, body {
   }
 }
 
+.NumberCard {
+  $number-height: 22px;
+
+  @for $i from 0 through 9 {
+    .number-card-#{$i} {
+      bottom: $number-height*$i;
+    }
+  }
+
+  .number-card {
+    position: relative;
+    transition: bottom .4s ease;
+    width: 1ch;
+    text-align: center;
+    word-wrap: break-word;
+    display: inline-block;
+    white-space: pre-wrap;
+    float: right;
+  }
+}
+
 .EntryList {
   $timeline-width: 50px;
 

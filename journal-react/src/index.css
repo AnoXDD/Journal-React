@@ -637,6 +637,36 @@ html, body {
     bottom: -2px;
     height: 1px; }
 
+.NumberCard .number-card-0 {
+  bottom: 0px; }
+.NumberCard .number-card-1 {
+  bottom: 22px; }
+.NumberCard .number-card-2 {
+  bottom: 44px; }
+.NumberCard .number-card-3 {
+  bottom: 66px; }
+.NumberCard .number-card-4 {
+  bottom: 88px; }
+.NumberCard .number-card-5 {
+  bottom: 110px; }
+.NumberCard .number-card-6 {
+  bottom: 132px; }
+.NumberCard .number-card-7 {
+  bottom: 154px; }
+.NumberCard .number-card-8 {
+  bottom: 176px; }
+.NumberCard .number-card-9 {
+  bottom: 198px; }
+.NumberCard .number-card {
+  position: relative;
+  transition: bottom .4s ease;
+  width: 1ch;
+  text-align: center;
+  word-wrap: break-word;
+  display: inline-block;
+  white-space: pre-wrap;
+  float: right; }
+
 .EntryList {
   height: 100%;
   width: 100%; }

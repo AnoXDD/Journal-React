@@ -4,10 +4,11 @@ import {
     SortableElement,
     arrayMove
 } from 'react-sortable-hoc';
-import NoScrollArea from "./NoScrollArea"
-import Toggle from "./Toggle"
-import PredictionInput from "./PredictionInput"
-import Button from "./Button"
+import NoScrollArea from "./NoScrollArea";
+import Toggle from "./Toggle";
+import PredictionInput from "./PredictionInput";
+import Button from "./Button";
+import NumberCard from "./NumberCard";
 
 var Ink = require("react-ink");
 var AutosizeInput = require("react-input-autosize");
@@ -1003,7 +1004,7 @@ class Editor extends Component {
             />
             <div className="stats">
               <div className="stat chars">
-                { this.countChars(this.state.body) }
+                <NumberCard value={this.countChars(this.state.body)}/>
               </div>
               <div className="stat times">
                 <div className="time created">
