@@ -84,8 +84,9 @@ img.center {
   width: 60px;
   font-weight: lighter;
   text-align: center;
-  transition: .4s ease; }
-  .btn.dark {
+  transition: .4s ease;
+  user-select: none; }
+  .btn.dark, .Editor.dark .nav .btn {
     background: #212121;
     color: white; }
   .btn:after {
@@ -367,6 +368,12 @@ nav.nav {
   position: absolute;
   flex-flow: column;
   padding: 50px; }
+  .Editor.dark {
+    background: #212121; }
+    .Editor.dark input, .Editor.dark textarea {
+      color: white; }
+    .Editor.dark .nav .btn {
+      transition: none; }
   .Editor input, .Editor textarea {
     border: none;
     resize: none;
@@ -433,7 +440,8 @@ nav.nav {
     font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
     font-weight: lighter;
     padding-left: 0;
-    height: calc(100% - 80px); }
+    height: calc(100% - 80px);
+    background: inherit; }
   .Editor .extras {
     position: relative;
     background: white;

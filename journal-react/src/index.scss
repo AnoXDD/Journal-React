@@ -296,6 +296,19 @@ nav.nav {
   flex-flow: column;
   padding: $editor-padding;
 
+  &.dark {
+    background: $darkgrey;
+
+    input, textarea {
+      color: white;
+    }
+
+    .nav .btn {
+      @extend .btn.dark;
+      transition: none;
+    }
+  }
+
   input, textarea {
     border: none;
     resize: none;
@@ -392,6 +405,7 @@ nav.nav {
     font-weight: lighter;
     padding-left: 0;
     height: calc(100% - #{$scroll-bar-padding * 2});
+    background: inherit;
   }
 
   .extras {

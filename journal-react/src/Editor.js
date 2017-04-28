@@ -408,6 +408,7 @@ class Editor extends Component {
         }],
         isEditing       : false,
         isFullscreen    : false,
+        isDarkMode      : false,
       };
     }
 
@@ -440,6 +441,7 @@ class Editor extends Component {
     this.toggleEditMode = this.toggleEditMode.bind(this);
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
+    this.toggleDarkMode = this.toggleDarkMode.bind(this);
   }
 
   generateCurrentTags() {
@@ -499,7 +501,16 @@ class Editor extends Component {
     let state = this.state.isFullscreen;
 
     this.setState({
-      isFullscreen: !state
+      isFullscreen: !state,
+      isDarkMode  : false,
+    });
+  }
+
+  toggleDarkMode() {
+    let state = this.state.isDarkMode;
+
+    this.setState({
+      isDarkMode: !state,
     });
   }
 
@@ -980,8 +991,10 @@ class Editor extends Component {
 
   render() {
     return (
-        <div className="Editor">
+        <div className={`Editor ${this.state.isDarkMode ? "dark" : ""}`}>
           <nav className="nav">
+            <Button className={`${this.state.isFullscreen ? "" : "hidden"}`}
+                    onClick={this.toggleDarkMode}>highlight</Button>
             <Button onClick={this.onDecreasingTextBodyWidth}>format_indent_decrease</Button>
             <Button onClick={this.onIncreasingTextBodyWidth}>format_indent_increase</Button>
             <Toggle
@@ -1029,14 +1042,13 @@ class Editor extends Component {
             <div className="text-body-wrapper-2"
                  style={{padding: `0 ${50-this.state.bodyWidth/2}%`, width: `${this.state.bodyWidth}%`}}
             >
-              <NoScrollArea>
+              <NoScrollArea
+                  backgroundColor={`${this.state.isDarkMode ? "#212121" : "white"}`}>
                 <textarea className="text-body"
                           value={this.state.body}
                           onChange={this.onBodyChange}
                           onKeyDown={this.onBodyKeyDown}
-                          disabled={!this.state.isEditing}
-                >
-                </textarea>
+                          disabled={!this.state.isEditing}/>
               </NoScrollArea>
             </div>
           </div>

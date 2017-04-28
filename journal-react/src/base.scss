@@ -156,6 +156,7 @@ img.center {
   font-weight: lighter;
   text-align: center;
   transition: .4s ease;
+  user-select: none;
 
   &.dark {
     background: $darkgrey;
