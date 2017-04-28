@@ -991,6 +991,7 @@ class Editor extends Component {
                 firstIcon="fullscreen"
                 secondIcon="fullscreen_exit"
             />
+            <Button className="hint">more_vert</Button>
           </nav>
 
           <header

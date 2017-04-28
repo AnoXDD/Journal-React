@@ -11,6 +11,38 @@ html, body {
   width: 100%;
 }
 
+nav.nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+
+  .btn {
+    transition: .4s ease;
+
+    &:not(.hint) {
+      opacity: 0;
+    }
+  }
+
+  .hint {
+    position: absolute;
+    right: 0;
+    top: 0;
+    pointer-events: none;
+  }
+
+  &:hover {
+    .btn:not(.hint) {
+      opacity: 1;
+    }
+
+    .btn.hint {
+      opacity: 0;
+    }
+  }
+}
+
 .no-scroll {
   $scroll-bar-padding: 20px;
   $background-color: white;
@@ -273,13 +305,6 @@ html, body {
     &:active, &:focus {
       outline: none;
     }
-  }
-
-  nav {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex;
   }
 
   header {

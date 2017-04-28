@@ -122,6 +122,25 @@ html, body {
   height: 100%;
   width: 100%; }
 
+nav.nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex; }
+  nav.nav .btn {
+    transition: .4s ease; }
+    nav.nav .btn:not(.hint) {
+      opacity: 0; }
+  nav.nav .hint {
+    position: absolute;
+    right: 0;
+    top: 0;
+    pointer-events: none; }
+  nav.nav:hover .btn:not(.hint) {
+    opacity: 1; }
+  nav.nav:hover .btn.hint {
+    opacity: 0; }
+
 .no-scroll {
   position: relative;
   overflow: hidden;
@@ -355,11 +374,6 @@ html, body {
     padding: 20px; }
     .Editor input:active, .Editor input:focus, .Editor textarea:active, .Editor textarea:focus {
       outline: none; }
-  .Editor nav {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: flex; }
   .Editor header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
