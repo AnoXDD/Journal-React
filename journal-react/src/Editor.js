@@ -820,6 +820,7 @@ class Editor extends Component {
       // Put caret at right position again
       t.selectionStart = (t.selectionEnd) = start + 1;
     } else if (e.key === "Enter") {
+
       // Process the body
       let t = e.target,
           lines = t.value.split(/\r*\n/),
@@ -853,6 +854,13 @@ class Editor extends Component {
           stats: stats,
           body : lines.join("\r\n"),
         });
+      }
+    } else {
+
+      // Scroll to the bottom if applicable
+      let t = e.target;
+      if (t.selectionEnd === t.value.length) {
+        t.scrollTop = t.scrollHeight;
       }
     }
   }
