@@ -778,7 +778,7 @@ nav.nav {
 }
 
 .EntryList {
-  $timeline-width: 100px;
+  $timeline-width: 70px;
   $timeline-dot-radius: 4px;
   $timeline-dot-radius-small: 3px;
 
@@ -811,7 +811,7 @@ nav.nav {
     .timeline {
       $timeline-width-actual: 2px;
 
-      background: $css;
+      background: #e3e3e3;
       width: $timeline-width-actual;
       position: absolute;
       left: calc(50% - #{$timeline-width-actual/2});
@@ -846,6 +846,7 @@ nav.nav {
       $article-margin: 30px;
       $detail-padding: 25px;
       $detail-height: 20px;
+      $header-padding: 8px;
 
       margin: 0 0 $article-margin $article-margin;
       width: calc(100% - #{$article-margin});
@@ -871,9 +872,18 @@ nav.nav {
         height: 105px;
         background: $darkgrey;
 
+        .title {
+          transition: width .4s ease;
+          padding-bottom: 5px;
+        }
+
         &:hover {
           .title {
-            opacity: 0;
+            width: calc(100% - #{$button-width});
+          }
+
+          .btn {
+            opacity: 1;
           }
         }
       }
@@ -892,7 +902,7 @@ nav.nav {
       }
 
       header {
-        padding-top: 8px;
+        padding-top: $header-padding;
         background: $darkgrey;
 
         .title {
@@ -903,7 +913,6 @@ nav.nav {
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
-          color: transparent;
         }
 
         .time {
@@ -920,7 +929,6 @@ nav.nav {
         background: $darkgrey;
         padding: 10px $detail-padding;
         height: $detail-height;
-        color: transparent;
       }
 
       &:not(.no-image):hover {
@@ -948,20 +956,33 @@ nav.nav {
       display: flex;
       margin-bottom: 5px;
       height: $article-height;
+      width: 100%;
       position: absolute;
 
       &:after {
         @include article-after($timeline-dot-radius-small);
 
         left: -$timeline-width / 2 - $timeline-dot-radius-small;
-        bottom: $article-height / 2 - $timeline-dot-radius-small;
+        top: $article-height / 2 - $timeline-dot-radius-small;
       }
 
-      &:hover:after {
-        @include article-hover-after($timeline-dot-radius-small);
+      &:hover {
+        height: auto;
+        z-index: 5;
+        background-color: white;
+        box-shadow: 0 0 3px 3px white;
 
-        left: -$timeline-width / 2 - $timeline-dot-radius-small;
-        bottom: $article-height / 2 - $timeline-dot-radius-small;
+        .details {
+          overflow: visible;
+          white-space: normal;
+        }
+
+        &:after {
+          @include article-hover-after($timeline-dot-radius-small);
+
+          left: -$timeline-width / 2 - $timeline-dot-radius-small;
+          top: $article-height / 2 - $timeline-dot-radius-small;
+        }
       }
     }
 
@@ -977,12 +998,6 @@ nav.nav {
       font-weight: lighter;
       margin: $padding 2*$padding;
       background: white;
-      color: transparent;
-
-      &:hover {
-        overflow: visible;
-        white-space: normal;
-      }
     }
   }
 }

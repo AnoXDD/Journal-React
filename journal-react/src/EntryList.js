@@ -216,8 +216,8 @@ export default class EntryList extends Component {
                   <article key={`bulb-preview-${bulb.time.created}`}
                       {...this.generateBulbStyle(bulb.time.created)}
                   >
-                    <header className="shadow-light">
-                      <div className="time">
+                    <header className="shadow-light vertical-align">
+                      <div className="time vertical-align-wrapper">
                         {this.generateHumanFormTimeFromArticle(bulb.time)}
                       </div>
                     </header>

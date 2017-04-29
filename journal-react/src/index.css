@@ -705,11 +705,11 @@ nav.nav {
     -ms-text-overflow: ellipsis;
     text-overflow: ellipsis; }
   .EntryList .timeline-wrapper {
-    flex: 0 0 100px;
+    flex: 0 0 70px;
     position: relative;
     height: 100%; }
     .EntryList .timeline-wrapper .timeline {
-      background: #00BCD4;
+      background: #e3e3e3;
       width: 2px;
       position: absolute;
       left: calc(50% - 1px); }
@@ -735,7 +735,7 @@ nav.nav {
         box-shadow: 0 0 2px 3px white;
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
-        right: -54px; }
+        right: -39px; }
       .EntryList .article-list article:hover:after {
         content: "";
         position: absolute;
@@ -749,12 +749,17 @@ nav.nav {
         transition: background .2s ease, box-shadow .2s ease;
         background: white;
         box-shadow: 0 0 2px 2px #00BCD4;
-        right: -54px; }
+        right: -39px; }
       .EntryList .article-list article.no-image {
         height: 105px;
         background: #212121; }
+        .EntryList .article-list article.no-image .title {
+          transition: width .4s ease;
+          padding-bottom: 5px; }
         .EntryList .article-list article.no-image:hover .title {
-          opacity: 0; }
+          width: calc(100% - 60px); }
+        .EntryList .article-list article.no-image:hover .btn {
+          opacity: 1; }
       .EntryList .article-list article .text {
         overflow: hidden;
         position: absolute;
@@ -774,8 +779,7 @@ nav.nav {
           color: white;
           white-space: nowrap;
           text-overflow: ellipsis;
-          overflow: hidden;
-          color: transparent; }
+          overflow: hidden; }
         .EntryList .article-list article header .time {
           color: #00BCD4;
           padding-top: 5px; }
@@ -786,8 +790,7 @@ nav.nav {
         width: calc(100% - 50px);
         background: #212121;
         padding: 10px 25px;
-        height: 20px;
-        color: transparent; }
+        height: 20px; }
       .EntryList .article-list article:not(.no-image):hover .text {
         opacity: 0; }
       .EntryList .article-list article:not(.no-image):hover .btn {
@@ -800,6 +803,7 @@ nav.nav {
       display: flex;
       margin-bottom: 5px;
       height: 27px;
+      width: 100%;
       position: absolute; }
       .EntryList .bulb-list article:after {
         content: "";
@@ -812,23 +816,31 @@ nav.nav {
         box-shadow: 0 0 2px 3px white;
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
-        left: -53px;
-        bottom: 10.5px; }
-      .EntryList .bulb-list article:hover:after {
-        content: "";
-        position: absolute;
-        border-radius: 3px;
-        height: 6px;
-        width: 6px;
-        bottom: 0;
-        background: #00BCD4;
-        box-shadow: 0 0 2px 3px white;
-        z-index: 1;
-        transition: background .2s ease, box-shadow .2s ease;
-        background: white;
-        box-shadow: 0 0 2px 2px #00BCD4;
-        left: -53px;
-        bottom: 10.5px; }
+        left: -38px;
+        top: 10.5px; }
+      .EntryList .bulb-list article:hover {
+        height: auto;
+        z-index: 5;
+        background-color: white;
+        box-shadow: 0 0 3px 3px white; }
+        .EntryList .bulb-list article:hover .details {
+          overflow: visible;
+          white-space: normal; }
+        .EntryList .bulb-list article:hover:after {
+          content: "";
+          position: absolute;
+          border-radius: 3px;
+          height: 6px;
+          width: 6px;
+          bottom: 0;
+          background: #00BCD4;
+          box-shadow: 0 0 2px 3px white;
+          z-index: 1;
+          transition: background .2s ease, box-shadow .2s ease;
+          background: white;
+          box-shadow: 0 0 2px 2px #00BCD4;
+          left: -38px;
+          top: 10.5px; }
     .EntryList .bulb-list header {
       flex: 0 0 80px;
       text-align: center;
@@ -838,10 +850,6 @@ nav.nav {
     .EntryList .bulb-list .details {
       font-weight: lighter;
       margin: 4px 8px;
-      background: white;
-      color: transparent; }
-      .EntryList .bulb-list .details:hover {
-        overflow: visible;
-        white-space: normal; }
+      background: white; }
 
 /*# sourceMappingURL=index.css.map */
