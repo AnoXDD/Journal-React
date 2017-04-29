@@ -689,6 +689,52 @@ nav.nav {
   white-space: pre-wrap;
   float: right; }
 
+.Image {
+  position: relative;
+  width: 100%;
+  height: 100%; }
+@keyframes fade-in {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+@keyframes fade-out {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0; } }
+@keyframes fade-in-2 {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+@keyframes fade-out-2 {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0; } }
+  .Image.toggle .image:first-child {
+    opacity: 0;
+    animation: fade-out-2 .4s ease; }
+  .Image.toggle .image:last-child {
+    opacity: 1;
+    animation: fade-in-2 .4s ease; }
+  .Image .image:first-child {
+    opacity: 0;
+    animation: fade-out .4s ease; }
+  .Image .image:last-child {
+    opacity: 1;
+    animation: fade-in .4s ease; }
+  .Image .stretch {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0; }
+
 .EntryView {
   height: 100%;
   width: 100%; }

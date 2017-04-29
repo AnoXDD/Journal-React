@@ -6,6 +6,7 @@
 import React, {Component} from "react";
 import NoScrollArea from "./NoScrollArea";
 import Button from "./Button";
+import Image from "./Image";
 import R from "./R";
 
 class BulbImageView extends Component {
@@ -17,9 +18,11 @@ class BulbImageView extends Component {
             <Button onClick={this.props.onClickHide}>close</Button>
           </nav>
           <div className="bulb-image-viewer-wrapper">
-            <img onClick={() => {window.open(this.props.src)}}
-                 className="center" src={`${this.props.src || ""}`}
-                 alt=""/>
+            <Image
+                blank={true}
+                onClick={() => {window.open(this.props.src)}}
+                src={`${this.props.src || ""}`}
+            />
           </div>
         </div>
     );
@@ -57,11 +60,7 @@ class EntryList extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.version !== this.currentVersion) {
-      return true;
-    }
-
-    return false;
+    return nextProps.version !== this.currentVersion;
   }
 
   componentWillUpdate(nextProps) {
@@ -235,10 +234,14 @@ class EntryList extends Component {
       style: {top: this.contentStyle[bulb.time.created]},
     };
 
+    if (this.props.debug) {
+      bulb.images = [undefined];
+    }
+
     if (bulb.images) {
-      let rand = bulb.time.created % 3;
+      let rand = (bulb.time.created / 1000) % 5;
       prop.onMouseOver = () => {
-        this.props.onBulbContentMouseOver(bulb.images[0]);
+        this.props.onBulbContentMouseOver(bulb.images[0] || `https://unsplash.it/300/${200 + rand * 100}?image=${rand}`);
       };
     }
 
@@ -287,7 +290,9 @@ class EntryList extends Component {
   }
 }
 
-export default class EntryView extends Component {
+export
+default
+class EntryView extends Component {
   constructor(props) {
     super(props);
 

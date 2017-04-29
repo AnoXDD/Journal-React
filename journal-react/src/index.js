@@ -15,6 +15,7 @@ ReactDOM.render(
     // debug={true}
     // />,
     <EntryView data={TestData.data}
+               debug={true}
                imageMap={{}}
                version={new Date().getTime()}/>,
     document.getElementById('root')
