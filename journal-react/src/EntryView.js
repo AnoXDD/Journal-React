@@ -13,8 +13,12 @@ class BulbImageView extends Component {
     return (
         <div
             className={`bulb-image-viewer ${this.props.className || ""}`}>
+          <nav className="nav">
+            <Button onClick={this.props.onClickHide}>close</Button>
+          </nav>
           <div className="bulb-image-viewer-wrapper">
-            <img className="center" src={`${this.props.src || ""}`}
+            <img onClick={() => {window.open(this.props.src)}}
+                 className="center" src={`${this.props.src || ""}`}
                  alt=""/>
           </div>
         </div>
@@ -231,13 +235,10 @@ class EntryList extends Component {
       style: {top: this.contentStyle[bulb.time.created]},
     };
 
-    // debug only
-    bulb.images = [undefined];
-
     if (bulb.images) {
       let rand = bulb.time.created % 3;
       prop.onMouseOver = () => {
-        this.props.onBulbContentMouseOver(bulb.images[0] || `https://unsplash.it/500/${200 + rand * 100}?image=${rand}`);
+        this.props.onBulbContentMouseOver(bulb.images[0]);
       };
     }
 
@@ -246,8 +247,7 @@ class EntryList extends Component {
 
   generateBulbList() {
     let mouseEvents = {
-      onMouseOver : this.props.onBulbMouseOver,
-      onMouseLeave: this.props.onBulbMouseLeave,
+      onMouseOver: this.props.onBulbMouseOver,
     };
 
     return (
@@ -295,22 +295,44 @@ export default class EntryView extends Component {
       bulbImage          : "",
       isShowingBulbViewer: "",
     };
+
+    this.hideBulbViewer = this.hideBulbViewer.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
+  componentWillMount() {
+    document.addEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  hideBulbViewer() {
+    this.setState({
+      isShowingBulbViewer: false,
+    });
+  }
+
+  handleKeyDown(e) {
+    if (e.key === "Escape") {
+      this.hideBulbViewer();
+    }
   }
 
   render() {
     return (
         <div className="EntryView">
           <BulbImageView
-              className={`${this.state.isShowingBulbViewer ? "" : "hidden"}`}
+              className={`${this.state.isShowingBulbViewer ? "show" : ""}`}
               src={this.state.bulbImage}
+              onClickHide={this.hideBulbViewer}
           />
           <NoScrollArea padding="20px">
             <div className="entry-list">
               <EntryList
                   {...this.props}
-                  onBulbMouseOver={() => this.setState({isShowingBulbViewer: true})}
-                  onBulbMouseLeave={() => this.setState({isShowingBulbViewer: false})}
-                  onBulbContentMouseOver={src => this.setState({bulbImage: src})}
+                  onBulbContentMouseOver={src => this.setState({isShowingBulbViewer: true,bulbImage: src})}
               />
             </div>
           </NoScrollArea>

@@ -1000,7 +1000,7 @@ class Editor extends Component {
   render() {
     return (
         <div className={`Editor ${this.state.isDarkMode ? "dark" : ""}`}>
-          <nav className="nav">
+          <nav className="nav has-hint">
             <Button className={`${this.state.isFullscreen ? "" : "hidden"}`}
                     onClick={this.toggleDarkMode}>highlight</Button>
             <Button onClick={this.onDecreasingTextBodyWidth}>format_indent_decrease</Button>

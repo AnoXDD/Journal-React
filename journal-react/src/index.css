@@ -130,16 +130,16 @@ nav.nav {
   display: flex; }
   nav.nav .btn {
     transition: .4s ease; }
-    nav.nav .btn:not(.hint) {
-      opacity: 0; }
-  nav.nav .hint {
+  nav.nav.has-hint .btn:not(.hint) {
+    opacity: 0; }
+  nav.nav.has-hint .hint {
     position: absolute;
     right: 0;
     top: 0;
     pointer-events: none; }
-  nav.nav:hover .btn:not(.hint) {
+  nav.nav.has-hint:hover .btn:not(.hint) {
     opacity: 1; }
-  nav.nav:hover .btn.hint {
+  nav.nav.has-hint:hover .btn.hint {
     opacity: 0; }
 
 .no-scroll {
@@ -728,7 +728,15 @@ nav.nav {
     top: 0;
     height: 100%;
     z-index: 10;
-    text-align: center; }
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .4s ease; }
+    .EntryView .bulb-image-viewer.show {
+      opacity: 1;
+      pointer-events: auto; }
+    .EntryView .bulb-image-viewer .nav {
+      z-index: inherit; }
     .EntryView .bulb-image-viewer .bulb-image-viewer-wrapper {
       background: white;
       height: 100%;

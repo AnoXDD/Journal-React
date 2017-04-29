@@ -19,26 +19,30 @@ nav.nav {
 
   .btn {
     transition: .4s ease;
-
-    &:not(.hint) {
-      opacity: 0;
-    }
   }
 
-  .hint {
-    position: absolute;
-    right: 0;
-    top: 0;
-    pointer-events: none;
-  }
-
-  &:hover {
-    .btn:not(.hint) {
-      opacity: 1;
+  &.has-hint {
+    .btn {
+      &:not(.hint) {
+        opacity: 0;
+      }
     }
 
-    .btn.hint {
-      opacity: 0;
+    .hint {
+      position: absolute;
+      right: 0;
+      top: 0;
+      pointer-events: none;
+    }
+
+    &:hover {
+      .btn:not(.hint) {
+        opacity: 1;
+      }
+
+      .btn.hint {
+        opacity: 0;
+      }
     }
   }
 }
@@ -863,6 +867,18 @@ nav.nav {
     height: 100%;
     z-index: 10;
     text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .4s ease;
+
+    &.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .nav {
+      z-index: inherit;
+    }
 
     .bulb-image-viewer-wrapper {
       background: white;
