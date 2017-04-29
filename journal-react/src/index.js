@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Editor from './Editor';
 import Calendar from "./Calendar";
-import EntryList from "./EntryList";
+import EntryView from "./EntryView";
 
 import TestData from "./TestData";
 
@@ -14,7 +14,7 @@ ReactDOM.render(
     // bodyWidth={60}
     // debug={true}
     // />,
-    <EntryList data={TestData.data}
+    <EntryView data={TestData.data}
                imageMap={{}}
                version={new Date().getTime()}/>,
     document.getElementById('root')

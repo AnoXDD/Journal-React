@@ -689,56 +689,56 @@ nav.nav {
   white-space: pre-wrap;
   float: right; }
 
-.EntryList {
+.EntryView {
   height: 100%;
   width: 100%; }
-  .EntryList article {
+  .EntryView article {
     transition: top .4s ease; }
-    .EntryList article:before {
+    .EntryView article:before {
       content: "";
       position: absolute;
       height: 1px;
       width: 0;
       background: #00BCD4;
       transition: width .4s ease; }
-  .EntryList .entries {
+  .EntryView .entries {
     display: flex;
     flex-direction: row;
     justify-content: space-between; }
-  .EntryList .time {
+  .EntryView .time {
     font-size: 12px;
     text-align: center; }
-  .EntryList .details {
+  .EntryView .details {
     overflow: hidden;
     white-space: nowrap;
     -ms-text-overflow: ellipsis;
     text-overflow: ellipsis; }
-  .EntryList .timeline-wrapper {
+  .EntryView .timeline-wrapper {
     flex: 0 0 70px;
     position: relative;
     height: 100%; }
-    .EntryList .timeline-wrapper .timeline {
+    .EntryView .timeline-wrapper .timeline {
       background: #e3e3e3;
       width: 2px;
       position: absolute;
       left: calc(50% - 1px); }
-  .EntryList .bulb-image-viewer {
+  .EntryView .bulb-image-viewer {
     position: absolute;
     width: calc(30% + 35px - 4px);
     top: 0;
     height: 100%;
     z-index: 10;
     text-align: center; }
-    .EntryList .bulb-image-viewer .bulb-image-viewer-wrapper {
+    .EntryView .bulb-image-viewer .bulb-image-viewer-wrapper {
       background: white;
       height: 100%;
       width: calc(100% - 30px);
       margin: auto;
       position: relative; }
-  .EntryList .article-list {
+  .EntryView .article-list {
     flex: 0 0 30%;
     position: relative; }
-    .EntryList .article-list article {
+    .EntryView .article-list article {
       margin: 0 0 30px 30px;
       width: calc(100% - 30px);
       height: 300px;
@@ -746,11 +746,11 @@ nav.nav {
       background-position: center;
       background-repeat: no-repeat;
       position: absolute; }
-      .EntryList .article-list article:before {
+      .EntryView .article-list article:before {
         right: -35px;
         bottom: 4px;
         background: #00BCD4; }
-      .EntryList .article-list article:after {
+      .EntryView .article-list article:after {
         content: "";
         position: absolute;
         border-radius: 4px;
@@ -762,9 +762,9 @@ nav.nav {
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
         right: -39px; }
-      .EntryList .article-list article:hover:before {
+      .EntryView .article-list article:hover:before {
         width: 35px; }
-      .EntryList .article-list article:hover:after {
+      .EntryView .article-list article:hover:after {
         content: "";
         position: absolute;
         border-radius: 4px;
@@ -778,29 +778,29 @@ nav.nav {
         background: white;
         box-shadow: 0 0 2px 2px #00BCD4;
         right: -39px; }
-      .EntryList .article-list article.no-image {
+      .EntryView .article-list article.no-image {
         height: 105px;
         background: #212121; }
-        .EntryList .article-list article.no-image .title {
+        .EntryView .article-list article.no-image .title {
           transition: width .4s ease;
           padding-bottom: 5px; }
-        .EntryList .article-list article.no-image:hover .title {
+        .EntryView .article-list article.no-image:hover .title {
           width: calc(100% - 60px); }
-        .EntryList .article-list article.no-image:hover .btn {
+        .EntryView .article-list article.no-image:hover .btn {
           opacity: 1; }
-      .EntryList .article-list article .text {
+      .EntryView .article-list article .text {
         overflow: hidden;
         position: absolute;
         bottom: 0;
         width: 100%;
         transition: opacity .4s ease; }
-      .EntryList .article-list article .btn {
+      .EntryView .article-list article .btn {
         float: right;
         opacity: 0; }
-      .EntryList .article-list article header {
+      .EntryView .article-list article header {
         padding-top: 8px;
         background: #212121; }
-        .EntryList .article-list article header .title {
+        .EntryView .article-list article header .title {
           width: 100%;
           text-align: center;
           font-size: 25px;
@@ -808,10 +808,10 @@ nav.nav {
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden; }
-        .EntryList .article-list article header .time {
+        .EntryView .article-list article header .time {
           color: #00BCD4;
           padding-top: 5px; }
-      .EntryList .article-list article .details {
+      .EntryView .article-list article .details {
         color: white;
         font-size: 14px;
         font-weight: lighter;
@@ -819,24 +819,24 @@ nav.nav {
         background: #212121;
         padding: 10px 25px;
         height: 20px; }
-      .EntryList .article-list article:not(.no-image):hover .text {
+      .EntryView .article-list article:not(.no-image):hover .text {
         opacity: 0; }
-      .EntryList .article-list article:not(.no-image):hover .btn {
+      .EntryView .article-list article:not(.no-image):hover .btn {
         opacity: 1; }
-  .EntryList .bulb-list {
+  .EntryView .bulb-list {
     flex: 1 0 50%;
     position: relative; }
-    .EntryList .bulb-list article {
+    .EntryView .bulb-list article {
       font-size: 13px;
       display: flex;
       margin-bottom: 5px;
       width: 100%;
       position: absolute; }
-      .EntryList .bulb-list article:before {
+      .EntryView .bulb-list article:before {
         left: -35px;
         background: #00BCD4;
         top: 13.5px; }
-      .EntryList .bulb-list article:after {
+      .EntryView .bulb-list article:after {
         content: "";
         position: absolute;
         border-radius: 3px;
@@ -850,17 +850,17 @@ nav.nav {
         background: #80DEEA;
         left: -38px;
         top: 10.5px; }
-      .EntryList .bulb-list article:hover {
+      .EntryView .bulb-list article:hover {
         height: auto;
         z-index: 5;
         background-color: white;
         box-shadow: 0 0 3px 3px white; }
-        .EntryList .bulb-list article:hover .details {
+        .EntryView .bulb-list article:hover .details {
           overflow: visible;
           white-space: normal; }
-        .EntryList .bulb-list article:hover:before {
+        .EntryView .bulb-list article:hover:before {
           width: 35px; }
-        .EntryList .bulb-list article:hover:after {
+        .EntryView .bulb-list article:hover:after {
           content: "";
           position: absolute;
           border-radius: 3px;
@@ -875,17 +875,17 @@ nav.nav {
           box-shadow: 0 0 2px 2px #00BCD4;
           left: -38px;
           top: 10.5px; }
-    .EntryList .bulb-list header {
+    .EntryView .bulb-list header {
       flex: 0 0 80px;
       text-align: center;
       padding: 6px 10px;
       background: #212121;
       color: white; }
-    .EntryList .bulb-list .details {
+    .EntryView .bulb-list .details {
       font-weight: lighter;
       margin: 4px 8px;
       background: white; }
-    .EntryList .bulb-list .image {
+    .EntryView .bulb-list .image {
       position: absolute;
       right: calc(100% + 70px); }
 

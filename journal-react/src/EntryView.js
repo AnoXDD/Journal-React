@@ -8,7 +8,21 @@ import NoScrollArea from "./NoScrollArea";
 import Button from "./Button";
 import R from "./R";
 
-export default class EntryList extends Component {
+class BulbImageView extends Component {
+  render() {
+    return (
+        <div
+            className={`bulb-image-viewer ${this.props.className || ""}`}>
+          <div className="bulb-image-viewer-wrapper">
+            <img className="center" src={`${this.props.src || ""}`}
+                 alt=""/>
+          </div>
+        </div>
+    );
+  }
+}
+
+class EntryList extends Component {
 
   ARTICLE_MARGIN = 30;
   ARTICLE_IMAGE_HEIGHT = 300 + this.ARTICLE_MARGIN;
@@ -31,11 +45,6 @@ export default class EntryList extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      bulbImage          : "",
-      isShowingBulbViewer: "",
-    };
-
     this.generateArticleList = this.generateArticleList.bind(this);
     this.generateBulbList = this.generateBulbList.bind(this);
     this.updateContentStyle = this.updateContentStyle.bind(this);
@@ -43,10 +52,16 @@ export default class EntryList extends Component {
     this.updateContentStyle(props);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     if (nextProps.version !== this.currentVersion) {
-      this.updateContentStyle(nextProps);
+      return true;
     }
+
+    return false;
+  }
+
+  componentWillUpdate(nextProps) {
+    this.updateContentStyle(nextProps);
   }
 
   /**
@@ -222,9 +237,7 @@ export default class EntryList extends Component {
     if (bulb.images) {
       let rand = bulb.time.created % 3;
       prop.onMouseOver = () => {
-        this.setState({
-          bulbImage: bulb.images[0] || `https://unsplash.it/500/${200 + rand * 100}?image=${rand}`
-        });
+        this.props.onBulbContentMouseOver(bulb.images[0] || `https://unsplash.it/500/${200 + rand * 100}?image=${rand}`);
       };
     }
 
@@ -233,9 +246,9 @@ export default class EntryList extends Component {
 
   generateBulbList() {
     let mouseEvents = {
-      onMouseOver : () => this.setState({isShowingBulbViewer: true}),
-      onMouseLeave: () => this.setState({isShowingBulbViewer: false}),
-    }
+      onMouseOver : this.props.onBulbMouseOver,
+      onMouseLeave: this.props.onBulbMouseLeave,
+    };
 
     return (
         <div className="bulb-list" {...mouseEvents}
@@ -262,25 +275,47 @@ export default class EntryList extends Component {
 
   render() {
     return (
-        <div className="EntryList">
-          <NoScrollArea padding="20px">
-            <div className="entries">
-              <div
-                  className={`bulb-image-viewer ${this.state.isShowingBulbViewer ? "" : "hidden"}`}>
-                <div className="bulb-image-viewer-wrapper">
-                  <img className="center" src={`${this.state.bulbImage || ""}`}
-                       alt=""/>
-                </div>
-              </div>
-              {this.generateArticleList()}
-              <div className="timeline-wrapper">
+        <div className="entries">
+          {this.generateArticleList()}
+          <div className="timeline-wrapper">
                 <span className="timeline"
                       style={{height: `${this.contentStyle.height || 0}px`}}/>
-              </div>
-              {this.generateBulbList()}
+          </div>
+          {this.generateBulbList()}
+        </div>
+    );
+  }
+}
+
+export default class EntryView extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      bulbImage          : "",
+      isShowingBulbViewer: "",
+    };
+  }
+
+  render() {
+    return (
+        <div className="EntryView">
+          <BulbImageView
+              className={`${this.state.isShowingBulbViewer ? "" : "hidden"}`}
+              src={this.state.bulbImage}
+          />
+          <NoScrollArea padding="20px">
+            <div className="entry-list">
+              <EntryList
+                  {...this.props}
+                  onBulbMouseOver={() => this.setState({isShowingBulbViewer: true})}
+                  onBulbMouseLeave={() => this.setState({isShowingBulbViewer: false})}
+                  onBulbContentMouseOver={src => this.setState({bulbImage: src})}
+              />
             </div>
           </NoScrollArea>
         </div>
     );
   }
 }
+
