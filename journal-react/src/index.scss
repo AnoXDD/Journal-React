@@ -979,6 +979,7 @@ nav.nav {
       &:after {
         @include article-after($timeline-dot-radius-small);
 
+        background: $csl;
         left: -$timeline-width / 2 - $timeline-dot-radius-small;
         top: $article-height / 2 - $timeline-dot-radius-small;
       }

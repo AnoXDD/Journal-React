@@ -215,15 +215,11 @@ export default class EntryList extends Component {
     bulb.images = [undefined];
 
     if (bulb.images) {
+      let rand = bulb.time.created % 3;
       prop.onMouseOver = () => {
         this.setState({
-          bulbImage: bulb.images[0] || `https://unsplash.it/500/${200 + parseInt(
-              Math.random() * 3) * 100}/?random`
+          bulbImage: bulb.images[0] || `https://unsplash.it/500/${200 + rand * 100}?image=${rand}`
         });
-      };
-
-      prop.onMouseLeave = () => {
-        this.setState({bulbImage: ""});
       };
     }
 
