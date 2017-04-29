@@ -704,18 +704,37 @@ nav.nav {
     white-space: nowrap;
     -ms-text-overflow: ellipsis;
     text-overflow: ellipsis; }
+  .EntryList .timeline-wrapper {
+    flex: 0 0 100px;
+    position: relative;
+    height: 100%; }
+    .EntryList .timeline-wrapper .timeline {
+      background: #00BCD4;
+      width: 2px;
+      position: absolute;
+      left: calc(50% - 1px); }
   .EntryList .article-list {
     flex: 0 0 30%;
-    margin-right: 50px;
     position: relative; }
     .EntryList .article-list article {
-      margin: 0 30px;
-      width: calc(100% - 60px);
+      margin: 0 0 30px 30px;
+      width: calc(100% - 30px);
       height: 300px;
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       position: absolute; }
+      .EntryList .article-list article:after {
+        content: "";
+        position: absolute;
+        border-radius: 4px;
+        height: 8px;
+        width: 8px;
+        bottom: 0;
+        background: #00BCD4;
+        box-shadow: 0 0 5px 4px white;
+        z-index: 1;
+        right: -54px; }
       .EntryList .article-list article.no-image {
         height: 105px;
         background: #212121; }
@@ -767,8 +786,18 @@ nav.nav {
       margin-bottom: 5px;
       height: 27px;
       position: absolute; }
-      .EntryList .bulb-list article.bulb-first {
-        color: red; }
+      .EntryList .bulb-list article:after {
+        content: "";
+        position: absolute;
+        border-radius: 3px;
+        height: 6px;
+        width: 6px;
+        bottom: 0;
+        background: #00BCD4;
+        box-shadow: 0 0 5px 4px white;
+        z-index: 1;
+        left: -53px;
+        bottom: 10.5px; }
     .EntryList .bulb-list header {
       flex: 0 0 80px;
       text-align: center;

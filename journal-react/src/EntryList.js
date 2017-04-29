@@ -31,20 +31,22 @@ export default class EntryList extends Component {
 
     this.generateArticleList = this.generateArticleList.bind(this);
     this.generateBulbList = this.generateBulbList.bind(this);
-    this.updateContents = this.updateContents.bind(this);
+    this.updateContentStyle = this.updateContentStyle.bind(this);
 
-    this.updateContents(props);
+    this.updateContentStyle(props);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    this.updateContents(nextProps);
+    this.updateContentStyle(nextProps);
   }
 
   /**
    * Return the correct state based on this.props
    */
-  updateContents(props) {
+  updateContentStyle(props) {
     this.contentStyle = {};
+    this.bulbList = [];
+    this.articleList = [];
 
     let {data} = props,
         articleHeight = 0,
@@ -73,6 +75,8 @@ export default class EntryList extends Component {
         articleHeight = top + currentHeight;
       }
     }
+
+    this.contentStyle.height = Math.max(articleHeight, bulbHeight);
   }
 
   /**
@@ -232,6 +236,10 @@ export default class EntryList extends Component {
           <NoScrollArea padding="20px">
             <div className="entries">
               {this.generateArticleList()}
+              <div className="timeline-wrapper">
+                <span className="timeline"
+                      style={{height: `${this.contentStyle.height || 0}px`}}></span>
+              </div>
               {this.generateBulbList()}
             </div>
           </NoScrollArea>
