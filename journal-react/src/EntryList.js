@@ -29,6 +29,11 @@ export default class EntryList extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      bulbImage          : "",
+      isShowingBulbViewer: "",
+    };
+
     this.generateArticleList = this.generateArticleList.bind(this);
     this.generateBulbList = this.generateBulbList.bind(this);
     this.updateContentStyle = this.updateContentStyle.bind(this);
@@ -201,20 +206,44 @@ export default class EntryList extends Component {
     );
   }
 
-  generateBulbStyle(time) {
-    return {
-      style: {top: this.contentStyle[time]},
+  generateBulbProp(bulb) {
+    let prop = {
+      style: {top: this.contentStyle[bulb.time.created]},
     };
+
+    // debug only
+    bulb.images = [undefined];
+
+    if (bulb.images) {
+      prop.onMouseOver = () => {
+        this.setState({
+          bulbImage: bulb.images[0] || `https://unsplash.it/500/${200 + parseInt(
+              Math.random() * 3) * 100}/?random`
+        });
+      };
+
+      prop.onMouseLeave = () => {
+        this.setState({bulbImage: ""});
+      };
+    }
+
+    return prop;
   }
 
   generateBulbList() {
+    let mouseEvents = {
+      onMouseOver : () => this.setState({isShowingBulbViewer: true}),
+      onMouseLeave: () => this.setState({isShowingBulbViewer: false}),
+    }
+
     return (
-        <div className="bulb-list">
+        <div className="bulb-list" {...mouseEvents}
+             style={{height: `${this.contentStyle.height || 0}px`}}>
           <div className="flex-extend-inner-wrapper">
             {this.bulbList.map(bulb => {
               return (
                   <article key={`bulb-preview-${bulb.time.created}`}
-                      {...this.generateBulbStyle(bulb.time.created)}
+                      {...this.generateBulbProp(bulb)}
                   >
                     <header className="shadow-light vertical-align">
                       <div className="time vertical-align-wrapper">
@@ -235,10 +264,17 @@ export default class EntryList extends Component {
         <div className="EntryList debug">
           <NoScrollArea padding="20px">
             <div className="entries">
+              <div
+                  className={`bulb-image-viewer ${this.state.isShowingBulbViewer ? "" : "hidden"}`}>
+                <div className="bulb-image-viewer-wrapper">
+                  <img className="center" src={`${this.state.bulbImage || ""}`}
+                       alt=""/>
+                </div>
+              </div>
               {this.generateArticleList()}
               <div className="timeline-wrapper">
                 <span className="timeline"
-                      style={{height: `${this.contentStyle.height || 0}px`}}></span>
+                      style={{height: `${this.contentStyle.height || 0}px`}}/>
               </div>
               {this.generateBulbList()}
             </div>

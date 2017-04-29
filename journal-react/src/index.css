@@ -713,6 +713,19 @@ nav.nav {
       width: 2px;
       position: absolute;
       left: calc(50% - 1px); }
+  .EntryList .bulb-image-viewer {
+    position: absolute;
+    width: calc(30% + 35px - 4px);
+    top: 0;
+    height: 100%;
+    z-index: 10;
+    text-align: center; }
+    .EntryList .bulb-image-viewer .bulb-image-viewer-wrapper {
+      background: white;
+      height: 100%;
+      width: 90%;
+      margin: auto;
+      position: relative; }
   .EntryList .article-list {
     flex: 0 0 30%;
     position: relative; }
@@ -851,5 +864,8 @@ nav.nav {
       font-weight: lighter;
       margin: 4px 8px;
       background: white; }
+    .EntryList .bulb-list .image {
+      position: absolute;
+      right: calc(100% + 70px); }
 
 /*# sourceMappingURL=index.css.map */

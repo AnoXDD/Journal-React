@@ -781,6 +781,11 @@ nav.nav {
   $timeline-width: 70px;
   $timeline-dot-radius: 4px;
   $timeline-dot-radius-small: 3px;
+  $article-margin: 30px;
+  $article-width: 30%;
+  $detail-padding: 25px;
+  $detail-height: 20px;
+  $header-padding: 8px;
 
   height: 100%;
   width: 100%;
@@ -838,16 +843,28 @@ nav.nav {
     box-shadow: 0 0 2px 2px $css;
   }
 
+  .bulb-image-viewer {
+    position: absolute;
+    width: calc(#{$article-width} + #{$timeline-width/2} - #{$timeline-dot-radius});
+    top: 0;
+    height: 100%;
+    z-index: 10;
+    text-align: center;
+
+    .bulb-image-viewer-wrapper {
+      background: white;
+      height: 100%;
+      width: 90%;
+      margin: auto;
+      position: relative;
+    }
+  }
+
   .article-list {
     flex: 0 0 30%;
     position: relative;
 
     article {
-      $article-margin: 30px;
-      $detail-padding: 25px;
-      $detail-height: 20px;
-      $header-padding: 8px;
-
       margin: 0 0 $article-margin $article-margin;
       width: calc(100% - #{$article-margin});
       height: 300px;
@@ -998,6 +1015,12 @@ nav.nav {
       font-weight: lighter;
       margin: $padding 2*$padding;
       background: white;
+    }
+
+    .image {
+      position: absolute;
+      right: calc(100% + #{$timeline-width});
+
     }
   }
 }
