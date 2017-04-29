@@ -16,7 +16,7 @@ ReactDOM.render(
     // />,
     <EntryList data={TestData.data}
                imageMap={{}}
-               year={2016}/>,
+               version={new Date().getTime()}/>,
     document.getElementById('root')
 )
 ;

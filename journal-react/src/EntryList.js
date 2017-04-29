@@ -26,6 +26,8 @@ export default class EntryList extends Component {
   articleList = [];
   bulbList = [];
 
+  currentVersion = 0;
+
   constructor(props) {
     super(props);
 
@@ -42,7 +44,9 @@ export default class EntryList extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    this.updateContentStyle(nextProps);
+    if (nextProps.version !== this.currentVersion) {
+      this.updateContentStyle(nextProps);
+    }
   }
 
   /**
@@ -81,6 +85,7 @@ export default class EntryList extends Component {
       }
     }
 
+    this.currentVersion = props.version;
     this.contentStyle.height = Math.max(articleHeight, bulbHeight);
   }
 
@@ -257,7 +262,7 @@ export default class EntryList extends Component {
 
   render() {
     return (
-        <div className="EntryList debug">
+        <div className="EntryList">
           <NoScrollArea padding="20px">
             <div className="entries">
               <div

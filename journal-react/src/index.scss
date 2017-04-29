@@ -790,6 +790,19 @@ nav.nav {
   height: 100%;
   width: 100%;
 
+  article {
+    transition: top .4s ease;
+
+    &:before {
+      content: "";
+      position: absolute;
+      height: 1px;
+      width: 0;
+      background: $css;
+      transition: width .4s ease;
+    }
+  }
+
   .entries {
     display: flex;
     flex-direction: row;
@@ -854,7 +867,7 @@ nav.nav {
     .bulb-image-viewer-wrapper {
       background: white;
       height: 100%;
-      width: 90%;
+      width: calc(100% - 30px);
       margin: auto;
       position: relative;
     }
@@ -873,16 +886,28 @@ nav.nav {
       background-repeat: no-repeat;
       position: absolute;
 
+      &:before {
+        right: -$timeline-width / 2;
+        bottom: $timeline-dot-radius;
+        background: $css;
+      }
+
       &:after {
         @include article-after($timeline-dot-radius);
 
         right: -$timeline-width / 2 - $timeline-dot-radius;
       }
 
-      &:hover:after {
-        @include article-hover-after($timeline-dot-radius);
+      &:hover {
+        &:before {
+          width: $timeline-width / 2;
+        }
 
-        right: -$timeline-width / 2 - $timeline-dot-radius;
+        &:after {
+          @include article-hover-after($timeline-dot-radius);
+
+          right: -$timeline-width / 2 - $timeline-dot-radius;
+        }
       }
 
       &.no-image {
@@ -972,9 +997,14 @@ nav.nav {
       font-size: 13px;
       display: flex;
       margin-bottom: 5px;
-      height: $article-height;
       width: 100%;
       position: absolute;
+
+      &:before {
+        left: -$timeline-width / 2;
+        background: $css;
+        top: $article-height / 2;
+      }
 
       &:after {
         @include article-after($timeline-dot-radius-small);
@@ -993,6 +1023,10 @@ nav.nav {
         .details {
           overflow: visible;
           white-space: normal;
+        }
+
+        &:before {
+          width: $timeline-width / 2;
         }
 
         &:after {
