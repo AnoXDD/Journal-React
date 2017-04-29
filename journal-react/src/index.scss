@@ -817,7 +817,7 @@ nav.nav {
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      position: relative;
+      position: absolute;
 
       &.no-image {
         height: 105px;
@@ -855,6 +855,7 @@ nav.nav {
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
+          color: transparent;
         }
 
         .time {
@@ -871,6 +872,7 @@ nav.nav {
         background: $darkgrey;
         padding: 10px $detail-padding;
         height: $detail-height;
+        color: transparent;
       }
 
       &:not(.no-image):hover {
@@ -896,6 +898,7 @@ nav.nav {
       display: flex;
       margin-bottom: 5px;
       height: 27px;
+      position: absolute;
 
       &.bulb-first {
         color: red;
@@ -914,6 +917,7 @@ nav.nav {
       font-weight: lighter;
       margin: $padding 2*$padding;
       background: white;
+      color: transparent;
 
       &:hover {
         overflow: visible;

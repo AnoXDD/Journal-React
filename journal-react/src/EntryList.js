@@ -10,22 +10,20 @@ import R from "./R";
 
 export default class EntryList extends Component {
 
-  ARTICLE_MARGIN_TOP = 30;
-  ARTICLE_IMAGE_HEIGHT = 300 + this.ARTICLE_MARGIN_TOP;
-  ARTICLE_NO_IMAGE_HEIGHT = 105 + this.ARTICLE_MARGIN_TOP;
+  ARTICLE_MARGIN = 30;
+  ARTICLE_IMAGE_HEIGHT = 300 + this.ARTICLE_MARGIN;
+  ARTICLE_NO_IMAGE_HEIGHT = 105 + this.ARTICLE_MARGIN;
   BULB_HEIGHT_ORIGINAL = 27;
   BULB_MARGIN_TOP = 5;
   BULB_HEIGHT = this.BULB_HEIGHT_ORIGINAL + this.BULB_MARGIN_TOP;
 
   /**
-   * Stores the original positions and times of articles
+   * Stores the original positions and times of articles and bulbs
    * @type {{}}
    */
-  articles = {};
-  articleMargin = [];
-  articleList = [];
+  contentStyle = {};
 
-  bulbMargin = [];
+  articleList = [];
   bulbList = [];
 
   constructor(props) {
@@ -46,79 +44,33 @@ export default class EntryList extends Component {
    * Return the correct state based on this.props
    */
   updateContents(props) {
-    var {data} = props;
+    this.contentStyle = {};
 
-    this.bulbList = [];
-    this.bulbMargin = {};
-    this.articleList = [];
-    this.articleMargin = {};
-    this.articles = [];
+    let {data} = props,
+        articleHeight = 0,
+        bulbHeight = 0;
 
-    let nextOlderArticleIndex = 0,
-        adjustedArticleTop = 0,
-        adjustedBulbTop = 0,
-        adjustedArticles = 0,
-        adjustedBulbs = 0,
-        lastBulbLeadIndex = 0,
-        currentBulbBottom = -this.BULB_MARGIN_TOP,
-        currentArticleBottom = -this.ARTICLE_MARGIN_TOP;
-
-    for (let index = 0; index < data.length; ++index) {
-      let content = data[index];
-
+    for (let content of data) {
       if (content.contentType) {
         // Bulb
         this.bulbList.push(content);
 
-        if (this.articles[nextOlderArticleIndex] && this.articles[nextOlderArticleIndex].time > content.time.created) {
-          // The bulbs above it form a group
-          let nextOlderArticle = this.articles[nextOlderArticleIndex],
-              adjustedBulbBottom = currentBulbBottom + adjustedBulbTop,
-              adjustedArticleBottom = nextOlderArticle.bottom + adjustedArticleTop;
+        // Calculate the height
+        let top = Math.max(articleHeight - this.BULB_HEIGHT_ORIGINAL,
+            bulbHeight);
+        this.contentStyle[content.time.created] = top;
 
-          // Adjust the top margin of the last article
-          if (adjustedBulbBottom > adjustedArticleBottom) {
-            // The bottom of current bulb group is lower than the bottom of the
-            // last article block
-            let adjusted = adjustedBulbBottom - adjustedArticleBottom + this.ARTICLE_MARGIN_TOP * (adjustedArticles++);
-
-            adjustedArticleTop += adjusted;
-            this.articleMargin[nextOlderArticle.propIndex] = adjusted + "px";
-
-          } else if (adjustedBulbBottom - this.BULB_HEIGHT <
-              adjustedArticleBottom - nextOlderArticle.height) {
-            // The bottom of the current bulb group is higher than the top of
-            // the last article block
-
-            let adjusted = adjustedArticleBottom - nextOlderArticle.height - (adjustedBulbBottom - this.BULB_HEIGHT) + this.BULB_MARGIN_TOP * (adjustedBulbs++);
-
-            adjustedBulbTop += adjusted;
-            this.bulbMargin[lastBulbLeadIndex] = adjusted + "px";
-          } else {
-            // ++adjustedBulbs;
-            this.bulbMargin[lastBulbLeadIndex] = "0px";
-          }
-
-          ++nextOlderArticleIndex;
-          lastBulbLeadIndex = this.bulbList.length - 1;
-        }
-
-        currentBulbBottom += this.BULB_HEIGHT;
+        bulbHeight = top + this.BULB_HEIGHT;
       } else {
-        // Journal
+        // Article
         this.articleList.push(content);
 
-        let height = content.images ? this.ARTICLE_IMAGE_HEIGHT : this.ARTICLE_NO_IMAGE_HEIGHT;
-        currentArticleBottom += height;
+        let currentHeight = content.images ? this.ARTICLE_IMAGE_HEIGHT : this.ARTICLE_NO_IMAGE_HEIGHT,
+            top = Math.max(bulbHeight - (currentHeight - this.ARTICLE_MARGIN),
+                articleHeight);
+        this.contentStyle[content.time.created] = top;
 
-        this.articles.push({
-          propIndex: index,
-          height   : height,
-          bottom   : currentArticleBottom,
-          time     : content.time.created,
-          title    : content.title, // todo remove this line for release
-        });
-
+        articleHeight = top + currentHeight;
       }
     }
   }
@@ -197,7 +149,7 @@ export default class EntryList extends Component {
     return dateHeader;
   }
 
-  generateArticleStyle(article, index) {
+  generateArticleStyle(article) {
     let background = "", className = "shadow";
     if (article.images) {
       background = `url('${this.props.imageMap[article.images[0]] || "https://unsplash.it/300/200/?random"}')`;
@@ -209,7 +161,7 @@ export default class EntryList extends Component {
       className: className,
       style    : {
         backgroundImage: background,
-        marginTop      : this.articleMargin[this.articles[index].propIndex] || "30px",
+        top            : this.contentStyle[article.time.created],
       },
     };
   }
@@ -218,12 +170,12 @@ export default class EntryList extends Component {
     return (
         <div className="article-list">
           <div className="flex-extend-inner-wrapper">
-            {this.articleList.map((article, index) => {
+            {this.articleList.map(article => {
               return (
                   <article
                       className="shadow"
                       key={`article-preview-${article.time.created}`}
-                      {...this.generateArticleStyle(article, index)}
+                      {...this.generateArticleStyle(article)}
                   >
                     <div className="text">
                       <header>
@@ -245,25 +197,20 @@ export default class EntryList extends Component {
     );
   }
 
-  generateBulbStyle(index) {
-    if (this.bulbMargin[index]) {
-      return {
-        className: "bulb-first",
-        style    : {marginTop: this.bulbMargin[index]}
-      };
-    }
-
-    return {};
+  generateBulbStyle(time) {
+    return {
+      style: {top: this.contentStyle[time]},
+    };
   }
 
   generateBulbList() {
     return (
         <div className="bulb-list">
           <div className="flex-extend-inner-wrapper">
-            {this.bulbList.map((bulb, index) => {
+            {this.bulbList.map(bulb => {
               return (
                   <article key={`bulb-preview-${bulb.time.created}`}
-                      {...this.generateBulbStyle(index)}
+                      {...this.generateBulbStyle(bulb.time.created)}
                   >
                     <header className="shadow-light">
                       <div className="time">
@@ -281,7 +228,7 @@ export default class EntryList extends Component {
 
   render() {
     return (
-        <div className="EntryList">
+        <div className="EntryList debug">
           <NoScrollArea padding="20px">
             <div className="entries">
               {this.generateArticleList()}
