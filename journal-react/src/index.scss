@@ -826,8 +826,16 @@ nav.nav {
     width: $radius * 2;
     bottom: 0;
     background: $css;
-    box-shadow: 0 0 5px 4px white;
+    box-shadow: 0 0 2px 3px white;
     z-index: 1;
+    transition: background .2s ease, box-shadow .2s ease;
+  }
+
+  @mixin article-hover-after($radius) {
+    @include article-after($radius);
+
+    background: white;
+    box-shadow: 0 0 2px 2px $css;
   }
 
   .article-list {
@@ -849,6 +857,12 @@ nav.nav {
 
       &:after {
         @include article-after($timeline-dot-radius);
+
+        right: -$timeline-width / 2 - $timeline-dot-radius;
+      }
+
+      &:hover:after {
+        @include article-hover-after($timeline-dot-radius);
 
         right: -$timeline-width / 2 - $timeline-dot-radius;
       }
@@ -938,6 +952,13 @@ nav.nav {
 
       &:after {
         @include article-after($timeline-dot-radius-small);
+
+        left: -$timeline-width / 2 - $timeline-dot-radius-small;
+        bottom: $article-height / 2 - $timeline-dot-radius-small;
+      }
+
+      &:hover:after {
+        @include article-hover-after($timeline-dot-radius-small);
 
         left: -$timeline-width / 2 - $timeline-dot-radius-small;
         bottom: $article-height / 2 - $timeline-dot-radius-small;
