@@ -860,7 +860,7 @@ nav.nav {
 .EntryView {
   $timeline-width: 70px;
   $timeline-dot-radius: 4px;
-  $timeline-dot-radius-small: 3px;
+  $timeline-dot-radius-small: 2px;
   $article-margin: 30px;
   $article-width: 30%;
   $detail-padding: 25px;
@@ -968,6 +968,10 @@ nav.nav {
   .article-list {
     flex: 0 0 30%;
     position: relative;
+
+    .Image {
+      position: absolute;
+    }
 
     article {
       margin: 0 0 $article-margin $article-margin;

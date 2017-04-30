@@ -792,6 +792,8 @@ nav.nav {
   .EntryView .article-list {
     flex: 0 0 30%;
     position: relative; }
+    .EntryView .article-list .Image {
+      position: absolute; }
     .EntryView .article-list article {
       margin: 0 0 30px 30px;
       width: calc(100% - 30px);
@@ -893,17 +895,17 @@ nav.nav {
       .EntryView .bulb-list article:after {
         content: "";
         position: absolute;
-        border-radius: 3px;
-        height: 6px;
-        width: 6px;
+        border-radius: 2px;
+        height: 4px;
+        width: 4px;
         bottom: 0;
         background: #00BCD4;
         box-shadow: 0 0 2px 3px white;
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
         background: #80DEEA;
-        left: -38px;
-        top: 10.5px; }
+        left: -37px;
+        top: 11.5px; }
       .EntryView .bulb-list article:hover {
         height: auto;
         z-index: 5;
@@ -917,9 +919,9 @@ nav.nav {
         .EntryView .bulb-list article:hover:after {
           content: "";
           position: absolute;
-          border-radius: 3px;
-          height: 6px;
-          width: 6px;
+          border-radius: 2px;
+          height: 4px;
+          width: 4px;
           bottom: 0;
           background: #00BCD4;
           box-shadow: 0 0 2px 3px white;
@@ -927,8 +929,8 @@ nav.nav {
           transition: background .2s ease, box-shadow .2s ease;
           background: white;
           box-shadow: 0 0 2px 2px #00BCD4;
-          left: -38px;
-          top: 10.5px; }
+          left: -37px;
+          top: 11.5px; }
     .EntryView .bulb-list header {
       flex: 0 0 80px;
       text-align: center;

@@ -25,10 +25,10 @@ export default class Image extends Component {
     if (this.props.blank) {
       return (
           <div className={`Image ${this.toggle ? "toggle" : ""}`}>
-            <img className="image center" src={this.lastSrc} alt/>
+            <img className="image center" src={this.lastSrc} alt=""/>
             <img className="image center" src={this.props.src}
                  onClick={this.props.onClick}
-                 alt/>
+                 alt=""/>
           </div>
       );
     }

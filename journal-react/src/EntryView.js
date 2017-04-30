@@ -9,10 +9,12 @@ import Button from "./Button";
 import Image from "./Image";
 import R from "./R";
 
+
 class BulbImageView extends Component {
   render() {
     return (
         <div
+            onClick={this.props.onClickHide}
             className={`bulb-image-viewer ${this.props.className || ""}`}>
           <nav className="nav">
             <Button onClick={this.props.onClickHide}>close</Button>
@@ -29,15 +31,51 @@ class BulbImageView extends Component {
   }
 }
 
+class ContentArticle extends Component {
+
+  state = {
+    image: ""
+  };
+
+  handleMouseMove(e, images) {
+    let i = parseInt(Math.min((e.clientX - R.ARTICLE_MARGIN_LEFT) / e.target.offsetWidth,
+            .999999999) * images.length, 10);
+
+    this.setState({
+      image: this.props.imageMap[images[i].fileName] || `https://unsplash.it/300/300?image=${i}`
+    });
+  }
+
+  render() {
+    let {style, article, time} = this.props,
+        articleProp = {
+          className: `${this.props.className || ""}`,
+          style    : style,
+        };
+
+    if (article.images) {
+      articleProp.onMouseMove = (e) => this.handleMouseMove(e, article.images);
+    }
+
+    return (
+        <article {...articleProp}>
+          <Image src={this.state.image}/>
+          <div className="text">
+            <header>
+              <div className="title">{article.title}</div>
+              <div className="time">{time}</div>
+            </header>
+            <div className="details">
+              {article.text.body}
+            </div>
+          </div>
+          <Button className="dark">delete</Button>
+        </article>
+    );
+  }
+}
+
 class EntryList extends Component {
-
-  ARTICLE_MARGIN = 30;
-  ARTICLE_IMAGE_HEIGHT = 300 + this.ARTICLE_MARGIN;
-  ARTICLE_NO_IMAGE_HEIGHT = 105 + this.ARTICLE_MARGIN;
-  BULB_HEIGHT_ORIGINAL = 27;
-  BULB_MARGIN_TOP = 5;
-  BULB_HEIGHT = this.BULB_HEIGHT_ORIGINAL + this.BULB_MARGIN_TOP;
-
   /**
    * Stores the original positions and times of articles and bulbs
    * @type {{}}
@@ -85,17 +123,17 @@ class EntryList extends Component {
         this.bulbList.push(content);
 
         // Calculate the height
-        let top = Math.max(articleHeight - this.BULB_HEIGHT_ORIGINAL,
+        let top = Math.max(articleHeight - R.BULB_HEIGHT_ORIGINAL,
             bulbHeight);
         this.contentStyle[content.time.created] = top;
 
-        bulbHeight = top + this.BULB_HEIGHT;
+        bulbHeight = top + R.BULB_HEIGHT;
       } else {
         // Article
         this.articleList.push(content);
 
-        let currentHeight = content.images ? this.ARTICLE_IMAGE_HEIGHT : this.ARTICLE_NO_IMAGE_HEIGHT,
-            top = Math.max(bulbHeight - (currentHeight - this.ARTICLE_MARGIN),
+        let currentHeight = content.images ? R.ARTICLE_IMAGE_HEIGHT : R.ARTICLE_NO_IMAGE_HEIGHT,
+            top = Math.max(bulbHeight - (currentHeight - R.ARTICLE_MARGIN),
                 articleHeight);
         this.contentStyle[content.time.created] = top;
 
@@ -151,7 +189,7 @@ class EntryList extends Component {
             // It was the last week
             dateHeader = "Last ";
             // Intentionally omit `break`
-            // eslint-ignore-next-line
+            // eslint-disable-next-line
           case 0:
             // It is this week
             dateHeader += R.weekday[date.getDay()];
@@ -183,8 +221,8 @@ class EntryList extends Component {
 
   generateArticleStyle(article) {
     let background = "", className = "shadow";
-    if (article.images) {
-      background = `url('${this.props.imageMap[article.images[0]] || "https://unsplash.it/300/200/?random"}')`;
+    if (article.images && article.images.length) {
+      background = `url('${this.props.imageMap[article.images[0].fileName] || "https://unsplash.it/300/200/?random"}')`;
     } else {
       className += " no-image";
     }
@@ -204,24 +242,13 @@ class EntryList extends Component {
           <div className="flex-extend-inner-wrapper">
             {this.articleList.map(article => {
               return (
-                  <article
-                      className="shadow"
+                  <ContentArticle
+                      article={article}
+                      imageMap={this.props.imageMap}
                       key={`article-preview-${article.time.created}`}
+                      time={this.generateHumanFormTimeFromArticle(article.time)}
                       {...this.generateArticleStyle(article)}
-                  >
-                    <div className="text">
-                      <header>
-                        <div className="title">{article.title}</div>
-                        <div className="time">
-                          {this.generateHumanFormTimeFromArticle(article.time)}
-                        </div>
-                      </header>
-                      <div className="details">
-                        {article.text.body}
-                      </div>
-                    </div>
-                    <Button className="dark">delete</Button>
-                  </article>
+                  />
               );
             })}
           </div>
@@ -236,12 +263,15 @@ class EntryList extends Component {
 
     if (this.props.debug) {
       bulb.images = [undefined];
-    }
 
-    if (bulb.images) {
       let rand = (bulb.time.created / 1000) % 5;
       prop.onMouseOver = () => {
         this.props.onBulbContentMouseOver(bulb.images[0] || `https://unsplash.it/300/${200 + rand * 100}?image=${rand}`);
+      };
+    } else if (bulb.images) {
+
+      prop.onMouseOver = () => {
+        this.props.onBulbContentMouseOver(bulb.images[0]);
       };
     }
 
@@ -290,9 +320,7 @@ class EntryList extends Component {
   }
 }
 
-export
-default
-class EntryView extends Component {
+export default class EntryView extends Component {
   constructor(props) {
     super(props);
 
