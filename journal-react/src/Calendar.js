@@ -50,8 +50,12 @@ export default class Calendar extends Component {
     };
   }
 
+  componentWillUpdate(nextProps) {
+    this.MONTH_DAY[1] = 28 + ((this.props.year % 4) || ((this.props.year % 100 === 0) && (this.props.year % 400)) ? 0 : 1);
+  }
+
   generateFirstPadding() {
-    let day = new Date(this.props.year, 0).getDay();
+    let day = new Date(this.props.year || new Date().getFullYear(), 0).getDay();
     return (
         <span className={`first-padding-${day}`}></span>
     );
@@ -66,8 +70,11 @@ export default class Calendar extends Component {
   render() {
     this.now = new Date().getTime();
 
+    // Calculate max-height
+    let maxHeight = (new Date(this.props.year || new Date().getFullYear(), 0).getDay() === 6 && this.MONTH_DAY[1] === 29) ? 1100 : 1080;
+
     return (
-        <div className="Calendar">
+        <div className="Calendar" style={{maxHeight: `${maxHeight}px`}}>
           <NoScrollArea padding="10px">
             <div className="calendar-table">
               <span className="month-list"></span>
