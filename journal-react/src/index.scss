@@ -1116,6 +1116,11 @@ nav.nav {
         background-color: white;
         box-shadow: 0 0 3px 3px white;
 
+        header {
+          background: white;
+          color: $css;
+        }
+
         .details {
           overflow: visible;
           white-space: normal;
@@ -1140,6 +1145,7 @@ nav.nav {
       padding: 6px 10px;
       background: $darkgrey;
       color: white;
+      transition: background .4s ease, color .4s ease;
     }
 
     .details {

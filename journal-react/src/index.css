@@ -911,6 +911,9 @@ nav.nav {
         z-index: 5;
         background-color: white;
         box-shadow: 0 0 3px 3px white; }
+        .EntryView .bulb-list article:hover header {
+          background: white;
+          color: #00BCD4; }
         .EntryView .bulb-list article:hover .details {
           overflow: visible;
           white-space: normal; }
@@ -936,7 +939,8 @@ nav.nav {
       text-align: center;
       padding: 6px 10px;
       background: #212121;
-      color: white; }
+      color: white;
+      transition: background .4s ease, color .4s ease; }
     .EntryView .bulb-list .details {
       font-weight: lighter;
       margin: 4px 8px;

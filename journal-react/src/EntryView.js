@@ -327,7 +327,15 @@ export default class EntryView extends Component {
   UPDATE_TRIGGER = 2000;
   UPDATE_STEP = 5000;
 
-  verstion = 0;
+  /**
+   * The time between the next bulb image shows up
+   * @type {number}
+   */
+  BULB_IMAGE_COOLDOWN = 1000;
+
+  version = 0;
+
+  isBulbImageCooldown = false;
 
   constructor(props) {
     super(props);
@@ -343,6 +351,7 @@ export default class EntryView extends Component {
 
     this.hideBulbViewer = this.hideBulbViewer.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleBulbMouseOver = this.handleBulbMouseOver.bind(this);
   }
 
   componentWillMount() {
@@ -370,6 +379,10 @@ export default class EntryView extends Component {
   handleKeyDown(e) {
     if (e.key === "Escape") {
       this.hideBulbViewer();
+
+      this.isBulbImageCooldown = true;
+      setTimeout(() => this.isBulbImageCooldown = false,
+          this.BULB_IMAGE_COOLDOWN);
     }
   }
 
@@ -389,6 +402,16 @@ export default class EntryView extends Component {
     }
   }
 
+  handleBulbMouseOver(src) {
+    if (!this.isBulbImageCooldown) {
+      this.setState({
+        isShowingBulbViewer: true,
+        bulbImage          : src,
+      });
+    }
+  }
+
+
   render() {
     return (
         <div className="EntryView">
@@ -404,7 +427,7 @@ export default class EntryView extends Component {
                   scrollTop={this.state.scrollTop}
                   scrollBottom={this.state.scrollBottom}
                   version={this.version}
-                  onBulbContentMouseOver={src => this.setState({isShowingBulbViewer: true,bulbImage: src})}
+                  onBulbContentMouseOver={src => this.handleBulbMouseOver(src)}
               />
             </div>
           </NoScrollArea>
