@@ -736,7 +736,8 @@ nav.nav {
 
 .EntryView {
   height: 100%;
-  width: 100%; }
+  width: 100%;
+  position: relative; }
   .EntryView article {
     transition: top .4s ease; }
     .EntryView article:before {

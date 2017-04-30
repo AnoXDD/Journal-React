@@ -257,9 +257,11 @@ class EntryList extends Component {
   }
 
   generateBulbProp(bulb) {
-    let prop = {
-      style: {top: this.contentStyle[bulb.time.created]},
-    };
+    let top = this.contentStyle[bulb.time.created],
+        prop = {
+          className: top >= this.props.scrollTop && top <= this.props.scrollBottom ? "" : "hidden",
+          style    : {top: top},
+        };
 
     if (this.props.debug) {
       bulb.images = [undefined];
@@ -321,13 +323,23 @@ class EntryList extends Component {
 }
 
 export default class EntryView extends Component {
+
+  UPDATE_TRIGGER = 2000;
+  UPDATE_STEP = 5000;
+
+  verstion = 0;
+
   constructor(props) {
     super(props);
 
     this.state = {
       bulbImage          : "",
       isShowingBulbViewer: "",
+      scrollTop          : 0,
+      scrollBottom       : this.UPDATE_STEP,
     };
+
+    this.version = this.props.version || "";
 
     this.hideBulbViewer = this.hideBulbViewer.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -335,10 +347,18 @@ export default class EntryView extends Component {
 
   componentWillMount() {
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
+    window.addEventListener("scroll", this.handleScroll.bind(this));
+  }
+
+  componentDidMount() {
+    this.refs.scrollArea.addEventListener("scroll",
+        this.handleScroll.bind(this));
   }
 
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+    this.refs.scrollArea.removeEventListener("scroll",
+        this.handleScroll.bind(this));
   }
 
   hideBulbViewer() {
@@ -353,6 +373,22 @@ export default class EntryView extends Component {
     }
   }
 
+  handleScroll(e) {
+    let top = e.target.scrollTop,
+        bottom = top + e.target.offsetHeight;
+
+    if (bottom > this.state.scrollBottom - this.UPDATE_TRIGGER ||
+        top < this.state.scrollTop + this.UPDATE_TRIGGER ||
+        bottom === e.target.scrollHeight || top === 0) {
+      this.version = new Date().getTime();
+
+      this.setState({
+        scrollTop   : top - this.UPDATE_STEP,
+        scrollBottom: bottom + this.UPDATE_STEP
+      });
+    }
+  }
+
   render() {
     return (
         <div className="EntryView">
@@ -362,9 +398,12 @@ export default class EntryView extends Component {
               onClickHide={this.hideBulbViewer}
           />
           <NoScrollArea padding="20px">
-            <div className="entry-list">
+            <div className="entry-list" ref="scrollArea">
               <EntryList
                   {...this.props}
+                  scrollTop={this.state.scrollTop}
+                  scrollBottom={this.state.scrollBottom}
+                  version={this.version}
                   onBulbContentMouseOver={src => this.setState({isShowingBulbViewer: true,bulbImage: src})}
               />
             </div>

@@ -44,7 +44,7 @@ export default class MainContent extends Component {
               <div className="content">
                 <div className="flex-extend-inner-wrapper inner-content">
                   <Calendar data={this.data}/>
-                  <EntryView data={this.data} imageMap={this.imageMap}/>
+                  <EntryView data={this.data} imageMap={this.imageMap} debug={true}/>
                   <Editor tagPrediction={this.TAG_PREDICTION_DICTIONARY}/>
                 </div>
               </div>
