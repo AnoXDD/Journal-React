@@ -78,28 +78,31 @@ export default class SearchBar extends Component {
                     text="search">search</Button>
           </div>
           <div className="form">
-            <div className="form-col">
-              <div className="vertical-align title">
-                <div className="vertical-align-wrapper">Time</div>
+            <div className="form-wrapper">
+              <div className="form-col">
+                <div className="vertical-align title">
+                  <div className="vertical-align-wrapper">Time</div>
+                </div>
+                <Options
+                    options="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
+                    onChange={console.log}/>
               </div>
-              <Options options="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
-                       onChange={console.log}/>
-            </div>
-            <div className="form-col">
-              <div className="vertical-align title">
-                <div className="vertical-align-wrapper">Type</div>
+              <div className="form-col">
+                <div className="vertical-align title">
+                  <div className="vertical-align-wrapper">Type</div>
+                </div>
+                <Options options="Article Bulb"
+                         icons="description lightbulb_outline"
+                         onChange={console.log}/>
               </div>
-              <Options options="Article Bulb"
-                       icons="description lightbulb_outline"
-                       onChange={console.log}/>
-            </div>
-            <div className="form-col">
-              <div className="vertical-align title">
-                <div className="vertical-align-wrapper">Attachments</div>
+              <div className="form-col">
+                <div className="vertical-align title">
+                  <div className="vertical-align-wrapper">Attachments</div>
+                </div>
+                <Options options="photos musics movies links others"
+                         icons="photo_library library_music movie link more_horiz"
+                         onChange={console.log}/>
               </div>
-              <Options options="photos musics movies links others"
-                       icons="photo_library library_music movie link more_horiz"
-                       onChange={console.log}/>
             </div>
           </div>
         </div>

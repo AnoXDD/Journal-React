@@ -136,7 +136,12 @@ nav.nav {
 
   .first, .second {
     transition: opacity .4s ease;
-    width: 120px;
+  }
+
+  &.accent {
+    .first, .second {
+      width:120px;
+    }
   }
 
   .first {
@@ -326,6 +331,8 @@ nav.nav {
       display: inline-block;
       height: 40px;
       width: 50%;
+      font-size: 30px;
+      padding: 20px;
     }
 
     .stats {
@@ -1204,6 +1211,7 @@ nav.nav {
     .main-header {
       width: 100%;
       flex: 0 0 80px;
+      position: relative;
       background: $darkgrey;
     }
 
@@ -1236,8 +1244,7 @@ nav.nav {
 
 .SearchBar {
   height: 100%;
-  width: 800px;
-  padding: 0 50px;
+  width: 100%;
   position: relative;
 
   .search-bar-wrapper {
@@ -1257,6 +1264,13 @@ nav.nav {
     position: absolute;
     width: 100%;
     z-index: 9999;
+    left: 0;
+
+    .form-wrapper {
+      width: 100%;
+      max-width: 900px;
+      margin: auto;
+    }
 
     .form-col {
       display: flex;
@@ -1264,6 +1278,8 @@ nav.nav {
 
       .title {
         padding: 0 20px;
+        font-weight: bold;
+        color: $cp;
       }
     }
   }

@@ -230,7 +230,8 @@ nav.nav {
   position: relative;
   display: inline-block; }
   .toggle.vertical-align .first, .toggle.vertical-align .second {
-    transition: opacity .4s ease;
+    transition: opacity .4s ease; }
+  .toggle.vertical-align.accent .first, .toggle.vertical-align.accent .second {
     width: 120px; }
   .toggle.vertical-align .first {
     opacity: 1; }
@@ -403,7 +404,9 @@ nav.nav {
       padding-top: 0;
       display: inline-block;
       height: 40px;
-      width: 50%; }
+      width: 50%;
+      font-size: 30px;
+      padding: 20px; }
     .Editor header .stats {
       padding: 15px 20px;
       display: inline-block;
@@ -993,6 +996,7 @@ nav.nav {
     .MainContent > main .main-header {
       width: 100%;
       flex: 0 0 80px;
+      position: relative;
       background: #212121; }
     .MainContent > main .content {
       width: 100%;
@@ -1012,8 +1016,7 @@ nav.nav {
 
 .SearchBar {
   height: 100%;
-  width: 800px;
-  padding: 0 50px;
+  width: 100%;
   position: relative; }
   .SearchBar .search-bar-wrapper {
     height: 100%;
@@ -1027,12 +1030,19 @@ nav.nav {
   .SearchBar .form {
     position: absolute;
     width: 100%;
-    z-index: 9999; }
+    z-index: 9999;
+    left: 0; }
+    .SearchBar .form .form-wrapper {
+      width: 100%;
+      max-width: 900px;
+      margin: auto; }
     .SearchBar .form .form-col {
       display: flex;
       margin-top: 5px; }
       .SearchBar .form .form-col .title {
-        padding: 0 20px; }
+        padding: 0 20px;
+        font-weight: bold;
+        color: #448AFF; }
 
 .Options {
   display: flex;

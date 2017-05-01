@@ -6,7 +6,7 @@ import {
 } from 'react-sortable-hoc';
 import NoScrollArea from "./NoScrollArea";
 import Toggle from "./Toggle";
-import PredictionInput from "./PredictionInput";
+import PredictionInputs from "./PredictionInputs";
 import Button from "./Button";
 import NumberCard from "./NumberCard";
 
@@ -431,7 +431,6 @@ class Editor extends Component {
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onBodyChange = this.onBodyChange.bind(this);
     this.onBodyKeyDown = this.onBodyKeyDown.bind(this);
-    this.onNewTagKeyDown = this.onNewTagKeyDown.bind(this);
     this.onPhotoSortEnd = this.onPhotoSortEnd.bind(this);
     this.onMusicByChange = this.onMusicByChange.bind(this);
     this.onMusicTitleChange = this.onMusicTitleChange.bind(this);
@@ -442,34 +441,6 @@ class Editor extends Component {
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
-  }
-
-  generateCurrentTags() {
-    const tagItems = this.state.tags.map((tag, index) => {
-      return (
-          <span
-              key={`tag-${tag}`}
-              className="tag"
-              onClick={(event) => {this.removeTagAtIndex(index);}}
-          >{tag}</span>
-      );
-    });
-    return (
-        <NoScrollArea className="current-tags" padding="10px">
-          <div className="tags-wrapper">
-            <div className="tags">
-              { tagItems }
-              <PredictionInput
-                  className={`tag white-background new-tag-wrapper ${!this.state.isEditing ? "hidden" : ""}`}
-                  inputClassName="normal underlined"
-                  onKeyDown={this.onNewTagKeyDown}
-                  candidates={this.props.tagPrediction}
-                  blacklist={this.state.tags}
-              />
-            </div>
-          </div>
-        </NoScrollArea>
-    );
   }
 
   removeTagAtIndex(index) {
@@ -865,48 +836,6 @@ class Editor extends Component {
     }
   }
 
-  onNewTagKeyDown(event, prediction) {
-    const onEnter = (event) => {
-      let newTags = [...this.state.tags],
-          newTag = event.target.value.trim();
-
-      // Only add it when not found
-      if (newTag.length && newTags.indexOf(newTag) === -1) {
-        newTags.push(newTag);
-        this.setState({
-          tags         : newTags,
-          tagPrediction: "",
-        });
-      }
-
-      event.target.value = "";
-    }
-
-    if (event.key === "Tab") {
-
-      event.preventDefault();
-      if (event.target.value === prediction) {
-        onEnter(event);
-      } else {
-        event.target.value = prediction;
-      }
-
-    } else if (event.key === "Enter") {
-      onEnter(event);
-
-    } else if (event.key === "Backspace") {
-
-      if (!event.target.value && this.state.tags.length) {
-        let newTags = [...this.state.tags];
-        event.target.value = (newTags.pop() || "") + " ";
-
-        this.setState({
-          tags: newTags
-        });
-      }
-    }
-  }
-
   onPhotoSortEnd(obj) {
     this.setState({
       photos: arrayMove([...this.state.photos],
@@ -1070,7 +999,12 @@ class Editor extends Component {
                 <i className="material-icons vertical-align-wrapper">label_outline</i>
               </a>
               <div className="current-tags-wrapper">
-                { this.generateCurrentTags() }
+                <PredictionInputs
+                    className={`tag white-background new-tag-wrapper ${!this.state.isEditing ? "hidden" : ""}`}
+                    tagPrediction={this.props.tagPrediction}
+                    tags={this.state.tags}
+                    onChange={tags => this.setState({tags: tags})}
+                />
               </div>
               <div className="flex-last-item"></div>
               <Toggle
