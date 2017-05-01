@@ -40,18 +40,20 @@ export default class MainContent extends Component {
             <div className="create-btn">
               <Button className="accent" text="create">add</Button>
             </div>
-            <Button className="dark" text="list">list</Button>
-            <Button className="dark indent" text="calendar">event</Button>
-            <Button className="dark indent" text="map view">map</Button>
-            <Button className="dark" text="editor">edit</Button>
-            <Button className="dark" text="History">restore</Button>
-            <Button className="dark" text="stats">show_chart</Button>
-            <Button className="dark" text="settings">settings</Button>
+            <div className="other-btn">
+              <Button className="dark" text="list">list</Button>
+              <Button className="dark indent" text="calendar">date_range</Button>
+              <Button className="dark indent" text="map view">map</Button>
+              <Button className="dark" text="editor">edit</Button>
+              <Button className="dark" text="History">restore</Button>
+              <Button className="dark" text="stats">show_chart</Button>
+              <Button className="dark" text="settings">settings</Button>
+            </div>
           </nav>
           <main>
             <div className="flex-extend-inner-wrapper inner-main">
-              <header>
-                <div className="search-bar"><SearchBar/></div>
+              <header className="main-header">
+                <SearchBar/>
               </header>
               <div className="content">
                 <div className="flex-extend-inner-wrapper inner-content">

@@ -136,6 +136,7 @@ nav.nav {
 
   .first, .second {
     transition: opacity .4s ease;
+    width: 120px;
   }
 
   .first {
@@ -312,17 +313,6 @@ nav.nav {
     .nav .btn {
       @extend .btn.dark;
       transition: none;
-    }
-  }
-
-  input, textarea {
-    border: none;
-    resize: none;
-    font-size: 30px;
-    padding: 20px;
-
-    &:active, &:focus {
-      outline: none;
     }
   }
 
@@ -1160,13 +1150,14 @@ nav.nav {
 
   .sidebar {
     $sidebar-width: 250px;
+    $create-btn-margin: 40px;
 
     flex: 0 0 auto;
     width: $sidebar-width;
     background: $darkgrey;
+    overflow: hidden;
 
     .create-btn {
-      $create-btn-margin: 40px;
 
       width: $sidebar-width - 2*$create-btn-margin;
 
@@ -1174,6 +1165,10 @@ nav.nav {
         margin: $create-btn-margin $create-btn-margin $create-btn-margin/2;
         width: 100%;
       }
+    }
+
+    .other-btn {
+      padding-top: $create-btn-margin/2;
     }
 
     .btn {
@@ -1184,13 +1179,18 @@ nav.nav {
         padding-left: 30px;
       }
 
+      &.active {
+        background: $darkgrey-l;
+        color: white;
+      }
+
       .icon-wrapper {
         flex: 0 0 70px;
       }
     }
   }
 
-  main {
+  > main {
     flex: 1 1 auto;
     position: relative;
 
@@ -1201,10 +1201,10 @@ nav.nav {
       height: 100%;
     }
 
-    header {
+    .main-header {
       width: 100%;
-      flex: 0 0 60px;
-      background: lightgrey;
+      flex: 0 0 80px;
+      background: $darkgrey;
     }
 
     .content {
@@ -1220,14 +1220,96 @@ nav.nav {
 
     .Calendar {
       flex: 0 0 auto;
+      display: none;
     }
 
     .EntryView {
       flex: 1 1 auto;
+      display: none;
     }
 
     .Editor {
       display: none;
+    }
+  }
+}
+
+.SearchBar {
+  height: 100%;
+  width: 800px;
+  padding: 0 50px;
+  position: relative;
+
+  .search-bar-wrapper {
+    height: 100%;
+    display: inline-block;
+  }
+
+  .normal {
+    border-radius: 2px;
+    width: 50vw;
+    margin-left: 50px;
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .form {
+    position: absolute;
+    width: 100%;
+    z-index: 9999;
+
+    .form-col {
+      display: flex;
+      margin-top: 5px;
+
+      .title {
+        padding: 0 20px;
+      }
+    }
+  }
+}
+
+.Options {
+  display: flex;
+  justify-content: center;
+  flex: 1 0 auto;
+
+  &.text {
+    .icon-wrapper {
+      display: none;
+    }
+
+    .text-wrapper {
+      text-align: center;
+    }
+
+    .option {
+      flex: 0 1 100px;
+    }
+  }
+
+  .option {
+    @extend .btn;
+    flex: 0 1 150px;
+    display: flex;
+
+    &.selected {
+      background: $cp;
+      color: white;
+
+      &:hover {
+        color: white;
+      }
+    }
+
+    .icon-wrapper {
+      flex: 0 1 $button-width;
+      margin-right: -$button-width/2;
+    }
+
+    .text-wrapper {
+      flex: 1 1 auto;
+      display: block;
     }
   }
 }

@@ -18,6 +18,7 @@ $cyan-8: #00838F;
 $cyan-9: #006064;
 
 $darkgrey: #212121;
+$darkgrey-l: #424242;
 
 $cp: $blue;
 $cpl: $blue-light;
@@ -52,6 +53,15 @@ $button-height: 50px;
 }
 
 input, textarea {
+  border: none;
+  resize: none;
+  font-size: 30px;
+  padding: 20px;
+
+  &:active, &:focus {
+    outline: none;
+  }
+
   &:disabled {
     color: black;
     background-color: inherit;
@@ -189,6 +199,7 @@ img.center {
     }
 
     .text-wrapper {
+      display: block;
       flex: 1 1 auto;
       text-align: left;
       pointer-events: none;
@@ -246,5 +257,9 @@ img.center {
 
   .icon-wrapper, .text-wrapper {
     height: 100%;
+  }
+
+  .text-wrapper {
+    display: none;
   }
 }

@@ -4,9 +4,16 @@
 *:not(i) {
   font-family: "Lato", "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
 
-input:disabled, textarea:disabled {
-  color: black;
-  background-color: inherit; }
+input, textarea {
+  border: none;
+  resize: none;
+  font-size: 30px;
+  padding: 20px; }
+  input:active, input:focus, textarea:active, textarea:focus {
+    outline: none; }
+  input:disabled, textarea:disabled {
+    color: black;
+    background-color: inherit; }
 
 .vertical-align .vertical-align-wrapper {
   display: block;
@@ -76,7 +83,7 @@ img.center {
   right: 0;
   margin: auto; }
 
-.btn {
+.btn, .Options .option {
   position: relative;
   display: inline-block;
   text-transform: uppercase;
@@ -87,28 +94,29 @@ img.center {
   transition: .4s ease;
   user-select: none;
   cursor: pointer; }
-  .btn.dark, .Editor.dark .nav .btn {
+  .btn.dark, .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option, .Options .dark.option {
     background: #212121;
     color: white; }
-  .btn.accent {
+  .btn.accent, .Options .accent.option {
     flex: 0 0 auto;
     color: white;
     background: #448AFF; }
-    .btn.accent:hover:not(:active) {
+    .btn.accent:hover:not(:active), .Options .accent.option:hover:not(:active) {
       background: #82B1FF;
       color: white; }
-    .btn.accent:active {
+    .btn.accent:active, .Options .accent.option:active {
       color: white; }
-  .btn.text {
+  .btn.text, .Options .text.option {
     width: auto;
     display: flex; }
-    .btn.text .icon-wrapper {
+    .btn.text .icon-wrapper, .Options .text.option .icon-wrapper {
       flex: 0 0 60px; }
-    .btn.text .text-wrapper {
+    .btn.text .text-wrapper, .Options .text.option .text-wrapper {
+      display: block;
       flex: 1 1 auto;
       text-align: left;
       pointer-events: none; }
-  .btn:after {
+  .btn:after, .Options .option:after {
     pointer-events: none;
     content: "";
     width: 100%;
@@ -118,22 +126,24 @@ img.center {
     bottom: 0;
     left: 0;
     transition: background .4s ease; }
-  .btn.underlined:after {
+  .btn.underlined:after, .Options .underlined.option:after {
     background: black; }
-  .btn.underlined.active:after, .btn.underlined:hover:after {
+  .btn.underlined.active:after, .Options .underlined.active.option:after, .btn.underlined:hover:after, .Options .underlined.option:hover:after {
     background: #448AFF; }
-  .btn.active, .btn:hover {
+  .btn.active, .Options .active.option, .btn:hover, .Options .option:hover {
     color: #448AFF; }
-  .btn:not(.underlined):hover .add-circle {
+  .btn:not(.underlined):hover .add-circle, .Options .option:not(.underlined):hover .add-circle {
     opacity: 1; }
-  .btn:not(.underlined):hover .original {
+  .btn:not(.underlined):hover .original, .Options .option:not(.underlined):hover .original {
     opacity: 0; }
-  .btn:not(.accent):hover, .btn:not(.accent):active {
+  .btn:not(.accent):hover, .Options .option:not(.accent):hover, .btn:not(.accent):active, .Options .option:not(.accent):active {
     color: #1976D2; }
-    .btn:not(.accent):hover span, .btn:not(.accent):active span {
+    .btn:not(.accent):hover span, .Options .option:not(.accent):hover span, .btn:not(.accent):active span, .Options .option:not(.accent):active span {
       opacity: 1; }
-  .btn .icon-wrapper, .btn .text-wrapper {
+  .btn .icon-wrapper, .Options .option .icon-wrapper, .btn .text-wrapper, .Options .option .text-wrapper {
     height: 100%; }
+  .btn .text-wrapper, .Options .option .text-wrapper {
+    display: none; }
 
 html, body {
   height: 100%;
@@ -149,18 +159,18 @@ nav.nav {
   top: 0;
   right: 0;
   display: flex; }
-  nav.nav .btn {
+  nav.nav .btn, nav.nav .Options .option, .Options nav.nav .option {
     transition: .4s ease; }
-  nav.nav.has-hint .btn:not(.hint) {
+  nav.nav.has-hint .btn:not(.hint), nav.nav.has-hint .Options .option:not(.hint), .Options nav.nav.has-hint .option:not(.hint) {
     opacity: 0; }
   nav.nav.has-hint .hint {
     position: absolute;
     right: 0;
     top: 0;
     pointer-events: none; }
-  nav.nav.has-hint:hover .btn:not(.hint) {
+  nav.nav.has-hint:hover .btn:not(.hint), nav.nav.has-hint:hover .Options .option:not(.hint), .Options nav.nav.has-hint:hover .option:not(.hint) {
     opacity: 1; }
-  nav.nav.has-hint:hover .btn.hint {
+  nav.nav.has-hint:hover .btn.hint, nav.nav.has-hint:hover .Options .hint.option, .Options nav.nav.has-hint:hover .hint.option {
     opacity: 0; }
 
 .no-scroll {
@@ -220,7 +230,8 @@ nav.nav {
   position: relative;
   display: inline-block; }
   .toggle.vertical-align .first, .toggle.vertical-align .second {
-    transition: opacity .4s ease; }
+    transition: opacity .4s ease;
+    width: 120px; }
   .toggle.vertical-align .first {
     opacity: 1; }
   .toggle.vertical-align .second {
@@ -382,15 +393,8 @@ nav.nav {
     background: #212121; }
     .Editor.dark input, .Editor.dark textarea {
       color: white; }
-    .Editor.dark .nav .btn {
+    .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option {
       transition: none; }
-  .Editor input, .Editor textarea {
-    border: none;
-    resize: none;
-    font-size: 30px;
-    padding: 20px; }
-    .Editor input:active, .Editor input:focus, .Editor textarea:active, .Editor textarea:focus {
-      outline: none; }
   .Editor header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
@@ -491,13 +495,13 @@ nav.nav {
       .Editor .extras .buttons .send-wrapper {
         flex: 1 0 auto;
         text-align: right; }
-      .Editor .extras .buttons .btn {
+      .Editor .extras .buttons .btn, .Editor .extras .buttons .Options .option, .Options .Editor .extras .buttons .option {
         text-align: center;
         flex: 0 0 60px; }
-        .Editor .extras .buttons .btn.accent {
+        .Editor .extras .buttons .btn.accent, .Editor .extras .buttons .Options .accent.option, .Options .Editor .extras .buttons .accent.option {
           width: 120px;
           margin-left: 30px; }
-        .Editor .extras .buttons .btn span {
+        .Editor .extras .buttons .btn span, .Editor .extras .buttons .Options .option span, .Options .Editor .extras .buttons .option span {
           transition: opacity .4s ease;
           opacity: 0;
           pointer-events: none; }
@@ -845,7 +849,7 @@ nav.nav {
           padding-bottom: 5px; }
         .EntryView .article-list article.no-image:hover .title {
           width: calc(100% - 60px); }
-        .EntryView .article-list article.no-image:hover .btn {
+        .EntryView .article-list article.no-image:hover .btn, .EntryView .article-list article.no-image:hover .Options .option, .Options .EntryView .article-list article.no-image:hover .option {
           opacity: 1; }
       .EntryView .article-list article .text {
         overflow: hidden;
@@ -853,7 +857,7 @@ nav.nav {
         bottom: 0;
         width: 100%;
         transition: opacity .4s ease; }
-      .EntryView .article-list article .btn {
+      .EntryView .article-list article .btn, .EntryView .article-list article .Options .option, .Options .EntryView .article-list article .option {
         float: right;
         opacity: 0; }
       .EntryView .article-list article header {
@@ -880,7 +884,7 @@ nav.nav {
         height: 20px; }
       .EntryView .article-list article:not(.no-image):hover .text {
         opacity: 0; }
-      .EntryView .article-list article:not(.no-image):hover .btn {
+      .EntryView .article-list article:not(.no-image):hover .btn, .EntryView .article-list article:not(.no-image):hover .Options .option, .Options .EntryView .article-list article:not(.no-image):hover .option {
         opacity: 1; }
   .EntryView .bulb-list {
     flex: 1 0 50%;
@@ -959,43 +963,100 @@ nav.nav {
   .MainContent .sidebar {
     flex: 0 0 auto;
     width: 250px;
-    background: #212121; }
+    background: #212121;
+    overflow: hidden; }
     .MainContent .sidebar .create-btn {
       width: 170px; }
-      .MainContent .sidebar .create-btn .btn {
+      .MainContent .sidebar .create-btn .btn, .MainContent .sidebar .create-btn .Options .option, .Options .MainContent .sidebar .create-btn .option {
         margin: 40px 40px 20px;
         width: 100%; }
-    .MainContent .sidebar .btn {
+    .MainContent .sidebar .other-btn {
+      padding-top: 20px; }
+    .MainContent .sidebar .btn, .MainContent .sidebar .Options .option, .Options .MainContent .sidebar .option {
       height: 60px;
       width: 250px; }
-      .MainContent .sidebar .btn.indent {
+      .MainContent .sidebar .btn.indent, .MainContent .sidebar .Options .indent.option, .Options .MainContent .sidebar .indent.option {
         padding-left: 30px; }
-      .MainContent .sidebar .btn .icon-wrapper {
+      .MainContent .sidebar .btn.active, .MainContent .sidebar .Options .active.option, .Options .MainContent .sidebar .active.option {
+        background: #424242;
+        color: white; }
+      .MainContent .sidebar .btn .icon-wrapper, .MainContent .sidebar .Options .option .icon-wrapper, .Options .MainContent .sidebar .option .icon-wrapper {
         flex: 0 0 70px; }
-  .MainContent main {
+  .MainContent > main {
     flex: 1 1 auto;
     position: relative; }
-    .MainContent main .inner-main {
+    .MainContent > main .inner-main {
       display: flex;
       flex-direction: column;
       width: 100%;
       height: 100%; }
-    .MainContent main header {
+    .MainContent > main .main-header {
       width: 100%;
-      flex: 0 0 60px;
-      background: lightgrey; }
-    .MainContent main .content {
+      flex: 0 0 80px;
+      background: #212121; }
+    .MainContent > main .content {
       width: 100%;
       flex: 1 1 auto;
       display: flex;
       position: relative; }
-    .MainContent main .inner-content {
+    .MainContent > main .inner-content {
       display: flex; }
-    .MainContent main .Calendar {
-      flex: 0 0 auto; }
-    .MainContent main .EntryView {
-      flex: 1 1 auto; }
-    .MainContent main .Editor {
+    .MainContent > main .Calendar {
+      flex: 0 0 auto;
       display: none; }
+    .MainContent > main .EntryView {
+      flex: 1 1 auto;
+      display: none; }
+    .MainContent > main .Editor {
+      display: none; }
+
+.SearchBar {
+  height: 100%;
+  width: 800px;
+  padding: 0 50px;
+  position: relative; }
+  .SearchBar .search-bar-wrapper {
+    height: 100%;
+    display: inline-block; }
+  .SearchBar .normal {
+    border-radius: 2px;
+    width: 50vw;
+    margin-left: 50px;
+    font-size: 20px;
+    padding: 10px; }
+  .SearchBar .form {
+    position: absolute;
+    width: 100%;
+    z-index: 9999; }
+    .SearchBar .form .form-col {
+      display: flex;
+      margin-top: 5px; }
+      .SearchBar .form .form-col .title {
+        padding: 0 20px; }
+
+.Options {
+  display: flex;
+  justify-content: center;
+  flex: 1 0 auto; }
+  .Options.text .icon-wrapper {
+    display: none; }
+  .Options.text .text-wrapper {
+    text-align: center; }
+  .Options.text .option {
+    flex: 0 1 100px; }
+  .Options .option {
+    flex: 0 1 150px;
+    display: flex; }
+    .Options .option.selected {
+      background: #448AFF;
+      color: white; }
+      .Options .option.selected:hover {
+        color: white; }
+    .Options .option .icon-wrapper {
+      flex: 0 1 60px;
+      margin-right: -30px; }
+    .Options .option .text-wrapper {
+      flex: 1 1 auto;
+      display: block; }
 
 /*# sourceMappingURL=index.css.map */
