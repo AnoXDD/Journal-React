@@ -158,7 +158,7 @@ img.center {
   margin: auto;
 }
 
-.btn {
+.btn, .toggle {
   position: relative;
   display: inline-block;
   text-transform: uppercase;
@@ -169,6 +169,10 @@ img.center {
   transition: .4s ease;
   user-select: none;
   cursor: pointer;
+
+  &[disabled] {
+    pointer-events: none;
+  }
 
   &.dark {
     background: $darkgrey;
@@ -262,4 +266,10 @@ img.center {
   .text-wrapper {
     display: none;
   }
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

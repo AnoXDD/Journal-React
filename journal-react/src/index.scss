@@ -131,6 +131,7 @@ nav.nav {
 }
 
 .toggle.vertical-align {
+  cursor: pointer;
   position: relative;
   display: inline-block;
 
@@ -171,6 +172,7 @@ nav.nav {
   .prediction, .input {
     display: inline-block;
     height: 20px;
+    font-weight: lighter;
     font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
   }
 
@@ -209,7 +211,7 @@ nav.nav {
       flex: 0 0 auto;
       color: white;
       border-radius: 3px;
-      margin: 0 20px 2px 0;
+      margin: 0 0 2px 20px;
       display: inline-block;
       font-size: $tag-font-size;
       transition: background .4s ease;
@@ -1250,32 +1252,49 @@ nav.nav {
     }
 
     .Editor {
+      display: none;
     }
   }
 }
 
 .SearchBar {
+  $max-width: 900px;
+
   height: 100%;
   width: 100%;
+  max-width: $max-width;
   position: relative;
 
   .search-bar-wrapper {
     height: 100%;
-    display: inline-block;
+    width: 100%;
+    display: flex;
+  }
+
+  .btn.text, .toggle {
+    flex: 0 0 auto;
+  }
+
+  .btn.text {
+    width: 150px;
   }
 
   .keyword {
     border-radius: 2px;
-    width: 50vw;
+    flex: 1 1 auto;
     font-size: 20px;
     padding: 10px;
+    margin-left: 50px;
   }
 
   .form {
     position: absolute;
     width: 100%;
+    max-width: $max-width;
+    padding: 15px 0 20px;
     z-index: 9999;
     left: 0;
+    background: white;
 
     .form-wrapper {
       width: 100%;
@@ -1285,12 +1304,13 @@ nav.nav {
 
     .form-col {
       display: flex;
+      padding: 0 50px;
       margin-top: 5px;
 
       .title {
         padding: 0 20px;
-        font-weight: bold;
-        color: $cp;
+        background: $darkgrey;
+        color: white;
       }
     }
   }

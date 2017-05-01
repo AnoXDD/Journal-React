@@ -54,7 +54,9 @@ export default class MainContent extends Component {
           <main>
             <div className="flex-extend-inner-wrapper inner-main">
               <header className="main-header">
-                <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
+                <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}
+                           onChange={console.log}
+                />
               </header>
               <div className="content">
                 <div className="flex-extend-inner-wrapper inner-content">

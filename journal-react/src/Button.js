@@ -7,10 +7,16 @@ import React, {Component} from "react";
 import Ink from "react-ink";
 
 export default class Button extends Component {
+
   render() {
+    let disabled = {};
+    if (this.props.disabled) {
+      disabled.disabled = "disabled";
+    }
+
     return (
         <a className={`btn ${this.props.text ? "text": ""} ${this.props.className || ""}`}
-           onClick={this.props.onClick || void(0)}>
+           onClick={this.props.onClick || void(0)} {...disabled}>
           <Ink/>
           <div className="vertical-align icon-wrapper">
             <i className="material-icons vertical-align-wrapper">

@@ -83,7 +83,7 @@ img.center {
   right: 0;
   margin: auto; }
 
-.btn, .Options .option {
+.btn, .Options .option, .toggle {
   position: relative;
   display: inline-block;
   text-transform: uppercase;
@@ -94,29 +94,31 @@ img.center {
   transition: .4s ease;
   user-select: none;
   cursor: pointer; }
-  .btn.dark, .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option, .Options .dark.option {
+  .btn[disabled], .Options [disabled].option, .toggle[disabled] {
+    pointer-events: none; }
+  .btn.dark, .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option, .Options .dark.option, .toggle.dark {
     background: #212121;
     color: white; }
-  .btn.accent, .Options .accent.option {
+  .btn.accent, .Options .accent.option, .toggle.accent {
     flex: 0 0 auto;
     color: white;
     background: #448AFF; }
-    .btn.accent:hover:not(:active), .Options .accent.option:hover:not(:active) {
+    .btn.accent:hover:not(:active), .Options .accent.option:hover:not(:active), .toggle.accent:hover:not(:active) {
       background: #82B1FF;
       color: white; }
-    .btn.accent:active, .Options .accent.option:active {
+    .btn.accent:active, .Options .accent.option:active, .toggle.accent:active {
       color: white; }
-  .btn.text, .Options .text.option {
+  .btn.text, .Options .text.option, .toggle.text {
     width: auto;
     display: flex; }
-    .btn.text .icon-wrapper, .Options .text.option .icon-wrapper {
+    .btn.text .icon-wrapper, .Options .text.option .icon-wrapper, .toggle.text .icon-wrapper {
       flex: 0 0 60px; }
-    .btn.text .text-wrapper, .Options .text.option .text-wrapper {
+    .btn.text .text-wrapper, .Options .text.option .text-wrapper, .toggle.text .text-wrapper {
       display: block;
       flex: 1 1 auto;
       text-align: left;
       pointer-events: none; }
-  .btn:after, .Options .option:after {
+  .btn:after, .Options .option:after, .toggle:after {
     pointer-events: none;
     content: "";
     width: 100%;
@@ -126,24 +128,29 @@ img.center {
     bottom: 0;
     left: 0;
     transition: background .4s ease; }
-  .btn.underlined:after, .Options .underlined.option:after {
+  .btn.underlined:after, .Options .underlined.option:after, .toggle.underlined:after {
     background: black; }
-  .btn.underlined.active:after, .Options .underlined.active.option:after, .btn.underlined:hover:after, .Options .underlined.option:hover:after {
+  .btn.underlined.active:after, .Options .underlined.active.option:after, .btn.underlined:hover:after, .Options .underlined.option:hover:after, .toggle.underlined.active:after, .toggle.underlined:hover:after {
     background: #448AFF; }
-  .btn.active, .Options .active.option, .btn:hover, .Options .option:hover {
+  .btn.active, .Options .active.option, .btn:hover, .Options .option:hover, .toggle.active, .toggle:hover {
     color: #448AFF; }
-  .btn:not(.underlined):hover .add-circle, .Options .option:not(.underlined):hover .add-circle {
+  .btn:not(.underlined):hover .add-circle, .Options .option:not(.underlined):hover .add-circle, .toggle:not(.underlined):hover .add-circle {
     opacity: 1; }
-  .btn:not(.underlined):hover .original, .Options .option:not(.underlined):hover .original {
+  .btn:not(.underlined):hover .original, .Options .option:not(.underlined):hover .original, .toggle:not(.underlined):hover .original {
     opacity: 0; }
-  .btn:not(.accent):hover, .Options .option:not(.accent):hover, .btn:not(.accent):active, .Options .option:not(.accent):active {
+  .btn:not(.accent):hover, .Options .option:not(.accent):hover, .btn:not(.accent):active, .Options .option:not(.accent):active, .toggle:not(.accent):hover, .toggle:not(.accent):active {
     color: #1976D2; }
-    .btn:not(.accent):hover span, .Options .option:not(.accent):hover span, .btn:not(.accent):active span, .Options .option:not(.accent):active span {
+    .btn:not(.accent):hover span, .Options .option:not(.accent):hover span, .btn:not(.accent):active span, .Options .option:not(.accent):active span, .toggle:not(.accent):hover span, .toggle:not(.accent):active span {
       opacity: 1; }
-  .btn .icon-wrapper, .Options .option .icon-wrapper, .btn .text-wrapper, .Options .option .text-wrapper {
+  .btn .icon-wrapper, .Options .option .icon-wrapper, .btn .text-wrapper, .Options .option .text-wrapper, .toggle .icon-wrapper, .toggle .text-wrapper {
     height: 100%; }
-  .btn .text-wrapper, .Options .option .text-wrapper {
+  .btn .text-wrapper, .Options .option .text-wrapper, .toggle .text-wrapper {
     display: none; }
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center; }
 
 html, body {
   height: 100%;
@@ -227,6 +234,7 @@ nav.nav {
     height: 100%; }
 
 .toggle.vertical-align {
+  cursor: pointer;
   position: relative;
   display: inline-block; }
   .toggle.vertical-align .first, .toggle.vertical-align .second {
@@ -249,6 +257,7 @@ nav.nav {
   .PredictionInput .prediction, .PredictionInput .input {
     display: inline-block;
     height: 20px;
+    font-weight: lighter;
     font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
   .PredictionInput .prediction {
     color: lightgrey;
@@ -275,7 +284,7 @@ nav.nav {
     flex: 0 0 auto;
     color: white;
     border-radius: 3px;
-    margin: 0 20px 2px 0;
+    margin: 0 0 2px 20px;
     display: inline-block;
     font-size: 16px;
     transition: background .4s ease;
@@ -1021,35 +1030,48 @@ nav.nav {
     .MainContent > main .EntryView {
       flex: 1 1 auto;
       display: none; }
+    .MainContent > main .Editor {
+      display: none; }
 
 .SearchBar {
   height: 100%;
   width: 100%;
+  max-width: 900px;
   position: relative; }
   .SearchBar .search-bar-wrapper {
     height: 100%;
-    display: inline-block; }
+    width: 100%;
+    display: flex; }
+  .SearchBar .btn.text, .SearchBar .Options .text.option, .Options .SearchBar .text.option, .SearchBar .toggle {
+    flex: 0 0 auto; }
+  .SearchBar .btn.text, .SearchBar .Options .text.option, .Options .SearchBar .text.option {
+    width: 150px; }
   .SearchBar .keyword {
     border-radius: 2px;
-    width: 50vw;
+    flex: 1 1 auto;
     font-size: 20px;
-    padding: 10px; }
+    padding: 10px;
+    margin-left: 50px; }
   .SearchBar .form {
     position: absolute;
     width: 100%;
+    max-width: 900px;
+    padding: 15px 0 20px;
     z-index: 9999;
-    left: 0; }
+    left: 0;
+    background: white; }
     .SearchBar .form .form-wrapper {
       width: 100%;
       max-width: 900px;
       margin: auto; }
     .SearchBar .form .form-col {
       display: flex;
+      padding: 0 50px;
       margin-top: 5px; }
       .SearchBar .form .form-col .title {
         padding: 0 20px;
-        font-weight: bold;
-        color: #448AFF; }
+        background: #212121;
+        color: white; }
 
 .Options {
   display: flex;
