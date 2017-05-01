@@ -20,6 +20,15 @@ export default class PredictionInputs extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
+  removeTagAtIndex(index) {
+    var tags = this.state.tags;
+    tags.splice(index, 1);
+
+    this.setState({
+      tags: tags
+    });
+  }
+
   handleKeyDown(event, prediction) {
     const onEnter = (event) => {
       let newTags = [...this.state.tags],
@@ -77,7 +86,7 @@ export default class PredictionInputs extends Component {
     });
 
     return (
-        <NoScrollArea className="current-tags" padding="10px">
+        <NoScrollArea className="PredictionInputs" padding="10px">
           <div className="tags-wrapper">
             <div className="tags">
               { tagItems }

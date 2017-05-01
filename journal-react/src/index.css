@@ -246,6 +246,10 @@ nav.nav {
 
 .PredictionInput {
   position: relative; }
+  .PredictionInput .prediction, .PredictionInput .input {
+    display: inline-block;
+    height: 20px;
+    font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
   .PredictionInput .prediction {
     color: lightgrey;
     font-size: inherit;
@@ -254,9 +258,32 @@ nav.nav {
     background: transparent;
     font-size: inherit;
     display: inline-block;
-    height: 100%;
     padding: 0;
     width: 100%; }
+
+.PredictionInputs .tags-wrapper {
+  text-align: left;
+  flex: 1 1 auto; }
+  .PredictionInputs .tags-wrapper .tags {
+    max-height: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; }
+  .PredictionInputs .tags-wrapper .tag {
+    padding: 4px 12px;
+    height: 23px;
+    flex: 0 0 auto;
+    color: white;
+    border-radius: 3px;
+    margin: 0 20px 2px 0;
+    display: inline-block;
+    font-size: 16px;
+    transition: background .4s ease;
+    font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
+    .PredictionInputs .tags-wrapper .tag:not(.white-background) {
+      background: #448AFF; }
+      .PredictionInputs .tags-wrapper .tag:not(.white-background):hover {
+        background: #82B1FF; }
 
 .Calendar {
   height: 100%; }
@@ -478,23 +505,6 @@ nav.nav {
       text-align: right;
       flex: 0 1 100px;
       flex-wrap: wrap; }
-      .Editor .extras .buttons .tags-wrapper {
-        text-align: left;
-        flex: 1 1 auto; }
-        .Editor .extras .buttons .tags-wrapper .tags {
-          max-height: 30px; }
-        .Editor .extras .buttons .tags-wrapper .tag {
-          padding: 4px 12px;
-          color: white;
-          border-radius: 3px;
-          margin: 2px 20px 2px 0;
-          display: inline-block;
-          font-size: 16px;
-          transition: background .4s ease; }
-          .Editor .extras .buttons .tags-wrapper .tag:not(.white-background) {
-            background: #448AFF; }
-            .Editor .extras .buttons .tags-wrapper .tag:not(.white-background):hover {
-              background: #82B1FF; }
       .Editor .extras .buttons .send-wrapper {
         flex: 1 0 auto;
         text-align: right; }
@@ -1011,8 +1021,6 @@ nav.nav {
     .MainContent > main .EntryView {
       flex: 1 1 auto;
       display: none; }
-    .MainContent > main .Editor {
-      display: none; }
 
 .SearchBar {
   height: 100%;
@@ -1021,10 +1029,9 @@ nav.nav {
   .SearchBar .search-bar-wrapper {
     height: 100%;
     display: inline-block; }
-  .SearchBar .normal {
+  .SearchBar .keyword {
     border-radius: 2px;
     width: 50vw;
-    margin-left: 50px;
     font-size: 20px;
     padding: 10px; }
   .SearchBar .form {

@@ -11,11 +11,11 @@ import Calendar from "./Calendar";
 import EntryView from "./EntryView";
 import SearchBar from "./SearchBar";
 
+import R from "./R";
+
 import TestData from "./TestData";
 
 export default class MainContent extends Component {
-
-  TAG_PREDICTION_DICTIONARY = "journal";
 
   data = {};
   imageMap = {};
@@ -42,7 +42,8 @@ export default class MainContent extends Component {
             </div>
             <div className="other-btn">
               <Button className="dark" text="list">list</Button>
-              <Button className="dark indent" text="calendar">date_range</Button>
+              <Button className="dark indent"
+                      text="calendar">date_range</Button>
               <Button className="dark indent" text="map view">map</Button>
               <Button className="dark" text="editor">edit</Button>
               <Button className="dark" text="History">restore</Button>
@@ -53,7 +54,7 @@ export default class MainContent extends Component {
           <main>
             <div className="flex-extend-inner-wrapper inner-main">
               <header className="main-header">
-                <SearchBar/>
+                <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
               </header>
               <div className="content">
                 <div className="flex-extend-inner-wrapper inner-content">
@@ -63,7 +64,7 @@ export default class MainContent extends Component {
                   </div>
                   <EntryView data={this.data} imageMap={this.imageMap}
                              debug={true}/>
-                  <Editor tagPrediction={this.TAG_PREDICTION_DICTIONARY}/>
+                  <Editor tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
                 </div>
               </div>
             </div>

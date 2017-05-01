@@ -20,4 +20,6 @@ module.exports = {
   BULB_MARGIN_TOP        : 5,
   //this.BULB_HEIGHT_ORIGINAL + this.BULB_MARGIN_TOP;
   BULB_HEIGHT            : 32,
+
+  TAG_PREDICTION_DICTIONARY: "journal friendship thoughts code 和和和",
 };

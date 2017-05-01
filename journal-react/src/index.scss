@@ -140,7 +140,7 @@ nav.nav {
 
   &.accent {
     .first, .second {
-      width:120px;
+      width: 120px;
     }
   }
 
@@ -168,6 +168,12 @@ nav.nav {
 .PredictionInput {
   position: relative;
 
+  .prediction, .input {
+    display: inline-block;
+    height: 20px;
+    font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+  }
+
   .prediction {
     color: lightgrey;
     font-size: inherit;
@@ -178,9 +184,45 @@ nav.nav {
     background: transparent;
     font-size: inherit;
     display: inline-block;
-    height: 100%;
     padding: 0;
     width: 100%;
+  }
+}
+
+.PredictionInputs {
+  .tags-wrapper {
+    $tag-font-size: 16px;
+
+    text-align: left;
+    flex: 1 1 auto;
+
+    .tags {
+      max-height: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .tag {
+      padding: 4px 12px;
+      height: 23px;
+      flex: 0 0 auto;
+      color: white;
+      border-radius: 3px;
+      margin: 0 20px 2px 0;
+      display: inline-block;
+      font-size: $tag-font-size;
+      transition: background .4s ease;
+      font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
+
+      &:not(.white-background) {
+        background: $blue;
+
+        &:hover {
+          background: $blue-light;
+        }
+      }
+    }
   }
 }
 
@@ -435,35 +477,6 @@ nav.nav {
       text-align: right;
       flex: 0 1 $button-height * 2;
       flex-wrap: wrap;
-
-      .tags-wrapper {
-        $tag-font-size: 16px;
-
-        text-align: left;
-        flex: 1 1 auto;
-
-        .tags {
-          max-height: 30px;
-        }
-
-        .tag {
-          padding: 4px 12px;
-          color: white;
-          border-radius: 3px;
-          margin: 2px 20px 2px 0;
-          display: inline-block;
-          font-size: $tag-font-size;
-          transition: background .4s ease;
-
-          &:not(.white-background) {
-            background: $blue;
-
-            &:hover {
-              background: $blue-light;
-            }
-          }
-        }
-      }
 
       .send-wrapper {
         flex: 1 0 auto;
@@ -1237,7 +1250,6 @@ nav.nav {
     }
 
     .Editor {
-      display: none;
     }
   }
 }
@@ -1252,10 +1264,9 @@ nav.nav {
     display: inline-block;
   }
 
-  .normal {
+  .keyword {
     border-radius: 2px;
     width: 50vw;
-    margin-left: 50px;
     font-size: 20px;
     padding: 10px;
   }

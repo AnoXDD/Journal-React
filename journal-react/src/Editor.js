@@ -443,19 +443,6 @@ class Editor extends Component {
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
   }
 
-  removeTagAtIndex(index) {
-    if (!this.state.isEditing) {
-      return false;
-    }
-
-    var tags = this.state.tags;
-    tags.splice(index, 1);
-
-    this.setState({
-      tags: tags
-    });
-  }
-
   /**
    * Toggles the photo preview - whether the user is presented with a larger
    * preview of the photo
