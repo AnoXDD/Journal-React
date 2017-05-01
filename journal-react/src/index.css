@@ -85,10 +85,29 @@ img.center {
   font-weight: lighter;
   text-align: center;
   transition: .4s ease;
-  user-select: none; }
+  user-select: none;
+  cursor: pointer; }
   .btn.dark, .Editor.dark .nav .btn {
     background: #212121;
     color: white; }
+  .btn.accent {
+    flex: 0 0 auto;
+    color: white;
+    background: #448AFF; }
+    .btn.accent:hover:not(:active) {
+      background: #82B1FF;
+      color: white; }
+    .btn.accent:active {
+      color: white; }
+  .btn.text {
+    width: auto;
+    display: flex; }
+    .btn.text .icon-wrapper {
+      flex: 0 0 60px; }
+    .btn.text .text-wrapper {
+      flex: 1 1 auto;
+      text-align: left;
+      pointer-events: none; }
   .btn:after {
     pointer-events: none;
     content: "";
@@ -113,6 +132,8 @@ img.center {
     color: #1976D2; }
     .btn:not(.accent):hover span, .btn:not(.accent):active span {
       opacity: 1; }
+  .btn .icon-wrapper, .btn .text-wrapper {
+    height: 100%; }
 
 html, body {
   height: 100%;
@@ -247,53 +268,43 @@ nav.nav {
         width: 50px;
         text-align: right;
         padding-top: 20px; }
+      .Calendar .calendar-table .day-blocks .month-first:first-of-type:before {
+        padding-top: 0; }
       .Calendar .calendar-table .day-blocks .month-0:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Jan"; }
       .Calendar .calendar-table .day-blocks .month-1:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Feb"; }
       .Calendar .calendar-table .day-blocks .month-2:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Mar"; }
       .Calendar .calendar-table .day-blocks .month-3:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Apr"; }
       .Calendar .calendar-table .day-blocks .month-4:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "May"; }
       .Calendar .calendar-table .day-blocks .month-5:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Jun"; }
       .Calendar .calendar-table .day-blocks .month-6:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Jul"; }
       .Calendar .calendar-table .day-blocks .month-7:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Aug"; }
       .Calendar .calendar-table .day-blocks .month-8:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Sep"; }
       .Calendar .calendar-table .day-blocks .month-9:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Oct"; }
       .Calendar .calendar-table .day-blocks .month-10:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Nov"; }
       .Calendar .calendar-table .day-blocks .month-11:before {
-        color: #448AFF;
-        font-weight: bold;
+        color: #00BCD4;
         content: "Dec"; }
     .Calendar .calendar-table .first-padding-1 {
       flex: 0 0 calc(1 * 14.2857142857142857142857%);
@@ -484,16 +495,8 @@ nav.nav {
         text-align: center;
         flex: 0 0 60px; }
         .Editor .extras .buttons .btn.accent {
-          flex: 0 0 auto;
           width: 120px;
-          color: white;
-          background: #448AFF;
           margin-left: 30px; }
-          .Editor .extras .buttons .btn.accent:hover:not(:active) {
-            background: #82B1FF;
-            color: white; }
-          .Editor .extras .buttons .btn.accent:active {
-            color: white; }
         .Editor .extras .buttons .btn span {
           transition: opacity .4s ease;
           opacity: 0;
@@ -954,9 +957,24 @@ nav.nav {
   width: 100%;
   display: flex; }
   .MainContent .sidebar {
-    flex: 0 0 auto; }
+    flex: 0 0 auto;
+    width: 250px;
+    background: #212121; }
+    .MainContent .sidebar .create-btn {
+      width: 170px; }
+      .MainContent .sidebar .create-btn .btn {
+        margin: 40px 40px 20px;
+        width: 100%; }
+    .MainContent .sidebar .btn {
+      height: 60px;
+      width: 250px; }
+      .MainContent .sidebar .btn.indent {
+        padding-left: 30px; }
+      .MainContent .sidebar .btn .icon-wrapper {
+        flex: 0 0 70px; }
   .MainContent main {
-    flex: 1 1 auto; }
+    flex: 1 1 auto;
+    position: relative; }
     .MainContent main .inner-main {
       display: flex;
       flex-direction: column;
@@ -964,7 +982,8 @@ nav.nav {
       height: 100%; }
     .MainContent main header {
       width: 100%;
-      flex: 0 0 80px; }
+      flex: 0 0 60px;
+      background: lightgrey; }
     .MainContent main .content {
       width: 100%;
       flex: 1 1 auto;

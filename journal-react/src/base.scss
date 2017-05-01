@@ -44,6 +44,7 @@ $amber: #FFC107;
 $scroll-bar-padding: 40px;
 
 $button-width: 60px;
+$button-width-text: 200px;
 $button-height: 50px;
 
 *:not(i) {
@@ -157,10 +158,41 @@ img.center {
   text-align: center;
   transition: .4s ease;
   user-select: none;
+  cursor: pointer;
 
   &.dark {
     background: $darkgrey;
     color: white;
+  }
+
+  &.accent {
+    flex: 0 0 auto;
+    color: white;
+    background: $blue;
+
+    &:hover:not(:active) {
+      background: $blue-light;
+      color: white;
+    }
+
+    &:active {
+      color: white;
+    }
+  }
+
+  &.text {
+    width: auto;
+    display: flex;
+
+    .icon-wrapper {
+      flex: 0 0 $button-width;
+    }
+
+    .text-wrapper {
+      flex: 1 1 auto;
+      text-align: left;
+      pointer-events: none;
+    }
   }
 
   &:after {
@@ -210,5 +242,9 @@ img.center {
         opacity: 1;
       }
     }
+  }
+
+  .icon-wrapper, .text-wrapper {
+    height: 100%;
   }
 }

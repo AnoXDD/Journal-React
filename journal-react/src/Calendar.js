@@ -74,7 +74,8 @@ export default class Calendar extends Component {
     let maxHeight = (new Date(this.props.year || new Date().getFullYear(), 0).getDay() === 6 && this.MONTH_DAY[1] === 29) ? 1100 : 1080;
 
     return (
-        <div className="Calendar" style={{maxHeight: `${maxHeight}px`}}>
+        <div className={`Calendar ${this.props.className || ""}`}
+             style={{maxHeight: `${maxHeight}px`}}>
           <NoScrollArea padding="10px">
             <div className="calendar-table">
               <span className="month-list"></span>

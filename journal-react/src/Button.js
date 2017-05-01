@@ -9,11 +9,19 @@ import Ink from "react-ink";
 export default class Button extends Component {
   render() {
     return (
-        <a className={`vertical-align btn ${this.props.text ? "text": ""} ${this.props.className || ""}`}
+        <a className={`btn ${this.props.text ? "text": ""} ${this.props.className || ""}`}
            onClick={this.props.onClick || void(0)}>
           <Ink/>
-          <i className="material-icons vertical-align-wrapper">{this.props.children}</i>
-          <span className="btn-text">{this.props.text}</span>
+          <div className="vertical-align icon-wrapper">
+            <i className="material-icons vertical-align-wrapper">
+              {this.props.children}
+            </i>
+          </div>
+          <div className="vertical-align text-wrapper">
+            <span className="vertical-align-wrapper btn-text">
+              {this.props.text}
+            </span>
+          </div>
         </a>
     );
   }
