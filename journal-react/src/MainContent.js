@@ -17,7 +17,7 @@ import TestData from "./TestData";
 
 function upgradeDataFromVersion2To3(oldData) {
   let data = [],
-      list = ["place", "book", "video", "voice"];
+      list = ["place", "video", "voice"];
 
   for (let d of oldData) {
     let entry = {};
@@ -30,6 +30,8 @@ function upgradeDataFromVersion2To3(oldData) {
       for (let image of d.images) {
         images.push(image.fileName);
       }
+
+      entry.images = images;
     }
 
     if (entry.type === R.TYPE_ARTICLE) {
@@ -48,7 +50,11 @@ function upgradeDataFromVersion2To3(oldData) {
         entry.link = Object.assign({}, d.weblink);
       }
 
-      if (d.place || d.book || d.video || d.voice) {
+      if (d.book && d.book.length) {
+        entry.book = Object.assign({}, d.book);
+      }
+
+      if (d.place || d.video || d.voice) {
         let others = {};
         for (let l of list) {
           if (d[l] && d[l].length) {
@@ -141,7 +147,7 @@ export default class MainContent extends Component {
           }
 
           return true;
-        })
+        }),
       });
     }
   }

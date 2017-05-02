@@ -41,7 +41,7 @@ class ContentArticle extends Component {
             .999999999) * images.length, 10);
 
     this.setState({
-      image: this.props.imageMap[images[i].fileName] || `https://unsplash.it/300/300?image=${i}`
+      image: this.props.imageMap[images[i]] || `https://unsplash.it/300/300?image=${i}`
     });
   }
 
@@ -221,7 +221,7 @@ class EntryList extends Component {
   generateArticleStyle(article) {
     let background = "", className = "shadow";
     if (article.images && article.images.length) {
-      background = `url('${this.props.imageMap[article.images[0].fileName] || "https://unsplash.it/300/200/?random"}')`;
+      background = `url('${this.props.imageMap[article.images[0]] || "https://unsplash.it/300/200/?random"}')`;
     } else {
       className += " no-image";
     }

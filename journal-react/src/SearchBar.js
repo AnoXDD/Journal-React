@@ -74,6 +74,8 @@ class SearchBarTitle extends Component {
 
 export default class SearchBar extends Component {
 
+  ATTACHMENTS = `${R.PROP_PHOTO} ${R.PROP_MUSIC} ${R.PROP_MOVIE} ${R.PROP_LINK} ${R.PROP_OTHER}`;
+
   state = {
     value      : '',
     tags       : [],
@@ -228,7 +230,7 @@ export default class SearchBar extends Component {
             </div>
             <div className="form-col">
               <SearchBarTitle>Attachments</SearchBarTitle>
-              <Options options="photos musics movies links others"
+              <Options options={this.ATTACHMENTS}
                        icons="photo_library library_music movie link more_horiz"
                        value={this.state.attachments}
                        onChange={data => this.setState({attachments: data})}/>

@@ -10,9 +10,8 @@ module.exports = {
   month  : MONTH,
   weekday: WEEKDAY,
 
-  PROP_PHOTO: "photos",
+  PROP_PHOTO: "images",
   PROP_MUSIC: "music",
-  PROP_BOOK : "book",
   PROP_MOVIE: "movie",
   PROP_LINK : "links",
   PROP_OTHER: "others",
