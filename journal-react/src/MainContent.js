@@ -21,7 +21,7 @@ function upgradeDataFromVersion2To3(oldData) {
 
   for (let d of oldData) {
     let entry = {};
-    entry.type = d.contentType;
+    entry.type = d.contentType === 1 ? R.TYPE_BULB : R.TYPE_ARTICLE;
     entry.time = Object.assign({}, d.time);
     entry.body = d.text.body;
 
@@ -62,7 +62,7 @@ function upgradeDataFromVersion2To3(oldData) {
       }
     }
 
-    data.push(d);
+    data.push(entry);
   }
 
   return data;

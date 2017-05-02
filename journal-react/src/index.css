@@ -817,7 +817,8 @@ nav.nav {
       height: 100%;
       width: calc(100% - 30px);
       margin: auto;
-      position: relative; }
+      position: relative;
+      overflow: hidden; }
   .EntryView .article-list {
     flex: 0 0 30%;
     position: relative; }

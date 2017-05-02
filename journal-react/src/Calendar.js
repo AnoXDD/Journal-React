@@ -5,6 +5,7 @@
 
 import React, {Component} from "react";
 import NoScrollArea from "./NoScrollArea";
+import R from "./R";
 
 const monthBlocks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
 const yearBlocks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
@@ -37,7 +38,7 @@ export default class Calendar extends Component {
           month = time.getMonth(),
           day = time.getDate() - 1;
 
-      if (d.contentType) {
+      if (d.type === R.TYPE_BULB) {
         squares[month][day] = (squares[month][day] + 1) || 1;
       } else {
         triangles[month][day] = 1;
