@@ -161,11 +161,14 @@ export default class SearchBar extends Component {
         months     : months,
         keywords   : this.state.keywords,
         tags       : this.state.tags,
+        simple     : false,
       });
-    }
-    else {
+    } else {
+      let value = this.state.inputValue.trim();
+
       this.props.onChange({
-        keywords: this.state.inputValue.trim().split(" "),
+        keywords: value.length ? value.split(" ") : [],
+        simple  : true,
       });
     }
   }

@@ -87,9 +87,6 @@ export default class Calendar extends Component {
                           if (new Date(this.props.year, im, id + 2) > this.now || id >= this.MONTH_DAY[im]) {
                             return "";
                           }
-
-                          //onMouseOver={()=>{var
-                          // {squares}=this.state;squares[im][id]=squares[im][id]||0;++squares[im][id];this.setState({squares:squares});}}
                           return (
                               <div key={`calendar-${month}-${day}`}
                                    className={`day-block accent-${Math.min(9, this.state.squares[im][id] || 0)}${id === 0 ? ` month-first month-${im} ` : " "}${this.state.triangles[im][id] ? "triangle " : " "}${id >= this.MONTH_DAY[im] - 7 ? " last-seven" : " "}${id === this.MONTH_DAY[im] - 1 ? " last-one": " "}`}

@@ -332,7 +332,6 @@ export default class EntryView extends Component {
    */
   BULB_IMAGE_COOLDOWN = 1000;
 
-  version = 0;
 
   isBulbImageCooldown = false;
 
@@ -344,6 +343,8 @@ export default class EntryView extends Component {
       isShowingBulbViewer: "",
       scrollTop          : 0,
       scrollBottom       : this.UPDATE_STEP,
+
+      version: 0
     };
 
     this.version = this.props.version || "";
@@ -369,6 +370,10 @@ export default class EntryView extends Component {
         this.handleScroll.bind(this));
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    nextState.version = nextProps.version;
+  }
+  
   hideBulbViewer() {
     this.setState({
       isShowingBulbViewer: false,
@@ -392,9 +397,9 @@ export default class EntryView extends Component {
     if (bottom > this.state.scrollBottom - this.UPDATE_TRIGGER ||
         top < this.state.scrollTop + this.UPDATE_TRIGGER ||
         bottom === e.target.scrollHeight || top === 0) {
-      this.version = new Date().getTime();
 
       this.setState({
+        version     : new Date().getTime(),
         scrollTop   : top - this.UPDATE_STEP,
         scrollBottom: bottom + this.UPDATE_STEP
       });
@@ -425,7 +430,7 @@ export default class EntryView extends Component {
                   {...this.props}
                   scrollTop={this.state.scrollTop}
                   scrollBottom={this.state.scrollBottom}
-                  version={this.version}
+                  version={this.state.version}
                   onBulbContentMouseOver={src => this.handleBulbMouseOver(src)}
               />
             </div>

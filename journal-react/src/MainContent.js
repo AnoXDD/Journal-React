@@ -87,8 +87,9 @@ export default class MainContent extends Component {
     super(props);
 
     this.state = {
-      data: upgradeDataFromVersion2To3(TestData.data),
-      year: 2016,
+      data   : upgradeDataFromVersion2To3(TestData.data),
+      year   : 2016,
+      version: 0,
     };
 
     /**
@@ -101,53 +102,58 @@ export default class MainContent extends Component {
   }
 
   handleChangeCriteria(c) {
-    if (!c.keywords.length) {
+    if (c.simple && !c.keywords.length) {
       // Empty
-      this.setState({data: this.data[this.state.year]});
-    } else {
       this.setState({
-        data: this.data[this.state.year].filter(d => {
-          // First, type
-          if ((typeof c.hasArticle !== "undefined" && !c.hasArticle && c.type === R.TYPE_ARTICLE) ||
-              (typeof c.hasBulb !== "undefined" && !c.hasBulb && c.type === R.TYPE_BULB)) {
-            return false;
-          }
+        data   : this.data[this.state.year],
+        version: new Date().getTime(),
+      });
+    } else {
+      let newData = this.data[this.state.year].filter(d => {
+        // First, type
+        if ((!c.hasArticle && d.type === R.TYPE_ARTICLE) ||
+            (!c.hasBulb && d.type === R.TYPE_BULB)) {
+          return false;
+        }
 
-          // Second, keywords
-          if (c.keywords && c.keywords.findIndex(k => {
-                return (d.title && d.title.indexOf(k) !== -1) ||
-                    d.text.body.indexOf(k) !== -1;
+        // Second, keywords
+        if (c.keywords && c.keywords.length && c.keywords.findIndex(k => {
+              return (d.title && d.title.indexOf(k) !== -1) ||
+                  d.body.indexOf(k) !== -1;
+            }) === -1) {
+          return false;
+        }
+
+        // Time
+        if (c.months && c.months.length && c.months.findIndex(m => {
+              return new Date(d.time.created).getMonth() === m;
+            }) === -1) {
+          return false;
+        }
+
+        // Tag
+        if (c.tags && c.tags.length && d.tags) {
+          if (c.tags.findIndex(t => {
+                return d.tags.indexOf(t) !== -1;
               }) === -1) {
             return false;
           }
+        }
 
-          // Time
-          if (c.months && c.months.findIndex(m => {
-                return new Date(d.time.created).getMonth() === m;
-              }) === -1) {
-            return false;
-          }
-
-          // Tag
-          if (c.tags && d.tags) {
-            if (c.tags.findIndex(t => {
-                  return d.tags.indexOf(t) !== -1;
-                }) === -1) {
-              return false;
-            }
-          }
-
-          // Attachments
-          if (c.attachments) {
-            if (c.attachments.findIndex(a => {
+        // Attachments
+        if (c.attachments && c.attachments.length && c.attachments.findIndex(
+                a => {
                   return typeof d[a] !== "undefined";
                 }) === -1) {
-              return false;
-            }
-          }
+          return false;
+        }
 
-          return true;
-        }),
+        return true;
+      })
+
+      this.setState({
+        data   : newData,
+        version: new Date().getTime(),
       });
     }
   }
@@ -183,9 +189,11 @@ export default class MainContent extends Component {
                     <Calendar className="vertical-align-wrapper"
                               data={this.state.data}/>
                   </div>
-                  <EntryView data={this.state.data}
-                             imageMap={this.imageMap}
-                             debug={true}/>
+                  <EntryView
+                      version={this.state.version}
+                      data={this.state.data}
+                      imageMap={this.imageMap}
+                      debug={true}/>
                   <Editor tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
                 </div>
               </div>
