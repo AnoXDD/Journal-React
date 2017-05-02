@@ -13,40 +13,31 @@ export default class PredictionInputs extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      tags: this.props.tags
-    };
-
     this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   removeTagAtIndex(index) {
-    var tags = this.state.tags;
+    var tags = this.props.tags;
     tags.splice(index, 1);
 
-    this.setState({
-      tags: tags
-    });
+    this.props.onChange(tags);
   }
 
   handleKeyDown(event, prediction) {
     const onEnter = (event) => {
-      let newTags = [...this.state.tags],
-          newTag = event.target.value.trim();
+      let newTag = event.target.value.trim();
 
       // Only add it when not found
-      if (newTag.length && newTags.indexOf(newTag) === -1) {
-        newTags.push(newTag);
+      if (this.props.tags.indexOf(newTag) === -1) {
         this.setState({
-          tags         : newTags,
           tagPrediction: "",
         });
+
+        // Submit the changed result
+        this.props.onChange([...this.props.tags, newTag]);
       }
 
       event.target.value = "";
-
-      // Submit the change result
-      this.props.onChange(this.state.tags);
     }
 
     if (event.key === "Tab") {
@@ -63,19 +54,17 @@ export default class PredictionInputs extends Component {
 
     } else if (event.key === "Backspace") {
 
-      if (!event.target.value && this.state.tags.length) {
-        let newTags = [...this.state.tags];
+      if (!event.target.value && this.props.tags.length) {
+        let newTags = [...this.props.tags];
         event.target.value = (newTags.pop() || "") + " ";
 
-        this.setState({
-          tags: newTags
-        });
+        this.props.onChange(newTags);
       }
     }
   }
 
   render() {
-    const tagItems = this.state.tags.map((tag, index) => {
+    const tagItems = this.props.tags.map((tag, index) => {
       return (
           <span
               key={`tag-${tag}`}
@@ -95,7 +84,7 @@ export default class PredictionInputs extends Component {
                   inputClassName="normal underlined"
                   onKeyDown={this.handleKeyDown}
                   candidates={this.props.tagPrediction}
-                  blacklist={this.state.tags}
+                  blacklist={this.props.tags}
               />
             </div>
           </div>

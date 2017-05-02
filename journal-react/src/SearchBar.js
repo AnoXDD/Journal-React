@@ -81,8 +81,10 @@ export default class SearchBar extends Component {
     months     : [],
     types      : [],
     attachments: [],
+    inputValue : "",
 
-    isAdvancedSearch: false,
+    isAdvancedSearch   : false,
+    advancedSearchValue: "",
   };
 
   constructor(props) {
@@ -91,6 +93,18 @@ export default class SearchBar extends Component {
     this.toggleIsAdvancedSearch = this.toggleIsAdvancedSearch.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.isAdvancedSearch) {
+      // Calculate the new input value
+      nextState.advancedSearchValue = `${nextState.keywords.join(" ")}${nextState.tags.length ? (" #" + nextState.tags.join(
+          " #")) : ""}${nextState.months.length ? ` @[${nextState.months.join(
+          ",")}]` : ""}${nextState.types.length ? ` isType:[${nextState.types.join(
+          ",")}]` : ""}${nextState.attachments.length ? ` hasAttachments:[${nextState.attachments.join(
+          ",")}]` : ""}`;
+    }
   }
 
   toggleIsAdvancedSearch() {
@@ -110,8 +124,14 @@ export default class SearchBar extends Component {
     });
   }
 
+  handleInputChange(e) {
+    if (!this.state.isAdvancedSearch) {
+      this.setState({inputValue: e.target.value});
+    }
+  }
+
   handleSubmit() {
-    for (let d of this.types) {
+    for (let d of this.state.types) {
       if (d === "Article") {
         var hasArticle = true;
       }
@@ -121,7 +141,7 @@ export default class SearchBar extends Component {
     }
 
     let months = [];
-    for (let month of this.months) {
+    for (let month of this.state.months) {
       let index = R.month.indexOf(month);
 
       if (index !== -1) {
@@ -143,7 +163,13 @@ export default class SearchBar extends Component {
     return (
         <div className="SearchBar">
           <div className="flex-center search-bar-wrapper">
-            <input className="keyword normal underlined"/>
+            <input
+                type="text"
+                className="keyword normal underlined"
+                value={this.state.isAdvancedSearch ? this.state.advancedSearchValue : this.state.inputValue}
+                onChange={this.handleInputChange}
+                disabled={this.state.isAdvancedSearch}
+            />
             <Button className="dark"
                     onClick={this.clearSearch}
             >clear</Button>

@@ -1051,7 +1051,11 @@ nav.nav {
     flex: 1 1 auto;
     font-size: 20px;
     padding: 10px;
-    margin-left: 50px; }
+    margin-left: 50px;
+    transition: .4s ease; }
+    .SearchBar .keyword[disabled] {
+      background: #212121;
+      color: white; }
   .SearchBar .form {
     position: absolute;
     width: 100%;

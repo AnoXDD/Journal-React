@@ -1285,6 +1285,13 @@ nav.nav {
     font-size: 20px;
     padding: 10px;
     margin-left: 50px;
+    transition: .4s ease;
+
+    &[disabled] {
+      background: $darkgrey;
+      color: white;
+
+    }
   }
 
   .form {
