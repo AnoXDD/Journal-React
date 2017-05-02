@@ -10,6 +10,13 @@ module.exports = {
   month  : MONTH,
   weekday: WEEKDAY,
 
+  PROP_PHOTO: "photos",
+  PROP_MUSIC: "music",
+  PROP_BOOK : "book",
+  PROP_MOVIE: "movie",
+  PROP_LINK : "links",
+  PROP_OTHER: "others",
+
   ARTICLE_MARGIN_LEFT    : 30,
   ARTICLE_MARGIN         : 30,
   //300 + this.ARTICLE_MARGIN;

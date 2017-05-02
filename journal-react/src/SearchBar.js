@@ -122,6 +122,8 @@ export default class SearchBar extends Component {
       types      : [],
       attachments: [],
     });
+
+    this.handleSubmit();
   }
 
   handleInputChange(e) {
@@ -131,32 +133,39 @@ export default class SearchBar extends Component {
   }
 
   handleSubmit() {
-    for (let d of this.state.types) {
-      if (d === "Article") {
-        var hasArticle = true;
+    if (this.state.isAdvancedSearch) {
+      for (let d of this.state.types) {
+        if (d === "Article") {
+          var hasArticle = true;
+        }
+        if (d === "Bulb") {
+          var hasBulb = true;
+        }
       }
-      if (d === "Bulb") {
-        var hasBulb = true;
+
+      let months = [];
+      for (let month of this.state.months) {
+        let index = R.month.indexOf(month);
+
+        if (index !== -1) {
+          months.push(index);
+        }
       }
+
+      this.props.onChange({
+        hasArticle : !!hasArticle,
+        hasBulb    : !!hasBulb,
+        attachments: this.state.attachments,
+        months     : months,
+        keywords   : this.state.keywords,
+        tags       : this.state.tags,
+      });
     }
-
-    let months = [];
-    for (let month of this.state.months) {
-      let index = R.month.indexOf(month);
-
-      if (index !== -1) {
-        months.push(index);
-      }
+    else {
+      this.props.onChange({
+        keywords: this.state.inputValue.trim().split(" "),
+      });
     }
-
-    this.props.onChange({
-      hasArticle : !!hasArticle,
-      hasBulb    : !!hasBulb,
-      attachments: this.attachments,
-      months     : months,
-      keywords   : this.state.keywords,
-      tags       : this.state.tags,
-    });
   }
 
   render() {

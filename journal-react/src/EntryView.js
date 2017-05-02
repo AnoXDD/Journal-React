@@ -66,7 +66,7 @@ class ContentArticle extends Component {
               <div className="time">{time}</div>
             </header>
             <div className="details">
-              {article.text.body}
+              {article.body}
             </div>
           </div>
           <Button className="dark">delete</Button>
@@ -299,7 +299,7 @@ class EntryList extends Component {
                         {this.generateHumanFormTimeFromArticle(bulb.time)}
                       </div>
                     </header>
-                    <div className="details">{bulb.text.body}</div>
+                    <div className="details">{bulb.body}</div>
                   </article>
               )
             })}
