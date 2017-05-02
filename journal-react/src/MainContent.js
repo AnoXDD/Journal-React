@@ -15,6 +15,59 @@ import R from "./R";
 
 import TestData from "./TestData";
 
+function upgradeDataFromVersion2To3(oldData) {
+  let data = [],
+      list = ["place", "book", "video", "voice"];
+
+  for (let d of oldData) {
+    let entry = {};
+    entry.type = d.contentType;
+    entry.time = Object.assign({}, d.time);
+    entry.body = d.text.body;
+
+    if (d.images) {
+      let images = [];
+      for (let image of d.images) {
+        images.push(image.fileName);
+      }
+    }
+
+    if (entry.type === R.TYPE_ARTICLE) {
+      entry.title = d.title;
+      entry.tags = d.tags.split("|");
+
+      if (d.music && d.music.length) {
+        entry.music = Object.assign({}, d.music);
+      }
+
+      if (d.movie && d.movie.length) {
+        entry.movie = Object.assign({}, d.movie);
+      }
+
+      if (d.weblink && d.weblink.length) {
+        entry.link = Object.assign({}, d.weblink);
+      }
+
+      if (d.place || d.book || d.video || d.voice) {
+        let others = {};
+        for (let l of list) {
+          if (d[l] && d[l].length) {
+            others[l] = Object.assign({}, d[l]);
+          }
+        }
+
+        if (Object.keys(others).length) {
+          entry.others = others;
+        }
+      }
+    }
+
+    data.push(d);
+  }
+
+  return data;
+}
+
 export default class MainContent extends Component {
 
   SEARCH_BAR_TAGS = ["tags", "months", "attachments"];
@@ -28,7 +81,7 @@ export default class MainContent extends Component {
     super(props);
 
     this.state = {
-      data: TestData.data,
+      data: upgradeDataFromVersion2To3(TestData.data),
       year: 2016,
     };
 
@@ -49,8 +102,8 @@ export default class MainContent extends Component {
       this.setState({
         data: this.data[this.state.year].filter(d => {
           // First, type
-          if ((typeof c.hasArticle !== "undefined" && !c.hasArticle && !c.contentType) ||
-              (typeof c.hasBulb !== "undefined" && !c.hasBulb && c.contentType)) {
+          if ((typeof c.hasArticle !== "undefined" && !c.hasArticle && c.type === R.TYPE_ARTICLE) ||
+              (typeof c.hasBulb !== "undefined" && !c.hasBulb && c.type === R.TYPE_BULB)) {
             return false;
           }
 
@@ -71,9 +124,8 @@ export default class MainContent extends Component {
 
           // Tag
           if (c.tags && d.tags) {
-            let tags = d.tags.split("|");
             if (c.tags.findIndex(t => {
-                  return tags.indexOf(t) !== -1;
+                  return d.tags.indexOf(t) !== -1;
                 }) === -1) {
               return false;
             }

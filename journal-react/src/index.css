@@ -1025,11 +1025,9 @@ nav.nav {
     .MainContent > main .inner-content {
       display: flex; }
     .MainContent > main .Calendar {
-      flex: 0 0 auto;
-      display: none; }
+      flex: 0 0 auto; }
     .MainContent > main .EntryView {
-      flex: 1 1 auto;
-      display: none; }
+      flex: 1 1 auto; }
     .MainContent > main .Editor {
       display: none; }
 

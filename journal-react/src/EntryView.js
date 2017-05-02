@@ -9,7 +9,6 @@ import Button from "./Button";
 import Image from "./Image";
 import R from "./R";
 
-
 class BulbImageView extends Component {
   render() {
     return (
@@ -118,7 +117,7 @@ class EntryList extends Component {
         bulbHeight = 0;
 
     for (let content of data) {
-      if (content.contentType) {
+      if (content.type === R.TYPE_BULB) {
         // Bulb
         this.bulbList.push(content);
 

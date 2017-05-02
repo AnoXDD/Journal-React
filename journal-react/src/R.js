@@ -17,6 +17,9 @@ module.exports = {
   PROP_LINK : "links",
   PROP_OTHER: "others",
 
+  TYPE_ARTICLE: "article",
+  TYPE_BULB   : "bulb",
+
   ARTICLE_MARGIN_LEFT    : 30,
   ARTICLE_MARGIN         : 30,
   //300 + this.ARTICLE_MARGIN;
