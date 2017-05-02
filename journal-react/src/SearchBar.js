@@ -13,33 +13,27 @@ import Ink from "react-ink";
 
 class Options extends Component {
 
-  state = {};
-
   constructor(props) {
     super(props);
 
     let {icons, options} = this.props;
     this.options = options.split(" ");
     this.icons = icons ? icons.split(" ") : [];
-  }
 
-  componentDidUpdate() {
-    let selected = [],
-        states = Object.keys(this.state);
-
-    for (let state of states) {
-      if (this.state[state]) {
-        selected.push(state);
-      }
-    }
-
-    this.props.onChange(selected);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(option) {
-    let state = {};
-    state[option] = !this.state[option];
-    this.setState(state);
+    let index = this.props.value.indexOf(option);
+    if (index === -1) {
+      // Does not exist
+      this.props.onChange([...this.props.value, option]);
+    } else {
+      let newValue = this.props.value;
+      newValue.splice(index, 1);
+      this.props.onChange(newValue);
+    }
+
   }
 
   render() {
@@ -48,7 +42,7 @@ class Options extends Component {
           { this.options.map((option, index) =>
               <a
                   key={`option-${option}`}
-                  className={`option ${this.state[option] ? "selected" : ""}`}
+                  className={`option ${this.props.value.indexOf(option) !== -1 ? "selected" : ""}`}
                   onClick={() => this.handleClick(option)}>
                 <Ink/>
                 <div className="vertical-align icon-wrapper">
@@ -80,14 +74,14 @@ class SearchBarTitle extends Component {
 
 export default class SearchBar extends Component {
 
-  months = [];
-  types = [];
-  attachments = [];
-
   state = {
-    value           : '',
-    tags            : [],
-    keywords        : [],
+    value      : '',
+    tags       : [],
+    keywords   : [],
+    months     : [],
+    types      : [],
+    attachments: [],
+
     isAdvancedSearch: false,
   };
 
@@ -107,10 +101,13 @@ export default class SearchBar extends Component {
 
   clearSearch() {
     this.setState({
-      value: "",
-      tags: [],
-      keywords:[],
-    })
+      value      : "",
+      tags       : [],
+      keywords   : [],
+      months     : [],
+      types      : [],
+      attachments: [],
+    });
   }
 
   handleSubmit() {
@@ -184,19 +181,22 @@ export default class SearchBar extends Component {
               <SearchBarTitle>Time</SearchBarTitle>
               <Options
                   options="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
-                  onChange={months => this.months = months}/>
+                  value={this.state.months}
+                  onChange={months => this.setState({months: months})}/>
             </div>
             <div className="form-col">
               <SearchBarTitle>Type</SearchBarTitle>
               <Options options="Article Bulb"
                        icons="description lightbulb_outline"
-                       onChange={types => this.types = types}/>
+                       value={this.state.types}
+                       onChange={types => this.setState({types: types})}/>
             </div>
             <div className="form-col">
               <SearchBarTitle>Attachments</SearchBarTitle>
               <Options options="photos musics movies links others"
                        icons="photo_library library_music movie link more_horiz"
-                       onChange={data => this.attachments=data}/>
+                       value={this.state.attachments}
+                       onChange={data => this.setState({attachments: data})}/>
             </div>
           </div>
         </div>

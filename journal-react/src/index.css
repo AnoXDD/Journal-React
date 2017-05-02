@@ -1091,6 +1091,8 @@ nav.nav {
       color: white; }
       .Options .option.selected:hover {
         color: white; }
+    .Options .option .btn-text {
+      pointer-events: none; }
     .Options .option .icon-wrapper {
       flex: 0 1 60px;
       margin-right: -30px; }

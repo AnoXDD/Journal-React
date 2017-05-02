@@ -1349,6 +1349,10 @@ nav.nav {
       }
     }
 
+    .btn-text {
+      pointer-events: none;
+    }
+
     .icon-wrapper {
       flex: 0 1 $button-width;
       margin-right: -$button-width/2;
