@@ -266,13 +266,13 @@ class EntryList extends Component {
       bulb.images = [undefined];
 
       let rand = (bulb.time.created / 1000) % 5;
-      prop.onMouseOver = () => {
-        this.props.onBulbContentMouseOver(bulb.images[0] || `https://unsplash.it/300/${200 + rand * 100}?image=${rand}`);
+      prop.onClick = () => {
+        this.props.onBulbClick(bulb.images[0] || `https://unsplash.it/300/${200 + rand * 100}?image=${rand}`);
       };
     } else if (bulb.images) {
 
-      prop.onMouseOver = () => {
-        this.props.onBulbContentMouseOver(bulb.images[0]);
+      prop.onClick = () => {
+        this.props.onBulbClick(bulb.images[0]);
       };
     }
 
@@ -280,12 +280,8 @@ class EntryList extends Component {
   }
 
   generateBulbList() {
-    let mouseEvents = {
-      onMouseOver: this.props.onBulbMouseOver,
-    };
-
-    return (
-        <div className="bulb-list" {...mouseEvents}
+      return (
+        <div className="bulb-list"
              style={{height: `${this.contentStyle.height || 0}px`}}>
           <div className="flex-extend-inner-wrapper">
             {this.bulbList.map(bulb => {
@@ -351,7 +347,7 @@ export default class EntryView extends Component {
 
     this.hideBulbViewer = this.hideBulbViewer.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleBulbMouseOver = this.handleBulbMouseOver.bind(this);
+    this.handleBulbClick = this.handleBulbClick.bind(this);
   }
 
   componentWillMount() {
@@ -373,7 +369,7 @@ export default class EntryView extends Component {
   componentWillUpdate(nextProps, nextState) {
     nextState.version = nextProps.version;
   }
-  
+
   hideBulbViewer() {
     this.setState({
       isShowingBulbViewer: false,
@@ -406,7 +402,7 @@ export default class EntryView extends Component {
     }
   }
 
-  handleBulbMouseOver(src) {
+  handleBulbClick(src) {
     if (!this.isBulbImageCooldown) {
       this.setState({
         isShowingBulbViewer: true,
@@ -431,7 +427,7 @@ export default class EntryView extends Component {
                   scrollTop={this.state.scrollTop}
                   scrollBottom={this.state.scrollBottom}
                   version={this.state.version}
-                  onBulbContentMouseOver={src => this.handleBulbMouseOver(src)}
+                  onBulbClick={src => this.handleBulbClick(src)}
               />
             </div>
           </NoScrollArea>
