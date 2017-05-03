@@ -37,7 +37,7 @@ class ContentArticle extends Component {
   };
 
   handleMouseMove(e, images) {
-    let i = parseInt(Math.min((e.clientX - R.ARTICLE_MARGIN_LEFT) / e.target.offsetWidth,
+    let i = parseInt(Math.min((e.clientX - e.target.getBoundingClientRect().left) / e.target.offsetWidth,
             .999999999) * images.length, 10);
 
     this.setState({
@@ -280,7 +280,7 @@ class EntryList extends Component {
   }
 
   generateBulbList() {
-      return (
+    return (
         <div className="bulb-list"
              style={{height: `${this.contentStyle.height || 0}px`}}>
           <div className="flex-extend-inner-wrapper">
@@ -326,8 +326,7 @@ export default class EntryView extends Component {
    * The time between the next bulb image shows up
    * @type {number}
    */
-  BULB_IMAGE_COOLDOWN = 1000;
-
+  BULB_IMAGE_COOLDOWN = 10;
 
   isBulbImageCooldown = false;
 

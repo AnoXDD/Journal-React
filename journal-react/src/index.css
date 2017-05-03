@@ -823,7 +823,8 @@ nav.nav {
     flex: 0 0 30%;
     position: relative; }
     .EntryView .article-list .Image {
-      position: absolute; }
+      position: absolute;
+      pointer-events: none; }
     .EntryView .article-list article {
       margin: 0 0 30px 30px;
       width: calc(100% - 30px);
