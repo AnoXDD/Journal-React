@@ -310,6 +310,7 @@ nav.nav {
       height: $day-block-size;
       flex: 0 0 calc(100% / 7);
       transition: background .4s ease;
+      pointer-events: none;
 
       &.last-seven .day-block-wrapper {
         border-bottom: $day-block-margin*4 solid $delimitor-border-color;
@@ -329,15 +330,22 @@ nav.nav {
       @for $i from 1 through 9 {
         &.accent-#{$i} {
           background: nth($cs, $i);
+          cursor: pointer;
+          pointer-events: auto;
         }
       }
 
-      &.triangle .day-block-wrapper:after {
-        content: "\25e5";
-        position: absolute;
-        right: 0;
-        top: -2px;
-        font-size: 7px;
+      &.triangle {
+        cursor: pointer;
+        pointer-events: auto;
+
+        .day-block-wrapper:after {
+          content: "\25e5";
+          position: absolute;
+          right: 0;
+          top: -2px;
+          font-size: 7px;
+        }
       }
 
       .day-block-wrapper {

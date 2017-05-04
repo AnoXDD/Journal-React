@@ -89,7 +89,7 @@ class EntryList extends Component {
     return nextProps.version !== this.currentVersion;
   }
 
-    /**
+  /**
    * Generate a form list "Yesterday 12:34 - 12:56"
    */
   generateHumanFormTimeFromArticle(time) {
@@ -312,6 +312,12 @@ export default class EntryView extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.version > nextState.displayVersion) {
       nextState.displayVersion = nextProps.version;
+      
+      this.refs.scrollArea.removeEventListener("scroll",
+          this.handleScroll.bind(this));
+      this.refs.scrollArea.scrollTop = nextProps.scrollTop;
+      this.refs.scrollArea.addEventListener("scroll",
+          this.handleScroll.bind(this));
     }
   }
 

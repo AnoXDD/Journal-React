@@ -422,7 +422,8 @@ nav.nav {
       background: white;
       height: 20px;
       flex: 0 0 calc(100% / 7);
-      transition: background .4s ease; }
+      transition: background .4s ease;
+      pointer-events: none; }
       .Calendar .calendar-table .day-block.last-seven .day-block-wrapper {
         border-bottom: 4px solid #212121;
         padding-top: calc(100% - 3px); }
@@ -430,29 +431,50 @@ nav.nav {
         border-right: 4px solid #212121;
         width: calc(100% - 3px); }
       .Calendar .calendar-table .day-block.accent-1 {
-        background: #B2EBF2; }
+        background: #B2EBF2;
+        cursor: pointer;
+        pointer-events: auto; }
       .Calendar .calendar-table .day-block.accent-2 {
-        background: #80DEEA; }
+        background: #80DEEA;
+        cursor: pointer;
+        pointer-events: auto; }
       .Calendar .calendar-table .day-block.accent-3 {
-        background: #4DD0E1; }
+        background: #4DD0E1;
+        cursor: pointer;
+        pointer-events: auto; }
       .Calendar .calendar-table .day-block.accent-4 {
-        background: #26C6DA; }
+        background: #26C6DA;
+        cursor: pointer;
+        pointer-events: auto; }
       .Calendar .calendar-table .day-block.accent-5 {
-        background: #00BCD4; }
+        background: #00BCD4;
+        cursor: pointer;
+        pointer-events: auto; }
       .Calendar .calendar-table .day-block.accent-6 {
-        background: #00ACC1; }
+        background: #00ACC1;
+        cursor: pointer;
+        pointer-events: auto; }
       .Calendar .calendar-table .day-block.accent-7 {
-        background: #0097A7; }
+        background: #0097A7;
+        cursor: pointer;
+        pointer-events: auto; }
       .Calendar .calendar-table .day-block.accent-8 {
-        background: #00838F; }
+        background: #00838F;
+        cursor: pointer;
+        pointer-events: auto; }
       .Calendar .calendar-table .day-block.accent-9 {
-        background: #006064; }
-      .Calendar .calendar-table .day-block.triangle .day-block-wrapper:after {
-        content: "\25e5";
-        position: absolute;
-        right: 0;
-        top: -2px;
-        font-size: 7px; }
+        background: #006064;
+        cursor: pointer;
+        pointer-events: auto; }
+      .Calendar .calendar-table .day-block.triangle {
+        cursor: pointer;
+        pointer-events: auto; }
+        .Calendar .calendar-table .day-block.triangle .day-block-wrapper:after {
+          content: "\25e5";
+          position: absolute;
+          right: 0;
+          top: -2px;
+          font-size: 7px; }
       .Calendar .calendar-table .day-block .day-block-wrapper {
         width: 100%;
         padding-top: 100%;

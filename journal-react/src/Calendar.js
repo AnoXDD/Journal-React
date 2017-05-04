@@ -80,6 +80,18 @@ export default class Calendar extends Component {
     )
   }
 
+  handleClick(month, day) {
+    let times = Object.keys(this.props.contentStyle),
+        i = times.findIndex(t => {
+          let date = new Date(parseInt(t, 10));
+          return date.getMonth() === month && date.getDate() === day;
+        });
+
+    if (i !== -1) {
+      this.props.onBlockClick(this.props.contentStyle[times[i]]);
+    }
+  }
+
   render() {
     this.now = new Date().getTime();
 
@@ -103,6 +115,7 @@ export default class Calendar extends Component {
                           return (
                               <div key={`calendar-${month}-${day}`}
                                    className={`day-block accent-${Math.min(9, this.state.squares[im][id] || 0)}${id === 0 ? ` month-first month-${im} ` : " "}${this.state.triangles[im][id] ? "triangle " : " "}${id >= this.MONTH_DAY[im] - 7 ? " last-seven" : " "}${id === this.MONTH_DAY[im] - 1 ? " last-one": " "}`}
+                                   onClick={() => this.handleClick(month, day)}
                               >
                                 <div className="day-block-wrapper">
                                   <div className="text">

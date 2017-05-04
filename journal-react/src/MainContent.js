@@ -118,6 +118,7 @@ export default class MainContent extends Component {
 
     this.updateContentStyle = this.updateContentStyle.bind(this);
     this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
+    this.handleCalendarClick = this.handleCalendarClick.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
 
     this.updateContentStyle(this.state.data);
@@ -125,6 +126,14 @@ export default class MainContent extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     this.updateContentStyle(nextState.data);
+  }
+
+  handleCalendarClick(top) {
+    this.scrollTop = top;
+
+    this.setState({
+      version: new Date().getTime(),
+    });
   }
 
   handleChangeCriteria(c) {
@@ -267,6 +276,8 @@ export default class MainContent extends Component {
                   <div className="vertical-align">
                     <Calendar className="vertical-align-wrapper"
                               version={this.state.version}
+                              contentStyle={this.contentStyle}
+                              onBlockClick={this.handleCalendarClick}
                               hidden={!this.state.isDisplayingCalendar}
                               data={this.state.data}/>
                   </div>
@@ -275,6 +286,7 @@ export default class MainContent extends Component {
                       data={this.state.data}
                       imageMap={this.imageMap}
                       contentStyle={this.contentStyle}
+                      scrollTop={this.scrollTop}
                       articles={this.articleList}
                       bulbs={this.bulbList}
                       debug={true}/>
