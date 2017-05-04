@@ -339,10 +339,9 @@ export default class EntryView extends Component {
       scrollTop          : 0,
       scrollBottom       : this.UPDATE_STEP,
 
-      version: 0
+      version       : 0,
+      displayVersion: 0,
     };
-
-    this.version = this.props.version || "";
 
     this.hideBulbViewer = this.hideBulbViewer.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -366,7 +365,9 @@ export default class EntryView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    nextState.version = nextProps.version;
+    if (nextProps.version > nextState.displayVersion) {
+      nextState.displayVersion = nextProps.version;
+    }
   }
 
   hideBulbViewer() {
@@ -394,9 +395,9 @@ export default class EntryView extends Component {
         bottom === e.target.scrollHeight || top === 0) {
 
       this.setState({
-        version     : new Date().getTime(),
-        scrollTop   : top - this.UPDATE_STEP,
-        scrollBottom: bottom + this.UPDATE_STEP
+        displayVersion: new Date().getTime(),
+        scrollTop     : top - this.UPDATE_STEP,
+        scrollBottom  : bottom + this.UPDATE_STEP
       });
     }
   }
@@ -425,7 +426,7 @@ export default class EntryView extends Component {
                   {...this.props}
                   scrollTop={this.state.scrollTop}
                   scrollBottom={this.state.scrollBottom}
-                  version={this.state.version}
+                  version={this.state.displayVersion}
                   onBulbClick={src => this.handleBulbClick(src)}
               />
             </div>

@@ -48,6 +48,50 @@ $button-width: 60px;
 $button-width-text: 200px;
 $button-height: 50px;
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in-2 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out-2 {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@mixin max-z-index {
+  z-index: 999999999;
+}
+
+@mixin max-z-index-2nd {
+  z-index: 999999998;
+}
+
 *:not(i) {
   font-family: "Lato", "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
 }
@@ -272,4 +316,24 @@ img.center {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.block {
+  background: transparent;
+  position: fixed;
+  z-index: 900000000;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
+.max-z-index {
+  @include max-z-index;
+  position: relative;
+}
+
+.z-index-inherit {
+  z-index: inherit;
+  position: relative;
 }

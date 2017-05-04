@@ -1,6 +1,26 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
 @import "http://fonts.googleapis.com/css?family=Lato";
 @import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+@keyframes fade-in {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+@keyframes fade-out {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0; } }
+@keyframes fade-in-2 {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+@keyframes fade-out-2 {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0; } }
 *:not(i) {
   font-family: "Lato", "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
 
@@ -152,6 +172,23 @@ img.center {
   align-items: center;
   justify-content: center; }
 
+.block {
+  background: transparent;
+  position: fixed;
+  z-index: 900000000;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0; }
+
+.max-z-index {
+  z-index: 999999999;
+  position: relative; }
+
+.z-index-inherit {
+  z-index: inherit;
+  position: relative; }
+
 html, body {
   height: 100%;
   width: 100%;
@@ -251,6 +288,12 @@ nav.nav {
     opacity: 0; }
   .toggle.vertical-align.change-hover:hover.show-second .second, .toggle.vertical-align:not(.change-hover).show-second .second {
     opacity: 1; }
+
+.Prompt {
+  z-index: 999999999;
+  position: relative; }
+  .Prompt .prompt-child {
+    z-index: inherit !important; }
 
 .PredictionInput {
   position: relative; }
@@ -721,26 +764,6 @@ nav.nav {
   position: relative;
   width: 100%;
   height: 100%; }
-@keyframes fade-in {
-  from {
-    opacity: 0; }
-  to {
-    opacity: 1; } }
-@keyframes fade-out {
-  from {
-    opacity: 1; }
-  to {
-    opacity: 0; } }
-@keyframes fade-in-2 {
-  from {
-    opacity: 0; }
-  to {
-    opacity: 1; } }
-@keyframes fade-out-2 {
-  from {
-    opacity: 1; }
-  to {
-    opacity: 0; } }
   .Image.toggle .image:first-child {
     opacity: 0;
     animation: fade-out-2 .4s ease; }
@@ -768,7 +791,8 @@ nav.nav {
   width: 100%;
   position: relative; }
   .EntryView article {
-    transition: top .4s ease; }
+    transition: top .4s ease;
+    animation: fade-in .4s ease; }
     .EntryView article:before {
       content: "";
       position: absolute;
@@ -871,6 +895,8 @@ nav.nav {
         .EntryView .article-list article.no-image .title {
           transition: width .4s ease;
           padding-bottom: 5px; }
+        .EntryView .article-list article.no-image .Image {
+          display: none; }
         .EntryView .article-list article.no-image:hover .title {
           width: calc(100% - 60px); }
         .EntryView .article-list article.no-image:hover .btn, .EntryView .article-list article.no-image:hover .Options .option, .Options .EntryView .article-list article.no-image:hover .option {
@@ -901,7 +927,6 @@ nav.nav {
       .EntryView .article-list article .details {
         color: white;
         font-size: 14px;
-        font-weight: lighter;
         width: calc(100% - 50px);
         background: #212121;
         padding: 10px 25px;
@@ -914,7 +939,8 @@ nav.nav {
     flex: 1 0 50%;
     position: relative; }
     .EntryView .bulb-list article {
-      font-size: 13px;
+      font-size: 16px;
+      font-weight: normal;
       display: flex;
       margin-bottom: 5px;
       width: 100%;
@@ -973,7 +999,6 @@ nav.nav {
       color: white;
       transition: background .4s ease, color .4s ease; }
     .EntryView .bulb-list .details {
-      font-weight: lighter;
       margin: 4px 8px;
       background: white; }
     .EntryView .bulb-list .image {
@@ -1027,7 +1052,8 @@ nav.nav {
     .MainContent > main .inner-content {
       display: flex; }
     .MainContent > main .Calendar {
-      flex: 0 0 auto; }
+      flex: 0 0 auto;
+      display: none; }
     .MainContent > main .EntryView {
       flex: 1 1 auto; }
     .MainContent > main .Editor {
@@ -1042,6 +1068,8 @@ nav.nav {
     height: 100%;
     width: 100%;
     display: flex; }
+  .SearchBar .advanced-search {
+    top: 80px; }
   .SearchBar .btn.text, .SearchBar .Options .text.option, .Options .SearchBar .text.option, .SearchBar .toggle {
     flex: 0 0 auto; }
   .SearchBar .btn.text, .SearchBar .Options .text.option, .Options .SearchBar .text.option {
@@ -1075,7 +1103,8 @@ nav.nav {
       .SearchBar .form .form-col .title {
         padding: 0 20px;
         background: #212121;
-        color: white; }
+        color: white;
+        margin-right: 5px; }
 
 .Options {
   display: flex;
