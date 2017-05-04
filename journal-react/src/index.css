@@ -426,7 +426,7 @@ nav.nav {
         border-bottom: 4px solid #212121;
         padding-top: calc(100% - 3px); }
       .Calendar .calendar-table .day-block.last-one .day-block-wrapper {
-        border-right: 4px solid #212121;
+        border-right: 3px solid #212121;
         width: calc(100% - 3px); }
       .Calendar .calendar-table .day-block.accent-1 {
         background: #B2EBF2; }

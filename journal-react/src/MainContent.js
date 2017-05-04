@@ -193,6 +193,7 @@ export default class MainContent extends Component {
                 <div className="flex-extend-inner-wrapper inner-content">
                   <div className="vertical-align">
                     <Calendar className="vertical-align-wrapper"
+                              version={this.state.version}
                               data={this.state.data}/>
                   </div>
                   <EntryView

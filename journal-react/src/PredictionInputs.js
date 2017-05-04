@@ -28,7 +28,7 @@ export default class PredictionInputs extends Component {
       let newTag = event.target.value.trim();
 
       // Only add it when not found
-      if (this.props.tags.indexOf(newTag) === -1) {
+      if (newTag.length && this.props.tags.indexOf(newTag) === -1) {
         this.setState({
           tagPrediction: "",
         });

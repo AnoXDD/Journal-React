@@ -14,11 +14,6 @@ export default class Calendar extends Component {
 
   MONTH_DAY = [31, 28 + ((this.props.year % 4) || ((this.props.year % 100 === 0) && (this.props.year % 400)) ? 0 : 1), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-  state = {
-    squares  : [[], [], [], [], [], [], [], [], [], [], [], []],
-    triangles: [[], [], [], [], [], [], [], [], [], [], [], []],
-  };
-
   now = new Date().getTime();
 
   constructor(props) {
@@ -32,8 +27,25 @@ export default class Calendar extends Component {
       };
     }
 
-    let {squares, triangles} = this.state;
-    for (let d of this.props.data) {
+    // this.updateStats = this.updateStats.bind(this);
+    //
+    this.state = this.updateStats(this.props);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    this.MONTH_DAY[1] = 28 + ((this.props.year % 4) || ((this.props.year % 100 === 0) && (this.props.year % 400)) ? 0 : 1);
+
+    let updatedState = this.updateStats(nextProps);
+    nextState.squares = updatedState.squares;
+    nextState.triangles = updatedState.triangles;
+  }
+
+  updateStats(props) {
+    let squares = [[], [], [], [], [], [], [], [], [], [], [], []],
+        triangles = [[], [], [], [], [], [], [], [], [], [], [], []],
+        nextState = {};
+
+    for (let d of props.data) {
       let time = new Date(d.time.created),
           month = time.getMonth(),
           day = time.getDate() - 1;
@@ -45,15 +57,11 @@ export default class Calendar extends Component {
       }
     }
 
-    this.state = {
-      squares  : squares,
-      triangles: triangles
-    };
-  }
+    nextState.squares = squares;
+    nextState.triangles = triangles;
 
-  componentWillUpdate(nextProps) {
-    this.MONTH_DAY[1] = 28 + ((this.props.year % 4) || ((this.props.year % 100 === 0) && (this.props.year % 400)) ? 0 : 1);
-  }
+    return nextState;
+  };
 
   generateFirstPadding() {
     let day = new Date(this.props.year || new Date().getFullYear(), 0).getDay();
