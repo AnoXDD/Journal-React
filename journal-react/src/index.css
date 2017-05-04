@@ -295,6 +295,54 @@ nav.nav {
 .Prompt {
   z-index: 999999999;
   position: relative; }
+  .Prompt.dim-bg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0; }
+    .Prompt.dim-bg .block {
+      background: rgba(255, 255, 255, 0.5); }
+  .Prompt .dialog {
+    width: 500px;
+    background-color: #fafafa; }
+    .Prompt .dialog .title {
+      background: #212121;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 19px; }
+    .Prompt .dialog .message {
+      position: relative;
+      padding: 30px;
+      line-height: 2em; }
+      .Prompt .dialog .message:after {
+        position: absolute;
+        left: 25%;
+        bottom: 10px;
+        content: '';
+        width: 50%;
+        height: 1px;
+        background: #ddd; }
+    .Prompt .dialog .btns {
+      justify-content: center;
+      display: flex;
+      padding: 10px 20px 20px; }
+      .Prompt .dialog .btns .btn, .Prompt .dialog .btns .Options .option, .Options .Prompt .dialog .btns .option {
+        padding-right: 60px; }
+      .Prompt .dialog .btns .yes {
+        background: #448AFF;
+        color: white; }
+        .Prompt .dialog .btns .yes:hover {
+          background: #8BC34A; }
+      .Prompt .dialog .btns .text-wrapper {
+        flex: none;
+        width: auto;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis; }
+  .Prompt .dialog, .Prompt .prompt-box {
+    z-index: 999999999; }
   .Prompt .prompt-child {
     z-index: inherit !important; }
 
@@ -771,7 +819,7 @@ nav.nav {
               .Editor .extras .other-wrapper .other-props .other-prop .normal.new-key input {
                 color: #448AFF;
                 font-size: 15px; }
-  .Editor .shadow {
+  .Editor > .shadow {
     width: 100%;
     background-color: #f2f2f2;
     position: relative;

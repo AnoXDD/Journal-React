@@ -4,15 +4,16 @@ import {
     SortableElement,
     arrayMove
 } from 'react-sortable-hoc';
+import Ink from "react-ink";
+import AutosizeInput from "react-input-autosize";
+
 import NoScrollArea from "./NoScrollArea";
 import Toggle from "./Toggle";
 import PredictionInputs from "./PredictionInputs";
 import Button from "./Button";
 import NumberCard from "./NumberCard";
+import Prompt from "./Prompt";
 import R from "./R";
-
-var Ink = require("react-ink");
-var AutosizeInput = require("react-input-autosize");
 
 class ExtraAttachmentsAddProp extends Component {
 
@@ -268,6 +269,7 @@ class Editor extends Component {
       others          : [],
       isEditing       : false,
       isFullscreen    : false,
+      hasPrompt       : true,
     };
 
     this.version = new Date().getTime();
@@ -423,6 +425,7 @@ class Editor extends Component {
       this.state.timeElapsed = this.state.isEditing ? (this.state.timeElapsed + 1) : 0;
     }, 1000);
 
+    this.hasUnsavedChanges = this.hasUnsavedChanges.bind(this);
     this.setIsDisplaying = this.setIsDisplaying.bind(this);
     this.setOthersProperty = this.setOthersProperty.bind(this);
     this.generateMoreInfo = this.generateMoreInfo.bind(this);
@@ -450,34 +453,42 @@ class Editor extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.version > this.version) {
-      // Override current data with new data
-      nextState.title = nextProps.title;
-      nextState.body = nextProps.body;
-      nextState.stats = {
-        timeCreated: nextProps.time.created,
-        timeBegin  : nextProps.time.begin,
-        timeEnd    : nextProps.time.end,
-      };
-      nextState.tags = [...nextProps.tags];
+      if (this.hasUnsavedChanges()) {
 
-      nextState.photos = [];
+      } else {
+        // Override current data with new data
+        nextState.title = nextProps.title;
+        nextState.body = nextProps.body;
+        nextState.stats = {
+          timeCreated: nextProps.time.created,
+          timeBegin  : nextProps.time.begin,
+          timeEnd    : nextProps.time.end,
+        };
+        nextState.tags = [...nextProps.tags];
 
-      if (nextProps[R.PROP_PHOTO]) {
-        for (let photo of [...nextProps[R.PROP_PHOTO]]) {
-          nextState.photos.push({
-            id : photo,
-            src: this.props.imageMap[photo]
-          });
+        nextState.photos = [];
+
+        if (nextProps[R.PROP_PHOTO]) {
+          for (let photo of [...nextProps[R.PROP_PHOTO]]) {
+            nextState.photos.push({
+              id : photo,
+              src: this.props.imageMap[photo]
+            });
+          }
         }
+
+        nextState.musics = [...(nextProps[R.PROP_MUSIC] || [])];
+        nextState.movies = [...(nextProps[R.PROP_MOVIE] || [])];
+        nextState.links = [...(nextProps[R.PROP_LINK] || [])];
+        nextState.others = [...(nextProps[R.PROP_OTHER] || [])];
+
+        this.version = new Date().getTime();
       }
-
-      nextState.musics = [...(nextProps[R.PROP_MUSIC] || [])];
-      nextState.movies = [...(nextProps[R.PROP_MOVIE] || [])];
-      nextState.links = [...(nextProps[R.PROP_LINK] || [])];
-      nextState.others = [...(nextProps[R.PROP_OTHER] || [])];
-
-      this.version = new Date().getTime();
     }
+  }
+
+  hasUnsavedChanges() {
+
   }
 
   /**
@@ -521,6 +532,12 @@ class Editor extends Component {
     newPhotos[i].status = ~newPhotos[i].status & 0b11;
     this.setState({
       photos: newPhotos
+    });
+  }
+
+  toggleEditMode() {
+    this.setState({
+      isEditing: !this.state.isEditing
     });
   }
 
@@ -944,16 +961,16 @@ class Editor extends Component {
     return `${parseInt(seconds / 60, 10)}:${("0" + seconds % 60).slice(-2)}`;
   }
 
-  toggleEditMode() {
-    this.setState({
-      isEditing: !this.state.isEditing
-    });
-  }
-
   render() {
     return (
         <div
             className={`Editor ${this.state.isDarkMode ? "dark" : ""} ${this.state.isFullscreen ? "fullscreen" : ""}`}>
+          <Prompt className={`${this.state.hasPrompt ? "" : "hidden"}`}
+                  title="Content Conflict"
+                  message="There appears to be unsaved changes here. If you proceed, they will be lost and overwritten by the new contents. Do you wish to continue?"
+                  yes="discard"
+                  cancel="keep draft"
+          />
           <nav className="nav has-hint">
             <Button className={`${this.state.isFullscreen ? "" : "hidden"}`}
                     onClick={this.toggleDarkMode}>highlight</Button>

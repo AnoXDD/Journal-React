@@ -84,11 +84,12 @@ export default class MainContent extends Component {
 
   SEARCH_BAR_TAGS = ["tags", "months", "attachments"];
   TAB = {
-    LIST    : 1,
-    EDITOR  : 2,
-    HISTORY : 3,
-    STATS   : 4,
-    SETTINGS: 10,
+    NO_CHANGE: 0,
+    LIST     : 1,
+    EDITOR   : 2,
+    HISTORY  : 3,
+    STATS    : 4,
+    SETTINGS : 10,
   };
 
   state = {
@@ -119,6 +120,9 @@ export default class MainContent extends Component {
 
   editorVersion = 0;
 
+  /* Press escape anywhere to return to this tab */
+  escapeToReturn = this.TAB.NO_CHANGE;
+
   constructor(props) {
     super(props);
 
@@ -129,8 +133,11 @@ export default class MainContent extends Component {
     this.data = {2016: this.state.data};
 
     this.updateContentStyle = this.updateContentStyle.bind(this);
+
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
     this.handleCalendarClick = this.handleCalendarClick.bind(this);
+    this.handleArticleClick = this.handleArticleClick.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
 
     this.updateContentStyle(this.state.data);
@@ -138,6 +145,22 @@ export default class MainContent extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     this.updateContentStyle(nextState.data);
+  }
+
+  componentWillMount() {
+    document.addEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  handleKeyDown(e) {
+    if (e.key === "Escape") {
+      this.handleViewChange(this.escapeToReturn);
+    }
+
+    this.escapeToReturn = this.TAB.NO_CHANGE;
   }
 
   handleCalendarClick(top) {
@@ -206,9 +229,19 @@ export default class MainContent extends Component {
   }
 
   handleViewChange(newView) {
+    if (newView && newView !== this.TAB.NO_CHANGE) {
+      this.setState({
+        isDisplaying: newView,
+      });
+    }
+  }
+
+  handleArticleClick(i) {
+    this.editorVersion = new Date().getTime();
+    this.escapeToReturn = this.TAB.LIST;
     this.setState({
-      isDisplaying: newView,
-    });
+      editArticleIndex: i,
+    }, this.handleViewChange(this.TAB.EDITOR));
   }
 
   toggleIsDisplayingCalendar() {
@@ -290,7 +323,7 @@ export default class MainContent extends Component {
 
     return (
         <div className="MainContent">
-          <nav className="sidebar">
+          <aside className="sidebar">
             <div className="create-btn">
               <Button className="accent" text="create">add</Button>
             </div>
@@ -303,7 +336,7 @@ export default class MainContent extends Component {
                   >{b.icon}</Button>
               )}
             </div>
-          </nav>
+          </aside>
           <main>
             <div className="flex-extend-inner-wrapper inner-main">
               <header className="main-header">
@@ -336,7 +369,7 @@ export default class MainContent extends Component {
                       scrollTop={this.scrollTop}
                       articles={this.articleList}
                       bulbs={this.bulbList}
-                      onArticleClick={(i) => {this.editorVersion=new Date().getTime();this.setState({editArticleIndex: i})}}
+                      onArticleClick={this.handleArticleClick}
                       debug={true}
                   />
                 </div>
