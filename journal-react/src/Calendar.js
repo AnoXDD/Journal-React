@@ -96,7 +96,7 @@ export default class Calendar extends Component {
     this.now = new Date().getTime();
 
     // Calculate max-height
-    let maxHeight = (new Date(this.props.year || new Date().getFullYear(), 0).getDay() === 6 && this.MONTH_DAY[1] === 29) ? 1100 : 1080;
+    let maxHeight = (new Date(this.props.year || new Date().getFullYear(), 0).getDay() === 6 && this.MONTH_DAY[1] === 29) ? 1150 : 1130;
 
     return (
         <div

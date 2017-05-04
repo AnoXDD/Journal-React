@@ -50,10 +50,11 @@ class ContentArticle extends Component {
         articleProp = {
           className: `${this.props.className || ""}`,
           style    : style,
+          onClick  : this.props.onClick,
         };
 
     if (article.images) {
-      articleProp.onMouseMove = (e) => this.handleMouseMove(e, article.images);
+      articleProp.onMouseMove = e => this.handleMouseMove(e, article.images);
     }
 
     return (
@@ -184,9 +185,10 @@ class EntryList extends Component {
     return (
         <div className="article-list">
           <div className="flex-extend-inner-wrapper">
-            {this.props.articles.map(article => {
+            {this.props.articles.map((article, index) => {
               return (
                   <ContentArticle
+                      onClick={() => this.props.onArticleClick(index)}
                       article={article}
                       imageMap={this.props.imageMap}
                       key={`article-preview-${article.time.created}`}
@@ -312,7 +314,7 @@ export default class EntryView extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.version > nextState.displayVersion) {
       nextState.displayVersion = nextProps.version;
-      
+
       this.refs.scrollArea.removeEventListener("scroll",
           this.handleScroll.bind(this));
       this.refs.scrollArea.scrollTop = nextProps.scrollTop;

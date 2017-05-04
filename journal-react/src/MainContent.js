@@ -289,7 +289,9 @@ export default class MainContent extends Component {
                       scrollTop={this.scrollTop}
                       articles={this.articleList}
                       bulbs={this.bulbList}
-                      debug={true}/>
+                      onArticleClick={console.log}
+                      debug={true}
+                  />
                   <Editor tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
                 </div>
               </div>
