@@ -398,36 +398,36 @@ nav.nav {
         content: "Dec"; }
     .Calendar .calendar-table .first-padding-1 {
       flex: 0 0 calc(1 * 14.2857142857142857142857%);
-      background: #f4f4f4; }
+      background: #212121; }
     .Calendar .calendar-table .first-padding-2 {
       flex: 0 0 calc(2 * 14.2857142857142857142857%);
-      background: #f4f4f4; }
+      background: #212121; }
     .Calendar .calendar-table .first-padding-3 {
       flex: 0 0 calc(3 * 14.2857142857142857142857%);
-      background: #f4f4f4; }
+      background: #212121; }
     .Calendar .calendar-table .first-padding-4 {
       flex: 0 0 calc(4 * 14.2857142857142857142857%);
-      background: #f4f4f4; }
+      background: #212121; }
     .Calendar .calendar-table .first-padding-5 {
       flex: 0 0 calc(5 * 14.2857142857142857142857%);
-      background: #f4f4f4; }
+      background: #212121; }
     .Calendar .calendar-table .first-padding-6 {
       flex: 0 0 calc(6 * 14.2857142857142857142857%);
-      background: #f4f4f4; }
+      background: #212121; }
     .Calendar .calendar-table .last-padding {
       flex: 1;
-      background: #f4f4f4; }
+      background: #212121; }
     .Calendar .calendar-table .day-block {
       background: white;
       height: 20px;
       flex: 0 0 calc(100% / 7);
       transition: background .4s ease; }
       .Calendar .calendar-table .day-block.last-seven .day-block-wrapper {
-        border-bottom: 2px solid black;
-        padding-top: calc(100% - 1px); }
+        border-bottom: 4px solid #212121;
+        padding-top: calc(100% - 3px); }
       .Calendar .calendar-table .day-block.last-one .day-block-wrapper {
-        border-right: 2px solid black;
-        width: calc(100% - 2px); }
+        border-right: 4px solid #212121;
+        width: calc(100% - 3px); }
       .Calendar .calendar-table .day-block.accent-1 {
         background: #B2EBF2; }
       .Calendar .calendar-table .day-block.accent-2 {
@@ -455,7 +455,8 @@ nav.nav {
       .Calendar .calendar-table .day-block .day-block-wrapper {
         width: 100%;
         padding-top: 100%;
-        position: relative; }
+        position: relative;
+        border: 1px solid #212121; }
         .Calendar .calendar-table .day-block .day-block-wrapper .text {
           position: absolute;
           top: 0;

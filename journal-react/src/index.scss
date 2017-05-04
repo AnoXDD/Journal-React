@@ -241,12 +241,12 @@ nav.nav {
 
 .Calendar {
   $day-block-size: 20px;
-  $day-block-margin: 2px;
+  $day-block-margin: 1px;
   $month-list-width: 50px;
 
   $default-background-color: white;
-  $padding-background-color: #f4f4f4;
-  $delimitor-border-color: black;
+  $padding-background-color: $darkgrey;
+  $delimitor-border-color: $darkgrey;
 
   height: 100%;
 
@@ -310,16 +310,20 @@ nav.nav {
       flex: 0 0 calc(100% / 7);
       transition: background .4s ease;
 
-
       &.last-seven .day-block-wrapper {
-        border-bottom: $day-block-margin solid $delimitor-border-color;
-        padding-top: calc(100% - 1px);
+        border-bottom: $day-block-margin*4 solid $delimitor-border-color;
+        padding-top: calc(100% - #{$day-block-margin*3});
       }
 
       &.last-one .day-block-wrapper {
-        border-right: $day-block-margin solid $delimitor-border-color;
-        width: calc(100% - #{$day-block-margin});
+        border-right: $day-block-margin*4 solid $delimitor-border-color;
+        width: calc(100% - #{$day-block-margin*3});
       }
+
+      //&.last-one + .day-block .day-block-wrapper {
+      //  border-left: $day-block-margin*4 solid $delimitor-border-color;
+      //  width: calc(100% - #{$day-block-margin*3});
+      //}
 
       @for $i from 1 through 9 {
         &.accent-#{$i} {
@@ -339,6 +343,7 @@ nav.nav {
         width: 100%;
         padding-top: 100%;
         position: relative;
+        border: $day-block-margin solid $darkgrey;
 
         .text {
           position: absolute;
@@ -950,7 +955,7 @@ nav.nav {
 
   .article-list {
     flex: 0 0 30%;
-    max-width:500px;
+    max-width: 500px;
     position: relative;
 
     .Image {
