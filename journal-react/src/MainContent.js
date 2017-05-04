@@ -96,6 +96,10 @@ export default class MainContent extends Component {
       data   : upgradeDataFromVersion2To3(TestData.data),
       year   : 2016,
       version: 0,
+
+      isDisplayingCalendar: true,
+      isDiaplayingMapView : false,
+
     };
 
     /**
@@ -105,6 +109,7 @@ export default class MainContent extends Component {
     this.data = {2016: this.state.data};
 
     this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
+    this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
   }
 
   handleChangeCriteria(c) {
@@ -164,6 +169,18 @@ export default class MainContent extends Component {
     }
   }
 
+  toggleIsDisplayingCalendar() {
+    this.setState({
+      isDisplayingCalendar: !this.state.isDisplayingCalendar,
+    });
+  }
+
+  toggleIsDisplayingMapView() {
+    this.setState({
+      isDisplayingMapView: !this.state.isDiaplayingMapView,
+    });
+  }
+
   render() {
     return (
         <div className="MainContent">
@@ -173,8 +190,11 @@ export default class MainContent extends Component {
             </div>
             <div className="other-btn">
               <Button className="dark" text="list">list</Button>
-              <Button className="dark indent"
-                      text="calendar">date_range</Button>
+              <Button
+                  className={`dark indent ${this.state.isDisplayingCalendar ? "active" : ""}`}
+                  text="calendar"
+                  onClick={this.toggleIsDisplayingCalendar}
+              >date_range</Button>
               <Button className="dark indent" text="map view">map</Button>
               <Button className="dark" text="editor">edit</Button>
               <Button className="dark" text="History">restore</Button>
@@ -194,6 +214,7 @@ export default class MainContent extends Component {
                   <div className="vertical-align">
                     <Calendar className="vertical-align-wrapper"
                               version={this.state.version}
+                              hidden={!this.state.isDisplayingCalendar}
                               data={this.state.data}/>
                   </div>
                   <EntryView

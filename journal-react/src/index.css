@@ -340,9 +340,10 @@ nav.nav {
 .Calendar {
   height: 100%; }
   .Calendar .calendar-table {
-    display: flex; }
+    display: flex;
+    justify-content: center; }
     .Calendar .calendar-table .month-list {
-      flex: 0 0 50px;
+      flex: 0 0 30px;
       padding-right: 10px; }
     .Calendar .calendar-table .day-blocks {
       position: relative;
@@ -354,8 +355,8 @@ nav.nav {
       .Calendar .calendar-table .day-blocks .month-first:before {
         content: "month";
         position: absolute;
-        left: -60px;
-        width: 50px;
+        left: -40px;
+        width: 30px;
         text-align: right;
         padding-top: 20px; }
       .Calendar .calendar-table .day-blocks .month-first:first-of-type:before {
@@ -426,7 +427,7 @@ nav.nav {
         border-bottom: 4px solid #212121;
         padding-top: calc(100% - 3px); }
       .Calendar .calendar-table .day-block.last-one .day-block-wrapper {
-        border-right: 3px solid #212121;
+        border-right: 4px solid #212121;
         width: calc(100% - 3px); }
       .Calendar .calendar-table .day-block.accent-1 {
         background: #B2EBF2; }
@@ -1058,6 +1059,7 @@ nav.nav {
       background: #212121; }
     .MainContent > main .Calendar {
       flex: 0 0 auto;
+      padding: 0 10px 0 30px;
       background: #212121; }
     .MainContent > main .EntryView {
       flex: 1 1 auto; }

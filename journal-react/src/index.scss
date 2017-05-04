@@ -242,7 +242,7 @@ nav.nav {
 .Calendar {
   $day-block-size: 20px;
   $day-block-margin: 1px;
-  $month-list-width: 50px;
+  $month-list-width: 30px;
 
   $default-background-color: white;
   $padding-background-color: $darkgrey;
@@ -252,6 +252,7 @@ nav.nav {
 
   .calendar-table {
     display: flex;
+    justify-content: center;
 
     .month-list {
       flex: 0 0 $month-list-width;
@@ -1237,6 +1238,7 @@ nav.nav {
 
     .Calendar {
       flex: 0 0 auto;
+      padding: 0 10px 0 30px;
       background: $darkgrey;
     }
 

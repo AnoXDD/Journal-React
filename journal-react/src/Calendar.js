@@ -32,6 +32,10 @@ export default class Calendar extends Component {
     this.state = this.updateStats(this.props);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return !nextProps.hidden || !this.props.hidden;
+  }
+
   componentWillUpdate(nextProps, nextState) {
     this.MONTH_DAY[1] = 28 + ((this.props.year % 4) || ((this.props.year % 100 === 0) && (this.props.year % 400)) ? 0 : 1);
 
@@ -83,8 +87,9 @@ export default class Calendar extends Component {
     let maxHeight = (new Date(this.props.year || new Date().getFullYear(), 0).getDay() === 6 && this.MONTH_DAY[1] === 29) ? 1100 : 1080;
 
     return (
-        <div className={`Calendar ${this.props.className || ""}`}
-             style={{maxHeight: `${maxHeight}px`}}>
+        <div
+            className={`Calendar ${this.props.className || ""} ${this.props.hidden ? "hidden" : ""}`}
+            style={{maxHeight: `${maxHeight}px`}}>
           <NoScrollArea padding="10px" backgroundColor="#212121">
             <div className="calendar-table">
               <span className="month-list"></span>
