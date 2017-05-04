@@ -75,14 +75,6 @@ class ContentArticle extends Component {
 }
 
 class EntryList extends Component {
-  /**
-   * Stores the original positions and times of articles and bulbs
-   * @type {{}}
-   */
-  contentStyle = {};
-
-  articleList = [];
-  bulbList = [];
 
   currentVersion = 0;
 
@@ -91,60 +83,13 @@ class EntryList extends Component {
 
     this.generateArticleList = this.generateArticleList.bind(this);
     this.generateBulbList = this.generateBulbList.bind(this);
-    this.updateContentStyle = this.updateContentStyle.bind(this);
-
-    this.updateContentStyle(props);
   }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.version !== this.currentVersion;
   }
 
-  componentWillUpdate(nextProps) {
-    this.updateContentStyle(nextProps);
-  }
-
-  /**
-   * Return the correct state based on this.props
-   */
-  updateContentStyle(props) {
-    this.contentStyle = {};
-    this.bulbList = [];
-    this.articleList = [];
-
-    let {data} = props,
-        articleHeight = 0,
-        bulbHeight = 0;
-
-    for (let content of data) {
-      if (content.type === R.TYPE_BULB) {
-        // Bulb
-        this.bulbList.push(content);
-
-        // Calculate the height
-        let top = Math.max(articleHeight - R.BULB_HEIGHT_ORIGINAL,
-            bulbHeight);
-        this.contentStyle[content.time.created] = top;
-
-        bulbHeight = top + R.BULB_HEIGHT;
-      } else {
-        // Article
-        this.articleList.push(content);
-
-        let currentHeight = content.images ? R.ARTICLE_IMAGE_HEIGHT : R.ARTICLE_NO_IMAGE_HEIGHT,
-            top = Math.max(bulbHeight - (currentHeight - R.ARTICLE_MARGIN),
-                articleHeight);
-        this.contentStyle[content.time.created] = top;
-
-        articleHeight = top + currentHeight;
-      }
-    }
-
-    this.currentVersion = props.version;
-    this.contentStyle.height = Math.max(articleHeight, bulbHeight);
-  }
-
-  /**
+    /**
    * Generate a form list "Yesterday 12:34 - 12:56"
    */
   generateHumanFormTimeFromArticle(time) {
@@ -230,7 +175,7 @@ class EntryList extends Component {
       className: className,
       style    : {
         backgroundImage: background,
-        top            : this.contentStyle[article.time.created],
+        top            : this.props.contentStyle[article.time.created],
       },
     };
   }
@@ -239,7 +184,7 @@ class EntryList extends Component {
     return (
         <div className="article-list">
           <div className="flex-extend-inner-wrapper">
-            {this.articleList.map(article => {
+            {this.props.articles.map(article => {
               return (
                   <ContentArticle
                       article={article}
@@ -256,7 +201,7 @@ class EntryList extends Component {
   }
 
   generateBulbProp(bulb) {
-    let top = this.contentStyle[bulb.time.created],
+    let top = this.props.contentStyle[bulb.time.created],
         prop = {
           className: top >= this.props.scrollTop && top <= this.props.scrollBottom ? "" : "hidden",
           style    : {top: top},
@@ -282,9 +227,9 @@ class EntryList extends Component {
   generateBulbList() {
     return (
         <div className="bulb-list"
-             style={{height: `${this.contentStyle.height || 0}px`}}>
+             style={{height: `${this.props.contentStyle.height || 0}px`}}>
           <div className="flex-extend-inner-wrapper">
-            {this.bulbList.map(bulb => {
+            {this.props.bulbs.map(bulb => {
               return (
                   <article key={`bulb-preview-${bulb.time.created}`}
                       {...this.generateBulbProp(bulb)}
@@ -309,7 +254,7 @@ class EntryList extends Component {
           {this.generateArticleList()}
           <div className="timeline-wrapper">
                 <span className="timeline"
-                      style={{height: `${this.contentStyle.height || 0}px`}}/>
+                      style={{height: `${this.props.contentStyle.height || 0}px`}}/>
           </div>
           {this.generateBulbList()}
         </div>

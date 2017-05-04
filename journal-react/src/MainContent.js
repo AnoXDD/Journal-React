@@ -89,6 +89,15 @@ export default class MainContent extends Component {
 
   year = new Date().getFullYear();
 
+  /**
+   * Stores the original positions and times of articles and bulbs
+   * @type {{}}
+   */
+  contentStyle = {};
+
+  articleList = [];
+  bulbList = [];
+
   constructor(props) {
     super(props);
 
@@ -99,7 +108,6 @@ export default class MainContent extends Component {
 
       isDisplayingCalendar: true,
       isDiaplayingMapView : false,
-
     };
 
     /**
@@ -108,8 +116,15 @@ export default class MainContent extends Component {
      */
     this.data = {2016: this.state.data};
 
+    this.updateContentStyle = this.updateContentStyle.bind(this);
     this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
+
+    this.updateContentStyle(this.state.data);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    this.updateContentStyle(nextState.data);
   }
 
   handleChangeCriteria(c) {
@@ -181,6 +196,44 @@ export default class MainContent extends Component {
     });
   }
 
+  /**
+   * Return the correct state based on this.props
+   */
+  updateContentStyle(data) {
+    this.contentStyle = {};
+    this.bulbList = [];
+    this.articleList = [];
+
+    let articleHeight = 0,
+        bulbHeight = 0;
+
+    for (let content of data) {
+      if (content.type === R.TYPE_BULB) {
+        // Bulb
+        this.bulbList.push(content);
+
+        // Calculate the height
+        let top = Math.max(articleHeight - R.BULB_HEIGHT_ORIGINAL,
+            bulbHeight);
+        this.contentStyle[content.time.created] = top;
+
+        bulbHeight = top + R.BULB_HEIGHT;
+      } else {
+        // Article
+        this.articleList.push(content);
+
+        let currentHeight = content.images ? R.ARTICLE_IMAGE_HEIGHT : R.ARTICLE_NO_IMAGE_HEIGHT,
+            top = Math.max(bulbHeight - (currentHeight - R.ARTICLE_MARGIN),
+                articleHeight);
+        this.contentStyle[content.time.created] = top;
+
+        articleHeight = top + currentHeight;
+      }
+    }
+
+    this.contentStyle.height = Math.max(articleHeight, bulbHeight);
+  }
+
   render() {
     return (
         <div className="MainContent">
@@ -221,6 +274,9 @@ export default class MainContent extends Component {
                       version={this.state.version}
                       data={this.state.data}
                       imageMap={this.imageMap}
+                      contentStyle={this.contentStyle}
+                      articles={this.articleList}
+                      bulbs={this.bulbList}
                       debug={true}/>
                   <Editor tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
                 </div>
