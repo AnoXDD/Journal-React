@@ -417,6 +417,15 @@ nav.nav {
     }
   }
 
+  &.fullscreen {
+    @include max-z-index;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: white;
+  }
+
   header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
@@ -505,6 +514,8 @@ nav.nav {
     padding-left: 0;
     height: calc(100% - #{$scroll-bar-padding * 2});
     background: inherit;
+    position: relative;
+    left: .5em;
   }
 
   .extras {

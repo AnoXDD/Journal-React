@@ -952,7 +952,8 @@ class Editor extends Component {
 
   render() {
     return (
-        <div className={`Editor ${this.state.isDarkMode ? "dark" : ""}`}>
+        <div
+            className={`Editor ${this.state.isDarkMode ? "dark" : ""} ${this.state.isFullscreen ? "fullscreen" : ""}`}>
           <nav className="nav has-hint">
             <Button className={`${this.state.isFullscreen ? "" : "hidden"}`}
                     onClick={this.toggleDarkMode}>highlight</Button>

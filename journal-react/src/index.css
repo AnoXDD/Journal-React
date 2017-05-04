@@ -515,6 +515,12 @@ nav.nav {
       color: white; }
     .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option {
       transition: none; }
+  .Editor.fullscreen {
+    z-index: 999999999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: white; }
   .Editor header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
@@ -577,7 +583,9 @@ nav.nav {
     font-weight: lighter;
     padding-left: 0;
     height: calc(100% - 80px);
-    background: inherit; }
+    background: inherit;
+    position: relative;
+    left: .5em; }
   .Editor .extras {
     position: relative;
     background: white;
