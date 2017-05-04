@@ -117,8 +117,8 @@ export default class MainContent extends Component {
     } else {
       let newData = this.data[this.state.year].filter(d => {
         // First, type
-        if ((!c.hasArticle && d.type === R.TYPE_ARTICLE) ||
-            (!c.hasBulb && d.type === R.TYPE_BULB)) {
+        if (!c.simple && ((!c.hasArticle && d.type === R.TYPE_ARTICLE) ||
+            (!c.hasBulb && d.type === R.TYPE_BULB))) {
           return false;
         }
 

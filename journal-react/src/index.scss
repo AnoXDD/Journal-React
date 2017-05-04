@@ -964,6 +964,7 @@ nav.nav {
       background-position: center;
       background-repeat: no-repeat;
       position: absolute;
+      transition: box-shadow .4s ease;
 
       &:before {
         right: -$timeline-width / 2;
@@ -978,6 +979,8 @@ nav.nav {
       }
 
       &:hover {
+        box-shadow: 3px 2px 9px grey;
+
         &:before {
           width: $timeline-width / 2;
         }

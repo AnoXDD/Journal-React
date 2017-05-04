@@ -81,7 +81,6 @@ export default class SearchBar extends Component {
   ATTACHMENTS = `${R.PROP_PHOTO} ${R.PROP_MUSIC} ${R.PROP_MOVIE} ${R.PROP_LINK} ${R.PROP_OTHER}`;
 
   state = {
-    value      : '',
     tags       : [],
     keywords   : [],
     months     : DEFAULT_MONTH,
@@ -100,6 +99,7 @@ export default class SearchBar extends Component {
     this.clearSearch = this.clearSearch.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -110,8 +110,65 @@ export default class SearchBar extends Component {
           ",")}]` : ""}${nextState.types.length ? ` isType:[${nextState.types.join(
           ",")}]` : ""}${nextState.attachments.length ? ` hasAttachments:[${nextState.attachments.join(
           ",")}]` : ""}`;
+
+      // `keyword` dominates
+      let keywords = [...nextState.keywords];
+      keywords.forEach((keyword, i, keywords) => {
+        // Escape it
+        keyword = keyword.replace(/"/g, '\\"');
+        if (keyword.indexOf(" ") !== -1) {
+          // It has space
+          keywords[i] = `"${keyword}"`;
+        }
+      });
+
+      nextState.inputValue = keywords.join(" ");
+    } else {
+      // `inputValue` dominates
+
+      nextState.keywords = this.convertInputValueToKeyWords(nextState.inputValue.trim());
     }
   }
+
+  convertInputValueToKeyWords(inputValue) {
+    let keywords = [],
+        word = "",
+        skipQuote = false,
+        skipSpace = false;
+
+    for (let i = 0, len = inputValue.length; i < len; ++i) {
+      let c = inputValue[i];
+
+      if (c === " ") {
+        if (skipSpace) {
+          word = word.concat(c);
+        } else {
+          if (keywords.indexOf(word) === -1) {
+            keywords.push(word);
+          }
+
+          word = "";
+        }
+      } else if (c === '\\') {
+        skipQuote = true;
+      } else if (c === '"') {
+        if (skipQuote) {
+          word = word.concat(c);
+          skipQuote = false;
+        } else {
+          skipSpace = !skipSpace;
+        }
+      } else {
+        word = word.concat(c);
+      }
+    }
+
+    if (word.length && keywords.indexOf(word) === -1) {
+      keywords.push(word);
+    }
+
+    return keywords;
+  };
 
   toggleIsAdvancedSearch() {
     this.setState({
@@ -121,20 +178,24 @@ export default class SearchBar extends Component {
 
   clearSearch() {
     this.setState({
-      value      : "",
+      inputValue : "",
       tags       : [],
       keywords   : [],
       months     : DEFAULT_MONTH,
       types      : DEFAULT_TYPES,
       attachments: DEFAULT_ATTACHMENTS,
-    });
-
-    this.handleSubmit();
+    }, this.handleSubmit);
   }
 
   handleInputChange(e) {
     if (!this.state.isAdvancedSearch) {
       this.setState({inputValue: e.target.value});
+    }
+  }
+
+  handleInputKeyDown(e) {
+    if (e.key === "Enter") {
+      this.handleSubmit();
     }
   }
 
@@ -180,8 +241,9 @@ export default class SearchBar extends Component {
   render() {
     return (
         <div className="SearchBar">
-          <Prompt className={`advanced-search ${this.state.isAdvancedSearch ? "": "hidden"}`}
-                  onClose={() => this.setState({isAdvancedSearch : false})}
+          <Prompt
+              className={`advanced-search ${this.state.isAdvancedSearch ? "": "hidden"}`}
+              onClose={() => this.setState({isAdvancedSearch : false})}
           >
             <div
                 className={`form prompt-child shadow`}>
@@ -231,8 +293,9 @@ export default class SearchBar extends Component {
             <input
                 type="text"
                 className="keyword normal underlined max-z-index"
-                value={this.state.isAdvancedSearch ? this.state.advancedSearchValue : this.state.inputValue}
+                value={this.state.inputValue}
                 onChange={this.handleInputChange}
+                onKeyDown={this.handleInputKeyDown}
                 disabled={this.state.isAdvancedSearch}
             />
             <Button className="dark z-index-inherit"

@@ -856,7 +856,8 @@ nav.nav {
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      position: absolute; }
+      position: absolute;
+      transition: box-shadow .4s ease; }
       .EntryView .article-list article:before {
         right: -35px;
         bottom: 4px;
@@ -873,22 +874,24 @@ nav.nav {
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
         right: -39px; }
-      .EntryView .article-list article:hover:before {
-        width: 35px; }
-      .EntryView .article-list article:hover:after {
-        content: "";
-        position: absolute;
-        border-radius: 4px;
-        height: 8px;
-        width: 8px;
-        bottom: 0;
-        background: #00BCD4;
-        box-shadow: 0 0 2px 3px white;
-        z-index: 1;
-        transition: background .2s ease, box-shadow .2s ease;
-        background: white;
-        box-shadow: 0 0 2px 2px #00BCD4;
-        right: -39px; }
+      .EntryView .article-list article:hover {
+        box-shadow: 3px 2px 9px grey; }
+        .EntryView .article-list article:hover:before {
+          width: 35px; }
+        .EntryView .article-list article:hover:after {
+          content: "";
+          position: absolute;
+          border-radius: 4px;
+          height: 8px;
+          width: 8px;
+          bottom: 0;
+          background: #00BCD4;
+          box-shadow: 0 0 2px 3px white;
+          z-index: 1;
+          transition: background .2s ease, box-shadow .2s ease;
+          background: white;
+          box-shadow: 0 0 2px 2px #00BCD4;
+          right: -39px; }
       .EntryView .article-list article.no-image {
         height: 105px;
         background: #212121; }

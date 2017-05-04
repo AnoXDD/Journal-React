@@ -219,7 +219,7 @@ class EntryList extends Component {
   }
 
   generateArticleStyle(article) {
-    let background = "", className = "shadow";
+    let background = "", className = "";
     if (article.images && article.images.length) {
       background = `url('${this.props.imageMap[article.images[0]] || "https://unsplash.it/300/200/?random"}')`;
     } else {
@@ -289,7 +289,7 @@ class EntryList extends Component {
                   <article key={`bulb-preview-${bulb.time.created}`}
                       {...this.generateBulbProp(bulb)}
                   >
-                    <header className="shadow-light vertical-align">
+                    <header className="vertical-align">
                       <div className="time vertical-align-wrapper">
                         {this.generateHumanFormTimeFromArticle(bulb.time)}
                       </div>
