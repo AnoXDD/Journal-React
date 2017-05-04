@@ -310,7 +310,11 @@ nav.nav {
       height: $day-block-size;
       flex: 0 0 calc(100% / 7);
       transition: background .4s ease;
-      pointer-events: none;
+
+      .day-block-wrapper {
+        cursor: pointer;
+        pointer-events: none;
+      }
 
       &.last-seven .day-block-wrapper {
         border-bottom: $day-block-margin*4 solid $delimitor-border-color;
@@ -330,8 +334,10 @@ nav.nav {
       @for $i from 1 through 9 {
         &.accent-#{$i} {
           background: nth($cs, $i);
-          cursor: pointer;
-          pointer-events: auto;
+
+          .day-block-wrapper {
+            pointer-events: auto;
+          }
         }
       }
 
@@ -356,8 +362,23 @@ nav.nav {
 
         .text {
           position: absolute;
-          top: 0;
-          left: 0;
+          bottom: calc(100% + 1px);
+          width: $day-block-size * 2;
+          height: $day-block-size * 2;
+          text-align: center;
+          font-size: 18px;
+          pointer-events: none;
+          color: transparent;
+          transition: background .4s ease, color .4s ease;
+        }
+      }
+
+      &:hover {
+        background: transparent;
+
+        .text {
+          color: white;
+          background: $darkgrey;
         }
       }
     }

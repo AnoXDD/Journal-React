@@ -115,10 +115,12 @@ export default class Calendar extends Component {
                           return (
                               <div key={`calendar-${month}-${day}`}
                                    className={`day-block accent-${Math.min(9, this.state.squares[im][id] || 0)}${id === 0 ? ` month-first month-${im} ` : " "}${this.state.triangles[im][id] ? "triangle " : " "}${id >= this.MONTH_DAY[im] - 7 ? " last-seven" : " "}${id === this.MONTH_DAY[im] - 1 ? " last-one": " "}`}
-                                   onClick={() => this.handleClick(month, day)}
                               >
-                                <div className="day-block-wrapper">
-                                  <div className="text">
+                                <div className="day-block-wrapper"
+                                     onClick={() => this.handleClick(month, day)}
+                                >
+                                  <div className="text flex-center">
+                                    <span>{day}</span>
                                   </div>
                                 </div>
                               </div>
