@@ -468,8 +468,7 @@ nav.nav {
         background: #006064; }
         .Calendar .calendar-table .day-block.accent-9 .day-block-wrapper {
           pointer-events: auto; }
-      .Calendar .calendar-table .day-block.triangle {
-        cursor: pointer;
+      .Calendar .calendar-table .day-block.triangle .day-block-wrapper {
         pointer-events: auto; }
         .Calendar .calendar-table .day-block.triangle .day-block-wrapper:after {
           content: "\25e5";
@@ -490,6 +489,7 @@ nav.nav {
           text-align: center;
           font-size: 18px;
           pointer-events: none;
+          user-select: none;
           color: transparent;
           transition: background .4s ease, color .4s ease; }
       .Calendar .calendar-table .day-block:hover {
@@ -894,7 +894,8 @@ nav.nav {
       background-position: center;
       background-repeat: no-repeat;
       position: absolute;
-      transition: box-shadow .4s ease; }
+      transition: box-shadow .4s ease;
+      cursor: pointer; }
       .EntryView .article-list article:before {
         right: -35px;
         bottom: 4px;

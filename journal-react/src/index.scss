@@ -342,16 +342,19 @@ nav.nav {
       }
 
       &.triangle {
-        cursor: pointer;
-        pointer-events: auto;
 
-        .day-block-wrapper:after {
-          content: "\25e5";
-          position: absolute;
-          right: 0;
-          top: -2px;
-          font-size: 7px;
+        .day-block-wrapper {
+          pointer-events: auto;
+
+          &:after {
+            content: "\25e5";
+            position: absolute;
+            right: 0;
+            top: -2px;
+            font-size: 7px;
+          }
         }
+
       }
 
       .day-block-wrapper {
@@ -368,6 +371,7 @@ nav.nav {
           text-align: center;
           font-size: 18px;
           pointer-events: none;
+          user-select: none;
           color: transparent;
           transition: background .4s ease, color .4s ease;
         }
@@ -1002,6 +1006,7 @@ nav.nav {
       background-repeat: no-repeat;
       position: absolute;
       transition: box-shadow .4s ease;
+      cursor: pointer;
 
       &:before {
         right: -$timeline-width / 2;
