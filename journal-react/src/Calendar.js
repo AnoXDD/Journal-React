@@ -102,7 +102,7 @@ export default class Calendar extends Component {
         <div
             className={`Calendar ${this.props.className || ""} ${this.props.hidden ? "hidden" : ""}`}
             style={{maxHeight: `${maxHeight}px`}}>
-          <NoScrollArea padding="10px" backgroundColor="#212121">
+          <NoScrollArea padding="10px" backgroundColor="#424242">
             <div className="calendar-table">
               <span className="month-list"></span>
               <div className="day-blocks">

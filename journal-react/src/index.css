@@ -189,6 +189,9 @@ img.center {
   z-index: inherit;
   position: relative; }
 
+.no-width {
+  width: 0 !important; }
+
 html, body {
   height: 100%;
   width: 100%;
@@ -341,9 +344,7 @@ nav.nav {
   height: 100%; }
   .Calendar .calendar-table {
     display: flex;
-    justify-content: center;
-    position: relative;
-    bottom: 25px; }
+    justify-content: center; }
     .Calendar .calendar-table .month-list {
       flex: 0 0 30px;
       padding-right: 10px; }
@@ -402,25 +403,25 @@ nav.nav {
         content: "Dec"; }
     .Calendar .calendar-table .first-padding-1 {
       flex: 0 0 calc(1 * 14.2857142857142857142857%);
-      background: #212121; }
+      background: #424242; }
     .Calendar .calendar-table .first-padding-2 {
       flex: 0 0 calc(2 * 14.2857142857142857142857%);
-      background: #212121; }
+      background: #424242; }
     .Calendar .calendar-table .first-padding-3 {
       flex: 0 0 calc(3 * 14.2857142857142857142857%);
-      background: #212121; }
+      background: #424242; }
     .Calendar .calendar-table .first-padding-4 {
       flex: 0 0 calc(4 * 14.2857142857142857142857%);
-      background: #212121; }
+      background: #424242; }
     .Calendar .calendar-table .first-padding-5 {
       flex: 0 0 calc(5 * 14.2857142857142857142857%);
-      background: #212121; }
+      background: #424242; }
     .Calendar .calendar-table .first-padding-6 {
       flex: 0 0 calc(6 * 14.2857142857142857142857%);
-      background: #212121; }
+      background: #424242; }
     .Calendar .calendar-table .last-padding {
       flex: 1;
-      background: #212121; }
+      background: #424242; }
     .Calendar .calendar-table .day-block {
       background: white;
       height: 20px;
@@ -430,10 +431,10 @@ nav.nav {
         cursor: pointer;
         pointer-events: none; }
       .Calendar .calendar-table .day-block.last-seven .day-block-wrapper {
-        border-bottom: 4px solid #212121;
+        border-bottom: 4px solid #424242;
         padding-top: calc(100% - 3px); }
       .Calendar .calendar-table .day-block.last-one .day-block-wrapper {
-        border-right: 4px solid #212121;
+        border-right: 4px solid #424242;
         width: calc(100% - 3px); }
       .Calendar .calendar-table .day-block.accent-1 {
         background: #B2EBF2; }
@@ -483,7 +484,7 @@ nav.nav {
         width: 100%;
         padding-top: 100%;
         position: relative;
-        border: 1px solid #212121; }
+        border: 1px solid #424242; }
         .Calendar .calendar-table .day-block .day-block-wrapper .text {
           position: absolute;
           bottom: calc(100% + 1px);
@@ -499,7 +500,7 @@ nav.nav {
         background: transparent; }
         .Calendar .calendar-table .day-block:hover .text {
           color: white;
-          background: #212121; }
+          background: #424242; }
 
 .Editor {
   width: calc(100% - 100px);
@@ -517,7 +518,7 @@ nav.nav {
   .Editor header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
-    width: calc(100vw - 100px); }
+    width: 100%; }
     .Editor header .title {
       padding-top: 0;
       display: inline-block;
@@ -556,7 +557,7 @@ nav.nav {
         width: 12ch;
         margin-left: 20px; }
   .Editor .text-body-wrapper {
-    width: calc(100vw - 100px);
+    width: 100%;
     flex: 1 1 auto;
     position: relative;
     text-align: center; }
@@ -592,7 +593,7 @@ nav.nav {
     .Editor .extras .buttons {
       justify-content: flex-end;
       display: flex;
-      width: calc(100vw - 100px);
+      width: 100%;
       text-align: right;
       flex: 0 1 100px;
       flex-wrap: wrap; }
@@ -1068,11 +1069,14 @@ nav.nav {
     .MainContent .sidebar .btn, .MainContent .sidebar .Options .option, .Options .MainContent .sidebar .option {
       height: 60px;
       width: 250px; }
+      .MainContent .sidebar .btn.active, .MainContent .sidebar .Options .active.option, .Options .MainContent .sidebar .active.option {
+        background: white;
+        color: #212121; }
       .MainContent .sidebar .btn.indent, .MainContent .sidebar .Options .indent.option, .Options .MainContent .sidebar .indent.option {
         padding-left: 30px; }
-      .MainContent .sidebar .btn.active, .MainContent .sidebar .Options .active.option, .Options .MainContent .sidebar .active.option {
-        background: #424242;
-        color: white; }
+        .MainContent .sidebar .btn.indent.active, .MainContent .sidebar .Options .indent.active.option, .Options .MainContent .sidebar .indent.active.option {
+          background: #424242;
+          color: white; }
       .MainContent .sidebar .btn .icon-wrapper, .MainContent .sidebar .Options .option .icon-wrapper, .Options .MainContent .sidebar .option .icon-wrapper {
         flex: 0 0 70px; }
   .MainContent > main {
@@ -1093,17 +1097,26 @@ nav.nav {
       flex: 1 1 auto;
       display: flex;
       position: relative; }
+    .MainContent > main .list-view .calendar-view {
+      width: 300px;
+      display: flex;
+      flex-direction: column; }
+      .MainContent > main .list-view .calendar-view .calendar-padding {
+        height: 120px;
+        flex: 0 0 120px;
+        width: 100%;
+        background: white; }
+      .MainContent > main .list-view .calendar-view .calendar-parent {
+        background: #424242;
+        position: relative;
+        flex: 1 1 auto; }
+    .MainContent > main .list-view .Calendar {
+      background: #212121; }
+    .MainContent > main .list-view .EntryView {
+      flex: 1 1 auto; }
     .MainContent > main .inner-content {
       display: flex;
       background: #212121; }
-    .MainContent > main .Calendar {
-      flex: 0 0 auto;
-      padding: 0 10px 0 30px;
-      background: #212121; }
-    .MainContent > main .EntryView {
-      flex: 1 1 auto; }
-    .MainContent > main .Editor {
-      display: none; }
 
 .SearchBar {
   height: 100%;

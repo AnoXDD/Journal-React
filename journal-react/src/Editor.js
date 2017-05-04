@@ -9,6 +9,7 @@ import Toggle from "./Toggle";
 import PredictionInputs from "./PredictionInputs";
 import Button from "./Button";
 import NumberCard from "./NumberCard";
+import R from "./R";
 
 var Ink = require("react-ink");
 var AutosizeInput = require("react-input-autosize");
@@ -242,6 +243,8 @@ class Editor extends Component {
     SELECTED    : 0b11,
   };
 
+  version = 0;
+
   constructor(props) {
     // todo use props to pre-fill the area
     super(props);
@@ -266,6 +269,8 @@ class Editor extends Component {
       isEditing       : false,
       isFullscreen    : false,
     };
+
+    this.version = new Date().getTime();
 
     if (this.props.debug) {
       this.state = {
@@ -441,6 +446,38 @@ class Editor extends Component {
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.version > this.version) {
+      // Override current data with new data
+      nextState.title = nextProps.title;
+      nextState.body = nextProps.body;
+      nextState.stats = {
+        timeCreated: nextProps.time.created,
+        timeBegin  : nextProps.time.begin,
+        timeEnd    : nextProps.time.end,
+      };
+      nextState.tags = [...nextProps.tags];
+
+      nextState.photos = [];
+
+      if (nextProps[R.PROP_PHOTO]) {
+        for (let photo of [...nextProps[R.PROP_PHOTO]]) {
+          nextState.photos.push({
+            id : photo,
+            src: this.props.imageMap[photo]
+          });
+        }
+      }
+
+      nextState.musics = [...(nextProps[R.PROP_MUSIC] || [])];
+      nextState.movies = [...(nextProps[R.PROP_MOVIE] || [])];
+      nextState.links = [...(nextProps[R.PROP_LINK] || [])];
+      nextState.others = [...(nextProps[R.PROP_OTHER] || [])];
+
+      this.version = new Date().getTime();
+    }
   }
 
   /**

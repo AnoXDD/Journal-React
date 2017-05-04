@@ -53,7 +53,7 @@ function upgradeDataFromVersion2To3(oldData) {
       }
 
       if (d.weblink && d.weblink.length) {
-        entry.link = Object.assign({}, d.weblink);
+        entry.links = Object.assign({}, d.weblink);
       }
 
       if (d.book && d.book.length) {
@@ -83,6 +83,25 @@ function upgradeDataFromVersion2To3(oldData) {
 export default class MainContent extends Component {
 
   SEARCH_BAR_TAGS = ["tags", "months", "attachments"];
+  TAB = {
+    LIST    : 1,
+    EDITOR  : 2,
+    HISTORY : 3,
+    STATS   : 4,
+    SETTINGS: 10,
+  };
+
+  state = {
+    data   : upgradeDataFromVersion2To3(TestData.data),
+    year   : 2016,
+    version: 0,
+
+    isDisplaying        : this.TAB.LIST,
+    isDisplayingCalendar: true,
+    isDiaplayingMapView : false,
+
+    editArticleIndex: undefined,
+  };
 
   data = {};
   imageMap = {};
@@ -98,17 +117,10 @@ export default class MainContent extends Component {
   articleList = [];
   bulbList = [];
 
+  editorVersion = 0;
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      data   : upgradeDataFromVersion2To3(TestData.data),
-      year   : 2016,
-      version: 0,
-
-      isDisplayingCalendar: true,
-      isDiaplayingMapView : false,
-    };
 
     /**
      * `this.data` stores all the data that can be displayed, while
@@ -193,6 +205,12 @@ export default class MainContent extends Component {
     }
   }
 
+  handleViewChange(newView) {
+    this.setState({
+      isDisplaying: newView,
+    });
+  }
+
   toggleIsDisplayingCalendar() {
     this.setState({
       isDisplayingCalendar: !this.state.isDisplayingCalendar,
@@ -244,6 +262,32 @@ export default class MainContent extends Component {
   }
 
   render() {
+    const BUTTONS = [{
+      text: "LIST",
+      icon: "list"
+    }, {
+      text     : "calendar",
+      icon     : "date_range",
+      className: `dark indent ${this.state.isDisplayingCalendar && this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`,
+      onClick  : this.toggleIsDisplayingCalendar,
+    }, {
+      text     : "map view",
+      icon     : "map",
+      className: "dark indent",
+    }, {
+      text: "EDITOR",
+      icon: "edit"
+    }, {
+      text: "HISTORY",
+      icon: "restore"
+    }, {
+      text: "STATS",
+      icon: "show_chart"
+    }, {
+      text: "SETTINGS",
+      icon: "settings"
+    }];
+
     return (
         <div className="MainContent">
           <nav className="sidebar">
@@ -251,17 +295,13 @@ export default class MainContent extends Component {
               <Button className="accent" text="create">add</Button>
             </div>
             <div className="other-btn">
-              <Button className="dark" text="list">list</Button>
-              <Button
-                  className={`dark indent ${this.state.isDisplayingCalendar ? "active" : ""}`}
-                  text="calendar"
-                  onClick={this.toggleIsDisplayingCalendar}
-              >date_range</Button>
-              <Button className="dark indent" text="map view">map</Button>
-              <Button className="dark" text="editor">edit</Button>
-              <Button className="dark" text="History">restore</Button>
-              <Button className="dark" text="stats">show_chart</Button>
-              <Button className="dark" text="settings">settings</Button>
+              {BUTTONS.map(b =>
+                  <Button key={b.text}
+                          className={`${b.className || `dark ${this.state.isDisplaying === this.TAB[b.text] ? "active" : ""}`}`}
+                          text={b.text}
+                          onClick={b.onClick || (() => this.handleViewChange(this.TAB[b.text]))}
+                  >{b.icon}</Button>
+              )}
             </div>
           </nav>
           <main>
@@ -272,14 +312,21 @@ export default class MainContent extends Component {
                 />
               </header>
               <div className="content">
-                <div className="flex-extend-inner-wrapper inner-content">
-                  <div className="vertical-align">
-                    <Calendar className="vertical-align-wrapper"
-                              version={this.state.version}
-                              contentStyle={this.contentStyle}
-                              onBlockClick={this.handleCalendarClick}
-                              hidden={!this.state.isDisplayingCalendar}
-                              data={this.state.data}/>
+                <div
+                    className={`flex-extend-inner-wrapper inner-content list-view ${this.state.isDisplaying === this.TAB.LIST ? "" : "hidden"}`}>
+                  <div
+                      className={`calendar-view ${this.state.isDisplayingCalendar ? "" : "hidden"}`}
+                  >
+                    <div className="calendar-padding"></div>
+                    <div className="calendar-parent">
+                      <div className="flex-extend-inner-wrapper">
+                        <Calendar
+                            version={this.state.version}
+                            contentStyle={this.contentStyle}
+                            onBlockClick={this.handleCalendarClick}
+                            data={this.state.data}/>
+                      </div>
+                    </div>
                   </div>
                   <EntryView
                       version={this.state.version}
@@ -289,10 +336,16 @@ export default class MainContent extends Component {
                       scrollTop={this.scrollTop}
                       articles={this.articleList}
                       bulbs={this.bulbList}
-                      onArticleClick={console.log}
+                      onArticleClick={(i) => {this.editorVersion=new Date().getTime();this.setState({editArticleIndex: i})}}
                       debug={true}
                   />
-                  <Editor tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
+                </div>
+                <div
+                    className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
+                  <Editor {...this.articleList[this.state.editArticleIndex]}
+                      imageMap={this.imageMap}
+                      version={this.editorVersion}
+                      tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
                 </div>
               </div>
             </div>

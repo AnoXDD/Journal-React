@@ -245,16 +245,14 @@ nav.nav {
   $month-list-width: 30px;
 
   $default-background-color: white;
-  $padding-background-color: $darkgrey;
-  $delimitor-border-color: $darkgrey;
+  $padding-background-color: $darkgrey-l;
+  $delimitor-border-color: $darkgrey-l;
 
   height: 100%;
 
   .calendar-table {
     display: flex;
     justify-content: center;
-    position: relative;
-    bottom: 25px;
 
     .month-list {
       flex: 0 0 $month-list-width;
@@ -364,7 +362,7 @@ nav.nav {
         width: 100%;
         padding-top: 100%;
         position: relative;
-        border: $day-block-margin solid $darkgrey;
+        border: $day-block-margin solid $delimitor-border-color;
 
         .text {
           position: absolute;
@@ -385,7 +383,7 @@ nav.nav {
 
         .text {
           color: white;
-          background: $darkgrey;
+          background: $delimitor-border-color;
         }
       }
     }
@@ -396,7 +394,7 @@ nav.nav {
   $stats-width: 200px;
   $title-height: 50px;
   $editor-padding: 50px;
-  $full-width: calc(100vw - #{$editor-padding * 2});
+  $full-width: 100%;
   $button-width-accent: 120px;
 
   width: calc(100% - #{2 * $editor-padding});
@@ -1228,13 +1226,18 @@ nav.nav {
       height: 60px;
       width: $sidebar-width;
 
-      &.indent {
-        padding-left: 30px;
+      &.active {
+        background: white;
+        color: $darkgrey;
       }
 
-      &.active {
-        background: $darkgrey-l;
-        color: white;
+      &.indent {
+        padding-left: 30px;
+
+        &.active {
+          background: $darkgrey-l;
+          color: white;
+        }
       }
 
       .icon-wrapper {
@@ -1268,23 +1271,40 @@ nav.nav {
       position: relative;
     }
 
+    .list-view {
+      $calendar-padding-height: 120px;
+
+      .calendar-view {
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+
+        .calendar-padding {
+          height: $calendar-padding-height;
+          flex: 0 0 $calendar-padding-height;
+          width: 100%;
+          background: white;
+        }
+
+        .calendar-parent {
+          background: $darkgrey-l;
+          position: relative;
+          flex: 1 1 auto;
+        }
+      }
+
+      .Calendar {
+        background: $darkgrey;
+      }
+
+      .EntryView {
+        flex: 1 1 auto;
+      }
+    }
+
     .inner-content {
       display: flex;
       background: $darkgrey;
-    }
-
-    .Calendar {
-      flex: 0 0 auto;
-      padding: 0 10px 0 30px;
-      background: $darkgrey;
-    }
-
-    .EntryView {
-      flex: 1 1 auto;
-    }
-
-    .Editor {
-      display: none;
     }
   }
 }
