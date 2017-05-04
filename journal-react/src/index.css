@@ -350,7 +350,6 @@ nav.nav {
       display: flex;
       width: 140px;
       flex-wrap: wrap;
-      background: white;
       justify-content: space-around; }
       .Calendar .calendar-table .day-blocks .month-first:before {
         content: "month";
@@ -845,6 +844,7 @@ nav.nav {
       overflow: hidden; }
   .EntryView .article-list {
     flex: 0 0 30%;
+    max-width: 500px;
     position: relative; }
     .EntryView .article-list .Image {
       position: absolute;
@@ -1053,10 +1053,11 @@ nav.nav {
       display: flex;
       position: relative; }
     .MainContent > main .inner-content {
-      display: flex; }
+      display: flex;
+      background: #212121; }
     .MainContent > main .Calendar {
       flex: 0 0 auto;
-      display: none; }
+      background: #212121; }
     .MainContent > main .EntryView {
       flex: 1 1 auto; }
     .MainContent > main .Editor {

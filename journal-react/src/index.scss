@@ -264,7 +264,7 @@ nav.nav {
       display: flex;
       width: $day-block-size * 7;
       flex-wrap: wrap;
-      background: $default-background-color;
+      //background: $default-background-color;
       justify-content: space-around;
 
       .month-first {
@@ -309,6 +309,7 @@ nav.nav {
       height: $day-block-size;
       flex: 0 0 calc(100% / 7);
       transition: background .4s ease;
+
 
       &.last-seven .day-block-wrapper {
         border-bottom: $day-block-margin solid $delimitor-border-color;
@@ -949,6 +950,7 @@ nav.nav {
 
   .article-list {
     flex: 0 0 30%;
+    max-width:500px;
     position: relative;
 
     .Image {
@@ -1225,11 +1227,12 @@ nav.nav {
 
     .inner-content {
       display: flex;
+      background: $darkgrey;
     }
 
     .Calendar {
       flex: 0 0 auto;
-      display: none;
+      background: $darkgrey;
     }
 
     .EntryView {
