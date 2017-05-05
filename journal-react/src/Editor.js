@@ -244,33 +244,35 @@ class Editor extends Component {
     SELECTED    : 0b11,
   };
 
+  DEFAULT_STATE = {
+    title           : this.convertToDateTime(new Date()).substr(0, 7),
+    body            : "",
+    stats           : {
+      timeCreated: 0,
+      timeBegin  : 0,
+      timeEnd    : 0,
+    },
+    timeElapsed     : 0,
+    tags            : [],
+    isDisplayingMore: -1,
+    photos          : [],
+    musics          : [],
+    movies          : [],
+    links           : [],
+    others          : [],
+    isEditing       : false,
+    isFullscreen    : false,
+    hasPrompt       : false,
+  }
+
   version = 0;
   hasUnsavedChanges = false;
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      title           : this.convertToDateTime(new Date()).substr(0, 7),
-      body            : "",
-      bodyWidth       : this.props.bodyWidth || 80,
-      stats           : {
-        timeCreated: 0,
-        timeBegin  : 0,
-        timeEnd    : 0,
-      },
-      timeElapsed     : 0,
-      tags            : [],
-      isDisplayingMore: -1,
-      photos          : [],
-      musics          : [],
-      movies          : [],
-      links           : [],
-      others          : [],
-      isEditing       : false,
-      isFullscreen    : false,
-      hasPrompt       : false,
-    };
+    this.state = Object.assign({bodyWidth: this.props.bodyWidth || 80},
+        this.DEFAULT_STATE);
 
     this.version = new Date().getTime();
 
@@ -459,34 +461,42 @@ class Editor extends Component {
         nextState.hasPrompt = true;
       } else {
         // Override current data with new data
-        nextState.title = nextProps.title;
-        nextState.body = nextProps.body;
-        nextState.stats = {
-          timeCreated: nextProps.time.created,
-          timeBegin  : nextProps.time.begin,
-          timeEnd    : nextProps.time.end,
-        };
-        nextState.tags = [...nextProps.tags];
+        if (!nextProps.title && !nextProps.body) {
+          // This is to create a new entry
+          nextState = Object.assign(nextState,
+              this.DEFAULT_STATE,
+              {isEditing: true});
+        } else {
+          nextState.title = nextProps.title;
+          nextState.body = nextProps.body;
+          nextState.stats = {
+            timeCreated: nextProps.time.created,
+            timeBegin  : nextProps.time.begin,
+            timeEnd    : nextProps.time.end,
+          };
+          nextState.tags = [...nextProps.tags];
 
-        nextState.photos = [];
+          nextState.photos = [];
 
-        if (nextProps[R.PROP_PHOTO]) {
-          for (let photo of [...nextProps[R.PROP_PHOTO]]) {
-            nextState.photos.push({
-              id : photo,
-              src: this.props.imageMap[photo]
-            });
+          if (nextProps[R.PROP_PHOTO]) {
+            for (let photo of [...nextProps[R.PROP_PHOTO]]) {
+              nextState.photos.push({
+                id : photo,
+                src: this.props.imageMap[photo]
+              });
+            }
           }
+
+          nextState.musics = [...(nextProps[R.PROP_MUSIC] || [])];
+          nextState.movies = [...(nextProps[R.PROP_MOVIE] || [])];
+          nextState.links = [...(nextProps[R.PROP_LINK] || [])];
+          nextState.others = [...(nextProps[R.PROP_OTHER] || [])];
+
+          nextState.isEditing = false;
+          nextState.isDisplayingMore = -1;
+
+          this.version = new Date().getTime();
         }
-
-        nextState.musics = [...(nextProps[R.PROP_MUSIC] || [])];
-        nextState.movies = [...(nextProps[R.PROP_MOVIE] || [])];
-        nextState.links = [...(nextProps[R.PROP_LINK] || [])];
-        nextState.others = [...(nextProps[R.PROP_OTHER] || [])];
-
-        nextState.isEditing = false;
-
-        this.version = new Date().getTime();
       }
     }
   }

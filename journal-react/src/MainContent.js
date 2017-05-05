@@ -139,6 +139,7 @@ export default class MainContent extends Component {
     this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
     this.handleCalendarClick = this.handleCalendarClick.bind(this);
     this.handleArticleClick = this.handleArticleClick.bind(this);
+    this.handleCreateArticle = this.handleCreateArticle.bind(this);
     this.handlePromptCancel = this.handlePromptCancel.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
 
@@ -244,6 +245,13 @@ export default class MainContent extends Component {
     this.handleViewChange(this.TAB.LIST);
   }
 
+  handleCreateArticle() {
+    this.editorVersion = new Date().getTime();
+    this.setState({
+      editArticleIndex: -1
+    }, this.handleViewChange(this.TAB.EDITOR));
+  }
+
   handleArticleClick(i) {
     this.editorVersion = new Date().getTime();
     this.escapeToReturn = this.TAB.LIST;
@@ -333,7 +341,8 @@ export default class MainContent extends Component {
         <div className="MainContent">
           <aside className="sidebar">
             <div className="create-btn">
-              <Button className="accent" text="create">add</Button>
+              <Button className="accent" text="create"
+                      onClick={this.handleCreateArticle}>add</Button>
             </div>
             <div className="other-btn">
               {BUTTONS.map(b =>
