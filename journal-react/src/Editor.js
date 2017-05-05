@@ -445,6 +445,7 @@ class Editor extends Component {
     this.onLinkTitleChange = this.onLinkTitleChange.bind(this);
     this.onLinkUrlChange = this.onLinkUrlChange.bind(this);
     this.onPromptYes = this.onPromptYes.bind(this);
+    this.onPromptNo = this.onPromptNo.bind(this);
     this.onPromptCancel = this.onPromptCancel.bind(this);
     this.toggleEditMode = this.toggleEditMode.bind(this);
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
@@ -934,6 +935,12 @@ class Editor extends Component {
     this.setState({hasPrompt: false});
   }
 
+  onPromptNo(e) {
+    // So that the editor won't take a look at that new thing
+    this.version = this.props.version;
+    this.setState({hasPrompt: false});
+  }
+
   onPromptCancel(e) {
     this.props.onPromptCancel();
     this.setState({hasPrompt: false});
@@ -984,7 +991,9 @@ class Editor extends Component {
                   message="There appears to be unsaved changes here. If you proceed, they will be lost and overwritten by the new contents. Do you wish to continue?"
                   yes="discard"
                   onYes={this.onPromptYes}
-                  cancel="keep draft"
+                  no="edit draft"
+                  onNo={this.onPromptNo}
+                  cancel="keep & return"
                   onCancel={this.onPromptCancel}
           />
           <nav className="nav has-hint">

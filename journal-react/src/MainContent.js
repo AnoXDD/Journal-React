@@ -346,7 +346,8 @@ export default class MainContent extends Component {
             </div>
           </aside>
           <main>
-            <div className="flex-extend-inner-wrapper inner-main">
+            <div
+                className={`flex-extend-inner-wrapper inner-main ${this.state.isDisplaying === this.TAB.LIST ? "" : "hidden"}`}>
               <header className="main-header">
                 <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}
                            onChange={this.handleChangeCriteria}
@@ -354,7 +355,7 @@ export default class MainContent extends Component {
               </header>
               <div className="content">
                 <div
-                    className={`flex-extend-inner-wrapper inner-content list-view ${this.state.isDisplaying === this.TAB.LIST ? "" : "hidden"}`}>
+                    className="flex-extend-inner-wrapper inner-content list-view">
                   <div
                       className={`calendar-view ${this.state.isDisplayingCalendar ? "" : "hidden"}`}
                   >
@@ -381,15 +382,15 @@ export default class MainContent extends Component {
                       debug={true}
                   />
                 </div>
-                <div
-                    className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
-                  <Editor {...this.articleList[this.state.editArticleIndex]}
-                      onPromptCancel={this.handlePromptCancel}
-                      imageMap={this.imageMap}
-                      version={this.editorVersion}
-                      tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
-                </div>
               </div>
+            </div>
+            <div
+                className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
+              <Editor {...this.articleList[this.state.editArticleIndex]}
+                  onPromptCancel={this.handlePromptCancel}
+                  imageMap={this.imageMap}
+                  version={this.editorVersion}
+                  tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
             </div>
           </main>
         </div>

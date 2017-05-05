@@ -52,7 +52,7 @@ export default class Prompt extends Component {
                   <Button
                       className={`${this.props.cancel ? "" : "hidden"}`}
                       onClick={this.props.onCancel}
-                      text={this.props.cancel || "cancel"}>cancel</Button>
+                      text={this.props.cancel || "cancel"}>undo</Button>
                   <Button
                       className={`no ${this.props.no ? "" : "hidden"}`}
                       onClick={this.props.onNo}
