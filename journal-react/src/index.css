@@ -1166,6 +1166,9 @@ nav.nav {
         background: #424242;
         position: relative;
         flex: 1 1 auto; }
+    .MainContent > main .list-view .bulb-map-view {
+      flex: 1 1 50%;
+      height: 100%; }
     .MainContent > main .list-view .Calendar {
       background: #212121; }
     .MainContent > main .list-view .EntryView {

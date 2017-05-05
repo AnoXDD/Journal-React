@@ -10,6 +10,7 @@ import Editor from './Editor';
 import Calendar from "./Calendar";
 import EntryView from "./EntryView";
 import SearchBar from "./SearchBar";
+import BulbMap from "./BulbMap";
 
 import R from "./R";
 
@@ -390,6 +391,9 @@ export default class MainContent extends Component {
                       onArticleClick={this.handleArticleClick}
                       debug={true}
                   />
+                  <div className="bulb-map-view">
+                    <BulbMap data={this.bulbList}/>
+                  </div>
                 </div>
               </div>
             </div>
