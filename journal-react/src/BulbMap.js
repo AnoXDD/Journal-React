@@ -5,7 +5,13 @@
 
 import React, {Component} from "react";
 
-import {withGoogleMap, GoogleMap, Marker} from "react-google-maps";
+import {
+    withGoogleMap,
+    GoogleMap,
+    Marker,
+} from "react-google-maps";
+import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer';
+
 
 /*
  * This is the modify version of:
@@ -20,18 +26,23 @@ const BulbGoogleMap = withGoogleMap(props => (
         defaultCenter={{ lat: -25.363882, lng: 131.044922 }}
         onClick={props.onMapClick}
     >
-      {props.bulbList.map(bulb => {
-        if (bulb.place) {
-          return (
-              <Marker
-                  key={bulb.time.created}
-                  position={{lat:parseInt(bulb.place.latitude,10),lng:parseInt(bulb.place.longitude,10)}}
-              />
-          );
-        } else {
-          return null;
-        }
-      })}
+      <MarkerClusterer
+          averageCenter={ true }
+          enableRetinaIcons={ true }
+          gridSize={ 60 }>
+        {props.bulbList.map(bulb => {
+          if (bulb.place) {
+            return (
+                <Marker
+                    key={bulb.time.created}
+                    position={{lat:parseInt(bulb.place.latitude,10),lng:parseInt(bulb.place.longitude,10)}}
+                />
+            );
+          } else {
+            return null;
+          }
+        })}
+      </MarkerClusterer>
     </GoogleMap>
 ));
 
