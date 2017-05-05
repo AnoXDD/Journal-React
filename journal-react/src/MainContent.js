@@ -18,7 +18,7 @@ import TestData from "./TestData";
 
 function upgradeDataFromVersion2To3(oldData) {
   let data = [],
-      list = ["place", "video", "voice"];
+      list = ["video", "voice"];
 
   for (let d of oldData) {
     let entry = {};
@@ -29,13 +29,17 @@ function upgradeDataFromVersion2To3(oldData) {
     entry.body = d.text.body.replace(/[a-z0-9]/gi,
         Math.random().toString(36).charAt(3));
 
-    if (d.images) {
+    if (d.images && d.images.length) {
       let images = [];
       for (let image of d.images) {
         images.push(image.fileName);
       }
 
       entry.images = images;
+    }
+
+    if (d.place) {
+      entry.place = Object.assign({}, d.place);
     }
 
     if (entry.type === R.TYPE_ARTICLE) {
@@ -61,7 +65,7 @@ function upgradeDataFromVersion2To3(oldData) {
         entry.book = Object.assign({}, d.book);
       }
 
-      if (d.place || d.video || d.voice) {
+      if (d.video || d.voice) {
         let others = {};
         for (let l of list) {
           if (d[l] && d[l].length) {

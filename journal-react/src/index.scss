@@ -1360,7 +1360,7 @@ nav.nav {
       $calendar-padding-height: 120px;
 
       .calendar-view {
-        width: 300px;
+        flex: 1 0 250px;
         display: flex;
         flex-direction: column;
 

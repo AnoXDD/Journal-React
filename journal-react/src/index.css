@@ -1154,7 +1154,7 @@ nav.nav {
       display: flex;
       position: relative; }
     .MainContent > main .list-view .calendar-view {
-      width: 300px;
+      flex: 1 0 250px;
       display: flex;
       flex-direction: column; }
       .MainContent > main .list-view .calendar-view .calendar-padding {

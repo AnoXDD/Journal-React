@@ -20,27 +20,22 @@ const BulbGoogleMap = withGoogleMap(props => (
         defaultCenter={{ lat: -25.363882, lng: 131.044922 }}
         onClick={props.onMapClick}
     >
-      {props.markers.map(marker => (
-          <Marker
-              {...marker}
-              onRightClick={() => props.onMarkerRightClick(marker)}
-          />
-      ))}
+      {props.bulbList.map(bulb => {
+        if (bulb.place) {
+          return (
+              <Marker
+                  key={bulb.time.created}
+                  position={{lat:parseInt(bulb.place.latitude,10),lng:parseInt(bulb.place.longitude,10)}}
+              />
+          );
+        } else {
+          return null;
+        }
+      })}
     </GoogleMap>
 ));
 
 export default class BulbMap extends Component {
-
-  state = {
-    markers: [{
-      position        : {
-        lat: 25.0112183,
-        lng: 121.52067570000001,
-      },
-      key             : `Taiwan`,
-      defaultAnimation: 2,
-    }],
-  };
 
   handleMapLoad = this.handleMapLoad.bind(this);
   handleMapClick = this.handleMapClick.bind(this);
@@ -97,7 +92,7 @@ export default class BulbMap extends Component {
           }
               onMapLoad={this.handleMapLoad}
               onMapClick={this.handleMapClick}
-              markers={this.state.markers}
+              bulbList={this.props.data}
               onMarkerRightClick={this.handleMarkerRightClick}
           />
         </div>
