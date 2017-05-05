@@ -25,7 +25,7 @@ function upgradeDataFromVersion2To3(oldData) {
     entry.time = Object.assign({}, d.time);
     // entry.body = d.text.body;
     // for debug here
-    entry.body = d.text.body.replace(/[a-z]/gi,
+    entry.body = d.text.body.replace(/[a-z0-9]/gi,
         Math.random().toString(36).charAt(3));
 
     if (d.images) {
@@ -123,6 +123,7 @@ export default class MainContent extends Component {
   /* Press escape anywhere to return to this tab */
   escapeToReturn = this.TAB.NO_CHANGE;
 
+
   constructor(props) {
     super(props);
 
@@ -138,6 +139,7 @@ export default class MainContent extends Component {
     this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
     this.handleCalendarClick = this.handleCalendarClick.bind(this);
     this.handleArticleClick = this.handleArticleClick.bind(this);
+    this.handlePromptCancel = this.handlePromptCancel.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
 
     this.updateContentStyle(this.state.data);
@@ -234,6 +236,12 @@ export default class MainContent extends Component {
         isDisplaying: newView,
       });
     }
+  }
+
+  handlePromptCancel(e) {
+    // Set to zero to tell the editor that that data is not the latest
+    this.editorVersion = 0;
+    this.handleViewChange(this.TAB.LIST);
   }
 
   handleArticleClick(i) {
@@ -376,6 +384,7 @@ export default class MainContent extends Component {
                 <div
                     className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
                   <Editor {...this.articleList[this.state.editArticleIndex]}
+                      onPromptCancel={this.handlePromptCancel}
                       imageMap={this.imageMap}
                       version={this.editorVersion}
                       tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>

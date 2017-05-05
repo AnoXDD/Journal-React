@@ -17,7 +17,8 @@ export default class Prompt extends Component {
   }
 
   handleKeyDown(e) {
-    if (e.key === "Escape") {
+    if (e.key === "Escape" &&
+        (!this.props.className || this.props.className.indexOf("hidden") === -1)) {
       if (this.props.onClose) {
         this.props.onClose(e);
       } else if (this.props.onCancel) {
@@ -50,12 +51,15 @@ export default class Prompt extends Component {
                 <div className="btns">
                   <Button
                       className={`${this.props.cancel ? "" : "hidden"}`}
+                      onClick={this.props.onCancel}
                       text={this.props.cancel || "cancel"}>cancel</Button>
                   <Button
                       className={`no ${this.props.no ? "" : "hidden"}`}
+                      onClick={this.props.onNo}
                       text={this.props.no || "no"}>block</Button>
                   <Button
                       className={`yes ${this.props.yes ? "" : "hidden"}`}
+                      onClick={this.props.onYes}
                       text={this.props.yes || "yes"}>done</Button>
                 </div>
               </div>

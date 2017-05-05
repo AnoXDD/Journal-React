@@ -245,9 +245,9 @@ class Editor extends Component {
   };
 
   version = 0;
+  hasUnsavedChanges = false;
 
   constructor(props) {
-    // todo use props to pre-fill the area
     super(props);
 
     this.state = {
@@ -269,7 +269,7 @@ class Editor extends Component {
       others          : [],
       isEditing       : false,
       isFullscreen    : false,
-      hasPrompt       : true,
+      hasPrompt       : false,
     };
 
     this.version = new Date().getTime();
@@ -425,7 +425,6 @@ class Editor extends Component {
       this.state.timeElapsed = this.state.isEditing ? (this.state.timeElapsed + 1) : 0;
     }, 1000);
 
-    this.hasUnsavedChanges = this.hasUnsavedChanges.bind(this);
     this.setIsDisplaying = this.setIsDisplaying.bind(this);
     this.setOthersProperty = this.setOthersProperty.bind(this);
     this.generateMoreInfo = this.generateMoreInfo.bind(this);
@@ -445,6 +444,8 @@ class Editor extends Component {
     this.onMovieTitleChange = this.onMovieTitleChange.bind(this);
     this.onLinkTitleChange = this.onLinkTitleChange.bind(this);
     this.onLinkUrlChange = this.onLinkUrlChange.bind(this);
+    this.onPromptYes = this.onPromptYes.bind(this);
+    this.onPromptCancel = this.onPromptCancel.bind(this);
     this.toggleEditMode = this.toggleEditMode.bind(this);
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
@@ -453,8 +454,8 @@ class Editor extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.version > this.version) {
-      if (this.hasUnsavedChanges()) {
-
+      if (this.hasUnsavedChanges) {
+        nextState.hasPrompt = true;
       } else {
         // Override current data with new data
         nextState.title = nextProps.title;
@@ -482,13 +483,11 @@ class Editor extends Component {
         nextState.links = [...(nextProps[R.PROP_LINK] || [])];
         nextState.others = [...(nextProps[R.PROP_OTHER] || [])];
 
+        nextState.isEditing = false;
+
         this.version = new Date().getTime();
       }
     }
-  }
-
-  hasUnsavedChanges() {
-
   }
 
   /**
@@ -536,6 +535,11 @@ class Editor extends Component {
   }
 
   toggleEditMode() {
+    if (!this.state.isEditing) {
+      // It's going to get modified
+      this.hasUnsavedChanges = true;
+    }
+
     this.setState({
       isEditing: !this.state.isEditing
     });
@@ -925,6 +929,16 @@ class Editor extends Component {
     });
   }
 
+  onPromptYes(e) {
+    this.hasUnsavedChanges = false;
+    this.setState({hasPrompt: false});
+  }
+
+  onPromptCancel(e) {
+    this.props.onPromptCancel();
+    this.setState({hasPrompt: false});
+  }
+
   // endregion listeners
 
   countChars(str) {
@@ -969,7 +983,9 @@ class Editor extends Component {
                   title="Content Conflict"
                   message="There appears to be unsaved changes here. If you proceed, they will be lost and overwritten by the new contents. Do you wish to continue?"
                   yes="discard"
+                  onYes={this.onPromptYes}
                   cancel="keep draft"
+                  onCancel={this.onPromptCancel}
           />
           <nav className="nav has-hint">
             <Button className={`${this.state.isFullscreen ? "" : "hidden"}`}
