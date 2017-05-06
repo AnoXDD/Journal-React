@@ -103,8 +103,8 @@ export default class MainContent extends Component {
     version: 0,
 
     isDisplaying        : this.TAB.LIST,
-    isDisplayingCalendar: true,
-    isDiaplayingMapView : false,
+    isDisplayingCalendar: false,
+    isDisplayingMapView : true,
 
     editArticleIndex: undefined,
   };
@@ -149,6 +149,7 @@ export default class MainContent extends Component {
     this.handleCreateArticle = this.handleCreateArticle.bind(this);
     this.handlePromptCancel = this.handlePromptCancel.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
+    this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
 
     this.updateContentStyle(this.state.data);
   }
@@ -280,7 +281,7 @@ export default class MainContent extends Component {
 
   toggleIsDisplayingMapView() {
     this.setState({
-      isDisplayingMapView: !this.state.isDiaplayingMapView,
+      isDisplayingMapView: !this.state.isDisplayingMapView,
     });
   }
 
@@ -334,7 +335,8 @@ export default class MainContent extends Component {
     }, {
       text     : "map view",
       icon     : "map",
-      className: "dark indent",
+      className: `dark indent ${this.state.isDisplayingMapView && this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`,
+      onClick  : this.toggleIsDisplayingMapView,
     }, {
       text: "EDITOR",
       icon: "edit"
@@ -403,10 +405,11 @@ export default class MainContent extends Component {
                       onArticleClick={this.handleArticleClick}
                       debug={true}
                   />
-                  <div className="bulb-map-view">
-                    <BulbMap data={this.bulbList}
-                             contentStyle={this.contentStyle}
-                             onBulbClick={this.handleBulbClick}
+                  <div className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>
+                    <BulbMap
+                        data={this.bulbList}
+                        contentStyle={this.contentStyle}
+                        onBulbClick={this.handleBulbClick}
                     />
                   </div>
                 </div>
