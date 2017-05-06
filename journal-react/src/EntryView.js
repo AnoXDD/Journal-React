@@ -10,6 +10,8 @@ import Image from "./Image";
 import R from "./R";
 
 class BulbImageView extends Component {
+
+  // todo display something if `src` is broken
   render() {
     return (
         <div
@@ -219,7 +221,7 @@ class EntryList extends Component {
     } else if (bulb.images) {
 
       prop.onClick = () => {
-        this.props.onBulbClick(bulb.images[0]);
+        this.props.onBulbClick(this.props.imageMap[bulb.images[0]]);
       };
     }
 
@@ -312,6 +314,7 @@ export default class EntryView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    // Handles the scroll top and image index
     if (nextProps.version > nextState.displayVersion) {
       nextState.displayVersion = nextProps.version;
 
@@ -320,6 +323,17 @@ export default class EntryView extends Component {
       this.refs.scrollArea.scrollTop = nextProps.scrollTop;
       this.refs.scrollArea.addEventListener("scroll",
           this.handleScroll.bind(this));
+
+      // Handles highlightbulb index to update which image is currently on
+      // display
+      if (nextProps.highlightBulbIndex !== this.props.highlightBulbIndex) {
+        // A new image should be displayed (if the bulb has an image)
+        let {images} = this.bulbs[nextProps.highlightBulbIndex];
+        if (images) {
+          nextState.isShowingBulbViewer = true;
+          nextState.bulbImage = this.props.imageMap[images[0]];
+        }
+      }
     }
   }
 
