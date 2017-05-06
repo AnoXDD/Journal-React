@@ -12,13 +12,69 @@ import {
 } from "react-google-maps";
 import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer';
 
+import cluster0 from "./imgs/map-cluster-0.svg";
+import cluster1 from "./imgs/map-cluster-1.svg";
+import cluster2 from "./imgs/map-cluster-2.svg";
+import cluster3 from "./imgs/map-cluster-3.svg";
+import cluster4 from "./imgs/map-cluster-4.svg";
+import cluster5 from "./imgs/map-cluster-5.svg";
+import cluster6 from "./imgs/map-cluster-6.svg";
+import cluster7 from "./imgs/map-cluster-7.svg";
+import cluster8 from "./imgs/map-cluster-8.svg";
 
-/*
- * This is the modify version of:
- * https://developers.google.com/maps/documentation/javascript/examples/event-arguments
- *
- * Add <script src="https://maps.googleapis.com/maps/api/js"></script> to your HTML to provide google.maps reference
- */
+
+
+const clusterSize = 25;
+const clusterStyles = [
+  {
+    textColor: 'black',
+    url      : {cluster0}.cluster0,
+    height   : clusterSize,
+    width    : clusterSize
+  }, {
+    textColor: 'black',
+    url      : {cluster1}.cluster1,
+    height   : clusterSize,
+    width    : clusterSize
+  }, {
+    textColor: 'black',
+    url      : {cluster2}.cluster2,
+    height   : clusterSize,
+    width    : clusterSize
+  }, {
+    textColor: 'black',
+    url      : {cluster3}.cluster3,
+    height   : clusterSize,
+    width    : clusterSize
+  }, {
+    textColor: 'black',
+    url      : {cluster4}.cluster4,
+    height   : clusterSize,
+    width    : clusterSize
+  }, {
+    textColor: 'white',
+    url      : {cluster5}.cluster5,
+    height   : clusterSize,
+    width    : clusterSize
+  }, {
+    textColor: 'white',
+    url      : {cluster6}.cluster6,
+    height   : clusterSize,
+    width    : clusterSize
+  }, {
+    textColor: 'white',
+    url      : {cluster7}.cluster7,
+    height   : clusterSize,
+    width    : clusterSize
+  }, {
+    textColor: 'white',
+    url      : {cluster8}.cluster8,
+    height   : clusterSize,
+    width    : clusterSize
+  },
+
+];
+
 const BulbGoogleMap = withGoogleMap(props => (
     <GoogleMap
         ref={props.onMapLoad}
@@ -29,13 +85,14 @@ const BulbGoogleMap = withGoogleMap(props => (
       <MarkerClusterer
           averageCenter={ true }
           enableRetinaIcons={ true }
+          styles={clusterStyles}
           gridSize={ 60 }>
         {props.bulbList.map(bulb => {
           if (bulb.place) {
             return (
                 <Marker
                     key={bulb.time.created}
-                    position={{lat:parseInt(bulb.place.latitude,10),lng:parseInt(bulb.place.longitude,10)}}
+                    position={{lat:parseFloat(bulb.place.latitude,10),lng:parseFloat(bulb.place.longitude,10)}}
                 />
             );
           } else {
@@ -92,6 +149,8 @@ export default class BulbMap extends Component {
   }
 
   render() {
+    console.log({cluster1});
+
     return (
         <div className="BulbMap" style={{height: `100%`}}>
           <BulbGoogleMap
