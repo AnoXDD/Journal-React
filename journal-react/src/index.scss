@@ -1324,6 +1324,11 @@ nav.nav {
         }
       }
 
+      &.disabled {
+        opacity: .3;
+        pointer-events: none;
+      }
+
       .icon-wrapper {
         flex: 0 0 70px;
       }

@@ -1132,6 +1132,9 @@ nav.nav {
         .MainContent .sidebar .btn.indent.active, .MainContent .sidebar .Options .indent.active.option, .Options .MainContent .sidebar .indent.active.option {
           background: #424242;
           color: white; }
+      .MainContent .sidebar .btn.disabled, .MainContent .sidebar .Options .disabled.option, .Options .MainContent .sidebar .disabled.option {
+        opacity: .3;
+        pointer-events: none; }
       .MainContent .sidebar .btn .icon-wrapper, .MainContent .sidebar .Options .option .icon-wrapper, .Options .MainContent .sidebar .option .icon-wrapper {
         flex: 0 0 70px; }
   .MainContent > main {

@@ -90,11 +90,11 @@ export default class MainContent extends Component {
   SEARCH_BAR_TAGS = ["tags", "months", "attachments"];
   TAB = {
     NO_CHANGE: 0,
-    LIST     : 1,
-    EDITOR   : 2,
-    HISTORY  : 3,
-    STATS    : 4,
-    SETTINGS : 10,
+    LIST     : 1 << 1,
+    EDITOR   : 1 << 2,
+    HISTORY  : 1 << 3,
+    STATS    : 1 << 4,
+    SETTINGS : 1 << 5,
   };
 
   state = {
@@ -105,6 +105,9 @@ export default class MainContent extends Component {
     isDisplaying        : this.TAB.LIST,
     isDisplayingCalendar: false,
     isDisplayingMapView : true,
+
+    // Use | to connect them later
+    enabledTabs: this.TAB.LIST,
 
     editArticleIndex: undefined,
   };
@@ -257,6 +260,7 @@ export default class MainContent extends Component {
     this.editorVersion = new Date().getTime();
     this.setState({
       editArticleIndex: -1,
+      enabledTabs     : this.state.enabledTabs | this.TAB.EDITOR,
     }, this.handleViewChange(this.TAB.EDITOR));
   }
 
@@ -265,6 +269,7 @@ export default class MainContent extends Component {
     this.escapeToReturn = this.TAB.LIST;
     this.setState({
       editArticleIndex: i,
+      enabledTabs     : this.state.enabledTabs | this.TAB.EDITOR,
     }, this.handleViewChange(this.TAB.EDITOR));
   }
 
@@ -330,12 +335,14 @@ export default class MainContent extends Component {
     }, {
       text     : "calendar",
       icon     : "date_range",
-      className: `dark indent ${this.state.isDisplayingCalendar && this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`,
+      indent   : "indent",
+      className: `dark ${this.state.isDisplayingCalendar && this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`,
       onClick  : this.toggleIsDisplayingCalendar,
     }, {
       text     : "map view",
       icon     : "map",
-      className: `dark indent ${this.state.isDisplayingMapView && this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`,
+      indent   : "indent",
+      className: `dark ${this.state.isDisplayingMapView && this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`,
       onClick  : this.toggleIsDisplayingMapView,
     }, {
       text: "EDITOR",
@@ -361,7 +368,7 @@ export default class MainContent extends Component {
             <div className="other-btn">
               {BUTTONS.map(b =>
                   <Button key={b.text}
-                          className={`${b.className || `dark ${this.state.isDisplaying === this.TAB[b.text] ? "active" : ""}`}`}
+                          className={`${(this.state.enabledTabs & this.TAB[b.text]) || b.indent ? "" : "disabled" } ${b.className || `dark ${this.state.isDisplaying === this.TAB[b.text] ? "active" : ""}`} ${b.indent || ""}`}
                           text={b.text}
                           onClick={b.onClick || (() => this.handleViewChange(this.TAB[b.text]))}
                   >{b.icon}</Button>
@@ -405,7 +412,8 @@ export default class MainContent extends Component {
                       onArticleClick={this.handleArticleClick}
                       debug={true}
                   />
-                  <div className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>
+                  <div
+                      className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>
                     <BulbMap
                         data={this.bulbList}
                         contentStyle={this.contentStyle}
