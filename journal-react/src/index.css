@@ -919,7 +919,7 @@ nav.nav {
       left: calc(50% - 1px); }
   .EntryView .bulb-image-viewer {
     position: absolute;
-    width: calc(30% + 35px - 4px);
+    width: calc(30% + 35px - 5px);
     top: 0;
     height: 100%;
     z-index: 10;
@@ -958,20 +958,20 @@ nav.nav {
       cursor: pointer; }
       .EntryView .article-list article:before {
         right: -35px;
-        bottom: 4px;
+        bottom: 5px;
         background: #00BCD4; }
       .EntryView .article-list article:after {
         content: "";
         position: absolute;
-        border-radius: 4px;
-        height: 8px;
-        width: 8px;
+        border-radius: 5px;
+        height: 10px;
+        width: 10px;
         bottom: 0;
         background: #00BCD4;
         box-shadow: 0 0 2px 3px white;
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
-        right: -39px; }
+        right: -40px; }
       .EntryView .article-list article:hover {
         box-shadow: 3px 2px 9px grey; }
         .EntryView .article-list article:hover:before {
@@ -979,9 +979,9 @@ nav.nav {
         .EntryView .article-list article:hover:after {
           content: "";
           position: absolute;
-          border-radius: 4px;
-          height: 8px;
-          width: 8px;
+          border-radius: 5px;
+          height: 10px;
+          width: 10px;
           bottom: 0;
           background: #00BCD4;
           box-shadow: 0 0 2px 3px white;
@@ -989,7 +989,7 @@ nav.nav {
           transition: background .2s ease, box-shadow .2s ease;
           background: white;
           box-shadow: 0 0 2px 2px #00BCD4;
-          right: -39px; }
+          right: -40px; }
       .EntryView .article-list article.no-image {
         height: 105px;
         background: #212121; }
@@ -1049,40 +1049,39 @@ nav.nav {
       .EntryView .bulb-list article:before {
         left: -35px;
         background: #00BCD4;
-        top: 13.5px; }
+        top: 16.5px; }
       .EntryView .bulb-list article:after {
         content: "";
         position: absolute;
-        border-radius: 2px;
-        height: 4px;
-        width: 4px;
+        border-radius: 3px;
+        height: 6px;
+        width: 6px;
         bottom: 0;
         background: #00BCD4;
         box-shadow: 0 0 2px 3px white;
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
         background: #80DEEA;
-        left: -37px;
-        top: 11.5px; }
-      .EntryView .bulb-list article:hover {
+        left: -38px;
+        top: 13.5px; }
+      .EntryView .bulb-list article:hover, .EntryView .bulb-list article.active {
         height: auto;
         z-index: 5;
         background-color: white;
         box-shadow: 0 0 3px 3px white; }
-        .EntryView .bulb-list article:hover header {
-          background: white;
-          color: #00BCD4; }
-        .EntryView .bulb-list article:hover .details {
+        .EntryView .bulb-list article:hover header, .EntryView .bulb-list article.active header {
+          background: #00BCD4; }
+        .EntryView .bulb-list article:hover .details, .EntryView .bulb-list article.active .details {
           overflow: visible;
           white-space: normal; }
-        .EntryView .bulb-list article:hover:before {
+        .EntryView .bulb-list article:hover:before, .EntryView .bulb-list article.active:before {
           width: 35px; }
-        .EntryView .bulb-list article:hover:after {
+        .EntryView .bulb-list article:hover:after, .EntryView .bulb-list article.active:after {
           content: "";
           position: absolute;
-          border-radius: 2px;
-          height: 4px;
-          width: 4px;
+          border-radius: 3px;
+          height: 6px;
+          width: 6px;
           bottom: 0;
           background: #00BCD4;
           box-shadow: 0 0 2px 3px white;
@@ -1090,8 +1089,8 @@ nav.nav {
           transition: background .2s ease, box-shadow .2s ease;
           background: white;
           box-shadow: 0 0 2px 2px #00BCD4;
-          left: -37px;
-          top: 11.5px; }
+          left: -38px;
+          top: 13.5px; }
     .EntryView .bulb-list header {
       flex: 0 0 80px;
       text-align: center;

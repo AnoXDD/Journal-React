@@ -964,8 +964,8 @@ nav.nav {
 
 .EntryView {
   $timeline-width: 70px;
-  $timeline-dot-radius: 4px;
-  $timeline-dot-radius-small: 2px;
+  $timeline-dot-radius: 5px;
+  $timeline-dot-radius-small: 3px;
   $article-margin: 30px;
   $article-width: 30%;
   $detail-padding: 25px;
@@ -1217,7 +1217,7 @@ nav.nav {
       &:before {
         left: -$timeline-width / 2;
         background: $css;
-        top: $article-height / 2;
+        top: $article-height / 2 + $timeline-dot-radius-small;
       }
 
       &:after {
@@ -1225,18 +1225,17 @@ nav.nav {
 
         background: $csl;
         left: -$timeline-width / 2 - $timeline-dot-radius-small;
-        top: $article-height / 2 - $timeline-dot-radius-small;
+        top: $article-height / 2; //- $timeline-dot-radius-small;
       }
 
-      &:hover {
+      &:hover, &.active {
         height: auto;
         z-index: 5;
         background-color: white;
         box-shadow: 0 0 3px 3px white;
 
         header {
-          background: white;
-          color: $css;
+          background: $css;
         }
 
         .details {
@@ -1252,7 +1251,7 @@ nav.nav {
           @include article-hover-after($timeline-dot-radius-small);
 
           left: -$timeline-width / 2 - $timeline-dot-radius-small;
-          top: $article-height / 2 - $timeline-dot-radius-small;
+          top: $article-height / 2; //- $timeline-dot-radius-small;
         }
       }
     }

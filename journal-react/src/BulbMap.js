@@ -70,20 +70,20 @@ const BulbGoogleMap = withGoogleMap(props => (
         ref={props.onMapLoad}
         defaultZoom={3}
         defaultCenter={{ lat: -25.363882, lng: 131.044922 }}
-        onClick={props.onMapClick}
     >
       <MarkerClusterer
           averageCenter={ true }
           enableRetinaIcons={ true }
           styles={clusterStyles}
           gridSize={ 60 }>
-        {props.bulbList.map(bulb => {
+        {props.bulbList.map((bulb, index) => {
           if (bulb.place) {
             return (
                 <Marker
                     key={bulb.time.created}
                     position={{lat:parseFloat(bulb.place.latitude,10),lng:parseFloat(bulb.place.longitude,10)}}
                     icon={mapMarkerIcon}
+                    onClick={() => props.onBulbClick(props.contentStyle[bulb.time.created], index)}
                 />
             );
           } else {
@@ -96,47 +96,10 @@ const BulbGoogleMap = withGoogleMap(props => (
 
 export default class BulbMap extends Component {
 
-  handleMapLoad = this.handleMapLoad.bind(this);
-  handleMapClick = this.handleMapClick.bind(this);
-  handleMarkerRightClick = this.handleMarkerRightClick.bind(this);
-
   handleMapLoad(map) {
-    this._mapComponent = map;
     if (map) {
       console.log(map.getZoom());
     }
-  }
-
-  /*
-   * This is called when you click on the map.
-   * Go and try click now.
-   */
-  handleMapClick(event) {
-    const nextMarkers = [
-      ...this.state.markers,
-      {
-        position        : event.latLng,
-        defaultAnimation: 2,
-        key             : Date.now(), // Add a key property for:
-                                      // http://fb.me/react-warning-keys
-      },
-    ];
-    this.setState({
-      markers: nextMarkers,
-    });
-  }
-
-  handleMarkerRightClick(targetMarker) {
-    /*
-     * All you modify is data, and the view is driven by data.
-     * This is so called data-driven-development. (And yes, it's now in
-     * web front end and even with google maps API.)
-     */
-    const nextMarkers = this.state.markers.filter(
-        marker => marker !== targetMarker);
-    this.setState({
-      markers: nextMarkers,
-    });
   }
 
   render() {
@@ -150,9 +113,9 @@ export default class BulbMap extends Component {
             <div style={{ height: `100%` }} />
           }
               onMapLoad={this.handleMapLoad}
-              onMapClick={this.handleMapClick}
               bulbList={this.props.data}
-              onMarkerRightClick={this.handleMarkerRightClick}
+              contentStyle={this.props.contentStyle}
+              onBulbClick={this.props.onBulbClick}
           />
         </div>
     );

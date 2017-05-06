@@ -202,10 +202,10 @@ class EntryList extends Component {
     );
   }
 
-  generateBulbProp(bulb) {
+  generateBulbProp(bulb, i) {
     let top = this.props.contentStyle[bulb.time.created],
         prop = {
-          className: top >= this.props.scrollTop && top <= this.props.scrollBottom ? "" : "hidden",
+          className: `${top >= this.props.scrollTop && top <= this.props.scrollBottom ? "" : "hidden"} ${this.props.highlightBulbIndex === i ? "active" : ""}`,
           style    : {top: top},
         };
 
@@ -231,10 +231,10 @@ class EntryList extends Component {
         <div className="bulb-list"
              style={{height: `${this.props.contentStyle.height || 0}px`}}>
           <div className="flex-extend-inner-wrapper">
-            {this.props.bulbs.map(bulb => {
+            {this.props.bulbs.map((bulb, i) => {
               return (
                   <article key={`bulb-preview-${bulb.time.created}`}
-                      {...this.generateBulbProp(bulb)}
+                      {...this.generateBulbProp(bulb, i)}
                   >
                     <header className="vertical-align">
                       <div className="time vertical-align-wrapper">
@@ -381,6 +381,7 @@ export default class EntryView extends Component {
                   scrollBottom={this.state.scrollBottom}
                   version={this.state.displayVersion}
                   onBulbClick={src => this.handleBulbClick(src)}
+                  highlightBulbIndex={this.props.highlightBulbIndex}
               />
             </div>
           </NoScrollArea>
