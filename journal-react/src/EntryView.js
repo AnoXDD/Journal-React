@@ -381,7 +381,8 @@ export default class EntryView extends Component {
 
   render() {
     return (
-        <div className="EntryView">
+        <div
+            className={`EntryView ${this.props.articles.length ? "" : "bulb-only"} ${this.props.bulbs.length ? "" : "article-only"}`}>
           <BulbImageView
               className={`${this.state.isShowingBulbViewer ? "show" : ""}`}
               src={this.state.bulbImage}

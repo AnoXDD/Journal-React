@@ -885,10 +885,14 @@ nav.nav {
 .EntryView {
   height: 100%;
   width: 100%;
-  position: relative; }
+  position: relative;
+  background: white; }
   .EntryView article {
     transition: top .4s ease;
-    animation: fade-in .4s ease; }
+    animation: fade-in .4s ease;
+    color: transparent !important; }
+    .EntryView article * {
+      color: inherit !important; }
     .EntryView article:before {
       content: "";
       position: absolute;
@@ -896,10 +900,19 @@ nav.nav {
       width: 0;
       background: #00BCD4;
       transition: width .4s ease; }
+  .EntryView.bulb-only .timeline-wrapper, .EntryView.article-only .timeline-wrapper {
+    display: none; }
+  .EntryView.bulb-only .entries article:before, .EntryView.bulb-only .entries article:after, .EntryView.article-only .entries article:before, .EntryView.article-only .entries article:after {
+    display: none; }
+  .EntryView.article-only .article-list {
+    max-width: 50vw;
+    flex: 1 1 auto; }
+  .EntryView.article-only .bulb-list {
+    display: none; }
   .EntryView .entries {
     display: flex;
     flex-direction: row;
-    justify-content: space-between; }
+    justify-content: center; }
   .EntryView .time {
     font-size: 12px;
     text-align: center; }
@@ -920,6 +933,7 @@ nav.nav {
   .EntryView .bulb-image-viewer {
     position: absolute;
     width: calc(30% + 35px - 5px);
+    max-width: 530px;
     top: 0;
     height: 100%;
     z-index: 10;

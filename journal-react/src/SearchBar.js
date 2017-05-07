@@ -100,6 +100,7 @@ export default class SearchBar extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
+    this.handlePromptClose = this.handlePromptClose.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -238,12 +239,17 @@ export default class SearchBar extends Component {
     }
   }
 
+  handlePromptClose() {
+    this.handleSubmit();
+    this.setState({isAdvancedSearch: false});
+  }
+
   render() {
     return (
         <div className="SearchBar">
           <Prompt
               className={`advanced-search ${this.state.isAdvancedSearch ? "": "hidden"}`}
-              onClose={() => this.setState({isAdvancedSearch : false})}
+              onClose={this.handlePromptClose}
           >
             <div
                 className={`form prompt-child shadow`}>
@@ -253,7 +259,7 @@ export default class SearchBar extends Component {
                     className={`tag white-background new-tag-wrapper`}
                     tagPrediction={""}
                     tags={this.state.keywords}
-                    onChange={keywords => this.setState({keywords: keywords}, this.handleSubmit)}
+                    onChange={keywords => this.setState({keywords: keywords})}
                 />
               </div>
               <div className="form-col">
@@ -262,7 +268,7 @@ export default class SearchBar extends Component {
                     className={`tag white-background new-tag-wrapper`}
                     tagPrediction={this.props.tagPrediction}
                     tags={this.state.tags}
-                    onChange={tags => this.setState({tags: tags}, this.handleSubmit)}
+                    onChange={tags => this.setState({tags: tags})}
                 />
               </div>
               <div className="form-col">
@@ -270,21 +276,21 @@ export default class SearchBar extends Component {
                 <Options
                     options="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
                     value={this.state.months}
-                    onChange={months => this.setState({months: months}, this.handleSubmit)}/>
+                    onChange={months => this.setState({months: months})}/>
               </div>
               <div className="form-col">
                 <SearchBarTitle>Type</SearchBarTitle>
                 <Options options={`${R.TYPE_ARTICLE} ${R.TYPE_BULB}`}
                          icons="description lightbulb_outline"
                          value={this.state.types}
-                         onChange={types => this.setState({types: types}, this.handleSubmit)}/>
+                         onChange={types => this.setState({types: types})}/>
               </div>
               <div className="form-col">
                 <SearchBarTitle>Attachments</SearchBarTitle>
                 <Options options={this.ATTACHMENTS}
                          icons="photo_library library_music movie link more_horiz"
                          value={this.state.attachments}
-                         onChange={data => this.setState({attachments: data}, this.handleSubmit)}/>
+                         onChange={data => this.setState({attachments: data})}/>
               </div>
             </div>
           </Prompt>
