@@ -1557,4 +1557,42 @@ nav.nav {
 .Chart {
   box-sizing: border-box;
   padding: 5% 5%;
+
+  .table-header-out {
+    box-sizing: content-box;
+    margin-right: 20px;
+  }
+
+  .table-header {
+    width: 100%;
+  }
+
+  .row-data, .row-header {
+    height: 50px;
+    background: $cs1;
+
+    &:nth-child(odd) {
+      background: $cs0;
+    }
+  }
+
+  .row-header .cell-data {
+    background: $darkgrey;
+    color: white;
+  }
+
+  .cell-blank {
+    background: white;
+  }
+
+  .cell-keyword {
+    background: $cp;
+    color: white;
+    text-align: center;
+  }
+
+  .cell-data {
+    width: 5em;
+    text-align: center;
+  }
 }

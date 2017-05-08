@@ -22,6 +22,7 @@ export default class Chart extends Component {
 
   data = [];
   dataMonth = {};
+  dataReverse = [];
 
   constructor(props) {
     super(props);
@@ -71,8 +72,8 @@ export default class Chart extends Component {
           if ((data.title && data.title.indexOf(keyword) !== -1) ||
               data.body.indexOf(keyword) !== -1) {
             // This keyword is found
-            this.dataMonth[keyword] = this.dataMonth[keyword] || [];
-            this.dataMonth[keyword][month] = 1 + (this.dataMonth[keyword][month] || 0);
+            this.dataMonth[keyword] = this.dataMonth[keyword] || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            ++this.dataMonth[keyword][month];
             ++this.data[index][keyword];
           }
         }
@@ -84,40 +85,40 @@ export default class Chart extends Component {
     return (
         <div className="Chart">
           <ResponsiveContainer width='100%' height={window.innerHeight * .6}>
-            <LineChart data={this.data}>
+            <LineChart data={[...this.data].reverse()}>
               <XAxis dataKey="time"/>
               <YAxis/>
               <Tooltip/>
               <Legend />
               {this.state.keywords.map(keyword =>
-                  <Line key={keyword} dataKey={keyword}/>)
+                  <Line key={keyword} dataKey={keyword} dot={false}/>)
               }
             </LineChart>
           </ResponsiveContainer>
           <div className="table-wrapper">
-            <div className="table-header">
-              <table className="header">
+            <div className="table-header-out">
+              <table className="table-header">
                 <thead>
-                <tr>
-                  <td className="first"></td>
+                <tr className="row-header">
+                  <td className="cell-blank"></td>
                   {R.month.map(month =>
-                      <td key={month}>{month}</td>
+                      <td key={month} className="cell-data">{month}</td>
                   )}
                 </tr>
                 </thead>
               </table>
             </div>
             <NoScrollArea padding="10px">
-              <table className="data">
+              <table className="table-data">
                 <tbody>
                 {
                   this.state.keywords.map(keyword => {
                     return (
-                        <tr key={keyword}>
-                          <td className="keyword">{keyword}</td>
+                        <tr className="row-data" key={keyword}>
+                          <td className="cell-keyword">{keyword}</td>
                           {this.dataMonth[keyword].map((data, index) =>
                               <td key={`${keyword}-${index}`}
-                                  className="data">{data || 0}</td>
+                                  className="cell-data">{data || 0}</td>
                           )}
                         </tr>
                     );

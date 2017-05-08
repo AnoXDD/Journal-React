@@ -1270,5 +1270,27 @@ nav.nav {
 .Chart {
   box-sizing: border-box;
   padding: 5% 5%; }
+  .Chart .table-header-out {
+    box-sizing: content-box;
+    margin-right: 20px; }
+  .Chart .table-header {
+    width: 100%; }
+  .Chart .row-data, .Chart .row-header {
+    height: 50px;
+    background: #B2EBF2; }
+    .Chart .row-data:nth-child(odd), .Chart .row-header:nth-child(odd) {
+      background: #E0F7FA; }
+  .Chart .row-header .cell-data {
+    background: #212121;
+    color: white; }
+  .Chart .cell-blank {
+    background: white; }
+  .Chart .cell-keyword {
+    background: #448AFF;
+    color: white;
+    text-align: center; }
+  .Chart .cell-data {
+    width: 5em;
+    text-align: center; }
 
 /*# sourceMappingURL=index.css.map */
