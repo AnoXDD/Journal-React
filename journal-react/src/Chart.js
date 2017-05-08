@@ -20,6 +20,8 @@ import R from "./R";
 
 export default class Chart extends Component {
 
+  processedKeyWords = [];
+
   data = [];
   dataMonth = {};
   dataReverse = [];
@@ -69,7 +71,7 @@ export default class Chart extends Component {
         this.data[index][keyword] = this.data[index][keyword] || 0;
         this.dataMonth[keyword] = this.dataMonth[keyword] || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         // Test if this key needs to be re-calculated
-        if (this.state.keywords.indexOf(keyword) !== -1 || hasNewData) {
+        if (this.processedKeyWords.indexOf(keyword) === -1 || hasNewData) {
           if ((data.title && data.title.indexOf(keyword) !== -1) ||
               data.body.indexOf(keyword) !== -1) {
             // This keyword is found
@@ -79,6 +81,8 @@ export default class Chart extends Component {
         }
       }
     }
+
+    this.processedKeyWords = [...keywords];
   }
 
   render() {
@@ -91,7 +95,9 @@ export default class Chart extends Component {
               <Tooltip/>
               <Legend />
               {this.state.keywords.map(keyword =>
-                  <Line key={keyword} dataKey={keyword} dot={false}/>)
+                  <Line key={keyword}
+                        stroke={`#${Math.random().toString(16).substr(-6)}`}
+                        dataKey={keyword} dot={false}/>)
               }
             </LineChart>
           </ResponsiveContainer>
