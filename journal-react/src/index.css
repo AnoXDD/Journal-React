@@ -1270,27 +1270,43 @@ nav.nav {
 .Chart {
   box-sizing: border-box;
   padding: 5% 5%; }
-  .Chart .table-header-out {
-    box-sizing: content-box;
-    margin-right: 20px; }
+  .Chart .table-wrapper {
+    margin-top: 2.5vh;
+    height: 25vh; }
+  .Chart .table-data-out, .Chart .table-header-out {
+    text-align: center; }
+  .Chart .table-data {
+    display: inline-block;
+    border-collapse: collapse; }
   .Chart .table-header {
-    width: 100%; }
+    margin-right: 20px;
+    display: inline-block;
+    border-collapse: collapse;
+    table-layout: fixed; }
+    .Chart .table-header .row-header .cell-data {
+      background: #212121;
+      color: white; }
+  .Chart .row-data {
+    border-bottom: 2px solid white; }
   .Chart .row-data, .Chart .row-header {
     height: 50px;
-    background: #B2EBF2; }
+    background: white;
+    margin-right: 20px; }
     .Chart .row-data:nth-child(odd), .Chart .row-header:nth-child(odd) {
       background: #E0F7FA; }
-  .Chart .row-header .cell-data {
-    background: #212121;
-    color: white; }
   .Chart .cell-blank {
-    background: white; }
+    background: white;
+    width: 20em; }
   .Chart .cell-keyword {
-    background: #448AFF;
+    background: #212121;
     color: white;
-    text-align: center; }
+    text-align: right;
+    width: 20em;
+    box-sizing: border-box;
+    padding-right: 1em; }
   .Chart .cell-data {
     width: 5em;
-    text-align: center; }
+    text-align: center;
+    border: none; }
 
 /*# sourceMappingURL=index.css.map */

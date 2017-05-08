@@ -27,7 +27,7 @@ export default class Chart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      keywords: ["的", "在", "s"],
+      keywords: ["的", "在", "s", "a", "2", "32", "321", "33333", "dfsa"],
     }
 
     this.version = props.version;
@@ -67,12 +67,12 @@ export default class Chart extends Component {
       for (let keyword of keywords) {
         // Initialize the key in the data if necessary
         this.data[index][keyword] = this.data[index][keyword] || 0;
+        this.dataMonth[keyword] = this.dataMonth[keyword] || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         // Test if this key needs to be re-calculated
         if (this.state.keywords.indexOf(keyword) !== -1 || hasNewData) {
           if ((data.title && data.title.indexOf(keyword) !== -1) ||
               data.body.indexOf(keyword) !== -1) {
             // This keyword is found
-            this.dataMonth[keyword] = this.dataMonth[keyword] || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             ++this.dataMonth[keyword][month];
             ++this.data[index][keyword];
           }
@@ -109,23 +109,25 @@ export default class Chart extends Component {
               </table>
             </div>
             <NoScrollArea padding="10px">
-              <table className="table-data">
-                <tbody>
-                {
-                  this.state.keywords.map(keyword => {
-                    return (
-                        <tr className="row-data" key={keyword}>
-                          <td className="cell-keyword">{keyword}</td>
-                          {this.dataMonth[keyword].map((data, index) =>
-                              <td key={`${keyword}-${index}`}
-                                  className="cell-data">{data || 0}</td>
-                          )}
-                        </tr>
-                    );
-                  })
-                }
-                </tbody>
-              </table>
+              <div className="table-data-out">
+                <table className="table-data">
+                  <tbody>
+                  {
+                    this.state.keywords.map(keyword => {
+                      return (
+                          <tr className="row-data" key={keyword}>
+                            <td className="cell-keyword">{keyword}</td>
+                            {this.dataMonth[keyword].map((data, index) =>
+                                <td key={`${keyword}-${index}`}
+                                    className="cell-data">{data || 0}</td>
+                            )}
+                          </tr>
+                      );
+                    })
+                  }
+                  </tbody>
+                </table>
+              </div>
             </NoScrollArea>
           </div>
         </div>
