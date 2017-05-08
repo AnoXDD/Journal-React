@@ -1267,4 +1267,8 @@ nav.nav {
       flex: 1 1 auto;
       display: block; }
 
+.Chart {
+  box-sizing: border-box;
+  padding: 5% 5%; }
+
 /*# sourceMappingURL=index.css.map */

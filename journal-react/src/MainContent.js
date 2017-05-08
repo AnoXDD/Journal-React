@@ -11,6 +11,7 @@ import Calendar from "./Calendar";
 import EntryView from "./EntryView";
 import SearchBar from "./SearchBar";
 import BulbMap from "./BulbMap";
+import Chart from "./Chart";
 
 import R from "./R";
 
@@ -107,7 +108,7 @@ export default class MainContent extends Component {
     isDisplayingMapView : true,
 
     // Use | to connect them later
-    enabledTabs: this.TAB.LIST,
+    enabledTabs: this.TAB.LIST | this.TAB.STATS,
 
     editArticleIndex: undefined,
   };
@@ -430,6 +431,10 @@ export default class MainContent extends Component {
                   imageMap={this.imageMap}
                   version={this.editorVersion}
                   tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
+            </div>
+            <div
+                className={`flex-extend-inner-wrapper stats-view ${this.state.isDisplaying === this.TAB.STATS ? "" : "hidden"}`}>
+              <Chart data={this.state.data}/>
             </div>
           </main>
         </div>

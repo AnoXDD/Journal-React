@@ -48,19 +48,19 @@ const clusterStyles = [
     fontFamily: `"Lato", "Noto Sans CJK SC", "Noto Sans SC", sans-serif`,
   },
   {
-    width     : 100,
-    height    : 100,
+    width     : 120,
+    height    : 120,
     url       : getGoogleClusterInlineSvg('#0091EA'),
     textColor : 'black',
     textSize  : 18,
     fontFamily: `"Lato", "Noto Sans CJK SC", "Noto Sans SC", sans-serif`,
   },
   {
-    width     : 130,
-    height    : 130,
+    width     : 180,
+    height    : 180,
     url       : getGoogleClusterInlineSvg('#01579B'),
     textColor : 'white',
-    textSize  : 18,
+    textSize  : 20,
     fontFamily: `"Lato", "Noto Sans CJK SC", "Noto Sans SC", sans-serif`,
   }
 ];

@@ -107,6 +107,7 @@ class ExtraAttachments extends Component {
                     <div className="other">
                       <div className="type-wrapper">
                         <input
+                            type="text"
                             className={`flex-extend-inner-wrapper type normal ${this.props.isEditing ? "" : "disabled"}`}
                             value={other.type}
                             onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
@@ -1024,11 +1025,11 @@ class Editor extends Component {
           <header
               className={`${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}`}>
             <input
+                type="text"
                 className={`title normal underlined ${this.state.isFullscreen ? "hidden" : ""}`}
                 value={this.state.title}
                 onChange={this.onTitleChange}
                 disabled={!this.state.isEditing}
-                defaultValue={this.convertToDateTime(new Date()).substr(0, 7)}
             />
             <div className="stats">
               <div className="stat chars">
