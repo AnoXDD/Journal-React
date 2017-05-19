@@ -1594,7 +1594,7 @@ nav.nav {
     margin-right: 20px;
 
     &:nth-child(odd) {
-      background: $cs1;
+      background: $lightgrey;
     }
   }
 
@@ -1606,10 +1606,21 @@ nav.nav {
   .cell-keyword {
     background: $darkgrey;
     color: white;
-    text-align: right;
     width: 20em;
-    box-sizing: border-box;
     padding-right: 1em;
+    box-sizing: border-box;
+
+    .cell-keyword-wrapper {
+      height: 100%;
+      width: 100%;
+      display: flex;
+    }
+
+    .normal {
+      text-align: right;
+      flex: 1 1 auto;
+      padding: 3px;
+    }
   }
 
   .cell-data {

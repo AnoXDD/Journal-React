@@ -19,6 +19,7 @@ $cyan-9: #006064;
 
 $darkgrey: #212121;
 $darkgrey-l: #424242;
+$lightgrey: #e8e8e8;
 
 $cp: $blue;
 $cpl: $blue-light;
@@ -159,6 +160,11 @@ input, textarea {
     &:focus, &:active {
       border-bottom: 1px solid $blue !important;
     }
+  }
+
+  &.dark {
+    background: inherit;
+    color: white;
   }
 
   &.disabled, &:disabled {
