@@ -898,10 +898,7 @@ nav.nav {
   background: white; }
   .EntryView article {
     transition: top .4s ease;
-    animation: fade-in .4s ease;
-    color: transparent !important; }
-    .EntryView article * {
-      color: inherit !important; }
+    animation: fade-in .4s ease; }
     .EntryView article:before {
       content: "";
       position: absolute;

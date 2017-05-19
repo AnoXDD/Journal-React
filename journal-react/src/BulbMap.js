@@ -69,7 +69,7 @@ const BulbGoogleMap = withGoogleMap(props => (
     <GoogleMap
         ref={props.onMapLoad}
         defaultZoom={3}
-        defaultCenter={{ lat: -25.363882, lng: 131.044922 }}
+        defaultCenter={{ lat: 32.8689785, lng: -117.2382162 }}
     >
       <MarkerClusterer
           averageCenter={ true }

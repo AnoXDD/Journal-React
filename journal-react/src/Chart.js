@@ -21,9 +21,46 @@ import Toggle from "./Toggle";
 import R from "./R";
 
 
-export default class Chart extends Component {
+class NewKeyword extends Component {
 
-  processedKeyWords = [];
+  state = {
+    value: "",
+  }
+
+  constructor(props) {
+    super(props);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+  }
+
+
+  handleKeyDown(e) {
+    if (e.key === "Enter") {
+      this.props.onClick(this.state.value);
+    }
+  }
+
+  render() {
+    return (
+        <tr className="row-data">
+          <td className="cell-keyword">
+            <div
+                className="cell-keyword-wrapper flex-center">
+              <Button className="dark narrow"
+                      onClick={() => this.props.onClick(this.state.value)}
+              >add</Button>
+              <input className="dark normal underlined"
+                     value={this.state.value}
+                     onChange={e => this.setState({value: e.target.value})}
+                     onKeyDown={this.handleKeyDown}
+              />
+            </div>
+          </td>
+        </tr>
+    );
+  }
+}
+
+export default class Chart extends Component {
 
   data = [];
   dataMonthChart = [];
@@ -39,7 +76,7 @@ export default class Chart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      keywords        : ["的", "在", "s", "a", "2", "32", "321", "33333", "dfsa"],
+      keywords        : [],
       hiddenKeywords  : [],
       isGroupedByMonth: false,
     };
@@ -53,12 +90,17 @@ export default class Chart extends Component {
     this.handleStateChange(this.state.keywords);
     this.handleKeywordBlur = this.handleKeywordBlur.bind(this);
     this.handleKeywordRemove = this.handleKeywordRemove.bind(this);
+    this.handleKeywordAdd = this.handleKeywordAdd.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    this.handleStateChange(nextState.keywords,
-        nextProps.version !== this.version ? nextProps.data : undefined);
+    if (nextState.newKeyword === this.state.newKeyword) {
+      // Only update when the user is not typing a new keyword
+      this.handleStateChange(nextState.keywords,
+          nextProps.version !== this.version ? nextProps.data : undefined);
+    }
+
     this.version = nextProps.version;
   }
 
@@ -91,10 +133,22 @@ export default class Chart extends Component {
   }
 
   handleKeywordRemove(index) {
-    let keywords = [...this.state.keywords];
+    let keyword = this.state.keywords[index],
+        hiddenKeywordIndex = this.state.hiddenKeywords.indexOf(keyword),
+        keywords = [...this.state.keywords];
     keywords.splice(index, 1);
 
-    this.setState({keywords: keywords});
+    if (hiddenKeywordIndex === -1) {
+      this.setState({keywords: keywords});
+    } else {
+      let {hiddenKeywords}  = this.state;
+      hiddenKeywords.splice(hiddenKeywordIndex, 1);
+
+      this.setState({
+        keywords      : keywords,
+        hiddenKeywords: hiddenKeywords
+      });
+    }
   }
 
   handleKeywordToggleVisibility(index) {
@@ -107,6 +161,14 @@ export default class Chart extends Component {
     } else {
       hiddenKeywords.splice(hiddenKeywordIndex, 1);
       this.setState({hiddenKeywords: hiddenKeywords});
+    }
+  }
+
+  handleKeywordAdd(value) {
+    if (value.length && this.state.keywords.indexOf(value) === -1) {
+      this.setState({
+        keywords: [...this.state.keywords, value],
+      });
     }
   }
 
@@ -186,7 +248,7 @@ export default class Chart extends Component {
               </ResponsiveContainer>
             </div>
             <div className="table-wrapper">
-              <div className="table-header-out">
+              <div className={`table-header-out ${this.state.keywords.length ? "" : "hidden"}`}>
                 <table className="table-header">
                   <thead>
                   <tr className="row-header">
@@ -232,6 +294,7 @@ export default class Chart extends Component {
                         );
                       })
                     }
+                    <NewKeyword onClick={this.handleKeywordAdd}/>
                     </tbody>
                   </table>
                 </div>
