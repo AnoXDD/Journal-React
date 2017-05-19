@@ -26,7 +26,8 @@ export default class Chart extends Component {
   processedKeyWords = [];
 
   data = [];
-  dataMonth = {};
+  dataMonthChart = [];
+  dataMonthTable = {};
   dataReverse = [];
 
   /**
@@ -38,8 +39,13 @@ export default class Chart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      keywords      : ["的", "在", "s", "a", "2", "32", "321", "33333", "dfsa"],
-      hiddenKeywords: [],
+      keywords        : ["的", "在", "s", "a", "2", "32", "321", "33333", "dfsa"],
+      hiddenKeywords  : [],
+      isGroupedByMonth: false,
+    };
+
+    for (let month of R.MONTH) {
+      this.dataMonthChart.push({time: month});
     }
 
     this.version = props.version;
@@ -130,13 +136,15 @@ export default class Chart extends Component {
       for (let keyword of keywords) {
         // Initialize the key in the data if necessary
         this.data[index][keyword] = this.data[index][keyword] || 0;
-        this.dataMonth[keyword] = this.dataMonth[keyword] || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        this.dataMonthChart[month][keyword] = this.dataMonthChart[month][keyword] || 0;
+        this.dataMonthTable[keyword] = this.dataMonthTable[keyword] || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         // Test if this key needs to be re-calculated
         if (this.processedKeyWords.indexOf(keyword) === -1 || hasNewData) {
           if ((data.title && data.title.indexOf(keyword) !== -1) ||
               data.body.indexOf(keyword) !== -1) {
             // This keyword is found
-            ++this.dataMonth[keyword][month];
+            ++this.dataMonthTable[keyword][month];
+            ++this.dataMonthChart[month][keyword];
             ++this.data[index][keyword];
           }
         }
@@ -150,13 +158,16 @@ export default class Chart extends Component {
     return (
         <div className="Chart">
           <header className="main-header flex-center">
-            <Button className="dark align-right wider" text="Group by day">event</Button>
+            <Button className="dark align-right wider"
+                    onClick={() => this.setState({isGroupedByMonth: !this.state.isGroupedByMonth})}
+                    text={this.state.isGroupedByMonth ? "Group by day" : "Group by month"}>event</Button>
           </header>
           <div className="content">
             <div className="chart-wrapper">
               <ResponsiveContainer width='100%'
                                    height={window.innerHeight * .6 - 80}>
-                <LineChart data={[...this.data].reverse()}>
+                <LineChart
+                    data={this.state.isGroupedByMonth ? [...this.dataMonthChart] : [...this.data].reverse()}>
                   <XAxis dataKey="time"/>
                   <YAxis/>
                   <Tooltip/>
@@ -213,7 +224,7 @@ export default class Chart extends Component {
                                   />
                                 </div>
                               </td>
-                              {this.dataMonth[keyword].map((data, index) =>
+                              {this.dataMonthTable[keyword].map((data, index) =>
                                   <td key={`${keyword}-${index}`}
                                       className="cell-data">{data || 0}</td>
                               )}
