@@ -233,6 +233,10 @@ img.center {
     color: white;
   }
 
+  &.narrow {
+    width: $button-width/1.6666667;
+  }
+
   &.accent {
     flex: 0 0 auto;
     color: white;

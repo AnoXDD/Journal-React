@@ -190,12 +190,12 @@ export default class Chart extends Component {
                           <tr className="row-data" key={keyword}>
                             <td className="cell-keyword">
                               <div className="cell-keyword-wrapper flex-center">
-                                <Toggle className="dark"
+                                <Toggle className="dark narrow"
                                         onClick={() => this.handleKeywordToggleVisibility(index)}
                                         isChanging={this.state.hiddenKeywords.indexOf(keyword) !== -1}
                                         firstIcon="check_box"
                                         secondIcon="check_box_outline_blank"/>
-                                <Button className="dark"
+                                <Button className="dark narrow"
                                         onClick={() => this.handleKeywordRemove(index)}
                                 >clear</Button>
                                 <input className="dark normal underlined"

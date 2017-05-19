@@ -122,6 +122,8 @@ img.center {
   .btn.dark, .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option, .Options .dark.option, .toggle.dark {
     background: #212121;
     color: white; }
+  .btn.narrow, .Options .narrow.option, .toggle.narrow {
+    width: 36px; }
   .btn.accent, .Options .accent.option, .toggle.accent {
     flex: 0 0 auto;
     color: white;
