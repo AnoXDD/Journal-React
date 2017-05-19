@@ -103,7 +103,7 @@ export default class MainContent extends Component {
     year   : 2016,
     version: 0,
 
-    isDisplaying        : this.TAB.LIST,
+    isDisplaying        : this.TAB.STATS, // todo to be changed
     isDisplayingCalendar: false,
     isDisplayingMapView : true,
 

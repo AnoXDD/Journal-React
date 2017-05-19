@@ -149,74 +149,83 @@ export default class Chart extends Component {
   render() {
     return (
         <div className="Chart">
-          <ResponsiveContainer width='100%' height={window.innerHeight * .6}>
-            <LineChart data={[...this.data].reverse()}>
-              <XAxis dataKey="time"/>
-              <YAxis/>
-              <Tooltip/>
-              <Legend />
-              {this.state.keywords.map(keyword => {
-                if (this.state.hiddenKeywords.indexOf(keyword) === -1) {
-                  return (
-                      <Line key={keyword}
-                            stroke={this.getHashedColor(keyword)}
-                            dataKey={keyword} dot={false}/>
-                  );
-                }
-                return null;
-              })}
-            </LineChart>
-          </ResponsiveContainer>
-          <div className="table-wrapper">
-            <div className="table-header-out">
-              <table className="table-header">
-                <thead>
-                <tr className="row-header">
-                  <td className="cell-blank"></td>
-                  {R.month.map(month =>
-                      <td key={month} className="cell-data">{month}</td>
-                  )}
-                </tr>
-                </thead>
-              </table>
-            </div>
-            <NoScrollArea padding="10px">
-              <div className="table-data-out">
-                <table className="table-data">
-                  <tbody>
-                  {
-                    this.state.keywords.map((keyword, index) => {
+          <header className="main-header flex-center">
+            <Button className="dark align-right wider" text="Group by day">event</Button>
+          </header>
+          <div className="content">
+            <div className="chart-wrapper">
+              <ResponsiveContainer width='100%'
+                                   height={window.innerHeight * .6 - 80}>
+                <LineChart data={[...this.data].reverse()}>
+                  <XAxis dataKey="time"/>
+                  <YAxis/>
+                  <Tooltip/>
+                  <Legend />
+                  {this.state.keywords.map(keyword => {
+                    if (this.state.hiddenKeywords.indexOf(keyword) === -1) {
                       return (
-                          <tr className="row-data" key={keyword}>
-                            <td className="cell-keyword">
-                              <div className="cell-keyword-wrapper flex-center">
-                                <Toggle className="dark narrow"
-                                        onClick={() => this.handleKeywordToggleVisibility(index)}
-                                        isChanging={this.state.hiddenKeywords.indexOf(keyword) !== -1}
-                                        firstIcon="check_box"
-                                        secondIcon="check_box_outline_blank"/>
-                                <Button className="dark narrow"
-                                        onClick={() => this.handleKeywordRemove(index)}
-                                >clear</Button>
-                                <input className="dark normal underlined"
-                                       defaultValue={keyword}
-                                       onFocus={e => this.lastKeywordInput = e.target.value}
-                                       onBlur={e => this.handleKeywordBlur(e, index)}
-                                />
-                              </div>
-                            </td>
-                            {this.dataMonth[keyword].map((data, index) =>
-                                <td key={`${keyword}-${index}`}
-                                    className="cell-data">{data || 0}</td>
-                            )}
-                          </tr>
+                          <Line key={keyword}
+                                stroke={this.getHashedColor(keyword)}
+                                dataKey={keyword} dot={false}/>
                       );
-                    })
-                  }
-                  </tbody>
+                    }
+                    return null;
+                  })}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="table-wrapper">
+              <div className="table-header-out">
+                <table className="table-header">
+                  <thead>
+                  <tr className="row-header">
+                    <td className="cell-blank"></td>
+                    {R.month.map(month =>
+                        <td key={month} className="cell-data">{month}</td>
+                    )}
+                  </tr>
+                  </thead>
                 </table>
               </div>
-            </NoScrollArea>
+              <NoScrollArea padding="10px">
+                <div className="table-data-out">
+                  <table className="table-data">
+                    <tbody>
+                    {
+                      this.state.keywords.map((keyword, index) => {
+                        return (
+                            <tr className="row-data" key={keyword}>
+                              <td className="cell-keyword">
+                                <div
+                                    className="cell-keyword-wrapper flex-center">
+                                  <Toggle className="dark narrow"
+                                          onClick={() => this.handleKeywordToggleVisibility(index)}
+                                          isChanging={this.state.hiddenKeywords.indexOf(keyword) !== -1}
+                                          firstIcon="check_box"
+                                          secondIcon="check_box_outline_blank"/>
+                                  <Button className="dark narrow"
+                                          onClick={() => this.handleKeywordRemove(index)}
+                                  >clear</Button>
+                                  <input className="dark normal underlined"
+                                         defaultValue={keyword}
+                                         onFocus={e => this.lastKeywordInput = e.target.value}
+                                         onBlur={e => this.handleKeywordBlur(e, index)}
+                                  />
+                                </div>
+                              </td>
+                              {this.dataMonth[keyword].map((data, index) =>
+                                  <td key={`${keyword}-${index}`}
+                                      className="cell-data">{data || 0}</td>
+                              )}
+                            </tr>
+                        );
+                      })
+                    }
+                    </tbody>
+                  </table>
+                </div>
+              </NoScrollArea>
+            </div>
           </div>
         </div>
     );

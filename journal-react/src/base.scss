@@ -233,10 +233,6 @@ img.center {
     color: white;
   }
 
-  &.narrow {
-    width: $button-width/1.6666667;
-  }
-
   &.accent {
     flex: 0 0 auto;
     color: white;
@@ -266,6 +262,22 @@ img.center {
       text-align: left;
       pointer-events: none;
     }
+  }
+
+  &.narrow {
+    width: $button-width/1.6666667;
+  }
+
+  &.wide {
+    width: $button-width * 3;
+  }
+
+  &.wider {
+    width: $button-width * 4;
+  }
+
+  &.align-right {
+
   }
 
   &:after {
