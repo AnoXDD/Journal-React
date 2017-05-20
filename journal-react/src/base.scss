@@ -231,6 +231,7 @@ img.center {
 
   &[disabled] {
     pointer-events: none;
+    opacity: .5;
   }
 
   &.dark {

@@ -96,7 +96,16 @@ const BulbGoogleMap = withGoogleMap(props => (
 
 export default class BulbMap extends Component {
 
+  map = null;
+
+  constructor(props) {
+    super(props);
+
+    this.handleMapLoad = this.handleMapLoad.bind(this);
+  }
+
   handleMapLoad(map) {
+    this.map = map;
     if (map) {
       console.log(map.getZoom());
     }

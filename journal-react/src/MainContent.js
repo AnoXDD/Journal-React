@@ -379,10 +379,19 @@ export default class MainContent extends Component {
           <main>
             <div
                 className={`flex-extend-inner-wrapper inner-main ${this.state.isDisplaying === this.TAB.LIST ? "" : "hidden"}`}>
-              <header className="main-header">
+              <header className="main-header flex-center">
                 <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}
                            onChange={this.handleChangeCriteria}
                 />
+                <Button
+                    className="dark"
+                >navigate_before</Button>
+                <span className="year">Year: {this.year}</span>
+                <Button
+                    className="dark"
+                    disabled={this.year === new Date().getFullYear()}>
+                  navigate_next
+                </Button>
               </header>
               <div className="content">
                 <div

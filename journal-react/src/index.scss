@@ -1423,7 +1423,17 @@ nav.nav {
       flex: 0 0 $main-header-height;
       position: relative;
       background: $darkgrey;
+      display: flex;
       justify-content: flex-end;
+
+      .year {
+        color: white;
+      }
+
+      .SearchBar {
+        position: absolute;
+        left: 0;
+      }
     }
 
     .content {
@@ -1445,7 +1455,7 @@ nav.nav {
           height: $calendar-padding-height;
           flex: 0 0 $calendar-padding-height;
           width: 100%;
-          background: white;
+          background: $bg-grey;
         }
 
         .calendar-parent {

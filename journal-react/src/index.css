@@ -121,7 +121,8 @@ img.center {
   user-select: none;
   cursor: pointer; }
   .btn[disabled], .Options [disabled].option, .toggle[disabled] {
-    pointer-events: none; }
+    pointer-events: none;
+    opacity: .5; }
   .btn.dark, .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option, .Options .dark.option, .toggle.dark {
     background: #212121;
     color: white; }
@@ -1198,7 +1199,13 @@ nav.nav {
       flex: 0 0 80px;
       position: relative;
       background: #212121;
+      display: flex;
       justify-content: flex-end; }
+      .MainContent > main .main-header .year {
+        color: white; }
+      .MainContent > main .main-header .SearchBar {
+        position: absolute;
+        left: 0; }
     .MainContent > main .content {
       width: 100%;
       flex: 1 1 auto;
@@ -1212,7 +1219,7 @@ nav.nav {
         height: 120px;
         flex: 0 0 120px;
         width: 100%;
-        background: white; }
+        background: #eeeced; }
       .MainContent > main .list-view .calendar-view .calendar-parent {
         background: #424242;
         position: relative;
