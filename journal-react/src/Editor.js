@@ -245,8 +245,10 @@ class Editor extends Component {
     SELECTED    : 0b11,
   };
 
+  DEFAULT_TITLE = this.convertToDateTime(new Date()).substr(0, 7);
+
   DEFAULT_STATE = {
-    title           : this.convertToDateTime(new Date()).substr(0, 7),
+    title           : this.DEFAULT_TITLE,
     body            : "",
     stats           : {
       timeCreated: 0,
@@ -268,6 +270,7 @@ class Editor extends Component {
 
   version = 0;
   hasUnsavedChanges = false;
+  previousBody = "";
 
   constructor(props) {
     super(props);
@@ -454,6 +457,7 @@ class Editor extends Component {
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
+    this.restorePreviousBody = this.restorePreviousBody.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -463,10 +467,12 @@ class Editor extends Component {
       } else {
         // Override current data with new data
         if (!nextProps.title && !nextProps.body) {
-          // This is to create a new entry
-          nextState = Object.assign(nextState,
-              this.DEFAULT_STATE,
-              {isEditing: true});
+          if (nextState.title === this.DEFAULT_TITLE && !nextState.body) {
+            // This is to create a new entry
+            nextState = Object.assign(nextState,
+                this.DEFAULT_STATE,
+                {isEditing: true});
+          }
         } else {
           nextState.title = nextProps.title;
           nextState.body = nextProps.body;
@@ -680,8 +686,6 @@ class Editor extends Component {
           />
       );
     }
-
-
   }
 
   generateMoreInfo() {
@@ -808,6 +812,14 @@ class Editor extends Component {
     });
   }
 
+  restorePreviousBody() {
+    let currentBody = this.state.body;
+    this.setState({
+      body: localStorage.previousBody
+    });
+    localStorage.previousBody = currentBody;
+  }
+
   // region Listeners (on...Change)
 
   onDecreasingTextBodyWidth() {
@@ -854,6 +866,9 @@ class Editor extends Component {
           lines = t.value.split(/\r*\n/),
           isChanged = false,
           {stats} = this.state;
+
+      // Store this body
+      localStorage.previousBody = t.value;
 
       const tags = [["Begin @ ", "timeBegin"],
         ["End @ ", "timeEnd"],
@@ -959,6 +974,8 @@ class Editor extends Component {
 
   // endregion listeners
 
+  // region Utility functions
+
   countChars(str) {
     return (str.match(/[\u00ff-\uffff]|\S+/g) || []).length;
   }
@@ -993,6 +1010,8 @@ class Editor extends Component {
     return `${parseInt(seconds / 60, 10)}:${("0" + seconds % 60).slice(-2)}`;
   }
 
+  // endregion
+
   render() {
     return (
         <div
@@ -1008,6 +1027,9 @@ class Editor extends Component {
                   onCancel={this.onPromptCancel}
           />
           <nav className="nav has-hint">
+            <Button
+                className={(this.state.isEditing && localStorage.previousBody) ? "" : "hidden"}
+                onClick={this.restorePreviousBody}>restore</Button>
             <Button className={`${this.state.isFullscreen ? "" : "hidden"}`}
                     onClick={this.toggleDarkMode}>highlight</Button>
             <Button onClick={this.onDecreasingTextBodyWidth}>format_indent_decrease</Button>

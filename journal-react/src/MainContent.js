@@ -105,7 +105,6 @@ const defaultColors = {
         hex: '#369cc7'
       }
     },
-    defaultShadowOpacity = '0.9',
     notificationBoxShadow = "1px 2px 6px grey",
     notificationStyle = {
       Title: {
