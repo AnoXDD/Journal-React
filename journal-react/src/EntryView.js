@@ -72,7 +72,8 @@ class ContentArticle extends Component {
             <div className="time">{time}</div>
             <div className="details">{article.body}</div>
           </div>
-          <Button className="dark">delete</Button>
+          <Button
+              className={this.props.className === " no-image" ? "" : "dark"}>delete</Button>
         </article>
     );
   }
@@ -389,7 +390,7 @@ export default class EntryView extends Component {
               src={this.state.bulbImage}
               onClickHide={this.hideBulbViewer}
           />
-          <NoScrollArea padding="20px" backgroundColor="#f3f3f3">
+          <NoScrollArea padding="20px" backgroundColor="#eeeced">
             <div className="entry-list" ref="scrollArea">
               <EntryList
                   {...this.props}

@@ -963,7 +963,8 @@ nav.nav {
 }
 
 .EntryView {
-  $timeline-width: 70px;
+  $timeline-width: 50px;
+  $timeline-width-left: 35px;
   $timeline-dot-radius: 5px;
   $timeline-dot-radius-small: 3px;
   $article-margin: 30px;
@@ -1049,7 +1050,7 @@ nav.nav {
       background: #e3e3e3;
       width: $timeline-width-actual;
       position: absolute;
-      left: calc(50% - #{$timeline-width-actual/2});
+      left: $timeline-width-left - $timeline-width-actual/2;
     }
   }
 
@@ -1095,7 +1096,7 @@ nav.nav {
     }
 
     .bulb-image-viewer-wrapper {
-      background: white;
+      background: $bg-grey;
       height: 100%;
       width: calc(100% - 30px);
       margin: auto;
@@ -1105,6 +1106,8 @@ nav.nav {
   }
 
   .article-list {
+    $timeline-line-width: -$timeline-width-left - $timeline-dot-radius;
+
     flex: 0 0 30%;
     max-width: 500px;
     position: relative;
@@ -1124,9 +1127,10 @@ nav.nav {
       position: absolute;
       transition: box-shadow .4s ease;
       cursor: pointer;
+      box-shadow: 0 1px 3px lightgrey;
 
       &:before {
-        right: -$timeline-width / 2;
+        right: -$timeline-width-left;
         bottom: $timeline-dot-radius;
         background: $css;
       }
@@ -1134,7 +1138,7 @@ nav.nav {
       &:after {
         @include article-after($timeline-dot-radius);
 
-        right: -$timeline-width / 2 - $timeline-dot-radius;
+        right: $timeline-line-width;
       }
 
       &:hover {
@@ -1145,13 +1149,13 @@ nav.nav {
         }
 
         &:before {
-          width: $timeline-width / 2;
+          width: $timeline-width-left;
         }
 
         &:after {
           @include article-hover-after($timeline-dot-radius);
 
-          right: -$timeline-width / 2 - $timeline-dot-radius;
+          right: $timeline-line-width;
         }
       }
 
@@ -1162,10 +1166,32 @@ nav.nav {
         .title {
           transition: width .4s ease;
           padding-bottom: 5px;
+          padding-top: 20px;
+          color: black;
         }
 
         .Image {
           display: none;
+        }
+
+        .text {
+          background: white;
+          padding: 30px 40px;
+          justify-content: flex-end;
+
+          .flex-filler {
+            display: none;
+          }
+        }
+
+        .time {
+          color: $darkgrey-l;
+        }
+
+        .details {
+          color: $darkgrey-l;
+          -webkit-line-clamp: 5;
+          margin-bottom: 20px;
         }
 
         &:hover {
@@ -1210,12 +1236,11 @@ nav.nav {
         font-weight: bold;
         color: white;
         box-sizing: border-box;
-        margin-bottom: 10px;
       }
 
       .time {
         text-align: left;
-        color: $css;
+        color: $lightgrey;
         padding: 10px 0;
       }
 
@@ -1250,16 +1275,18 @@ nav.nav {
 
     article {
       $article-height: 27px;
+      $timeline-line-width: $timeline-width - $timeline-width-left;
+      $timeline-dot-left: -$timeline-line-width - $timeline-dot-radius-small;
 
       font-size: 16px;
       font-weight: normal;
       display: flex;
-      margin-bottom: 5px;
       width: 100%;
       position: absolute;
+      transition: background .2s ease;
 
       &:before {
-        left: -$timeline-width / 2;
+        left: - $timeline-line-width;
         background: $css;
         top: $article-height / 2 + $timeline-dot-radius-small;
       }
@@ -1268,18 +1295,19 @@ nav.nav {
         @include article-after($timeline-dot-radius-small);
 
         background: $csl;
-        left: -$timeline-width / 2 - $timeline-dot-radius-small;
+        left: $timeline-dot-left;
         top: $article-height / 2; //- $timeline-dot-radius-small;
       }
 
       &:hover, &.active {
         height: auto;
         z-index: 5;
-        background-color: white;
-        box-shadow: 0 0 3px 3px white;
+        background: white;
+        box-shadow: 0 1px 4px grey;
 
         header {
-          background: $css;
+          background: $darkgrey;
+          color: white;
         }
 
         .details {
@@ -1288,13 +1316,13 @@ nav.nav {
         }
 
         &:before {
-          width: $timeline-width / 2;
+          width: $timeline-line-width;
         }
 
         &:after {
           @include article-hover-after($timeline-dot-radius-small);
 
-          left: -$timeline-width / 2 - $timeline-dot-radius-small;
+          left: $timeline-dot-left;
           top: $article-height / 2; //- $timeline-dot-radius-small;
         }
       }
@@ -1303,15 +1331,14 @@ nav.nav {
     header {
       flex: 0 0 80px;
       text-align: center;
-      padding: 6px 10px;
-      background: $darkgrey;
-      color: white;
-      transition: background .4s ease, color .4s ease;
+      padding: 6px 8px;
+      background: transparent;
+      color: $darkgrey-l;
+      transition: background .2s ease, color .2s ease;
     }
 
     .details {
-      margin: $padding 2*$padding;
-      background: white;
+      padding: $padding 2*$padding;
     }
 
     .image {

@@ -25,12 +25,12 @@ module.exports = {
   ARTICLE_MARGIN         : 30,
   //300 + this.ARTICLE_MARGIN;
   ARTICLE_IMAGE_HEIGHT   : 330,
-  //105 + this.ARTICLE_MARGIN;
-  ARTICLE_NO_IMAGE_HEIGHT: 135,
+  //300 + this.ARTICLE_MARGIN;
+  ARTICLE_NO_IMAGE_HEIGHT: 330,
   BULB_HEIGHT_ORIGINAL   : 33,
-  BULB_MARGIN_TOP        : 5,
+  BULB_MARGIN_TOP        : 1,
   //this.BULB_HEIGHT_ORIGINAL + this.BULB_MARGIN_TOP;
-  BULB_HEIGHT            : 38,
+  BULB_HEIGHT            : 34,
 
   TAG_PREDICTION_DICTIONARY: "journal friendship thoughts code 和和和",
 };

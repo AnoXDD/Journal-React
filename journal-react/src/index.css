@@ -931,17 +931,17 @@ nav.nav {
     -ms-text-overflow: ellipsis;
     text-overflow: ellipsis; }
   .EntryView .timeline-wrapper {
-    flex: 0 0 70px;
+    flex: 0 0 50px;
     position: relative;
     height: 100%; }
     .EntryView .timeline-wrapper .timeline {
       background: #e3e3e3;
       width: 2px;
       position: absolute;
-      left: calc(50% - 1px); }
+      left: 34px; }
   .EntryView .bulb-image-viewer {
     position: absolute;
-    width: calc(30% + 35px - 5px);
+    width: calc(30% + 25px - 5px);
     max-width: 530px;
     top: 0;
     height: 100%;
@@ -956,7 +956,7 @@ nav.nav {
     .EntryView .bulb-image-viewer .nav {
       z-index: inherit; }
     .EntryView .bulb-image-viewer .bulb-image-viewer-wrapper {
-      background: white;
+      background: #eeeced;
       height: 100%;
       width: calc(100% - 30px);
       margin: auto;
@@ -978,7 +978,8 @@ nav.nav {
       background-repeat: no-repeat;
       position: absolute;
       transition: box-shadow .4s ease;
-      cursor: pointer; }
+      cursor: pointer;
+      box-shadow: 0 1px 3px lightgrey; }
       .EntryView .article-list article:before {
         right: -35px;
         bottom: 5px;
@@ -991,7 +992,7 @@ nav.nav {
         width: 10px;
         bottom: 0;
         background: #00BCD4;
-        box-shadow: 0 0 2px 3px #f3f3f3;
+        box-shadow: 0 0 2px 3px #eeeced;
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
         right: -40px; }
@@ -1009,7 +1010,7 @@ nav.nav {
           width: 10px;
           bottom: 0;
           background: #00BCD4;
-          box-shadow: 0 0 2px 3px #f3f3f3;
+          box-shadow: 0 0 2px 3px #eeeced;
           z-index: 1;
           transition: background .2s ease, box-shadow .2s ease;
           background: white;
@@ -1019,9 +1020,23 @@ nav.nav {
         background: white; }
         .EntryView .article-list article.no-image .title {
           transition: width .4s ease;
-          padding-bottom: 5px; }
+          padding-bottom: 5px;
+          padding-top: 20px;
+          color: black; }
         .EntryView .article-list article.no-image .Image {
           display: none; }
+        .EntryView .article-list article.no-image .text {
+          background: white;
+          padding: 30px 40px;
+          justify-content: flex-end; }
+          .EntryView .article-list article.no-image .text .flex-filler {
+            display: none; }
+        .EntryView .article-list article.no-image .time {
+          color: #424242; }
+        .EntryView .article-list article.no-image .details {
+          color: #424242;
+          -webkit-line-clamp: 5;
+          margin-bottom: 20px; }
         .EntryView .article-list article.no-image:hover .title {
           width: calc(100% - 60px); }
         .EntryView .article-list article.no-image:hover .btn, .EntryView .article-list article.no-image:hover .Options .option, .Options .EntryView .article-list article.no-image:hover .option {
@@ -1050,11 +1065,10 @@ nav.nav {
         font-size: 25px;
         font-weight: bold;
         color: white;
-        box-sizing: border-box;
-        margin-bottom: 10px; }
+        box-sizing: border-box; }
       .EntryView .article-list article .time {
         text-align: left;
-        color: #00BCD4;
+        color: #e8e8e8;
         padding: 10px 0; }
       .EntryView .article-list article .details {
         font-size: 14px;
@@ -1076,11 +1090,11 @@ nav.nav {
       font-size: 16px;
       font-weight: normal;
       display: flex;
-      margin-bottom: 5px;
       width: 100%;
-      position: absolute; }
+      position: absolute;
+      transition: background .2s ease; }
       .EntryView .bulb-list article:before {
-        left: -35px;
+        left: -15px;
         background: #00BCD4;
         top: 16.5px; }
       .EntryView .bulb-list article:after {
@@ -1091,24 +1105,25 @@ nav.nav {
         width: 6px;
         bottom: 0;
         background: #00BCD4;
-        box-shadow: 0 0 2px 3px #f3f3f3;
+        box-shadow: 0 0 2px 3px #eeeced;
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
         background: #80DEEA;
-        left: -38px;
+        left: -18px;
         top: 13.5px; }
       .EntryView .bulb-list article:hover, .EntryView .bulb-list article.active {
         height: auto;
         z-index: 5;
-        background-color: white;
-        box-shadow: 0 0 3px 3px white; }
+        background: white;
+        box-shadow: 0 1px 4px grey; }
         .EntryView .bulb-list article:hover header, .EntryView .bulb-list article.active header {
-          background: #00BCD4; }
+          background: #212121;
+          color: white; }
         .EntryView .bulb-list article:hover .details, .EntryView .bulb-list article.active .details {
           overflow: visible;
           white-space: normal; }
         .EntryView .bulb-list article:hover:before, .EntryView .bulb-list article.active:before {
-          width: 35px; }
+          width: 15px; }
         .EntryView .bulb-list article:hover:after, .EntryView .bulb-list article.active:after {
           content: "";
           position: absolute;
@@ -1117,26 +1132,25 @@ nav.nav {
           width: 6px;
           bottom: 0;
           background: #00BCD4;
-          box-shadow: 0 0 2px 3px #f3f3f3;
+          box-shadow: 0 0 2px 3px #eeeced;
           z-index: 1;
           transition: background .2s ease, box-shadow .2s ease;
           background: white;
           box-shadow: 0 0 2px 2px #00BCD4;
-          left: -38px;
+          left: -18px;
           top: 13.5px; }
     .EntryView .bulb-list header {
       flex: 0 0 80px;
       text-align: center;
-      padding: 6px 10px;
-      background: #212121;
-      color: white;
-      transition: background .4s ease, color .4s ease; }
+      padding: 6px 8px;
+      background: transparent;
+      color: #424242;
+      transition: background .2s ease, color .2s ease; }
     .EntryView .bulb-list .details {
-      margin: 4px 8px;
-      background: white; }
+      padding: 4px 8px; }
     .EntryView .bulb-list .image {
       position: absolute;
-      right: calc(100% + 70px); }
+      right: calc(100% + 50px); }
 
 .MainContent {
   height: 100%;
@@ -1158,7 +1172,7 @@ nav.nav {
       height: 60px;
       width: 250px; }
       .MainContent .sidebar .btn.active, .MainContent .sidebar .Options .active.option, .Options .MainContent .sidebar .active.option {
-        background: #f3f3f3;
+        background: #eeeced;
         color: #212121; }
       .MainContent .sidebar .btn.indent, .MainContent .sidebar .Options .indent.option, .Options .MainContent .sidebar .indent.option {
         padding-left: 30px; }
