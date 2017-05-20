@@ -4,6 +4,7 @@
  */
 
 import React, {Component} from "react";
+import NotificationSystem from "react-notification-system";
 
 import Button from "./Button";
 import Editor from './Editor';
@@ -86,6 +87,108 @@ function upgradeDataFromVersion2To3(oldData) {
   return data;
 }
 
+const defaultColors = {
+      success: {
+        rgb: '94, 164, 0',
+        hex: '#5ea400'
+      },
+      error  : {
+        rgb: '236, 61, 61',
+        hex: '#ec3d3d'
+      },
+      warning: {
+        rgb: '235, 173, 23',
+        hex: '#ebad1a'
+      },
+      info   : {
+        rgb: '54, 156, 199',
+        hex: '#369cc7'
+      }
+    },
+    defaultShadowOpacity = '0.9',
+    notificationBoxShadow = "1px 2px 6px grey",
+    notificationStyle = {
+      Title: {
+        DefaultStyle: {
+          fontSize  : '15px',
+          margin    : '0 0 5px 0',
+          padding   : 0,
+          fontWeight: 'bold'
+        },
+
+        success: {
+          color: defaultColors.success.hex
+        },
+
+        error: {
+          color: defaultColors.error.hex
+        },
+
+        warning: {
+          color: defaultColors.warning.hex
+        },
+
+        info: {
+          color: "#448AFF",
+        }
+
+      },
+
+      NotificationItem: {
+        DefaultStyle: {
+          position       : 'relative',
+          width          : '100%',
+          cursor         : 'pointer',
+          fontSize       : 'inherit',
+          margin         : '10px 0 0',
+          padding        : '35px 30px',
+          display        : 'block',
+          WebkitBoxSizing: 'border-box',
+          MozBoxSizing   : 'border-box',
+          boxSizing      : 'border-box',
+          opacity        : 0,
+          transition     : '.4s ease',
+          willChange     : 'transform, opacity',
+
+          isHidden: {
+            opacity: 0
+          },
+
+          isVisible: {
+            opacity: 1
+          }
+        },
+
+        success: {
+          borderTop      : "none",
+          backgroundColor: '#CCFF90',
+          color          : 'black',
+          boxShadow      : notificationBoxShadow,
+        },
+
+        error: {
+          borderTop      : "none",
+          backgroundColor: '#FF8A80',
+          color          : 'black',
+          boxShadow      : notificationBoxShadow,
+        },
+
+        warning: {
+          borderTop      : "none",
+          backgroundColor: '#FFFF8D',
+          color          : "black",
+          boxShadow      : notificationBoxShadow,
+        },
+
+        info: {
+          borderTop      : "none",
+          backgroundColor: 'white',
+          color          : 'black',
+          boxShadow      : notificationBoxShadow,
+        }
+      },
+    }
+
 export default class MainContent extends Component {
 
   SEARCH_BAR_TAGS = ["tags", "months", "attachments"];
@@ -118,12 +221,13 @@ export default class MainContent extends Component {
 
   year = new Date().getFullYear();
 
+  notificationSystem = null;
+
   /**
    * Stores the original positions and times of articles and bulbs
    * @type {{}}
    */
   contentStyle = {};
-
   articleList = [];
   bulbList = [];
   highlightBulbIndex = -1;
@@ -164,6 +268,10 @@ export default class MainContent extends Component {
 
   componentWillMount() {
     document.addEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  componentDidMount() {
+    this.notificationSystem = this.refs.notificationSystem;
   }
 
   componentWillUnmount() {
@@ -361,6 +469,8 @@ export default class MainContent extends Component {
 
     return (
         <div className="MainContent">
+          <NotificationSystem ref="notificationSystem"
+                              style={notificationStyle}/>
           <aside className="sidebar">
             <div className="create-btn">
               <Button className="accent" text="create"

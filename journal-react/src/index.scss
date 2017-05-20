@@ -981,6 +981,7 @@ nav.nav {
   article {
     transition: top .4s ease;
     animation: fade-in .4s ease;
+    will-change: top;
 
     //color: transparent !important;
 
@@ -1689,4 +1690,10 @@ nav.nav {
     text-align: center;
     border: none;
   }
+}
+
+
+
+.notification-dismiss {
+  display: none;
 }

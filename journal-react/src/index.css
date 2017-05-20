@@ -902,7 +902,8 @@ nav.nav {
   background: white; }
   .EntryView article {
     transition: top .4s ease;
-    animation: fade-in .4s ease; }
+    animation: fade-in .4s ease;
+    will-change: top; }
     .EntryView article:before {
       content: "";
       position: absolute;
@@ -1362,5 +1363,8 @@ nav.nav {
     width: 5em;
     text-align: center;
     border: none; }
+
+.notification-dismiss {
+  display: none; }
 
 /*# sourceMappingURL=index.css.map */

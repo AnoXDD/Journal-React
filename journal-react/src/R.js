@@ -33,4 +33,38 @@ module.exports = {
   BULB_HEIGHT            : 34,
 
   TAG_PREDICTION_DICTIONARY: "journal friendship thoughts code 和和和",
+
+  // Utility functions to add notifications
+  NOTIFY           : (notificationSystem, message, title, autoDismiss) => {
+    return notificationSystem.addNotification({
+      title      : title,
+      level      : "info",
+      message    : message,
+      autoDismiss: autoDismiss,
+    });
+  },
+  NOTIFY_ERROR  : (notificationSystem, message, title, autoDismiss) => {
+    return notificationSystem.addNotification({
+      title      : title,
+      level      : "error",
+      message    : message,
+      autoDismiss: autoDismiss,
+    });
+  },
+  NOTIFY_WARNING: (notificationSystem, message, title, autoDismiss) => {
+    return notificationSystem.addNotification({
+      title      : title,
+      level      : "warning",
+      message    : message,
+      autoDismiss: autoDismiss,
+    });
+  },
+  NOTIFY_SUCCESS: (notificationSystem, message, title, autoDismiss) => {
+    return notificationSystem.addNotification({
+      title      : title,
+      level      : "success",
+      message    : message,
+      autoDismiss: autoDismiss,
+    });
+  },
 };
