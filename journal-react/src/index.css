@@ -86,6 +86,9 @@ input, textarea {
   .flex.column {
     flex-direction: column; }
 
+.flex-filler {
+  flex: 1 1 auto; }
+
 .flex-last-item {
   width: 100%; }
 
@@ -988,12 +991,14 @@ nav.nav {
         width: 10px;
         bottom: 0;
         background: #00BCD4;
-        box-shadow: 0 0 2px 3px white;
+        box-shadow: 0 0 2px 3px #f3f3f3;
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
         right: -40px; }
       .EntryView .article-list article:hover {
         box-shadow: 3px 2px 9px grey; }
+        .EntryView .article-list article:hover .Image {
+          filter: blur(0); }
         .EntryView .article-list article:hover:before {
           width: 35px; }
         .EntryView .article-list article:hover:after {
@@ -1004,15 +1009,14 @@ nav.nav {
           width: 10px;
           bottom: 0;
           background: #00BCD4;
-          box-shadow: 0 0 2px 3px white;
+          box-shadow: 0 0 2px 3px #f3f3f3;
           z-index: 1;
           transition: background .2s ease, box-shadow .2s ease;
           background: white;
           box-shadow: 0 0 2px 2px #00BCD4;
           right: -40px; }
       .EntryView .article-list article.no-image {
-        height: 105px;
-        background: #212121; }
+        background: white; }
         .EntryView .article-list article.no-image .title {
           transition: width .4s ease;
           padding-bottom: 5px; }
@@ -1022,36 +1026,45 @@ nav.nav {
           width: calc(100% - 60px); }
         .EntryView .article-list article.no-image:hover .btn, .EntryView .article-list article.no-image:hover .Options .option, .Options .EntryView .article-list article.no-image:hover .option {
           opacity: 1; }
+      .EntryView .article-list article .Image {
+        filter: blur(2px);
+        transition: filter .4s ease; }
       .EntryView .article-list article .text {
         overflow: hidden;
         position: absolute;
-        bottom: 0;
+        top: 0;
+        left: 0;
+        height: 100%;
         width: 100%;
+        box-sizing: border-box;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        background: rgba(0, 0, 0, 0.3);
         transition: opacity .4s ease; }
       .EntryView .article-list article .btn, .EntryView .article-list article .Options .option, .Options .EntryView .article-list article .option {
         float: right;
         opacity: 0; }
-      .EntryView .article-list article header {
-        padding-top: 8px;
-        background: #212121; }
-        .EntryView .article-list article header .title {
-          width: 100%;
-          text-align: center;
-          font-size: 25px;
-          color: white;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden; }
-        .EntryView .article-list article header .time {
-          color: #00BCD4;
-          padding-top: 5px; }
-      .EntryView .article-list article .details {
+      .EntryView .article-list article .title {
+        width: 100%;
+        font-size: 25px;
+        font-weight: bold;
         color: white;
+        box-sizing: border-box;
+        margin-bottom: 10px; }
+      .EntryView .article-list article .time {
+        text-align: left;
+        color: #00BCD4;
+        padding: 10px 0; }
+      .EntryView .article-list article .details {
         font-size: 14px;
-        width: calc(100% - 50px);
-        background: #212121;
-        padding: 10px 25px;
-        height: 20px; }
+        box-sizing: border-box;
+        color: white;
+        width: 100%;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        white-space: normal; }
       .EntryView .article-list article:not(.no-image):hover .text {
         opacity: 0; }
       .EntryView .article-list article:not(.no-image):hover .btn, .EntryView .article-list article:not(.no-image):hover .Options .option, .Options .EntryView .article-list article:not(.no-image):hover .option {
@@ -1078,7 +1091,7 @@ nav.nav {
         width: 6px;
         bottom: 0;
         background: #00BCD4;
-        box-shadow: 0 0 2px 3px white;
+        box-shadow: 0 0 2px 3px #f3f3f3;
         z-index: 1;
         transition: background .2s ease, box-shadow .2s ease;
         background: #80DEEA;
@@ -1104,7 +1117,7 @@ nav.nav {
           width: 6px;
           bottom: 0;
           background: #00BCD4;
-          box-shadow: 0 0 2px 3px white;
+          box-shadow: 0 0 2px 3px #f3f3f3;
           z-index: 1;
           transition: background .2s ease, box-shadow .2s ease;
           background: white;
@@ -1145,7 +1158,7 @@ nav.nav {
       height: 60px;
       width: 250px; }
       .MainContent .sidebar .btn.active, .MainContent .sidebar .Options .active.option, .Options .MainContent .sidebar .active.option {
-        background: white;
+        background: #f3f3f3;
         color: #212121; }
       .MainContent .sidebar .btn.indent, .MainContent .sidebar .Options .indent.option, .Options .MainContent .sidebar .indent.option {
         padding-left: 30px; }

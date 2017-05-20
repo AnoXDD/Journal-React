@@ -969,7 +969,7 @@ nav.nav {
   $article-margin: 30px;
   $article-width: 30%;
   $detail-padding: 25px;
-  $detail-height: 20px;
+  $detail-height: 70px;
   $header-padding: 8px;
 
   height: 100%;
@@ -1061,7 +1061,7 @@ nav.nav {
     width: $radius * 2;
     bottom: 0;
     background: $css;
-    box-shadow: 0 0 2px 3px white;
+    box-shadow: 0 0 2px 3px $bg-grey;
     z-index: 1;
     transition: background .2s ease, box-shadow .2s ease;
   }
@@ -1140,6 +1140,10 @@ nav.nav {
       &:hover {
         box-shadow: 3px 2px 9px grey;
 
+        .Image {
+          filter: blur(0);
+        }
+
         &:before {
           width: $timeline-width / 2;
         }
@@ -1152,8 +1156,8 @@ nav.nav {
       }
 
       &.no-image {
-        height: 105px;
-        background: $darkgrey;
+        //height: 105px;
+        background: white;
 
         .title {
           transition: width .4s ease;
@@ -1175,11 +1179,23 @@ nav.nav {
         }
       }
 
+      .Image {
+        filter: blur(2px);
+        transition: filter .4s ease;
+      }
+
       .text {
         overflow: hidden;
         position: absolute;
-        bottom: 0;
+        top: 0;
+        left: 0;
+        height: 100%;
         width: 100%;
+        box-sizing: border-box;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        background: rgba(0, 0, 0, .3);
         transition: opacity .4s ease;
       }
 
@@ -1188,33 +1204,30 @@ nav.nav {
         opacity: 0;
       }
 
-      header {
-        padding-top: $header-padding;
-        background: $darkgrey;
+      .title {
+        width: 100%;
+        font-size: 25px;
+        font-weight: bold;
+        color: white;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+      }
 
-        .title {
-          width: 100%;
-          text-align: center;
-          font-size: 25px;
-          color: white;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-        }
-
-        .time {
-          color: $css;
-          padding-top: 5px;
-        }
+      .time {
+        text-align: left;
+        color: $css;
+        padding: 10px 0;
       }
 
       .details {
-        color: white;
         font-size: 14px;
-        width: calc(100% - #{$detail-padding*2});
-        background: $darkgrey;
-        padding: 10px $detail-padding;
-        height: $detail-height;
+        box-sizing: border-box;
+        color: white;
+        width: 100%;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        white-space: normal;
       }
 
       &:not(.no-image):hover {
@@ -1342,7 +1355,7 @@ nav.nav {
       width: $sidebar-width;
 
       &.active {
-        background: white;
+        background: $bg-grey;
         color: $darkgrey;
       }
 

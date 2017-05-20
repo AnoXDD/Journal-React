@@ -34,9 +34,13 @@ class BulbImageView extends Component {
 
 class ContentArticle extends Component {
 
-  state = {
-    image: ""
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      image: this.props.imageMap[(props.article.images || [])[0]] || `https://unsplash.it/300/300?image=${0}`
+    }
+  }
 
   handleMouseMove(e, images) {
     let i = parseInt(Math.min((e.clientX - e.target.getBoundingClientRect().left) / e.target.offsetWidth,
@@ -63,13 +67,10 @@ class ContentArticle extends Component {
         <article {...articleProp}>
           <Image src={this.state.image}/>
           <div className="text">
-            <header>
-              <div className="title">{article.title}</div>
-              <div className="time">{time}</div>
-            </header>
-            <div className="details">
-              {article.body}
-            </div>
+            <div className="flex-filler"></div>
+            <div className="title">{article.title}</div>
+            <div className="time">{time}</div>
+            <div className="details">{article.body}</div>
           </div>
           <Button className="dark">delete</Button>
         </article>
@@ -167,9 +168,10 @@ class EntryList extends Component {
   }
 
   generateArticleStyle(article) {
-    let background = "", className = "";
+    let className = "";
     if (article.images && article.images.length) {
-      background = `url('${this.props.imageMap[article.images[0]] || "https://unsplash.it/300/200/?random"}')`;
+      // background = `url('${this.props.imageMap[article.images[0]] ||
+      // "https://unsplash.it/300/200/?random"}')`;
     } else {
       className += " no-image";
     }
@@ -177,8 +179,7 @@ class EntryList extends Component {
     return {
       className: className,
       style    : {
-        backgroundImage: background,
-        top            : this.props.contentStyle[article.time.created],
+        top: this.props.contentStyle[article.time.created],
       },
     };
   }
@@ -388,7 +389,7 @@ export default class EntryView extends Component {
               src={this.state.bulbImage}
               onClickHide={this.hideBulbViewer}
           />
-          <NoScrollArea padding="20px">
+          <NoScrollArea padding="20px" backgroundColor="#f3f3f3">
             <div className="entry-list" ref="scrollArea">
               <EntryList
                   {...this.props}

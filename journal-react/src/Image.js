@@ -22,9 +22,11 @@ export default class Image extends Component {
   }
 
   render() {
+    let className = `Image ${this.toggle ? "toggle" : ""} ${this.props.className || ""}`;
+
     if (this.props.blank) {
       return (
-          <div className={`Image ${this.toggle ? "toggle" : ""}`}>
+          <div className={className}>
             <img className="image center" src={this.lastSrc} alt=""/>
             <img className="image center" src={this.props.src}
                  onClick={this.props.onClick}
@@ -35,7 +37,7 @@ export default class Image extends Component {
 
     // Fill the entire thing
     return (
-        <div className={`Image ${this.toggle ? "toggle" : ""}`}
+        <div className={className}
              onClick={this.props.onClick}
         >
           <div className="image stretch"

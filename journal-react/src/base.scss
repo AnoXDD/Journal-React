@@ -20,6 +20,7 @@ $cyan-9: #006064;
 $darkgrey: #212121;
 $darkgrey-l: #424242;
 $lightgrey: #e8e8e8;
+$bg-grey: #f3f3f3;
 
 $cp: $blue;
 $cpl: $blue-light;
@@ -187,6 +188,10 @@ input, textarea {
   &.column {
     flex-direction: column;
   }
+}
+
+.flex-filler {
+  flex: 1 1 auto;
 }
 
 .flex-last-item {
