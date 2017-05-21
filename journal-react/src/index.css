@@ -570,18 +570,18 @@ nav.nav {
   position: absolute;
   flex-flow: column;
   padding: 50px; }
-  .Editor.dark {
-    background: #212121; }
-    .Editor.dark input, .Editor.dark textarea {
-      color: white; }
-    .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option {
-      transition: none; }
   .Editor.fullscreen {
     z-index: 999999999;
     position: fixed;
     top: 0;
     left: 0;
     background: white; }
+  .Editor.dark {
+    background: #212121; }
+    .Editor.dark input, .Editor.dark textarea {
+      color: white; }
+    .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option {
+      transition: none; }
   .Editor header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;

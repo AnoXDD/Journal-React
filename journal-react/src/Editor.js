@@ -466,13 +466,12 @@ class Editor extends Component {
         nextState.hasPrompt = true;
       } else {
         // Override current data with new data
-        if (!nextProps.title && !nextProps.body) {
-          if (nextState.title === this.DEFAULT_TITLE && !nextState.body) {
-            // This is to create a new entry
-            nextState = Object.assign(nextState,
-                this.DEFAULT_STATE,
-                {isEditing: true});
-          }
+        if (nextProps.newData) {
+          // This is to create a new entry
+          nextState = Object.assign(nextState,
+              this.DEFAULT_STATE,
+              {isEditing: true});
+          this.hasUnsavedChanges = true;
         } else {
           nextState.title = nextProps.title;
           nextState.body = nextProps.body;
@@ -501,9 +500,8 @@ class Editor extends Component {
 
           nextState.isEditing = false;
           nextState.isDisplayingMore = -1;
-
-          this.version = new Date().getTime();
         }
+        this.version = new Date().getTime();
       }
     }
   }

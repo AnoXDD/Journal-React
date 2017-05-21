@@ -478,6 +478,15 @@ nav.nav {
   flex-flow: column;
   padding: $editor-padding;
 
+  &.fullscreen {
+    @include max-z-index;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: white;
+  }
+
   &.dark {
     background: $darkgrey;
 
@@ -489,15 +498,6 @@ nav.nav {
       @extend .btn.dark;
       transition: none;
     }
-  }
-
-  &.fullscreen {
-    @include max-z-index;
-
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: white;
   }
 
   header {

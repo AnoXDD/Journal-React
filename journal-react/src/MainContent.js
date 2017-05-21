@@ -544,7 +544,7 @@ export default class MainContent extends Component {
             </div>
             <div
                 className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
-              <Editor {...this.articleList[this.state.editArticleIndex]}
+              <Editor {...(this.articleList[this.state.editArticleIndex] || {newData: true})}
                   onPromptCancel={this.handlePromptCancel}
                   imageMap={this.imageMap}
                   version={this.editorVersion}
