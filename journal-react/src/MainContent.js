@@ -438,19 +438,20 @@ export default class MainContent extends Component {
 
   render() {
     const BUTTONS = [{
-      text: "LIST",
-      icon: "list"
+      text     : "LIST",
+      icon     : "list",
+      className: `bg-grey dark ${this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`
     }, {
       text     : "calendar",
       icon     : "date_range",
       indent   : "indent",
-      className: `dark ${this.state.isDisplayingCalendar && this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`,
+      className: `dark ${this.state.isDisplayingCalendar && this.state.isDisplaying === this.TAB.LIST ? "active" : ""} ${this.state.isDisplaying === this.TAB.LIST ? "disabled" : ""}`,
       onClick  : this.toggleIsDisplayingCalendar,
     }, {
       text     : "map view",
       icon     : "map",
       indent   : "indent",
-      className: `dark ${this.state.isDisplayingMapView && this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`,
+      className: `dark ${this.state.isDisplayingMapView && this.state.isDisplaying === this.TAB.LIST ? "active" : ""} ${this.state.isDisplaying === this.TAB.LIST ? "disabled" : ""}`,
       onClick  : this.toggleIsDisplayingMapView,
     }, {
       text: "EDITOR",

@@ -226,7 +226,7 @@ export default class Chart extends Component {
           </header>
           <div className="content">
             <div className="chart-wrapper">
-              <ResponsiveContainer width='100%'
+              <ResponsiveContainer minWidth={800}
                                    height={window.innerHeight * .6 - 80}>
                 <LineChart
                     data={this.state.isGroupedByMonth ? [...this.dataMonthChart] : [...this.data].reverse()}>

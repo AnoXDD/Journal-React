@@ -205,6 +205,9 @@ img.center {
 .no-width {
   width: 0 !important; }
 
+.bg-grey {
+  background: #eeeced; }
+
 html, body {
   height: 100%;
   width: 100%;
@@ -1174,7 +1177,7 @@ nav.nav {
       height: 60px;
       width: 250px; }
       .MainContent .sidebar .btn.active, .MainContent .sidebar .Options .active.option, .Options .MainContent .sidebar .active.option {
-        background: #eeeced;
+        background: white;
         color: #212121; }
       .MainContent .sidebar .btn.indent, .MainContent .sidebar .Options .indent.option, .Options .MainContent .sidebar .indent.option {
         padding-left: 30px; }
