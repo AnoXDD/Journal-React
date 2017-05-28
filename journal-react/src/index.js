@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MainContent from "./MainContent";
+import Trak from "./Trak";
 
 import './index.css';
 
 ReactDOM.render(
-    <MainContent/>,
+    <Trak/>,
     document.getElementById('root')
 );

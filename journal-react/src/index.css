@@ -1173,6 +1173,8 @@ nav.nav {
         width: 100%; }
     .MainContent .sidebar .other-btn {
       padding-top: 20px; }
+      .MainContent .sidebar .other-btn .list-tab.active {
+        background: #eeeced; }
     .MainContent .sidebar .btn, .MainContent .sidebar .Options .option, .Options .MainContent .sidebar .option {
       height: 60px;
       width: 250px; }

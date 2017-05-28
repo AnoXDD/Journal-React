@@ -437,21 +437,25 @@ export default class MainContent extends Component {
   }
 
   render() {
+    if (this.props.hidden) {
+      return null;
+    }
+
     const BUTTONS = [{
       text     : "LIST",
       icon     : "list",
-      className: `bg-grey dark ${this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`
+      className: `list-tab dark ${this.state.isDisplaying === this.TAB.LIST ? "active" : ""}`
     }, {
       text     : "calendar",
       icon     : "date_range",
       indent   : "indent",
-      className: `dark ${this.state.isDisplayingCalendar && this.state.isDisplaying === this.TAB.LIST ? "active" : ""} ${this.state.isDisplaying === this.TAB.LIST ? "disabled" : ""}`,
+      className: `dark ${this.state.isDisplayingCalendar && this.state.isDisplaying === this.TAB.LIST ? "active" : ""} ${this.state.isDisplaying === this.TAB.LIST ? "" : "disabled"}`,
       onClick  : this.toggleIsDisplayingCalendar,
     }, {
       text     : "map view",
       icon     : "map",
       indent   : "indent",
-      className: `dark ${this.state.isDisplayingMapView && this.state.isDisplaying === this.TAB.LIST ? "active" : ""} ${this.state.isDisplaying === this.TAB.LIST ? "disabled" : ""}`,
+      className: `dark ${this.state.isDisplayingMapView && this.state.isDisplaying === this.TAB.LIST ? "active" : ""} ${this.state.isDisplaying === this.TAB.LIST ? "" : "disabled"}`,
       onClick  : this.toggleIsDisplayingMapView,
     }, {
       text: "EDITOR",
@@ -493,9 +497,7 @@ export default class MainContent extends Component {
                 <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}
                            onChange={this.handleChangeCriteria}
                 />
-                <Button
-                    className="dark"
-                >navigate_before</Button>
+                <Button className="dark">navigate_before</Button>
                 <span className="year">Year: {this.year}</span>
                 <Button
                     className="dark"

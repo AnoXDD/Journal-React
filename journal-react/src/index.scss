@@ -1376,6 +1376,10 @@ nav.nav {
 
     .other-btn {
       padding-top: $create-btn-margin/2;
+
+      .list-tab.active {
+        background: $bg-grey;
+      }
     }
 
     .btn {
