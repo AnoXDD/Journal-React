@@ -1372,4 +1372,40 @@ nav.nav {
 .notification-dismiss {
   display: none; }
 
+.trak {
+  width: 100%;
+  height: 100%; }
+  .trak .intro {
+    width: 100%;
+    height: 100%;
+    color: white;
+    flex-direction: column; }
+    .trak .intro .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("https://www.goodfreephotos.com/albums/astrophotography/milky-way-and-starry-night-sky.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: grayscale(100%);
+      z-index: -1; }
+    .trak .intro .title {
+      font-size: 150px; }
+    .trak .intro .description {
+      font-size: 17px;
+      background: #191919;
+      padding: 20px 50px;
+      margin: 30px 0 50px;
+      border-radius: 3px; }
+    .trak .intro .accent {
+      width: 140px;
+      box-shadow: 1px 5px 10px #333;
+      border-radius: 3px; }
+    .trak .intro .about {
+      position: fixed;
+      bottom: 0; }
+
 /*# sourceMappingURL=index.css.map */
