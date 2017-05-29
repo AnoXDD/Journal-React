@@ -90,6 +90,15 @@ $button-height: 50px;
   }
 }
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @mixin max-z-index {
   z-index: 999999999;
 }
@@ -254,7 +263,7 @@ img.center {
     }
   }
 
-  &.text {
+   &.text {
     width: auto;
     display: flex;
 
@@ -267,6 +276,15 @@ img.center {
       flex: 1 1 auto;
       text-align: left;
       pointer-events: none;
+    }
+  }
+
+  &.loading {
+    opacity: .8;
+
+    .icon-wrapper {
+      flex: 1 1 auto;
+      animation: spin 1s linear infinite;
     }
   }
 

@@ -21,6 +21,11 @@
     opacity: 1; }
   to {
     opacity: 0; } }
+@keyframes spin {
+  from {
+    transform: rotate(0deg); }
+  to {
+    transform: rotate(360deg); } }
 *:not(i) {
   font-family: "Lato", "Noto Sans CJK SC", "Noto Sans SC", sans-serif; }
 
@@ -145,6 +150,11 @@ img.center {
       flex: 1 1 auto;
       text-align: left;
       pointer-events: none; }
+  .btn.loading, .Options .loading.option, .toggle.loading {
+    opacity: .8; }
+    .btn.loading .icon-wrapper, .Options .loading.option .icon-wrapper, .toggle.loading .icon-wrapper {
+      flex: 1 1 auto;
+      animation: spin 1s linear infinite; }
   .btn.narrow, .Options .narrow.option, .toggle.narrow {
     width: 36px; }
   .btn.wide, .Options .wide.option, .toggle.wide {
@@ -1394,17 +1404,20 @@ nav.nav {
       z-index: -1; }
     .trak .intro .title {
       font-size: 150px; }
-    .trak .intro .description {
+    .trak .intro .description, .trak .intro .error {
       font-size: 17px;
       background: #191919;
       padding: 20px 50px;
-      margin: 30px 0 50px;
+      margin: 50px 0;
       border-radius: 3px; }
+    .trak .intro .error {
+      background: #F44336; }
     .trak .intro .accent {
       width: 140px;
       box-shadow: 1px 5px 10px #333;
       border-radius: 3px; }
     .trak .intro .about {
+      width: 160px;
       position: fixed;
       bottom: 0; }
 

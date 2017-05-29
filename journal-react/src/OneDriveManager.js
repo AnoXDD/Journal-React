@@ -10,13 +10,79 @@
 import MicrosoftGraph from "@microsoft/microsoft-graph-client";
 
 const APPROOT = "Apps/Trek/";
+// client_id = "00000000441D0A11",
+// scope = encodeURIComponent("wl.signin wl.offline_access onedrive.readwrite"),
+// redirect_uri = encodeURIComponent(
+//     "https://anoxdd.github.io/journal/callback.html");
+//
+// function popup(url) {
+//   var width = 525,
+//       height = 525,
+//       screenX = window.screenX,
+//       screenY = window.screenY,
+//       outerWidth = window.outerWidth,
+//       outerHeight = window.outerHeight;
+//
+//   var left = screenX + Math.max(outerWidth - width, 0) / 2;
+//   var top = screenY + Math.max(outerHeight - height, 0) / 2;
+//
+//   var features = [
+//     "width=" + width,
+//     "height=" + height,
+//     "top=" + top,
+//     "left=" + left,
+//     "status=no",
+//     "resizable=yes",
+//     "toolbar=no",
+//     "menubar=no",
+//     "scrollbars=yes"
+//   ];
+//   var popup = window.open(url, "oauth", features.join(","));
+//
+//   popup.focus();
+// }
 
 export default class OneDriveManager {
+
+  // region general utility functions
+
+  static getCookie(name) {
+    name += "=";
+    var cookies = document.cookie,
+        start = cookies.indexOf(name);
+    if (start >= 0) {
+      start += name.length;
+      var end = cookies.indexOf(";", start);
+      if (end < 0) {
+        end = cookies.length;
+      }
+
+      var value = cookies.substring(start, end);
+      return value;
+    }
+
+    return "";
+  }
+
+  static getTokenFromCookie() {
+    return this.getCookie("odauth");
+  }
+
+  static getRefreshFromCookie() {
+    return this.getCookie("refresh");
+  }
 
   static getCurrentToken() {
     // todo use the real token
     return new Promise((resolve, reject) => {
-      resolve("token_token");
+      let cookie = this.getTokenFromCookie();
+
+      if (cookie) {
+        resolve(cookie);
+      } else {
+        // popup(`https://login.live.com/oauth20_authorize.srf?client_id=${client_id}&scope=${scope}&response_type=code&redirect_uri=${redirect_uri}`);
+        reject("Currently testing in Beta");
+      }
     })
   }
 
@@ -119,7 +185,7 @@ export default class OneDriveManager {
         );
   }
 
-  static createFolderUnderId(Id, folderName) {
+  static createFolderUnderId(id, folderName) {
     return this.getClient()
         .then(client =>
             client.api(`me/drive/items/${id}/children`)
@@ -138,5 +204,21 @@ export default class OneDriveManager {
             client.api(`me/drive/items/${id}/thumbnails`)
                 .select(size)
         ).then(res => res.value[0][size].url);
+  }
+
+  // endregion
+
+  static signIn() {
+    return OneDriveManager.getClient();
+  }
+
+  static silentSignIn() {
+    return new Promise((resolve, reject) => {
+      if (OneDriveManager.getTokenFromCookie()) {
+        resolve();
+      } else {
+        reject();
+      }
+    });
   }
 }

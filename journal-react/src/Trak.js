@@ -7,6 +7,7 @@
 import React, {Component} from "react";
 import Button from "./Button";
 import MainContent from "./MainContent";
+import OneDriveManager from "./OneDriveManager";
 
 export default class Trak extends Component {
 
@@ -14,25 +15,56 @@ export default class Trak extends Component {
     super(props);
 
     this.state = {
-      signedIn: false,
-    }
+      signedIn   : false,
+      signingIn  : false,
+      signInError: "",
+    };
+  }
+
+  componentDidMount() {
+    OneDriveManager.silentSignIn().then(() => {
+      this.setState({
+        signedIn: true,
+      });
+    })
+  }
+
+  handleSignIn() {
+    this.setState({
+      signingIn: true,
+    });
+
+    OneDriveManager.signIn().then(() => this.setState({
+      signedIn: true,
+    })).catch(err => {
+      this.setState({
+        signInError: err,
+        signingIn  : false,
+      });
+    });
   }
 
   render() {
     return (
-        <div className={`trak ${this.state.signedIn ? "hidden" : ""}`}>
-          <div className="intro flex-center">
+        <div className="trak">
+          <div
+              className={`intro flex-center ${this.state.signedIn ? "hidden" : ""}`}>
             <div className="background"></div>
             <div className="title">TRAK</div>
             <div className="description">An online journal tool, stored in your
               own personal OneDrive
             </div>
-            <Button className="accent" text="Sign in">account_box</Button>
+            <Button className="accent" text="Sign in"
+                    loading={this.state.signingIn}
+                    onClick={this.handleSignIn.bind(this)}>account_box</Button>
+            <div className={`error ${this.state.signInError ? "" : "hidden"}`}>
+              {this.state.signInError}
+            </div>
             <Button className="about"
                     text="About me"
                     onClick={() => window.open("http://anoxic.me")}>supervisor_account</Button>
           </div>
-          <MainContent hidden={!this.state.signedIn}/>
+          { this.state.signedIn ? <MainContent/> : null }
         </div>
     );
   }

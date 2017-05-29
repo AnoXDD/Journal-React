@@ -10,24 +10,32 @@ export default class Button extends Component {
 
   render() {
     let disabled = {};
-    if (this.props.disabled) {
+    if (this.props.disabled || this.props.loading) {
       disabled.disabled = "disabled";
     }
 
     return (
-        <a className={`btn ${this.props.text ? "text": ""} ${this.props.className || ""}`}
+        <a className={`btn ${this.props.loading ? "loading" : ""} ${this.props.text ? "text": ""} ${this.props.className || ""}`}
            onClick={this.props.onClick || void(0)} {...disabled}>
           <Ink/>
-          <div className="vertical-align icon-wrapper">
-            <i className="material-icons vertical-align-wrapper">
-              {this.props.children}
-            </i>
-          </div>
-          <div className="vertical-align text-wrapper">
-            <span className="vertical-align-wrapper btn-text">
-              {this.props.text}
-            </span>
-          </div>
+          { this.props.loading ? null : (
+              <div className="vertical-align icon-wrapper">
+                <i className="material-icons vertical-align-wrapper">
+                  {this.props.children}
+                </i>
+              </div>)}
+          { this.props.text && !this.props.loading ? (
+              <div className="vertical-align text-wrapper">
+                <span className="vertical-align-wrapper btn-text">
+                  {this.props.text}
+                </span>
+              </div>) : null }
+          { this.props.loading ? (
+              <div className="vertical-align icon-wrapper">
+                <i className="material-icons vertical-align-wrapper">
+                  remove
+                </i>
+              </div>) : null }
         </a>
     );
   }

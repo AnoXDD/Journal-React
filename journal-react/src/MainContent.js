@@ -437,10 +437,6 @@ export default class MainContent extends Component {
   }
 
   render() {
-    if (this.props.hidden) {
-      return null;
-    }
-
     const BUTTONS = [{
       text     : "LIST",
       icon     : "list",
