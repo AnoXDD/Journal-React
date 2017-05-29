@@ -207,12 +207,14 @@ export default class MainContent extends Component {
 
     isDisplaying        : this.TAB.LIST,
     isDisplayingCalendar: false,
-    isDisplayingMapView : true,
+    isDisplayingMapView : false,
 
     // Use | to connect them later
     enabledTabs: this.TAB.LIST | this.TAB.STATS,
 
     editArticleIndex: undefined,
+
+    loadingPrompt: "Loading ...",
   };
 
   data = {};
@@ -471,6 +473,9 @@ export default class MainContent extends Component {
         <div className="MainContent">
           <NotificationSystem ref="notificationSystem"
                               style={notificationStyle}/>
+          { this.state.loadingPrompt ? (
+              <div className="loading-screen flex-center">{this.state.loadingPrompt}</div>
+          ) : null }
           <aside className="sidebar">
             <div className="create-btn">
               <Button className="accent" text="create"
@@ -533,6 +538,7 @@ export default class MainContent extends Component {
                   <div
                       className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>
                     <BulbMap
+                        hidden={!this.state.isDisplayingMapView}
                         data={this.bulbList}
                         contentStyle={this.contentStyle}
                         onBulbClick={this.handleBulbClick}
