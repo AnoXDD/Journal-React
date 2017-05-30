@@ -149,6 +149,8 @@ class PhotoPreview extends Component {
       return;
     }
 
+    // todo download the actual image (not just the thumbnail)
+
     let {photos, isSelected, isEditing} = this.props;
     let src = photos[this.state.previewIndex].src;
 
@@ -487,8 +489,8 @@ class Editor extends Component {
           if (nextProps[R.PROP_PHOTO]) {
             for (let photo of [...nextProps[R.PROP_PHOTO]]) {
               nextState.photos.push({
-                id : photo,
-                src: this.props.imageMap[photo]
+                id : this.props.imageMap[photo].id,
+                src: this.props.imageMap[photo].thumbnail
               });
             }
           }

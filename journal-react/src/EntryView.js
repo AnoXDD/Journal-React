@@ -38,7 +38,7 @@ class ContentArticle extends Component {
     super(props);
 
     this.state = {
-      image: this.props.imageMap[(props.article.images || [])[0]] || `https://unsplash.it/300/300?image=${0}`
+      image: this.props.imageMap[(props.article.images || [])[0]].thumbnail || `https://unsplash.it/300/300?image=${0}`
     }
   }
 
@@ -47,7 +47,7 @@ class ContentArticle extends Component {
             .999999999) * images.length, 10);
 
     this.setState({
-      image: this.props.imageMap[images[i]] || `https://unsplash.it/300/300?image=${i}`
+      image: this.props.imageMap[images[i]].thumbnail || `https://unsplash.it/300/300?image=${i}`
     });
   }
 
@@ -223,7 +223,7 @@ class EntryList extends Component {
     } else if (bulb.images) {
 
       prop.onClick = () => {
-        this.props.onBulbClick(this.props.imageMap[bulb.images[0]]);
+        this.props.onBulbClick(this.props.imageMap[bulb.images[0]].thumbnail);
       };
     }
 
@@ -333,7 +333,7 @@ export default class EntryView extends Component {
         let {images} = this.bulbs[nextProps.highlightBulbIndex];
         if (images) {
           nextState.isShowingBulbViewer = true;
-          nextState.bulbImage = this.props.imageMap[images[0]];
+          nextState.bulbImage = this.props.imageMap[images[0]].thumbnail;
         }
       }
     }

@@ -602,7 +602,7 @@ export default class OneDriveManager {
   /**
    * Returns a promise with a list of all the images that are attached to this
    * year and from queue, with each element as
-   * { id: xxx, name: xxx, thumbnail: xxx, url: xxx, }
+   * { id: xxx, name: xxx, thumbnail: xxx }
    * @param year
    */
   static getImages(year) {

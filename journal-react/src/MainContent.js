@@ -202,8 +202,8 @@ export default class MainContent extends Component {
   };
 
   state = {
-    data   : upgradeDataFromVersion2To3(TestData.data),
-    year   : 2016,
+    data   : [],
+    year   : new Date().getFullYear(),
     version: 0,
 
     isDisplaying        : this.TAB.LIST,
@@ -215,7 +215,7 @@ export default class MainContent extends Component {
 
     editArticleIndex: undefined,
 
-    loadingPrompt: "Loading ...",
+    loadingPrompt: "Signing in ...",
   };
 
   data = {};
@@ -251,6 +251,7 @@ export default class MainContent extends Component {
 
     this.updateContentStyle = this.updateContentStyle.bind(this);
 
+    this.handleNewContent = this.handleNewContent.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
     this.handleCalendarClick = this.handleCalendarClick.bind(this);
@@ -274,10 +275,65 @@ export default class MainContent extends Component {
 
   componentDidMount() {
     this.notificationSystem = this.refs.notificationSystem;
+
+    // Fetch data from server
+    OneDriveManager.verifyFileStructure(this.state.year)
+        .then(() => {
+          this.setState({
+            loadingPrompt: "Downloading content ..."
+          });
+
+          return OneDriveManager.getData(this.state.year);
+        })
+        .catch(err => {
+          if (err.statusCode === 404) {
+            // That's okay - welcome to user!
+            return;
+          }
+
+          this.setState({
+            loadingPrompt: "Looks like there is an error fetching you data. Refresh the website and try again."
+          });
+          throw new Error(JSON.stringify(err));
+        })
+        .then(content => {
+          this.handleNewContent(content);
+
+          this.setState({
+            loadingPrompt: "Downloading images ..."
+          });
+
+          return OneDriveManager.getImages(this.state.year);
+        })
+        .then(images => {
+          this.handleNewImageMap(images);
+
+          this.setState({
+            loadingPrompt: ""
+          });
+        });
   }
 
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  handleNewImageMap(images) {
+    this.imageMap = {};
+    for (let image of images) {
+      this.imageMap[image.name] = {
+        id       : image.id,
+        thumbnail: image.thumbnail,
+      };
+    }
+  }
+
+  handleNewContent(raw) {
+    // todo do something if it is a different version
+    
+    this.setState({
+      data: raw ? JSON.parse(raw.substr(1)) : [],
+    });
   }
 
   handleKeyDown(e) {
@@ -472,13 +528,8 @@ export default class MainContent extends Component {
 
     return (
         <div className="MainContent">
-          <Button onClick={() => OneDriveManager.test()}>code</Button>
           <NotificationSystem ref="notificationSystem"
                               style={notificationStyle}/>
-          { this.state.loadingPrompt ? (
-              <div
-                  className="loading-screen flex-center">{this.state.loadingPrompt}</div>
-          ) : null }
           <aside className="sidebar">
             <div className="create-btn">
               <Button className="accent" text="create"
@@ -563,6 +614,10 @@ export default class MainContent extends Component {
               <Chart data={this.state.data}/>
             </div>
           </main>
+          { this.state.loadingPrompt ? (
+              <div
+                  className="loading-screen flex-center">{this.state.loadingPrompt}</div>
+          ) : null }
         </div>
     );
   }

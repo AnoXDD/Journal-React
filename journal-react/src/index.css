@@ -1250,6 +1250,16 @@ nav.nav {
     .MainContent > main .inner-content {
       display: flex;
       background: #212121; }
+  .MainContent .loading-screen {
+    z-index: 999999999;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0; }
 
 .SearchBar {
   height: 100%;
