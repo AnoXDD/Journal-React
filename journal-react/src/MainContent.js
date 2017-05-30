@@ -17,8 +17,6 @@ import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
 
-import TestData from "./TestData";
-
 function upgradeDataFromVersion2To3(oldData) {
   let data = [],
       list = ["video", "voice"];
@@ -208,7 +206,7 @@ export default class MainContent extends Component {
 
     isDisplaying        : this.TAB.LIST,
     isDisplayingCalendar: false,
-    isDisplayingMapView : false,
+    isDisplayingMapView : true,
 
     // Use | to connect them later
     enabledTabs: this.TAB.LIST | this.TAB.STATS,
@@ -309,7 +307,8 @@ export default class MainContent extends Component {
           this.handleNewImageMap(images);
 
           this.setState({
-            loadingPrompt: ""
+            loadingPrompt      : "",
+            isDisplayingMapView: false,
           });
         });
   }
@@ -330,7 +329,7 @@ export default class MainContent extends Component {
 
   handleNewContent(raw) {
     // todo do something if it is a different version
-    
+
     this.setState({
       data: raw ? JSON.parse(raw.substr(1)) : [],
     });

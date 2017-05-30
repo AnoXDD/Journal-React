@@ -104,10 +104,8 @@ export default class BulbMap extends Component {
     this.handleMapLoad = this.handleMapLoad.bind(this);
   }
 
-  componentWillUpdate() {
-    if (this.map && this.map.checkResize) {
-      this.map.checkResize();
-    }
+  shouldComponentUpdate(nextProps, nextState) {
+    return !nextProps.hidden;
   }
 
   handleMapLoad(map) {
