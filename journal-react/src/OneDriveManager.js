@@ -9,7 +9,8 @@
 
 const MicrosoftGraph = require("@microsoft/microsoft-graph-client");
 
-const APPROOT = "Apps/Trak/";
+const APPROOT = "Apps/Trak/",
+    TOP_LIST = 1000;
 // const client_id = "00000000441D0A11",
 // scope = encodeURIComponent("wl.signin wl.offline_access onedrive.readwrite"),
 // redirect_uri = encodeURIComponent(
@@ -188,8 +189,7 @@ export default class OneDriveManager {
   static getItemContentById(id) {
     return this.getClient()
         .then(client => {
-          return client.api(`me/drive/item/${id}`)
-              .select("microsoft.graph.downloadUrl")
+          return client.api(`me/drive/items/${id}`)
               .get();
         })
         .then(res => res["@microsoft.graph.downloadUrl"])
@@ -199,7 +199,6 @@ export default class OneDriveManager {
   static getItemContentByPath(path) {
     return this.getClient().then(client => {
           return client.api(`me${this.getPathHeader(path)}`)
-              .select("microsoft.graph.downloadUrl")
               .get();
         })
         .then(res => res["@microsoft.graph.downloadUrl"])
@@ -207,55 +206,94 @@ export default class OneDriveManager {
   }
 
   /**
+   * Gets the full list and expand automatically with @
+   * @param response
+   */
+  static getFullList(response) {
+    if (!response["@odata.nextLink"]) {
+      return new Promise(resolve => resolve(response));
+    }
+
+    // Extract the skipToken
+    let nextLink = response["@odata.nextLink"],
+        query = nextLink.match(/\$skiptoken=[^&]*/)[0],
+        api = nextLink.match(/me[^?]*/)[0];
+
+    if (!query || !api) {
+      return new Promise(resolve => resolve(response));
+    }
+
+    return this.getClient()
+        .then(client => client.api(api)
+            .query(query)
+            .select("id", "name")
+            .top(TOP_LIST)
+            .get()
+        )
+        .then(res => {
+          // Merge with previous response
+          res.value = [...response.value, ...res.value];
+
+          return this.getFullList(res);
+        });
+  }
+
+  /**
    *
    * @param path
    * @returns {Promise.<*>} - each element of promise result is composed of
-   *  {id: xxx, @microsoft.graph.downloadUrl: xxx, name: xxx}
+   *  {id: xxx, name: xxx}
    */
   static getChildrenByPath(path) {
     return this.getClient().then(client => {
-      return client.api(`me${this.getPathHeader(path)}:/children`)
-          .select("id", "microsoft.graph.downloadUrl", "name")
-          .top(10000)
-          .get();
-    }).then(res => res.value);
+          return client.api(`me${this.getPathHeader(path)}:/children`)
+              .select("id", "name")
+              .top(TOP_LIST)
+              .get();
+        })
+        .then(res => this.getFullList(res))
+        .then(res => res.value);
   }
 
   /**
    *
    * @param path
    * @returns {Promise.<*>} - each element of promise result is composed of
-   *  {id: xxx, @microsoft.graph.downloadUrl: xxx, name: xxx}
+   *  {id: xxx, name: xxx}
    */
   static getChildrenById(id) {
     return this.getClient().then(client => {
-      return client.api(`me/drive/items/children`)
-          .select("id", "microsoft.graph.downloadUrl", "name")
-          .top(10000)
-          .get();
-    }).then(res => res.value);
+          return client.api(`me/drive/items/${id}/children`)
+              .select("id", "name", "folder")
+              .top(TOP_LIST)
+              .get();
+        })
+        .then(res => this.getFullList(res))
+        .then(res => res.value);
   }
 
   /**
    *
    * @param path
    * @returns {Promise.<*>} - each element of promise result is composed of
-   *  {id: xxx, @microsoft.graph.downloadUrl: xxx, name: xxx, thumbnails: xxx}
+   *  {id: xxx, name: xxx, thumbnails: xxx}
    */
   static getChildrenByPathWithThumbnails(path) {
     return this.getClient().then(client => {
-      return client.api(`me${this.getPathHeader(path)}:/children`)
-          .select("id", "microsoft.graph.downloadUrl", "name")
-          .expand("thumbnails(select=large)")
-          .top(10000)
-          .get();
-    }).then(res => res.value.map(val => {
-      if (val.thumbnails) {
-        val.thumbnails = val.thumbnails[0].large.url;
-      }
+          return client.api(`me${this.getPathHeader(path)}:/children`)
+              .select("id", "name")
+              .query({"expand": "thumbnails"})
+              .top(TOP_LIST)
+              .get();
+        })
+        .then(res => this.getFullList(res))
+        .then(res => res.value.map(val => {
+          if (val.thumbnails) {
+            val.thumbnails = val.thumbnails[0].large.url;
+          }
 
-      return val;
-    }));
+          return val;
+        }));
   }
 
   static getIdByPath(path) {
@@ -299,15 +337,15 @@ export default class OneDriveManager {
   static moveItemByPath(src, dest, newName) {
     return this.getClient()
         .then(client =>
-            client.api(`me/${this.getPathHeader(src)}`)
+            client.api(`me${this.getPathHeader(src)}`)
                 .patch(newName ? {
                   name           : newName,
                   parentReference: {
-                    path: dest,
+                    path: `/drive/root:/${APPROOT}${dest}`,
                   },
                 } : {
                   parentReference: {
-                    path: dest,
+                    path: `/drive/root:/${APPROOT}${dest}`,
                   },
                 })
         );
@@ -320,11 +358,11 @@ export default class OneDriveManager {
                 .patch(newName ? {
                   name           : newName,
                   parentReference: {
-                    path: dest,
+                    path: `/drive/root:/${APPROOT}${dest}`,
                   },
                 } : {
                   parentReference: {
-                    path: dest,
+                    path: `/drive/root:/${APPROOT}${dest}`,
                   },
                 })
         );
@@ -346,7 +384,7 @@ export default class OneDriveManager {
         .then(client =>
             client.api(`me/drive/items/${id}/children`)
                 .post({
-                  name  : folderName,
+                  name  : "" + folderName,
                   folder: {}
                 })
         );
@@ -415,10 +453,10 @@ export default class OneDriveManager {
    */
   static verifyFileStructure(year) {
     let rootId = "";
-    return this.getRootId().then(id => {
-          return this.createFolderById(id, "Apps");
-        })
-        .then(appsId => this.getChildrenById(rootId = appsId))
+    return this.getRootId()
+        .then(id => this.createFolderById(id, "Apps"))
+        .then(id => this.createFolderById(id.id, "Trak"))
+        .then(appsId => this.getChildrenById(rootId = appsId.id))
         .then(folders => {
           for (let folder of folders) {
             if (folder.name === "bulb") {
@@ -443,26 +481,26 @@ export default class OneDriveManager {
           throw new Error(`Unable to verify the integrity of file structure. (err: ${err})`);
         })
         .then(ids => {
-          this.bulbFolderId = ids[0];
-          this.coreFolderId = ids[1];
-          this.queueFolderId = ids[3];
-          this.resourceFolderId = ids[4];
+          this.bulbFolderId = ids[0].id || ids[0];
+          this.coreFolderId = ids[1].id || ids[1];
+          this.queueFolderId = ids[2].id || ids[2];
+          this.resourceFolderId = ids[3].id || ids[3];
 
           // Create year folder for `core` and `resource`
           return Promise.all([
             this.createFolderById(this.coreFolderId, year),
-            this.createFolderById(this.queueFolderId, year)
+            this.createFolderById(this.resourceFolderId, year)
           ])
         })
         .then(ids => {
           // Lastly, if this is the end of the year, try to create a folder for
           // the next year
 
-          let now = new Date().getTime();
+          let now = new Date();
           if (now.getMonth() === 11 && now.getDate() === 31) {
             return Promise.all([
               this.createFolderById(this.coreFolderId, year + 1),
-              this.createFolderById(this.queueFolderId, year + 1)
+              this.createFolderById(this.resourceFolderId, year + 1)
             ]);
           }
         });
@@ -477,7 +515,7 @@ export default class OneDriveManager {
         .then(bulbs => bulbs.length ? new Promise(resolve => {
           let counter = 0,
               getContent = bulb => {
-                this.getItemContentByUrl(bulb.url)
+                this.getItemContentById(bulb.id)
                     .catch(() => {
                       // Do nothing
                     })
@@ -509,9 +547,18 @@ export default class OneDriveManager {
    * @param ids
    */
   static removeBulbs(ids) {
-    for (let bulb of ids) {
-      this.removeItemById(bulb);
-    }
+    return new Promise(resolve => {
+      let counter = 0;
+
+      for (let bulb of ids) {
+        this.removeItemById(bulb)
+            .then(() => {
+              if (++counter === ids.length) {
+                resolve();
+              }
+            });
+      }
+    });
   }
 
   static getJournalByYear(year) {
@@ -542,8 +589,8 @@ export default class OneDriveManager {
    * Moves an image back to under queue folder
    * @param id
    */
-  static removeImageById(id, year) {
-    return this.moveItemById(id, `resource/${year}`);
+  static removeImageById(id) {
+    return this.moveItemById(id, "queue");
   }
 
   // region alias
@@ -560,7 +607,7 @@ export default class OneDriveManager {
    */
   static getImages(year) {
     return Promise.all([this.getJournalImagesByYear(year), this.getImagesInQueue()])
-        .then(lists => [...lists[0], lists[1]]);
+        .then(lists => [...lists[0], ...lists[1]]);
   }
 
   static upload(year, content) {
@@ -573,6 +620,8 @@ export default class OneDriveManager {
     let year = 2017,
         content = "DSFAS2cdsafds",
         imageIds = [];
+
+    console.warn("This test assumes no content is under /Apps/Trak/");
 
     this.verifyFileStructure(year)
         .then(() => {
@@ -588,17 +637,18 @@ export default class OneDriveManager {
           console.log("Backing up");
           return this.backupJournalByYear(year, "data_backup.js");
         })
+        .catch(err => {
+          console.log(`You shouldn't get any error here: ${JSON.stringify(err)}`);
+        })
         .then(() => {
           console.log("Then try to grab the moved file");
           return this.getData(year);
         })
-        .catch(err => {
-          throw new Error(err);
-        })
         .then(() => {
-          console.error("You shouldn't get anything");
-        }, err => {
-          console.log(`Expected: with error "${JSON.stringify(err)}"`);
+          console.error("You shouldn't get here");
+        })
+        .catch(err => {
+          console.log(`Expected not found (404) with error "[${err.statusCode}] ${err.code}"`);
           console.log("Try to cause some conflict when moving files");
           return this.upload(year, content);
         })
@@ -607,8 +657,9 @@ export default class OneDriveManager {
         })
         .then(() => {
           console.error("Nothing happens, which is wrong");
-        }, err => {
-          console.log(`Expected conflict with error "${JSON.stringify(err)}"`);
+        })
+        .catch(err => {
+          console.log(`Expected conflict (409) with error "[${err.statusCode}] ${err.code}"`);
           console.log("Then we try to do something with bulbs");
 
           return Promise.all([
@@ -641,24 +692,11 @@ export default class OneDriveManager {
           }
 
           console.log(
-              "Now we upload some fake images (texts) to the queue folder");
-
-          return Promise.all([
-            this.getItemContentByUrl("https://unsplash.it/30/30/?random")
-                .then(c => this.uploadItemByPath("queue/1.jpg", c)),
-            this.getItemContentByUrl("https://unsplash.it/30/30/?random")
-                .then(c => this.uploadItemByPath("queue/2.jpg", c)),
-            this.getItemContentByUrl("https://unsplash.it/30/30/?random")
-                .then(c => this.uploadItemByPath("queue/3.jpg", c)),
-            this.getItemContentByUrl("https://unsplash.it/30/30/?random")
-                .then(c => this.uploadItemByPath("queue/4.jpg", c)),
-            this.getItemContentByUrl("https://unsplash.it/30/30/?random")
-                .then(c => this.uploadItemByPath("queue/5.jpg", c)),
-          ]);
+              "Now set breakpoint here and upload some fake images (texts) to the queue folder");
         })
         .then(ids => {
           console.log(
-              "Before we get started, try to fetch the 'image list first'");
+              "Before we get started, try to fetch the image list first");
 
           return this.getImages(year);
         })
@@ -687,7 +725,7 @@ export default class OneDriveManager {
         .then(() => {
           console.log("Removing one of the image");
 
-          return this.removeImageById(imageIds[1].id, year);
+          return this.removeImageById(imageIds[1].id);
         })
         .then(() => {
           console.log("Move another image into the resource");
@@ -701,7 +739,7 @@ export default class OneDriveManager {
           return this.getImages(year);
         })
         .then(images => {
-          console.log("Finally, let's take a look at who they are");
+          console.log("And let's take a look at who they are");
 
           for (let image of images) {
             if (image.thumbnails) {
@@ -714,9 +752,17 @@ export default class OneDriveManager {
           imageIds = images;
 
           console.log(`The names of them are ${images.map(image => image.name)
-              .join(" ")}, expect 1.jpg 2.jpg 3.jpg 4.jpg 5.jpg or something like that`);
+              .join(" ")}, expect renamed.jpg 2.jpg 3.jpg 4.jpg 5.jpg or something like that`);
+        })
+        .then(() => {
+          console.log("Finally, let's see what is left in queue");
+
+          return this.getImagesInQueue();
+        })
+        .then(images => {
+          console.log(`There should be 3 images in the queue, got ${images.length}`);
 
           console.log("..... And finally we are done here ..... ");
-        });
+        })
   }
 }
