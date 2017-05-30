@@ -13,6 +13,7 @@ import EntryView from "./EntryView";
 import SearchBar from "./SearchBar";
 import BulbMap from "./BulbMap";
 import Chart from "./Chart";
+import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
 
@@ -471,10 +472,12 @@ export default class MainContent extends Component {
 
     return (
         <div className="MainContent">
+          <Button onClick={() => OneDriveManager.test()}>code</Button>
           <NotificationSystem ref="notificationSystem"
                               style={notificationStyle}/>
           { this.state.loadingPrompt ? (
-              <div className="loading-screen flex-center">{this.state.loadingPrompt}</div>
+              <div
+                  className="loading-screen flex-center">{this.state.loadingPrompt}</div>
           ) : null }
           <aside className="sidebar">
             <div className="create-btn">
