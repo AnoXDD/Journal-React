@@ -525,6 +525,8 @@ export default class MainContent extends Component {
       icon: "settings"
     }];
 
+    // <Button onClick={() => OneDriveManager.test()}>code</Button>
+
     return (
         <div className="MainContent">
           <NotificationSystem ref="notificationSystem"
@@ -586,7 +588,6 @@ export default class MainContent extends Component {
                       bulbs={this.bulbList}
                       highlightBulbIndex={this.highlightBulbIndex}
                       onArticleClick={this.handleArticleClick}
-                      debug={true}
                   />
                   <div
                       className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>

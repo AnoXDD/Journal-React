@@ -548,15 +548,16 @@ export default class OneDriveManager {
    */
   static removeBulbs(ids) {
     return new Promise(resolve => {
-      let counter = 0;
+      let counter = 0,
+          f = () => {
+            if (++counter === ids.length) {
+              resolve();
+            }
+          }
 
       for (let bulb of ids) {
         this.removeItemById(bulb)
-            .then(() => {
-              if (++counter === ids.length) {
-                resolve();
-              }
-            });
+            .then(() => f());
       }
     });
   }
@@ -602,7 +603,7 @@ export default class OneDriveManager {
   /**
    * Returns a promise with a list of all the images that are attached to this
    * year and from queue, with each element as
-   * { id: xxx, name: xxx, thumbnail: xxx }
+   * { id: xxx, name: xxx, thumbnail: xxx, url: xxx, }
    * @param year
    */
   static getImages(year) {

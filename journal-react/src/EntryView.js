@@ -402,6 +402,12 @@ export default class EntryView extends Component {
               />
             </div>
           </NoScrollArea>
+          { this.props.data.length === 0 ? (
+              <div className="empty-prompt flex-center">
+                Nothing can be found here. Maybe you would like to write
+                something?
+              </div>
+          ) : null }
         </div>
     );
   }
