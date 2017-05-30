@@ -94,6 +94,10 @@ export default class Chart extends Component {
     this.handleStateChange = this.handleStateChange.bind(this);
   }
 
+  shouldComponentUpdate(nextProps) {
+    return !nextProps.hidden;
+  }
+
   componentWillUpdate(nextProps, nextState) {
     if (nextState.newKeyword === this.state.newKeyword) {
       // Only update when the user is not typing a new keyword
@@ -248,7 +252,8 @@ export default class Chart extends Component {
               </ResponsiveContainer>
             </div>
             <div className="table-wrapper">
-              <div className={`table-header-out ${this.state.keywords.length ? "" : "hidden"}`}>
+              <div
+                  className={`table-header-out ${this.state.keywords.length ? "" : "hidden"}`}>
                 <table className="table-header">
                   <thead>
                   <tr className="row-header">

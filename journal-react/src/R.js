@@ -34,8 +34,12 @@ module.exports = {
 
   TAG_PREDICTION_DICTIONARY: "journal friendship thoughts code 和和和",
 
+  DATA_VERSION: 3,
+
   // Utility functions to add notifications
-  NOTIFY           : (notificationSystem, message, title, autoDismiss) => {
+  copy: obj => obj ? JSON.parse(JSON.stringify(obj)) : obj,
+
+  notify        : (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({
       title      : title,
       level      : "info",
@@ -43,7 +47,7 @@ module.exports = {
       autoDismiss: autoDismiss,
     });
   },
-  NOTIFY_ERROR  : (notificationSystem, message, title, autoDismiss) => {
+  notifyError  : (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({
       title      : title,
       level      : "error",
@@ -51,7 +55,7 @@ module.exports = {
       autoDismiss: autoDismiss,
     });
   },
-  NOTIFY_WARNING: (notificationSystem, message, title, autoDismiss) => {
+  notifyWarning: (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({
       title      : title,
       level      : "warning",
@@ -59,7 +63,7 @@ module.exports = {
       autoDismiss: autoDismiss,
     });
   },
-  NOTIFY_SUCCESS: (notificationSystem, message, title, autoDismiss) => {
+  notifySuccess: (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({
       title      : title,
       level      : "success",
@@ -67,4 +71,5 @@ module.exports = {
       autoDismiss: autoDismiss,
     });
   },
-};
+}
+;

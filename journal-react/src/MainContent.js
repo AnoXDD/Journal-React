@@ -19,7 +19,7 @@ import R from "./R";
 
 function upgradeDataFromVersion2To3(oldData) {
   let data = [],
-      list = ["video", "voice"];
+      list = ["video", "voice", "place", "book"];
 
   for (let d of oldData) {
     let entry = {};
@@ -39,7 +39,7 @@ function upgradeDataFromVersion2To3(oldData) {
       entry.images = images;
     }
 
-    if (d.place) {
+    if (entry.type === R.TYPE_BULB) {
       entry.place = Object.assign({}, d.place);
     }
 
@@ -62,11 +62,7 @@ function upgradeDataFromVersion2To3(oldData) {
         entry.links = Object.assign({}, d.weblink);
       }
 
-      if (d.book && d.book.length) {
-        entry.book = Object.assign({}, d.book);
-      }
-
-      if (d.video || d.voice) {
+      if (d.video || d.voice || d.book || d.place) {
         let others = {};
         for (let l of list) {
           if (d[l] && d[l].length) {
@@ -444,6 +440,55 @@ export default class MainContent extends Component {
     this.handleCalendarClick(top);
   }
 
+  handleArticleChange(newEntry) {
+    if (this.articleList[this.state.editArticleIndex]) {
+      let prevTimestamp = this.articleList[this.state.editArticleIndex].time.created,
+          dataCopy = [...this.state.data];
+      // First, find the index of the article edited
+      for (let i = 0; i < dataCopy.length; ++i) {
+        let entry = this.state.data[i];
+        if (entry.type === R.TYPE_ARTICLE && entry.time.created === prevTimestamp) {
+          dataCopy[i] = newEntry;
+          break;
+        }
+      }
+
+      return this.uploadUnprocessedData(dataCopy);
+    }
+
+    // Adding a new entry
+    return this.uploadUnprocessedData([...this.state.data, newEntry]);
+  }
+
+  /**
+   * Prompts the user and ask them if they really want it removed
+   * @param articleIndex
+   */
+  handleArticleRemove(articleIndex) {
+    // todo implement
+  }
+
+  /**
+   * Tring to upload an unprocessed data, which means the data will be
+   * processed and then uploaded
+   * @param data
+   */
+  uploadUnprocessedData(data) {
+    return this.uploadData(
+        data.sort((lhs, rhs) => rhs.time.created - lhs.time.created)
+    );
+  }
+
+  /**
+   * Uploads the data, assuming that the data is sorted
+   * @param data
+   */
+  uploadData(data) {
+    return OneDriveManager.upload(this.year,
+            R.DATA_VERSION + JSON.stringify(data))
+        .then(() => this.forceUpdate());
+  }
+
   toggleIsDisplayingCalendar() {
     this.setState({
       isDisplayingCalendar: !this.state.isDisplayingCalendar,
@@ -588,6 +633,7 @@ export default class MainContent extends Component {
                       bulbs={this.bulbList}
                       highlightBulbIndex={this.highlightBulbIndex}
                       onArticleClick={this.handleArticleClick}
+                      onArticleRemove={this.handleArticleRemove.bind(this)}
                   />
                   <div
                       className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>
@@ -603,15 +649,20 @@ export default class MainContent extends Component {
             </div>
             <div
                 className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
-              <Editor {...(this.articleList[this.state.editArticleIndex] || {newData: true})}
+              <Editor {...(R.copy(this.articleList[this.state.editArticleIndex]) || {newData: true})}
+                  hidden={this.state.isDisplaying !== this.TAB.EDITOR}
                   onPromptCancel={this.handlePromptCancel}
                   imageMap={this.imageMap}
                   version={this.editorVersion}
-                  tagPrediction={R.TAG_PREDICTION_DICTIONARY}/>
+                  tagPrediction={R.TAG_PREDICTION_DICTIONARY}
+                  onChange={this.handleArticleChange.bind(this)}
+              />
             </div>
             <div
                 className={`flex-extend-inner-wrapper stats-view ${this.state.isDisplaying === this.TAB.STATS ? "" : "hidden"}`}>
-              <Chart data={this.state.data}/>
+              <Chart
+                  hidden={this.state.isDisplaying !== this.TAB.STATS}
+                  data={this.state.data}/>
             </div>
           </main>
           { this.state.loadingPrompt ? (

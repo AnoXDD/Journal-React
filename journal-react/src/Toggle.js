@@ -7,8 +7,8 @@ import React, {Component} from "react";
 import Ink from "react-ink";
 
 export default class Toggle extends Component {
- 
-  state = { 
+
+  state = {
     onFirst: true
   };
 
@@ -18,11 +18,12 @@ export default class Toggle extends Component {
     height = height || "50px";
 
     return (
-        <a className={`vertical-align toggle ${className || ""} ${isHidden ? "hidden" : ""} ${isChangingOnHover ? "change-hover" : ""} ${isChanging ? "show-second" : ""} `}
+        <a className={`vertical-align toggle ${this.props.loading ? "loading" : ""} ${className || ""} ${isHidden ? "hidden" : ""} ${isChangingOnHover ? "change-hover" : ""} ${isChanging ? "show-second" : ""} `}
            onClick={onClick}
            style={{height: height}}
         >
           <Ink/>
+          <i className="material-icons vertical-align-wrapper loading-icon">remove</i>
           <i className="vertical-align-wrapper first material-icons">{firstIcon}</i>
           <i className="vertical-align-wrapper second material-icons"
              style={{bottom: height}}>{secondIcon}</i>

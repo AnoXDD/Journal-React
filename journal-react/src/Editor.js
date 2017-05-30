@@ -15,6 +15,10 @@ import NumberCard from "./NumberCard";
 import Prompt from "./Prompt";
 import R from "./R";
 
+/**
+ * This editor is only appropriate to edit an article, NOT for a bulb
+ */
+
 class ExtraAttachmentsAddProp extends Component {
 
   state = {
@@ -240,11 +244,11 @@ class Editor extends Component {
    * @type {{NOT_SELECTED: number, ADD: number, REMOVE: number, SELECTED:
      *     number}}
    */
-  PHOTO_STATUS = {
-    NOT_SELECTED: 0b10,
-    ADD         : 0b01,
-    REMOVE      : 0b00,
-    SELECTED    : 0b11,
+  PHOTO_STATUS = {  //      | Originally | Now |
+    NOT_SELECTED: 0b10, //  |   no       | no  |
+    ADD         : 0b01, //  |   no       | yes |
+    REMOVE      : 0b00, //  |   yes      | no  |
+    SELECTED    : 0b11, //  |   yes      | yes |
   };
 
   DEFAULT_TITLE = this.convertToDateTime(new Date()).substr(0, 7);
@@ -422,6 +426,7 @@ class Editor extends Component {
           title: "This is actually a Google website"
         }],
         isEditing       : false,
+        isEditingLoading: false,
         isFullscreen    : false,
         isDarkMode      : false,
       };
@@ -459,7 +464,12 @@ class Editor extends Component {
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
+    this.extractUploadableData = this.extractUploadableData.bind(this);
     this.restorePreviousBody = this.restorePreviousBody.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return !nextProps.hidden;
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -489,8 +499,10 @@ class Editor extends Component {
           if (nextProps[R.PROP_PHOTO]) {
             for (let photo of [...nextProps[R.PROP_PHOTO]]) {
               nextState.photos.push({
-                id : this.props.imageMap[photo].id,
-                src: this.props.imageMap[photo].thumbnail
+                name  : photo,
+                id    : this.props.imageMap[photo].id,
+                src   : this.props.imageMap[photo].thumbnail,
+                status: this.PHOTO_STATUS.SELECTED,
               });
             }
           }
@@ -509,11 +521,53 @@ class Editor extends Component {
   }
 
   /**
+   * Extracts the data that should be uploaded to the server
+   * This function assumes that no images are still being transferred
+   */
+  extractUploadableData() {
+    // todo implement
+    let data = {
+      type : R.TYPE_ARTICLE,
+      time : {
+        created: this.state.stats.timeCreated,
+        begin  : this.state.stats.timeBegin,
+        end    : this.state.stats.timeEnd,
+      },
+      title: this.state.title,
+      body : this.state.body,
+    };
+
+    if (this.state.photos) {
+      let images = this.state.photos.map(photo => photo.name);
+      if (images.length) {
+        data.images = images;
+      }
+    }
+
+    let tags = this.state.tags;
+    if (tags && tags.length) {
+      data.tags = tags.join("|");
+    }
+
+    const LIST = ["musics", "movies", "links", "others"];
+
+    for (let list of LIST) {
+      if (this.state[list] && this.state[list].length) {
+        data[list] = this.state[list];
+      }
+    }
+
+    return data;
+  }
+
+  /**
    * Toggles the photo preview - whether the user is presented with a larger
    * preview of the photo
    */
   togglePhotoPreview() {
-    let state = this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? this.DISPLAYING.PHOTOS : this.DISPLAYING.PHOTOS_PREVIEW;
+    let state = this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ?
+        this.DISPLAYING.PHOTOS :
+        this.DISPLAYING.PHOTOS_PREVIEW;
 
     this.setState({
       isDisplayingMore: state,
@@ -556,11 +610,29 @@ class Editor extends Component {
     if (!this.state.isEditing) {
       // It's going to get modified
       this.hasUnsavedChanges = true;
+      this.setState({
+        isEditing: true,
+      });
+      return;
     }
 
-    this.setState({
-      isEditing: !this.state.isEditing
-    });
+    // Trying to save this entry
+    this.setSTate({
+      isEditingLoading: true,
+    })
+    let extracted = this.extractUploadableData();
+
+    this.props.onChange(extracted)
+        .then(() => {
+          this.setState({
+            isEditing       : false,
+            isEditingLoading: false,
+          });
+        }, () => {
+          this.setState({
+            isEditingLoading: false,
+          });
+        });
   }
 
   generateAddPanelFor(tag, state) {
@@ -1136,9 +1208,10 @@ class Editor extends Component {
                   }) }
               <span className="breaker"></span>
               <Button className={`${this.state.isEditing ? "" : "hidden"}`}
-                      onClick={()=>{console.log("TOdo")}}>delete</Button>
+                      onClick={()=>{console.log("TOdo")}}>save</Button>
               <Toggle
                   className="btn send-edit accent"
+                  loading={this.state.isEditingLoading}
                   isChanging={!this.state.isEditing}
                   firstIcon="send"
                   secondIcon="mode_edit"

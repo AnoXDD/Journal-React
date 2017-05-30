@@ -73,7 +73,9 @@ class ContentArticle extends Component {
             <div className="details">{article.body}</div>
           </div>
           <Button
-              className={this.props.className === " no-image" ? "" : "dark"}>delete</Button>
+              className={this.props.className === " no-image" ? "" : "dark"}
+              onClick={this.props.onRemoveClick}
+          >delete</Button>
         </article>
     );
   }
@@ -193,6 +195,7 @@ class EntryList extends Component {
               return (
                   <ContentArticle
                       onClick={() => this.props.onArticleClick(index)}
+                      onRemoveClick={() => this.props.onArticleRemove(index)}
                       article={article}
                       imageMap={this.props.imageMap}
                       key={`article-preview-${article.time.created}`}
