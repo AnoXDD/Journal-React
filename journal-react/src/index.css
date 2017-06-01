@@ -717,6 +717,8 @@ nav.nav {
       pointer-events: none;
       background: transparent;
       transition: .4s ease; }
+      .Editor .extras .more-info .empty {
+        color: #212121; }
       .Editor .extras .more-info input {
         font-size: 16px;
         display: block;
@@ -731,13 +733,14 @@ nav.nav {
         display: flex;
         flex-direction: column;
         height: 100%; }
-        .Editor .extras .more-info .photo-preview .photo-previewed-wrapper {
-          width: 100%;
-          flex: 1 0 auto;
-          position: relative; }
-          .Editor .extras .more-info .photo-preview .photo-previewed-wrapper .photo-wrapper {
-            width: 100%;
-            height: 100%;
+        .Editor .extras .more-info .photo-preview .photo-wrapper {
+          position: fixed;
+          top: 0;
+          left: 250px;
+          bottom: 280px;
+          right: 0;
+          background: white; }
+          .Editor .extras .more-info .photo-preview .photo-wrapper .center {
             cursor: pointer; }
         .Editor .extras .more-info .photo-preview .photo-no-scroll {
           margin-top: 10px;

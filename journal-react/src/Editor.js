@@ -157,32 +157,28 @@ class PhotoPreview extends Component {
     let src = photos[this.state.previewIndex].src;
 
     return (
-        <div className="photo-preview flex-extend-inner-wrapper">
-          <div className="flex-extend-inner-wrapper flex column">
-            <div className="photo-previewed-wrapper">
-              <div className="flex-extend-inner-wrapper">
-                <div
-                    onClick={() => {window.open(src)}}
-                    className=" photo-wrapper">
-                  <img className="center"
-                       src={src} alt=""/>
-                </div>
+        <div className="photo-preview">
+          <div className=" flex column">
+            <div
+                className="photo-wrapper">
+              <img className="center"
+                   onClick={() => {window.open(src)}}
+                   src={src} alt=""/>
+            </div>
+          </div>
+          <div className="photo-no-scroll">
+            <NoScrollArea padding="10px">
+              <div className={`photos ${isEditing ? "show-all" : ""} `}>
+                {photos.map((photo, index) =>
+                    <div key={`photo-preview-${photo.id}`}
+                         className={`photo ${isSelected(photo.status) ? "selected": ""} `}
+                         onMouseOver={() => {this.setState({previewIndex: index})}}
+                    >
+                      <img src={photo.src} alt="" height="90px"/>
+                    </div>
+                )}
               </div>
-            </div>
-            <div className="photo-no-scroll">
-              <NoScrollArea padding="10px">
-                <div className={`photos ${isEditing ? "show-all" : ""} `}>
-                  {photos.map((photo, index) =>
-                      <div key={`photo-preview-${photo.id}`}
-                           className={`photo ${isSelected(photo.status) ? "selected": ""} `}
-                           onMouseOver={() => {this.setState({previewIndex: index})}}
-                      >
-                        <img src={photo.src} alt="" height="90px"/>
-                      </div>
-                  )}
-                </div>
-              </NoScrollArea>
-            </div>
+            </NoScrollArea>
           </div>
         </div>
     );
@@ -781,6 +777,16 @@ class Editor extends Component {
   generateMoreInfo() {
     switch (this.state.isDisplayingMore) {
       case this.DISPLAYING.PHOTOS:
+        if (this.state.photos.length === 0) {
+          return (
+              <div className="empty">
+                <p className="flex-center">Looks like this entry doesn't
+                  have any photos for now</p>
+              </div>
+
+          )
+        }
+
         return (
             <SortableList items={this.state.photos}
                           isEditing={this.state.isEditing}
@@ -1161,8 +1167,7 @@ class Editor extends Component {
             <Button className="hint">more_vert</Button>
           </nav>
 
-          <header
-              className={`${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}`}>
+          <header>
             <input
                 type="text"
                 className={`title normal underlined ${this.state.isFullscreen ? "hidden" : ""}`}
@@ -1192,7 +1197,7 @@ class Editor extends Component {
           </header>
 
           <div
-              className={`text-body-wrapper ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}`}>
+              className="text-body-wrapper">
             <div className="text-body-wrapper-2"
                  style={{padding: `0 ${50-this.state.bodyWidth/2}%`, width: `${this.state.bodyWidth}%`}}
             >
@@ -1209,7 +1214,7 @@ class Editor extends Component {
           <div
               className={`shadow up ${this.state.isFullscreen ? "hidden" : ""}`}></div>
           <div
-              className={`extras ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "extend" : ""} ${this.state.isFullscreen ? "hidden" : ""} `}>
+              className={`extras ${this.state.isFullscreen ? "hidden" : ""} `}>
             <div className="buttons">
               <Button className="tags">label_outline</Button>
               <div className="current-tags-wrapper">
@@ -1226,11 +1231,11 @@ class Editor extends Component {
                   className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} breaker`}></span>
               <Toggle
                   className="btn"
-                  isHidden={this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW}
+                  isHidden={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.photos.length}
                   isChanging={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW}
                   onClick={this.togglePhotoPreview}
-                  firstIcon="expand_less"
-                  secondIcon="expand_more"
+                  firstIcon="zoom_in"
+                  secondIcon="zoom_out"
               ></Toggle>
               <Button
                   className={this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}
