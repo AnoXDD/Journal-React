@@ -270,6 +270,8 @@ class Editor extends Component {
     isEditing       : false,
     isFullscreen    : false,
     hasPrompt       : false,
+
+    isLoadingImages: false,
   }
 
   version = 0;
@@ -502,14 +504,8 @@ class Editor extends Component {
           nextState.photos = [];
 
           if (nextProps[R.PROP_PHOTO]) {
-            for (let photo of [...nextProps[R.PROP_PHOTO]]) {
-              nextState.photos.push({
-                name  : photo,
-                id    : this.props.imageMap[photo].id,
-                src   : this.props.imageMap[photo].thumbnail,
-                status: this.PHOTO_STATUS.SELECTED,
-              });
-            }
+            nextState.photo = this.convertPhotoNames([...nextProps[R.PROP_PHOTO]],
+                this.PHOTO_STATUS.SELECTED);
           }
 
           nextState.musics = [...(nextProps[R.PROP_MUSIC] || [])];
@@ -523,6 +519,27 @@ class Editor extends Component {
         this.version = new Date().getTime();
       }
     }
+  }
+
+  /**
+   * Converts a list of photo names from OneDrive or from OneDriveManager to
+   * something this class can understand
+   * @param photoNames
+   * @param status - the status of these photos
+   */
+  convertPhotoNames(photoNames, status) {
+    let result = [];
+
+    for (let photo of photoNames) {
+      result.push({
+        name  : photo,
+        id    : this.props.imageMap[photo].id,
+        src   : this.props.imageMap[photo].thumbnail,
+        status: status,
+      });
+    }
+
+    return result;
   }
 
   /**
@@ -606,7 +623,7 @@ class Editor extends Component {
     if (!this.state.isEditing) {
       return false;
     }
-
+    //todo add network activity
     var newPhotos = this.state.photos;
     newPhotos[i].status = ~newPhotos[i].status & 0b11;
     this.setState({
@@ -1045,6 +1062,33 @@ class Editor extends Component {
     this.setState({hasPrompt: false});
   }
 
+  refreshPhoto() {
+    this.setState({
+      isLoadingImages: true,
+    });
+
+    this.props.onRefreshQueue()
+        .then(list => list.map(photo => photo.name))
+        .then(names => {
+          // Combining current photo list with new ones
+          let currentNames = this.state.photos.map(photo => photo.name),
+              newNames = [];
+
+          for (let name of names) {
+            if (currentNames.indexOf(name) === -1) {
+              newNames.push(name);
+            }
+          }
+
+          this.setState({
+            isLoadingImages: false,
+            photos         : [...this.state.photos, ...this.convertPhotoNames(
+                newNames,
+                this.PHOTO_STATUS.NOT_SELECTED)]
+          });
+        });
+  }
+
   // endregion listeners
 
   // region Utility functions
@@ -1179,7 +1223,7 @@ class Editor extends Component {
               <div className="flex-last-item"></div>
               <Button>access_time</Button>
               <span
-                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "" : "hidden"} breaker`}></span>
+                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} breaker`}></span>
               <Toggle
                   className="btn"
                   isHidden={this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW}
@@ -1188,6 +1232,11 @@ class Editor extends Component {
                   firstIcon="expand_less"
                   secondIcon="expand_more"
               ></Toggle>
+              <Button
+                  className={this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}
+                  onClick={this.refreshPhoto.bind(this)}
+                  loading={this.state.isLoadingImages}
+              >refresh</Button>
               <span className="breaker"></span>
               { [["photos", "photo_library"],
                 ["musics", "library_music"],

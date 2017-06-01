@@ -737,7 +737,8 @@ nav.nav {
           position: relative; }
           .Editor .extras .more-info .photo-preview .photo-previewed-wrapper .photo-wrapper {
             width: 100%;
-            height: 100%; }
+            height: 100%;
+            cursor: pointer; }
         .Editor .extras .more-info .photo-preview .photo-no-scroll {
           margin-top: 10px;
           flex: 0 0 auto;
@@ -766,7 +767,8 @@ nav.nav {
         padding: 0 2.5px;
         opacity: .5;
         display: none;
-        transition: opacity .4s ease; }
+        transition: opacity .4s ease;
+        cursor: pointer; }
         .Editor .extras .photos .photo.selected {
           opacity: 1;
           display: inline-block; }

@@ -319,7 +319,7 @@ export default class MainContent extends Component {
     for (let image of images) {
       this.imageMap[image.name] = {
         id       : image.id,
-        thumbnail: image.thumbnail,
+        thumbnail: image.thumbnails,
       };
     }
   }
@@ -467,6 +467,20 @@ export default class MainContent extends Component {
    */
   handleArticleRemove(articleIndex) {
     // todo implement
+  }
+
+  handleEditorRefreshQueue() {
+    return OneDriveManager.getImages(this.year)
+        .then(imageMap => {
+          this.handleNewImageMap(imageMap);
+          this.forceUpdate();
+
+          return OneDriveManager.getImagesInQueue();
+        })
+        .catch(err=> {
+          R.notifyError(this.notificationSystem,
+              "There was an error when fetching the queue. Try again");
+        });
   }
 
   /**
@@ -666,6 +680,7 @@ export default class MainContent extends Component {
                   version={this.editorVersion}
                   tagPrediction={R.TAG_PREDICTION_DICTIONARY}
                   onChange={this.handleArticleChange.bind(this)}
+                  onRefreshQueue={this.handleEditorRefreshQueue.bind(this)}
                   year={this.year}
               />
             </div>
