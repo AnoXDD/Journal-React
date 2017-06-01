@@ -715,24 +715,8 @@ nav.nav {
         background: white;
         margin: 0;
 
-        .icon {
-          padding: 6px 0 0 6px;
-          font-size: 18px;
-          position: relative;
-          pointer-events: auto;
-          transition: color .4s ease;
-
-          .material-icons {
-            font-size: 18px;
-          }
-
-          &:hover {
-            color: $blue;
-          }
-        }
-
-        .vertical-align-wrapper {
-          height: 100%;
+        .btn {
+          zoom: .7;
         }
       }
     }
@@ -807,30 +791,40 @@ nav.nav {
     $text-padding-left: 10px;
     .text {
       font-size: 15px;
-      padding: 5px $text-padding-left 1px;
+      padding: 7px $text-padding-left 0px;
       color: $blue;
+    }
+
+    .others {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .other-wrapper {
       $other-prop-length: 400px;
       $other-prop-padding: 10px;
-      $other-props-width: 2*$other-prop-length + 4*$other-prop-padding;
-      $type-width: 120px;
+      $other-props-width: $other-prop-length + 2*$other-prop-padding;
+      $type-height: 40px;
 
       display: inline-block;
-      padding: 5px 0;
-      width: $other-props-width + $type-width;
+      margin: 10px 0;
+      width: $other-props-width;
 
       .other {
         display: flex;
+        flex-direction: column;
       }
 
       .type-wrapper {
-        flex: 0 0 $type-width;
-        width: $type-width;
+        flex: 0 0 $type-height;
+        height: $type-height;
+        width: 100%;
         background: $blue;
         color: white;
         position: relative;
+        display: flex;
+        height: 40px;
 
         &.add {
           height: 40px;
@@ -844,6 +838,10 @@ nav.nav {
             padding: 0;
             height: 18px;
           }
+        }
+
+        .btn:hover {
+          color: black;
         }
 
         .type {
@@ -873,6 +871,7 @@ nav.nav {
         display: block;
         width: $other-props-width;
         text-align: left;
+        margin-top: 5px;
 
         .other-prop {
           padding: $other-prop-padding/2 $other-prop-padding;

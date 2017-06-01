@@ -207,7 +207,7 @@ input, textarea {
   width: 100%;
 }
 
-.flex-extend-inner-wrapper {
+.flex-extend-inner-wrapper, .flex-inner-extend {
   position: absolute;
   height: 100%;
   width: 100%;
@@ -265,7 +265,7 @@ img.center {
     }
   }
 
-   &.text {
+  &.text {
     width: auto;
     display: flex;
 
@@ -278,6 +278,7 @@ img.center {
       flex: 1 1 auto;
       text-align: left;
       pointer-events: none;
+      position: relative;
     }
   }
 

@@ -488,7 +488,7 @@ export default class MainContent extends Component {
     return OneDriveManager.upload(this.year,
             R.DATA_VERSION + JSON.stringify(data))
         .then(() => {
-          R.notifySuccess(this.notificationSystem, "Uploaded");
+          R.notify(this.notificationSystem, "Uploaded");
         }, () => {
           R.notifyError(this.notificationSystem,
               "Unable to upload the data. Try again!");

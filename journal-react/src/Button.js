@@ -19,8 +19,8 @@ export default class Button extends Component {
            onClick={this.props.onClick || void(0)} {...disabled}>
           <Ink/>
           { this.props.loading ? null : (
-              <div className="vertical-align icon-wrapper">
-                <i className="material-icons vertical-align-wrapper">
+              <div className="flex-center icon-wrapper">
+                <i className="material-icons">
                   {this.props.children}
                 </i>
               </div>)}
@@ -31,8 +31,8 @@ export default class Button extends Component {
                 </span>
               </div>) : null }
           { this.props.loading ? (
-              <div className="vertical-align icon-wrapper">
-                <i className="material-icons vertical-align-wrapper">
+              <div className="flex-center icon-wrapper">
+                <i className="material-icons">
                   remove
                 </i>
               </div>) : null }

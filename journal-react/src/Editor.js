@@ -4,7 +4,6 @@ import {
     SortableElement,
     arrayMove
 } from 'react-sortable-hoc';
-import Ink from "react-ink";
 import AutosizeInput from "react-input-autosize";
 
 import NoScrollArea from "./NoScrollArea";
@@ -51,11 +50,10 @@ class ExtraAttachmentsAddProp extends Component {
                 disabled={!isEditing}
                 onKeyDown={(e) => {if (e.key === "Enter") {onClickAdd();}}}
             />
-            <a className={`icon ${isEditing ? "" : "transparent"} `}
-               onClick={onClickAdd}
-            >
-              <i className="material-icons">add_circle_outline</i>
-            </a>
+            <Button className={isEditing ? "" : "transparent"}
+                    onClick={onClickAdd}>
+              add_circle_outline
+            </Button>
           </div>
         </div>
     );
@@ -107,12 +105,12 @@ class ExtraAttachments extends Component {
               // todo make this editable
               return (
                   <div key={`other-${index}`}
-                       className="other-wrapper">
-                    <div className="other">
-                      <div className="type-wrapper">
+                       className="other-wrapper shadow">
+                    <div className="other flex-center">
+                      <div className="type-wrapper flex-center">
                         <input
                             type="text"
-                            className={`flex-extend-inner-wrapper type normal ${this.props.isEditing ? "" : "disabled"}`}
+                            className={`type normal ${this.props.isEditing ? "" : "disabled"}`}
                             value={other.type}
                             onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
                             disabled={!this.props.isEditing}
@@ -648,11 +646,10 @@ class Editor extends Component {
   generateAddPanelFor(tag, state) {
     return (
         <div className="more-info-wrapper">
-          <a className="icon-wrapper"
-             onClick={() => { this.setState(state); }}
-          >
-            <i className="material-icons">add_circle_outline</i>
-          </a>
+          <Button className="icon-wrapper"
+                  onClick={() => { this.setState(state); }}>
+            add_circle_outline
+          </Button>
         </div>
     )
   }
@@ -670,11 +667,9 @@ class Editor extends Component {
     }
 
     return (
-        <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
-           onClick={handleClick}
-        >
-          <i className="material-icons">remove_circle_outline</i>
-        </a>
+        <Button className={this.state.isEditing ? "" : "transparent"}
+                onClick={handleClick}>remove_circle_outline
+        </Button>
     );
   }
 
@@ -686,7 +681,7 @@ class Editor extends Component {
    * @returns {*}
    */
   generateRemovePanelForOthers(otherIndex, propKey) {
-    if (propKey) {
+    if (typeof propKey !== "undefined") {
       // Remove a specific property
       let handleClick = () => {
         let others = this.state.others;
@@ -696,11 +691,9 @@ class Editor extends Component {
       };
 
       return (
-          <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
-             onClick={handleClick}
-          >
-            <i className="material-icons">remove_circle_outline</i>
-          </a>
+          <Button className={this.state.isEditing ? "" : "transparent"}
+                  onClick={handleClick}>remove_circle_outline
+          </Button>
       );
     } else {
       // Remove the entire entry
@@ -716,11 +709,9 @@ class Editor extends Component {
       };
 
       return (
-          <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
-             onClick={handleClick}
-          >
-            <i className="material-icons">remove_circle</i>
-          </a>
+          <Button className={this.state.isEditing ? "" : "hidden"}
+                  onClick={handleClick}>remove_circle
+          </Button>
       );
     }
 
@@ -744,11 +735,11 @@ class Editor extends Component {
       };
 
       return (
-          <a className={`icon ${this.state.isEditing ? "" : "transparent"} `}
-             onClick={handleClick}
-          >
-            <i className="material-icons">add_circle_outline</i>
-          </a>
+          <Button
+              className={this.state.isEditing ? "" : "transparent"}
+              onClick={handleClick}>
+            add_circle
+          </Button>
       );
     } else {
       // Generate a new property
@@ -1176,10 +1167,7 @@ class Editor extends Component {
           <div
               className={`extras ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "extend" : ""} ${this.state.isFullscreen ? "hidden" : ""} `}>
             <div className="buttons">
-              <a className="vertical-align btn tags">
-                <Ink/>
-                <i className="material-icons vertical-align-wrapper">label_outline</i>
-              </a>
+              <Button className="tags">label_outline</Button>
               <div className="current-tags-wrapper">
                 <PredictionInputs
                     className={`tag white-background new-tag-wrapper ${!this.state.isEditing ? "hidden" : ""}`}

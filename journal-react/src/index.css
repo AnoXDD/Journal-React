@@ -97,7 +97,7 @@ input, textarea {
 .flex-last-item {
   width: 100%; }
 
-.flex-extend-inner-wrapper {
+.flex-extend-inner-wrapper, .flex-inner-extend {
   position: absolute;
   height: 100%;
   width: 100%; }
@@ -138,7 +138,7 @@ img.center {
     background: #448AFF; }
     .btn.accent:hover:not(:active), .Options .accent.option:hover:not(:active), .toggle.accent:hover:not(:active) {
       background: #2962FF;
-      box-shadow: 1px 1px 6px grey;
+      box-shadow: 0px 1px 6px grey;
       color: white; }
     .btn.accent:active, .Options .accent.option:active, .toggle.accent:active {
       color: white; }
@@ -151,7 +151,8 @@ img.center {
       display: block;
       flex: 1 1 auto;
       text-align: left;
-      pointer-events: none; }
+      pointer-events: none;
+      position: relative; }
   .btn.loading, .Options .loading.option, .toggle.loading {
     opacity: .8; }
     .btn.loading .icon-wrapper, .Options .loading.option .icon-wrapper, .toggle.loading .icon-wrapper {
@@ -748,18 +749,8 @@ nav.nav {
         pointer-events: auto;
         background: white;
         margin: 0; }
-        .Editor .extras .more-info .more-info-wrapper .icon {
-          padding: 6px 0 0 6px;
-          font-size: 18px;
-          position: relative;
-          pointer-events: auto;
-          transition: color .4s ease; }
-          .Editor .extras .more-info .more-info-wrapper .icon .material-icons {
-            font-size: 18px; }
-          .Editor .extras .more-info .more-info-wrapper .icon:hover {
-            color: #448AFF; }
-        .Editor .extras .more-info .more-info-wrapper .vertical-align-wrapper {
-          height: 100%; }
+        .Editor .extras .more-info .more-info-wrapper .btn, .Editor .extras .more-info .more-info-wrapper .Options .option, .Options .Editor .extras .more-info .more-info-wrapper .option {
+          zoom: .7; }
     .Editor .extras .current-tags-wrapper {
       flex: 1 0 auto;
       width: calc(100% - 60px); }
@@ -799,20 +790,28 @@ nav.nav {
       padding: 5px 0px 1px 10px; }
     .Editor .extras .text {
       font-size: 15px;
-      padding: 5px 10px 1px;
+      padding: 7px 10px 0px;
       color: #448AFF; }
+    .Editor .extras .others {
+      display: flex;
+      flex-direction: column;
+      align-items: center; }
     .Editor .extras .other-wrapper {
       display: inline-block;
-      padding: 5px 0;
-      width: 960px; }
+      margin: 10px 0;
+      width: 420px; }
       .Editor .extras .other-wrapper .other {
-        display: flex; }
+        display: flex;
+        flex-direction: column; }
       .Editor .extras .other-wrapper .type-wrapper {
-        flex: 0 0 120px;
-        width: 120px;
+        flex: 0 0 40px;
+        height: 40px;
+        width: 100%;
         background: #448AFF;
         color: white;
-        position: relative; }
+        position: relative;
+        display: flex;
+        height: 40px; }
         .Editor .extras .other-wrapper .type-wrapper.add {
           height: 40px;
           display: flex;
@@ -823,6 +822,8 @@ nav.nav {
             position: static;
             padding: 0;
             height: 18px; }
+        .Editor .extras .other-wrapper .type-wrapper .btn:hover, .Editor .extras .other-wrapper .type-wrapper .Options .option:hover, .Options .Editor .extras .other-wrapper .type-wrapper .option:hover {
+          color: black; }
         .Editor .extras .other-wrapper .type-wrapper .type {
           background: transparent;
           display: flex;
@@ -841,8 +842,9 @@ nav.nav {
             color: #2962FF; }
       .Editor .extras .other-wrapper .other-props {
         display: block;
-        width: 840px;
-        text-align: left; }
+        width: 420px;
+        text-align: left;
+        margin-top: 5px; }
         .Editor .extras .other-wrapper .other-props .other-prop {
           padding: 5px 10px;
           width: 400px;
