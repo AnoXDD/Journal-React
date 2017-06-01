@@ -1105,8 +1105,8 @@ class Editor extends Component {
                 onClick={this.restorePreviousBody}>restore</Button>
             <Button className={`${this.state.isFullscreen ? "" : "hidden"}`}
                     onClick={this.toggleDarkMode}>highlight</Button>
-            <Button onClick={this.onDecreasingTextBodyWidth}>format_indent_decrease</Button>
-            <Button onClick={this.onIncreasingTextBodyWidth}>format_indent_increase</Button>
+            <Button onClick={this.onDecreasingTextBodyWidth}>format_indent_increase</Button>
+            <Button onClick={this.onIncreasingTextBodyWidth}>format_indent_decrease</Button>
             <Toggle
                 className="btn fullscreen"
                 isChanging={this.state.isFullscreen}
@@ -1177,6 +1177,9 @@ class Editor extends Component {
                 />
               </div>
               <div className="flex-last-item"></div>
+              <Button>access_time</Button>
+              <span
+                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "" : "hidden"} breaker`}></span>
               <Toggle
                   className="btn"
                   isHidden={this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW}

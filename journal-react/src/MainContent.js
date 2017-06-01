@@ -666,6 +666,7 @@ export default class MainContent extends Component {
                   version={this.editorVersion}
                   tagPrediction={R.TAG_PREDICTION_DICTIONARY}
                   onChange={this.handleArticleChange.bind(this)}
+                  year={this.year}
               />
             </div>
             <div
