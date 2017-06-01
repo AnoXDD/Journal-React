@@ -482,14 +482,21 @@ class Editor extends Component {
           // This is to create a new entry
           nextState = Object.assign(nextState,
               this.DEFAULT_STATE,
-              {isEditing: true});
+              {
+                isEditing: true,
+                stats    : {
+                  timeCreated: new Date().getTime(),
+                  timeBegin  : new Date().getTime(),
+                },
+              })
+          ;
           this.hasUnsavedChanges = true;
         } else {
           nextState.title = nextProps.title;
           nextState.body = nextProps.body;
           nextState.stats = {
             timeCreated: nextProps.time.created,
-            timeBegin  : nextProps.time.begin,
+            timeBegin  : nextProps.time.begin || nextProps.time.created,
             timeEnd    : nextProps.time.end,
           };
           nextState.tags = [...nextProps.tags];
@@ -530,8 +537,8 @@ class Editor extends Component {
       type : R.TYPE_ARTICLE,
       time : {
         created: this.state.stats.timeCreated,
-        begin  : this.state.stats.timeBegin,
-        end    : this.state.stats.timeEnd,
+        begin  : this.state.stats.timeBegin || this.state.stats.timeCreated,
+        end    : this.state.stats.timeEnd || new Date().getTime(),
       },
       title: this.state.title,
       body : this.state.body,
@@ -546,7 +553,7 @@ class Editor extends Component {
 
     let tags = this.state.tags;
     if (tags && tags.length) {
-      data.tags = tags.join("|");
+      data.tags = tags;
     }
 
     const LIST = ["musics", "movies", "links", "others"];
@@ -617,7 +624,7 @@ class Editor extends Component {
     }
 
     // Trying to save this entry
-    this.setSTate({
+    this.setState({
       isEditingLoading: true,
     })
     let extracted = this.extractUploadableData();

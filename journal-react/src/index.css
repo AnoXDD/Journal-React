@@ -299,24 +299,38 @@ nav.nav {
     width: 100%;
     height: 100%; }
 
-.toggle.vertical-align {
+.toggle {
   cursor: pointer;
   position: relative;
   display: inline-block; }
-  .toggle.vertical-align .first, .toggle.vertical-align .second {
-    transition: opacity .4s ease; }
-  .toggle.vertical-align.accent .first, .toggle.vertical-align.accent .second {
-    width: 120px; }
-  .toggle.vertical-align .first {
-    opacity: 1; }
-  .toggle.vertical-align .second {
+  .toggle .material-icons {
+    position: absolute;
     top: 0;
-    position: relative;
-    opacity: 0; }
-  .toggle.vertical-align.change-hover:hover.show-second .first, .toggle.vertical-align:not(.change-hover).show-second .first {
-    opacity: 0; }
-  .toggle.vertical-align.change-hover:hover.show-second .second, .toggle.vertical-align:not(.change-hover).show-second .second {
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: none; }
+  .toggle .first, .toggle .second, .toggle .loading-icon {
+    transition: opacity .4s ease; }
+  .toggle.accent .first, .toggle.accent .second {
+    width: 120px; }
+  .toggle .first {
     opacity: 1; }
+  .toggle .second, .toggle .loading-icon {
+    opacity: 0;
+    animation-play-state: paused; }
+  .toggle.change-hover:hover.show-second .first, .toggle:not(.change-hover).show-second .first {
+    opacity: 0; }
+  .toggle.change-hover:hover.show-second .second, .toggle:not(.change-hover).show-second .second {
+    opacity: 1; }
+  .toggle.loading {
+    opacity: .8;
+    pointer-events: none; }
+    .toggle.loading .first, .toggle.loading .second {
+      opacity: 0; }
+    .toggle.loading .loading-icon {
+      opacity: 1;
+      animation: spin 1s linear infinite; }
 
 .Prompt {
   z-index: 999999999;
@@ -687,7 +701,8 @@ nav.nav {
         flex: 0 0 60px; }
         .Editor .extras .buttons .btn.accent, .Editor .extras .buttons .Options .accent.option, .Options .Editor .extras .buttons .accent.option {
           width: 120px;
-          margin-left: 30px; }
+          margin-left: 30px;
+          flex: 0 0 120px; }
         .Editor .extras .buttons .btn span, .Editor .extras .buttons .Options .option span, .Options .Editor .extras .buttons .option span {
           transition: opacity .4s ease;
           opacity: 0;

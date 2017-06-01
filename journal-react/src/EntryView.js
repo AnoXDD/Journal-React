@@ -34,11 +34,13 @@ class BulbImageView extends Component {
 
 class ContentArticle extends Component {
 
+  // todo remove unsplash placeholder
+
   constructor(props) {
     super(props);
 
     this.state = {
-      image: this.props.imageMap[(props.article.images || [])[0]].thumbnail || `https://unsplash.it/300/300?image=${0}`
+      image: props.article.images ? this.props.imageMap[props.article.images[0]].thumbnail : undefined,
     }
   }
 

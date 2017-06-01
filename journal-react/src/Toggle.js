@@ -18,15 +18,14 @@ export default class Toggle extends Component {
     height = height || "50px";
 
     return (
-        <a className={`vertical-align toggle ${this.props.loading ? "loading" : ""} ${className || ""} ${isHidden ? "hidden" : ""} ${isChangingOnHover ? "change-hover" : ""} ${isChanging ? "show-second" : ""} `}
+        <a className={`toggle ${this.props.loading ? "loading" : ""} ${className || ""} ${isHidden ? "hidden" : ""} ${isChangingOnHover ? "change-hover" : ""} ${isChanging ? "show-second" : ""} `}
            onClick={onClick}
            style={{height: height}}
         >
           <Ink/>
-          <i className="material-icons vertical-align-wrapper loading-icon">remove</i>
-          <i className="vertical-align-wrapper first material-icons">{firstIcon}</i>
-          <i className="vertical-align-wrapper second material-icons"
-             style={{bottom: height}}>{secondIcon}</i>
+          <i className="material-icons flex-center loading-icon">remove</i>
+          <i className="flex-center first material-icons">{firstIcon}</i>
+          <i className="flex-center second material-icons">{secondIcon}</i>
         </a>
     );
   }

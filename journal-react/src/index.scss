@@ -132,12 +132,21 @@ nav.nav {
   }
 }
 
-.toggle.vertical-align {
+.toggle {
   cursor: pointer;
   position: relative;
   display: inline-block;
 
-  .first, .second {
+  .material-icons {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: none;
+  }
+
+  .first, .second, .loading-icon {
     transition: opacity .4s ease;
   }
 
@@ -151,10 +160,9 @@ nav.nav {
     opacity: 1;
   }
 
-  .second {
-    top: 0;
-    position: relative;
+  .second, .loading-icon {
     opacity: 0;
+    animation-play-state: paused;
   }
 
   &.change-hover:hover.show-second, &:not(.change-hover).show-second {
@@ -164,6 +172,20 @@ nav.nav {
 
     .second {
       opacity: 1;
+    }
+  }
+
+  &.loading {
+    opacity: .8;
+    pointer-events: none;
+
+    .first, .second {
+      opacity: 0;
+    }
+
+    .loading-icon {
+      opacity: 1;
+      animation: spin 1s linear infinite;
     }
   }
 }
@@ -629,6 +651,7 @@ nav.nav {
         &.accent {
           width: $button-width-accent;
           margin-left: $button-width / 2;
+          flex: 0 0 $button-width-accent;
         }
 
         span {

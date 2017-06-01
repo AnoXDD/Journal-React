@@ -155,7 +155,7 @@ const defaultColors = {
 
         success: {
           borderTop      : "none",
-          backgroundColor: '#CCFF90',
+          backgroundColor: '#009688',
           color          : 'black',
           boxShadow      : notificationBoxShadow,
         },
@@ -305,6 +305,7 @@ export default class MainContent extends Component {
           this.setState({
             loadingPrompt      : "",
             isDisplayingMapView: false,
+            version            : new Date().getTime(),
           });
         });
   }
@@ -486,7 +487,16 @@ export default class MainContent extends Component {
   uploadData(data) {
     return OneDriveManager.upload(this.year,
             R.DATA_VERSION + JSON.stringify(data))
-        .then(() => this.forceUpdate());
+        .then(() => {
+          R.notifySuccess(this.notificationSystem, "Uploaded");
+        }, () => {
+          R.notifyError(this.notificationSystem,
+              "Unable to upload the data. Try again!");
+        })
+        .then(() => this.setState({
+          data   : data,
+          version: new Date().getTime()
+        }));
   }
 
   toggleIsDisplayingCalendar() {

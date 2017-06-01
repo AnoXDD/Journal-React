@@ -39,36 +39,36 @@ module.exports = {
   // Utility functions to add notifications
   copy: obj => obj ? JSON.parse(JSON.stringify(obj)) : obj,
 
-  notify        : (notificationSystem, message, title, autoDismiss) => {
+  notify       : (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({
-      title      : title,
+      title      : title || null,
       level      : "info",
       message    : message,
-      autoDismiss: autoDismiss,
+      autoDismiss: autoDismiss || 5,
     });
   },
   notifyError  : (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({
-      title      : title,
+      title      : title || null,
       level      : "error",
       message    : message,
-      autoDismiss: autoDismiss,
+      autoDismiss: autoDismiss || 5,
     });
   },
   notifyWarning: (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({
-      title      : title,
+      title      : title || null,
       level      : "warning",
       message    : message,
-      autoDismiss: autoDismiss,
+      autoDismiss: autoDismiss || 5,
     });
   },
   notifySuccess: (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({
-      title      : title,
+      title      : title || null,
       level      : "success",
       message    : message,
-      autoDismiss: autoDismiss,
+      autoDismiss: autoDismiss || 5,
     });
   },
 }
