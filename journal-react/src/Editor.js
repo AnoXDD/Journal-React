@@ -556,11 +556,14 @@ class Editor extends Component {
       data.tags = tags;
     }
 
-    const LIST = ["musics", "movies", "links", "others"];
+    const STATE_LIST = ["musics", "movies", "links", "others"],
+        MAPPED_LIST = [R.PROP_MUSIC, R.PROP_MOVIE, R.PROP_LINK, R.PROP_OTHER];
 
-    for (let list of LIST) {
-      if (this.state[list] && this.state[list].length) {
-        data[list] = this.state[list];
+    for (let i = 0; i < STATE_LIST.length; ++i) {
+      let stateList = STATE_LIST[i],
+          mappedList = MAPPED_LIST[i];
+      if (this.state[stateList] && this.state[stateList].length) {
+        data[mappedList] = this.state[stateList];
       }
     }
 
@@ -1210,6 +1213,7 @@ class Editor extends Component {
                             secondIcon="add_circle_outline"
                             isChangingOnHover={true}
                             isChanging={!this.state[tag[0]].length}
+                            disabled={this.state[tag[0]].length === 0 && !this.state.isEditing}
                         />
                     );
                   }) }

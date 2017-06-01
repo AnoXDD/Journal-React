@@ -4,7 +4,7 @@
 
 $blue-light: #82B1FF;
 $blue: #448AFF;
-$blue-dark: #1976D2;
+$blue-dark: #2962FF;
 
 $cyan-0: #E0F7FA;
 $cyan-1: #B2EBF2;
@@ -237,6 +237,7 @@ img.center {
   transition: .4s ease;
   user-select: none;
   cursor: pointer;
+  border-radius: 1px;
 
   &[disabled] {
     pointer-events: none;
@@ -254,7 +255,8 @@ img.center {
     background: $blue;
 
     &:hover:not(:active) {
-      background: $blue-light;
+      background: $blue-dark;
+      box-shadow: 0px 1px 6px grey;
       color: white;
     }
 

@@ -15,12 +15,18 @@ export default class Toggle extends Component {
   render() {
     let {className, isHidden, isChangingOnHover, isChanging, onClick, height, firstIcon, secondIcon} = this.props;
 
+    let disabled = {};
+    if (this.props.disabled) {
+      disabled.disabled = "disabled";
+    }
+
     height = height || "50px";
 
     return (
         <a className={`toggle ${this.props.loading ? "loading" : ""} ${className || ""} ${isHidden ? "hidden" : ""} ${isChangingOnHover ? "change-hover" : ""} ${isChanging ? "show-second" : ""} `}
            onClick={onClick}
            style={{height: height}}
+            {...disabled}
         >
           <Ink/>
           <i className="material-icons flex-center loading-icon">remove</i>

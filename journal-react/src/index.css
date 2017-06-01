@@ -124,7 +124,8 @@ img.center {
   text-align: center;
   transition: .4s ease;
   user-select: none;
-  cursor: pointer; }
+  cursor: pointer;
+  border-radius: 1px; }
   .btn[disabled], .Options [disabled].option, .toggle[disabled] {
     pointer-events: none;
     opacity: .5; }
@@ -136,7 +137,8 @@ img.center {
     color: white;
     background: #448AFF; }
     .btn.accent:hover:not(:active), .Options .accent.option:hover:not(:active), .toggle.accent:hover:not(:active) {
-      background: #82B1FF;
+      background: #2962FF;
+      box-shadow: 1px 1px 6px grey;
       color: white; }
     .btn.accent:active, .Options .accent.option:active, .toggle.accent:active {
       color: white; }
@@ -182,7 +184,7 @@ img.center {
   .btn:not(.underlined):hover .original, .Options .option:not(.underlined):hover .original, .toggle:not(.underlined):hover .original {
     opacity: 0; }
   .btn:not(.accent):hover, .Options .option:not(.accent):hover, .btn:not(.accent):active, .Options .option:not(.accent):active, .toggle:not(.accent):hover, .toggle:not(.accent):active {
-    color: #1976D2; }
+    color: #2962FF; }
     .btn:not(.accent):hover span, .Options .option:not(.accent):hover span, .btn:not(.accent):active span, .Options .option:not(.accent):active span, .toggle:not(.accent):hover span, .toggle:not(.accent):active span {
       opacity: 1; }
   .btn .icon-wrapper, .Options .option .icon-wrapper, .btn .text-wrapper, .Options .option .text-wrapper, .toggle .icon-wrapper, .toggle .text-wrapper {
@@ -836,7 +838,7 @@ nav.nav {
           color: black;
           padding: 0; }
           .Editor .extras .other-wrapper .type-wrapper .icon:hover {
-            color: #1976D2; }
+            color: #2962FF; }
       .Editor .extras .other-wrapper .other-props {
         display: block;
         width: 840px;
