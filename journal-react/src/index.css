@@ -152,7 +152,8 @@ img.center {
       flex: 1 1 auto;
       text-align: left;
       pointer-events: none;
-      position: relative; }
+      position: relative;
+      white-space: nowrap; }
   .btn.loading, .Options .loading.option, .toggle.loading {
     opacity: .8; }
     .btn.loading .icon-wrapper, .Options .loading.option .icon-wrapper, .toggle.loading .icon-wrapper {
@@ -192,6 +193,11 @@ img.center {
     height: 100%; }
   .btn .text-wrapper, .Options .option .text-wrapper, .toggle .text-wrapper {
     display: none; }
+  .btn .loading-icon, .Options .option .loading-icon, .toggle .loading-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60px; }
 
 .flex-center {
   display: flex;

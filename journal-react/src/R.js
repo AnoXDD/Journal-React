@@ -44,6 +44,7 @@ module.exports = {
       title      : title || null,
       level      : "info",
       message    : message,
+      position   : "bl",
       autoDismiss: autoDismiss || 5,
     });
   },
@@ -52,6 +53,7 @@ module.exports = {
       title      : title || null,
       level      : "error",
       message    : message,
+      position   : "bl",
       autoDismiss: autoDismiss || 5,
     });
   },
@@ -60,6 +62,7 @@ module.exports = {
       title      : title || null,
       level      : "warning",
       message    : message,
+      position   : "bl",
       autoDismiss: autoDismiss || 5,
     });
   },
@@ -68,6 +71,7 @@ module.exports = {
       title      : title || null,
       level      : "success",
       message    : message,
+      position   : "bl",
       autoDismiss: autoDismiss || 5,
     });
   },

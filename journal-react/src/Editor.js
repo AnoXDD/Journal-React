@@ -104,7 +104,6 @@ class ExtraAttachments extends Component {
         <NoScrollArea padding="10px">
           <div className="others more-info-wrapper">
             { this.state.others.map((other, index) => {
-              // todo make this editable
               return (
                   <div key={`other-${index}`}
                        className="other-wrapper shadow">
@@ -553,7 +552,6 @@ class Editor extends Component {
    * This function assumes that no images are still being transferred
    */
   extractUploadableData() {
-    // todo implement
     let data = {
       type : R.TYPE_ARTICLE,
       time : {

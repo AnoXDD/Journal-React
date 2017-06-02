@@ -34,14 +34,15 @@ class BulbImageView extends Component {
 
 class ContentArticle extends Component {
 
-  // todo remove unsplash placeholder
-
   constructor(props) {
     super(props);
 
     this.state = {
-      image: props.article.images ? this.props.imageMap[props.article.images[0]].thumbnail : undefined,
-    }
+      image     : props.article.images ? this.props.imageMap[props.article.images[0]].thumbnail : undefined,
+      isRemoving: false,
+    };
+
+    this.handleRemoveClick = this.handleRemoveClick.bind(this);
   }
 
   handleMouseMove(e, images) {
@@ -49,8 +50,26 @@ class ContentArticle extends Component {
             .999999999) * images.length, 10);
 
     this.setState({
-      image: this.props.imageMap[images[i]].thumbnail || `https://unsplash.it/300/300?image=${i}`
+      image: this.props.imageMap[images[i]].thumbnail,
     });
+  }
+
+  handleRemoveClick(e) {
+    this.setState({
+      isRemoving: true
+    });
+
+    this.props.onRemoveClick()
+        .then(() => {
+          // Nothing needs to be done since it will be gone
+        }, () => {
+          this.setState({
+            isRemoving: false,
+          });
+        });
+
+    e.preventDefault();
+    e.stopPropagation();
   }
 
   render() {
@@ -76,7 +95,8 @@ class ContentArticle extends Component {
           </div>
           <Button
               className={this.props.className === " no-image" ? "" : "dark"}
-              onClick={this.props.onRemoveClick}
+              loading={this.state.isRemoving}
+              onClick={this.handleRemoveClick}
           >delete</Button>
         </article>
     );

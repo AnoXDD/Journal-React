@@ -280,6 +280,7 @@ img.center {
       text-align: left;
       pointer-events: none;
       position: relative;
+      white-space: nowrap;
     }
   }
 
@@ -359,6 +360,14 @@ img.center {
 
   .text-wrapper {
     display: none;
+  }
+
+  .loading-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: $button-width;
+    transition: .4s ease;
   }
 }
 

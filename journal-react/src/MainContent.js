@@ -131,11 +131,11 @@ const defaultColors = {
       NotificationItem: {
         DefaultStyle: {
           position       : 'relative',
-          width          : '100%',
+          width          : '230px',
           cursor         : 'pointer',
           fontSize       : 'inherit',
           margin         : '10px 0 0',
-          padding        : '35px 30px',
+          padding        : '20px 30px',
           display        : 'block',
           WebkitBoxSizing: 'border-box',
           MozBoxSizing   : 'border-box',
@@ -255,6 +255,8 @@ export default class MainContent extends Component {
     this.handlePromptCancel = this.handlePromptCancel.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
+    this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
+        this);
 
     this.updateContentStyle(this.state.data);
   }
@@ -443,18 +445,18 @@ export default class MainContent extends Component {
 
   handleArticleChange(newEntry) {
     if (this.articleList[this.state.editArticleIndex]) {
-      let prevTimestamp = this.articleList[this.state.editArticleIndex].time.created,
+      let index = this.findDataIndexByArticleIndex(this.state.editArticleIndex),
           dataCopy = [...this.state.data];
-      // First, find the index of the article edited
-      for (let i = 0; i < dataCopy.length; ++i) {
-        let entry = this.state.data[i];
-        if (entry.type === R.TYPE_ARTICLE && entry.time.created === prevTimestamp) {
-          dataCopy[i] = newEntry;
-          break;
-        }
-      }
 
-      return this.uploadUnprocessedData(dataCopy);
+      if (index !== -1) {
+        dataCopy[index] = newEntry;
+        return this.uploadUnprocessedData(dataCopy);
+      } else {
+        // Technically this shouldn't happen
+        R.notifyError(this.notificationSystem,
+            "Unable to upload the data. Try exit the editor and upload again");
+        return new Promise((res, rej) => rej());
+      }
     }
 
     // Adding a new entry
@@ -466,7 +468,19 @@ export default class MainContent extends Component {
    * @param articleIndex
    */
   handleArticleRemove(articleIndex) {
-    // todo implement
+    let index = this.findDataIndexByArticleIndex(articleIndex),
+        dataCopy = [...this.state.data];
+
+    if (index !== -1) {
+      dataCopy.splice(index, 1);
+
+      return this.uploadData(dataCopy);
+    } else {
+      // Technically this shouldn't happen
+      R.notifyError(this.notificationSystem,
+          "Unable to upload the data. Try refreshing the website");
+      return new Promise((res, rej) => rej());
+    }
   }
 
   handleEditorRefreshQueue() {
@@ -527,6 +541,25 @@ export default class MainContent extends Component {
     this.setState({
       isDisplayingMapView: !this.state.isDisplayingMapView,
     });
+  }
+
+  /**
+   * To make the querying easier, the program breaks the data into a list of
+   * articles and a list of bulbs. But to do data manipulation, the real index
+   * of data is needed. This functions converts the article index into the data
+   * index.
+   * @param articleIndex
+   */
+  findDataIndexByArticleIndex(articleIndex) {
+    let timestamp = this.articleList[articleIndex].time.created;
+    for (let i = 0; i < this.state.data.length; ++i) {
+      let entry = this.state.data[i];
+      if (entry.type === R.TYPE_ARTICLE && entry.time.created === timestamp) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 
   /**
