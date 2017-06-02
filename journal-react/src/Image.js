@@ -40,9 +40,9 @@ export default class Image extends Component {
         <div className={className}
              onClick={this.props.onClick}
         >
-          <div className="image stretch"
+          <div className={`image ${!this.props.contain ? "stretch" : "contain"}`}
                style={{backgroundImage: `url("${this.lastSrc}")`}}></div>
-          <div className="image stretch"
+          <div className={`image ${!this.props.contain ? "stretch" : "contain"}`}
                onClick={this.props.onClick}
                style={{backgroundImage: `url("${this.props.src}")`}}></div>
         </div>

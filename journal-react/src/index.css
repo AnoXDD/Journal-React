@@ -138,7 +138,7 @@ img.center {
     background: #448AFF; }
     .btn.accent:hover:not(:active), .Options .accent.option:hover:not(:active), .toggle.accent:hover:not(:active) {
       background: #4678ff;
-      box-shadow: 0px 1px 6px grey;
+      box-shadow: 0px 1px 6px black;
       color: white; }
     .btn.accent:active, .Options .accent.option:active, .toggle.accent:active {
       color: white; }
@@ -739,7 +739,9 @@ nav.nav {
           left: 250px;
           bottom: 280px;
           right: 0;
-          background: white; }
+          background: white;
+          box-sizing: content-box;
+          padding: 10px; }
           .Editor .extras .more-info .photo-preview .photo-wrapper .center {
             cursor: pointer; }
         .Editor .extras .more-info .photo-preview .photo-no-scroll {
@@ -928,6 +930,15 @@ nav.nav {
     animation: fade-in .4s ease; }
   .Image .stretch {
     background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0; }
+  .Image .contain {
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     position: absolute;

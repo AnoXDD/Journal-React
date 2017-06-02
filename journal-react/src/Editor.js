@@ -12,6 +12,8 @@ import PredictionInputs from "./PredictionInputs";
 import Button from "./Button";
 import NumberCard from "./NumberCard";
 import Prompt from "./Prompt";
+import Image from "./Image";
+
 import R from "./R";
 
 /**
@@ -161,9 +163,10 @@ class PhotoPreview extends Component {
           <div className=" flex column">
             <div
                 className="photo-wrapper">
-              <img className="center"
-                   onClick={() => {window.open(src)}}
-                   src={src} alt=""/>
+              <Image className="center"
+                     contain={true}
+                     onClick={() => {window.open(src)}}
+                     src={src} alt=""/>
             </div>
           </div>
           <div className="photo-no-scroll">
@@ -1265,7 +1268,7 @@ class Editor extends Component {
           </header>
 
           <div
-              className="text-body-wrapper">
+              className={`text-body-wrapper ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "transparent" : ""}`}>
             <div className="text-body-wrapper-2"
                  style={{padding: `0 ${50-this.state.bodyWidth/2}%`, width: `${this.state.bodyWidth}%`}}
             >
