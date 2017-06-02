@@ -229,6 +229,7 @@ export default class MainContent extends Component {
   highlightBulbIndex = -1;
 
   editorVersion = 0;
+  editedEntryTimestamp = 0;
 
   /* Press escape anywhere to return to this tab */
   escapeToReturn = this.TAB.NO_CHANGE;
@@ -263,6 +264,15 @@ export default class MainContent extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     this.updateContentStyle(nextState.data);
+
+    // Update `editArticleIndex`
+    if (this.editedEntryTimestamp) {
+      let editArticleIndex = this.articleList.findIndex(
+          article => article.time.created === this.editedEntryTimestamp);
+      nextState.editArticleIndex = editArticleIndex;
+
+      this.editedEntryTimestamp = 0;
+    }
   }
 
   componentWillMount() {
@@ -444,6 +454,8 @@ export default class MainContent extends Component {
   }
 
   handleArticleChange(newEntry) {
+    this.editedEntryTimestamp = newEntry.time.created;
+
     if (this.articleList[this.state.editArticleIndex]) {
       let index = this.findDataIndexByArticleIndex(this.state.editArticleIndex),
           dataCopy = [...this.state.data];
@@ -524,6 +536,7 @@ export default class MainContent extends Component {
         .then(() => OneDriveManager.getImages(this.state.year))
         .then(images => {
           this.handleNewImageMap(images);
+
           this.setState({
             data   : data,
             version: new Date().getTime()

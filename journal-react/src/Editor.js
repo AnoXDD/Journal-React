@@ -272,6 +272,8 @@ class Editor extends Component {
 
     isLoadingImages : false,
     photosInTransfer: [],
+
+    isSaving: false,
   }
 
   version = 0;
@@ -468,6 +470,7 @@ class Editor extends Component {
     this.restorePreviousBody = this.restorePreviousBody.bind(this);
     this.addToPhotosInTransfer = this.addToPhotosInTransfer.bind(this);
     this.removeFromPhotosInTransfer = this.removeFromPhotosInTransfer.bind(this);
+    this.saveEdit = this.saveEdit.bind(this);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -688,6 +691,27 @@ class Editor extends Component {
         }, () => {
           this.setState({
             isEditingLoading: false,
+          });
+        });
+  }
+
+  saveEdit() {
+    this.setState({
+      isSaving: true,
+    });
+
+    let extracted = this.extractUploadableData();
+
+    this.props.onChange(extracted)
+        .then(() => {
+          this.hasUnsavedChanges = false;
+
+          this.setState({
+            isSaving: false,
+          });
+        }, () => {
+          this.setState({
+            isSaving: false,
           });
         });
   }
@@ -1338,7 +1362,8 @@ class Editor extends Component {
                   }) }
               <span className="breaker"></span>
               <Button className={`${this.state.isEditing ? "" : "hidden"}`}
-                      onClick={()=>{console.log("TOdo")}}>save</Button>
+                      loading={this.state.isSaving}
+                      onClick={this.saveEdit}>save</Button>
               <Toggle
                   className="btn send-edit accent"
                   loading={this.state.isEditingLoading}
