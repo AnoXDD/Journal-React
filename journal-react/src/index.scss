@@ -748,8 +748,12 @@ nav.nav {
         padding: 0 2.5px;
         opacity: .5;
         display: none;
-        transition: opacity .4s ease;
-        cursor: pointer;
+        transition: opacity .4s ease, filter .4s ease;
+
+        &.loading {
+          opacity: .8;
+          filter: blur(2px);
+        }
 
         &.selected {
           opacity: 1;
@@ -758,6 +762,10 @@ nav.nav {
       }
 
       &.show-all {
+        .photo {
+          cursor: pointer;
+        }
+
         .photo:not(.selected) {
           display: inline-block;
         }

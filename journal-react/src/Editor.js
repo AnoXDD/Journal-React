@@ -185,9 +185,9 @@ class PhotoPreview extends Component {
   }
 }
 
-const SortableItem = SortableElement(({item, status, i, isSelected, handleClick}) =>
+const SortableItem = SortableElement(({item, status, i, isSelected, handleClick, loading}) =>
     <div
-        className={`photo ${isSelected(status) ? "selected" : ""} `}
+        className={`photo ${isSelected(status) ? "selected" : ""} ${loading ? "loading" :""}`}
         onClick={() => {handleClick(i);}}
     >
       <img src={item.src}
@@ -196,22 +196,23 @@ const SortableItem = SortableElement(({item, status, i, isSelected, handleClick}
     </div>
 );
 
-const SortableList = SortableContainer(({items, isEditing, isSelected, handleClick}) => {
+const SortableList = SortableContainer(({items, isEditing, isSelected, handleClick, photosInTransfer}) => {
   return (
       <NoScrollArea padding="10px">
         <div className="more-info-wrapper">
           <div
-              className={`photos ${isEditing ? "show-all" : ""} `}>
+              className={`photos ${isEditing ? "show-all" : ""}`}>
             {items.map((item, index) => {
 
               return (
                   <SortableItem key={`photo-${item.id}`}
                                 status={item.status}
                                 isSelected={isSelected}
+                                loading={photosInTransfer.indexOf(item.id) !== -1}
                                 index={index}
                                 i={index}
                                 handleClick={handleClick}
-                                disabled={!isEditing}
+                                disabled={!isEditing && photosInTransfer !== 0}
                                 item={item}/>
               );
             })}
@@ -240,9 +241,9 @@ class Editor extends Component {
    */
   PHOTO_STATUS = {  //      | Originally | Now |
     NOT_SELECTED: 0b10, //  |   no       | no  |
-    ADD         : 0b01, //  |   no       | yes |
-    REMOVE      : 0b00, //  |   yes      | no  |
-    SELECTED    : 0b11, //  |   yes      | yes |
+    // ADD         : 0b01, //  |   no       | yes | depre.
+    // REMOVE      : 0b00, //  |   yes      | no  | depre.
+    SELECTED    : 0b01, //  |   yes      | yes |
   };
 
   DEFAULT_TITLE = this.convertToDateTime(new Date()).substr(0, 7);
@@ -267,7 +268,8 @@ class Editor extends Component {
     isFullscreen    : false,
     hasPrompt       : false,
 
-    isLoadingImages: false,
+    isLoadingImages : false,
+    photosInTransfer: [],
   }
 
   version = 0;
@@ -462,6 +464,8 @@ class Editor extends Component {
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
     this.extractUploadableData = this.extractUploadableData.bind(this);
     this.restorePreviousBody = this.restorePreviousBody.bind(this);
+    this.addToPhotosInTransfer = this.addToPhotosInTransfer.bind(this);
+    this.removeFromPhotosInTransfer = this.removeFromPhotosInTransfer.bind(this);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -495,12 +499,15 @@ class Editor extends Component {
             timeBegin  : nextProps.time.begin || nextProps.time.created,
             timeEnd    : nextProps.time.end,
           };
-          nextState.tags = [...nextProps.tags];
+
+          if (nextProps.tags) {
+            nextState.tags = [...nextProps.tags];
+          }
 
           nextState.photos = [];
 
           if (nextProps[R.PROP_PHOTO]) {
-            nextState.photo = this.convertPhotoNames([...nextProps[R.PROP_PHOTO]],
+            nextState.photos = this.convertPhotoNames([...nextProps[R.PROP_PHOTO]],
                 this.PHOTO_STATUS.SELECTED);
           }
 
@@ -556,7 +563,13 @@ class Editor extends Component {
     };
 
     if (this.state.photos) {
-      let images = this.state.photos.map(photo => photo.name);
+      let images = [];
+      for (let image of this.state.photos) {
+        if (image.status === this.PHOTO_STATUS.SELECTED) {
+          images.push(image.name);
+        }
+      }
+
       if (images.length) {
         data.images = images;
       }
@@ -619,12 +632,32 @@ class Editor extends Component {
     if (!this.state.isEditing) {
       return false;
     }
-    //todo add network activity
-    var newPhotos = this.state.photos;
-    newPhotos[i].status = ~newPhotos[i].status & 0b11;
-    this.setState({
-      photos: newPhotos
-    });
+
+    let id = this.state.photos[i].id,
+        name = this.state.photos[i].name;
+
+    name = this.generateNewImageName(name, i);
+
+    this.addToPhotosInTransfer(id);
+
+    (this.state.photos[i].status === this.PHOTO_STATUS.NOT_SELECTED ?
+            this.props.oneDriveManager
+                .addImageById(id, this.props.year, name) :
+            this.props.oneDriveManager
+                .removeImageById(id)
+    )
+        .then(() => {
+          let photos = this.state.photos;
+          photos[i].status = ~photos[i].status & 0b11;
+          photos[i].name = name;
+          this.setState({
+            photos: photos
+          });
+
+          this.removeFromPhotosInTransfer(id);
+        }, err => {
+          this.removeFromPhotosInTransfer(id);
+        });
   }
 
   toggleEditMode() {
@@ -645,6 +678,8 @@ class Editor extends Component {
 
     this.props.onChange(extracted)
         .then(() => {
+          this.hasUnsavedChanges = false;
+
           this.setState({
             isEditing       : false,
             isEditingLoading: false,
@@ -790,7 +825,8 @@ class Editor extends Component {
         return (
             <SortableList items={this.state.photos}
                           isEditing={this.state.isEditing}
-                          isSelected={(status) => {return (status === this.PHOTO_STATUS.ADD || status === this.PHOTO_STATUS.SELECTED)}}
+                          isSelected={status => status === this.PHOTO_STATUS.SELECTED}
+                          photosInTransfer={this.state.photosInTransfer}
                           distance={5}
                           handleClick={(i) => {this.togglePhotoStatus(i)}}
                           axis="xy"
@@ -801,7 +837,7 @@ class Editor extends Component {
         return (
             <PhotoPreview
                 photos={this.state.photos}
-                isSelected={(status) => {return (status === this.PHOTO_STATUS.ADD || status === this.PHOTO_STATUS.SELECTED)}}
+                isSelected={status => status === this.PHOTO_STATUS.SELECTED}
                 isEditing={this.state.isEditing}
             ></PhotoPreview>
         );
@@ -1095,6 +1131,31 @@ class Editor extends Component {
         });
   }
 
+  addAllPhotos() {
+    for (let i = 0; i < this.state.photos.length; ++i) {
+      if (this.state.photos[i].status !== this.PHOTO_STATUS.SELECTED) {
+        this.togglePhotoStatus(i);
+      }
+    }
+  }
+
+  addToPhotosInTransfer(id) {
+    if (this.state.photosInTransfer.indexOf(id) === -1) {
+      this.setState({
+        photosInTransfer: [...this.state.photosInTransfer, id],
+      });
+    }
+  }
+
+  removeFromPhotosInTransfer(id) {
+    let index = this.state.photosInTransfer.indexOf(id);
+
+    if (index !== -1) {
+      this.state.photosInTransfer.splice(index, 1);
+      this.forceUpdate();
+    }
+  }
+
   // endregion listeners
 
   // region Utility functions
@@ -1131,6 +1192,13 @@ class Editor extends Component {
 
   convertToElapsed(seconds) {
     return `${parseInt(seconds / 60, 10)}:${("0" + seconds % 60).slice(-2)}`;
+  }
+
+  generateNewImageName(name, i) {
+    let suffix = name.lastIndexOf(".");
+    suffix = name.substr(suffix);
+
+    return `${new Date().getTime()}_${i}${suffix}`;
   }
 
   // endregion
@@ -1238,10 +1306,15 @@ class Editor extends Component {
                   secondIcon="zoom_out"
               ></Toggle>
               <Button
-                  className={this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""}
+                  className={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.isEditing ? "hidden" : ""}
                   onClick={this.refreshPhoto.bind(this)}
                   loading={this.state.isLoadingImages}
               >refresh</Button>
+              <Button
+                  className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.photos.length && this.state.isEditing ? "" : "hidden"}
+                  onClick={this.addAllPhotos.bind(this)}
+                  loading={this.state.photosInTransfer.length}
+              >library_add</Button>
               <span className="breaker"></span>
               { [["photos", "photo_library"],
                 ["musics", "library_music"],

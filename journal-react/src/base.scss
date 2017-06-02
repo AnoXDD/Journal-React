@@ -4,6 +4,7 @@
 
 $blue-light: #82B1FF;
 $blue: #448AFF;
+$blue-hover: #4678ff;
 $blue-dark: #2962FF;
 
 $cyan-0: #E0F7FA;
@@ -255,7 +256,7 @@ img.center {
     background: $blue;
 
     &:hover:not(:active) {
-      background: $blue-dark;
+      background: $blue-hover;
       box-shadow: 0px 1px 6px grey;
       color: white;
     }

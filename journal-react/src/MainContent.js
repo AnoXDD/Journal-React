@@ -507,10 +507,14 @@ export default class MainContent extends Component {
           R.notifyError(this.notificationSystem,
               "Unable to upload the data. Try again!");
         })
-        .then(() => this.setState({
-          data   : data,
-          version: new Date().getTime()
-        }));
+        .then(() => OneDriveManager.getImages(this.state.year))
+        .then(images => {
+          this.handleNewImageMap(images);
+          this.setState({
+            data   : data,
+            version: new Date().getTime()
+          });
+        });
   }
 
   toggleIsDisplayingCalendar() {
@@ -682,6 +686,7 @@ export default class MainContent extends Component {
                   onChange={this.handleArticleChange.bind(this)}
                   onRefreshQueue={this.handleEditorRefreshQueue.bind(this)}
                   year={this.year}
+                  oneDriveManager={OneDriveManager}
               />
             </div>
             <div
