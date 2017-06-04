@@ -483,7 +483,7 @@ class Editor extends Component {
         nextState.hasPrompt = true;
       } else {
         // Override current data with new data
-        if (nextProps.newData) {
+        if (typeof nextProps.newData !== "undefined") {
           // This is to create a new entry
           nextState = Object.assign(nextState,
               this.DEFAULT_STATE,
@@ -493,6 +493,7 @@ class Editor extends Component {
                   timeCreated: new Date().getTime(),
                   timeBegin  : new Date().getTime(),
                 },
+                body     : nextProps.newData || "",
               })
           ;
           this.hasUnsavedChanges = true;

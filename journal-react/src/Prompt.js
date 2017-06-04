@@ -31,7 +31,7 @@ export default class Prompt extends Component {
     if (this.props.children) {
       // Has customized window
       return (
-          <div className={`Prompt ${this.props.className || ""}`}>
+          <div className={`Prompt dim-bg flex-center ${this.props.className || ""}`}>
             <span className="block"
                   onClick={this.props.onClose}/>
             {this.props.children}
@@ -47,7 +47,8 @@ export default class Prompt extends Component {
             <div className="prompt-box shadow">
               <div className="dialog">
                 <div className="title">{this.props.title}</div>
-                <div className="message">{this.props.message}</div>
+                <div
+                    className="message">{this.props.message}</div>
                 <div className="btns">
                   <Button
                       className={`${this.props.cancel ? "" : "hidden"}`}

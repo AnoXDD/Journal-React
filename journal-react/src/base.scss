@@ -240,7 +240,7 @@ img.center {
   cursor: pointer;
   border-radius: 1px;
 
-  &[disabled] {
+  &[disabled], &.disabled {
     pointer-events: none;
     opacity: .5;
   }
@@ -287,7 +287,7 @@ img.center {
   &.loading {
     opacity: .8;
 
-    .icon-wrapper {
+    .icon-wrapper .material-icons {
       flex: 1 1 auto;
       animation: spin 1s linear infinite;
     }
@@ -366,7 +366,8 @@ img.center {
     position: absolute;
     left: 0;
     top: 0;
-    width: $button-width;
+    width: 100%;
+    background: inherit;
     transition: .4s ease;
   }
 }

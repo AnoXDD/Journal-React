@@ -16,7 +16,8 @@ export default class Button extends Component {
 
     return (
         <a className={`btn ${this.props.loading ? "loading" : ""} ${this.props.text ? "text": ""} ${this.props.className || ""}`}
-           onClick={this.props.onClick || void(0)} {...disabled}>
+           onClick={this.props.onClick || void(0)}
+            {...disabled}>
           <Ink/>
           <div
               className={`flex-center icon-wrapper ${!this.props.loading ? "" : "transparent"}`}>
@@ -24,7 +25,7 @@ export default class Button extends Component {
               {this.props.children}
             </i>
           </div>
-          { this.props.text && !this.props.loading ? (
+          { this.props.text ? (
               <div className="vertical-align text-wrapper">
                 <span className="vertical-align-wrapper btn-text">
                   {this.props.text}

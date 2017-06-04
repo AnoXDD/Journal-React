@@ -13,6 +13,7 @@ import EntryView from "./EntryView";
 import SearchBar from "./SearchBar";
 import BulbMap from "./BulbMap";
 import Chart from "./Chart";
+import BulbEditor from "./BulbEditor";
 import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
@@ -186,7 +187,7 @@ const defaultColors = {
           boxShadow      : notificationBoxShadow,
         }
       },
-    }
+    };
 
 export default class MainContent extends Component {
 
@@ -216,6 +217,8 @@ export default class MainContent extends Component {
     loadingPrompt        : "Signing in ...",
     isLoadingPreviousYear: false,
     isLoadingNextYear    : false,
+
+    isShowingBulbEditor: false,
   };
 
   data = {};
@@ -236,6 +239,7 @@ export default class MainContent extends Component {
 
   editorVersion = 0;
   editedEntryTimestamp = 0;
+  bulbEditorContent = "";
 
   unprocessedBulbs = 0;
 
@@ -265,6 +269,8 @@ export default class MainContent extends Component {
     this.handleBulbClick = this.handleBulbClick.bind(this);
     this.handleCreateArticle = this.handleCreateArticle.bind(this);
     this.handlePromptCancel = this.handlePromptCancel.bind(this);
+    this.handleBulbEditorSend = this.handleBulbEditorSend.bind(this);
+    this.handleBulbEditorEdit = this.handleBulbEditorEdit.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
     this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
@@ -522,7 +528,9 @@ export default class MainContent extends Component {
         }
       }
 
-      processedBulbIds.push(bulb.id);
+      if (bulb.id) {
+        processedBulbIds.push(bulb.id);
+      }
 
       // Remove unnecessary keys
       delete bulb.id;
@@ -535,11 +543,11 @@ export default class MainContent extends Component {
 
     if (processedBulbs.length) {
       return this.uploadUnprocessedData([...this.state.data, ...processedBulbs])
-          .then(() =>
-              // This works because if an bulb with image is not loaded
-              // successfully, the id will not be deleted (see several
-              // lines above)
-              OneDriveManager.removeBulbs(processedBulbIds)
+          .then(() => {
+                if (processedBulbIds.length) {
+                  return OneDriveManager.removeBulbs(processedBulbIds);
+                }
+              }
           );
     }
 
@@ -659,8 +667,9 @@ export default class MainContent extends Component {
   handleCreateArticle() {
     this.editorVersion = new Date().getTime();
     this.setState({
-      editArticleIndex: -1,
-      enabledTabs     : this.state.enabledTabs | this.TAB.EDITOR,
+      editArticleIndex   : -1,
+      enabledTabs        : this.state.enabledTabs | this.TAB.EDITOR,
+      isShowingBulbEditor: false,
     }, this.handleViewChange(this.TAB.EDITOR));
   }
 
@@ -676,6 +685,24 @@ export default class MainContent extends Component {
   handleBulbClick(top, index) {
     this.highlightBulbIndex = index;
     this.handleCalendarClick(top);
+  }
+
+  handleBulbEditorSend(bulbContent) {
+    return this.handleNewRawBulb(bulbContent)
+        .then(() => {
+          this.setState({
+            isShowingBulbEditor: false,
+          })
+        })
+        .catch(err => {
+          R.notifyError(this.notificationSystem,
+              "There is an error when publishing the bulb. Try again");
+        });
+  }
+
+  handleBulbEditorEdit(bulbContent) {
+    this.bulbEditorContent = bulbContent;
+    this.handleCreateArticle();
   }
 
   handleArticleChange(newEntry) {
@@ -928,10 +955,15 @@ export default class MainContent extends Component {
         <div className="MainContent">
           <NotificationSystem ref="notificationSystem"
                               style={notificationStyle}/>
+          <BulbEditor hidden={!this.state.isShowingBulbEditor}
+                      onClose={() => this.setState({isShowingBulbEditor: false})}
+                      onEdit={this.handleBulbEditorEdit}
+                      onSend={this.handleBulbEditorSend}
+          />
           <aside className="sidebar">
             <div className="create-btn">
               <Button className="accent" text="create"
-                      onClick={this.handleCreateArticle}>add</Button>
+                      onClick={() => {this.setState({isShowingBulbEditor: true})}}>add</Button>
             </div>
             <div className="other-btn">
               {BUTTONS.map(b =>
@@ -1007,7 +1039,7 @@ export default class MainContent extends Component {
             </div>
             <div
                 className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
-              <Editor {...(R.copy(this.articleList[this.state.editArticleIndex]) || {newData: true})}
+              <Editor {...(R.copy(this.articleList[this.state.editArticleIndex]) || {newData: this.bulbEditorContent})}
                   hidden={this.state.isDisplaying !== this.TAB.EDITOR}
                   onPromptCancel={this.handlePromptCancel}
                   imageMap={this.imageMap}

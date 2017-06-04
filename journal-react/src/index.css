@@ -126,7 +126,7 @@ img.center {
   user-select: none;
   cursor: pointer;
   border-radius: 1px; }
-  .btn[disabled], .Options [disabled].option, .toggle[disabled] {
+  .btn[disabled], .Options [disabled].option, .btn.disabled, .Options .disabled.option, .toggle[disabled], .toggle.disabled {
     pointer-events: none;
     opacity: .5; }
   .btn.dark, .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option, .Options .dark.option, .toggle.dark {
@@ -156,7 +156,7 @@ img.center {
       white-space: nowrap; }
   .btn.loading, .Options .loading.option, .toggle.loading {
     opacity: .8; }
-    .btn.loading .icon-wrapper, .Options .loading.option .icon-wrapper, .toggle.loading .icon-wrapper {
+    .btn.loading .icon-wrapper .material-icons, .Options .loading.option .icon-wrapper .material-icons, .toggle.loading .icon-wrapper .material-icons {
       flex: 1 1 auto;
       animation: spin 1s linear infinite; }
   .btn.narrow, .Options .narrow.option, .toggle.narrow {
@@ -197,7 +197,8 @@ img.center {
     position: absolute;
     left: 0;
     top: 0;
-    width: 60px;
+    width: 100%;
+    background: inherit;
     transition: .4s ease; }
 
 .flex-center {
@@ -364,12 +365,14 @@ nav.nav {
       font-size: 19px; }
     .Prompt .dialog .message {
       position: relative;
-      padding: 30px;
-      line-height: 2em; }
+      margin: 10px 0;
+      padding: 30px 40px;
+      line-height: 2em;
+      box-sizing: border-box; }
       .Prompt .dialog .message:after {
         position: absolute;
         left: 25%;
-        bottom: 10px;
+        bottom: 0;
         content: '';
         width: 50%;
         height: 1px;
@@ -619,6 +622,14 @@ nav.nav {
       color: white; }
     .Editor.dark .nav .btn, .Editor.dark .nav .Options .option, .Options .Editor.dark .nav .option {
       transition: none; }
+  .Editor.bulb-editor {
+    padding: 0;
+    height: 80px;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative; }
+    .Editor.bulb-editor .text-body {
+      font-size: 18px; }
   .Editor header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
