@@ -421,6 +421,16 @@ export default class OneDriveManager {
     });
   }
 
+  static createEmptyData(year) {
+    // First, try to see if the file already exists
+    this.getChildrenByPath(`core/${year}`)
+        .then(stuffs => {
+          if (!stuffs || stuffs.length === 0) {
+            this.upload(year, "3[]");
+          }
+        });
+  }
+
   static getThumbNail(id) {
     const size = "c800x800_Crop";
 
@@ -457,14 +467,28 @@ export default class OneDriveManager {
    *    | data
    *    | queue
    *    | resource
+   * @params onChange - callback function to update for changes (takes a param
+   *     of percentage finished)
    */
-  static verifyFileStructure(year) {
+  static verifyFileStructure(year, onChange) {
+    const STEP = 7;
     let rootId = "";
     return this.getRootId()
-        .then(id => this.createFolderById(id, "Apps"))
-        .then(id => this.createFolderById(id.id, "Trak"))
-        .then(appsId => this.getChildrenById(rootId = appsId.id))
+        .then(id => {
+          onChange(1 / STEP);
+          return this.createFolderById(id, "Apps");
+        })
+        .then(id => {
+          onChange(2 / STEP);
+          return this.createFolderById(id.id, "Trak")
+        })
+        .then(appsId => {
+          onChange(3 / STEP);
+          return this.getChildrenById(rootId = appsId.id);
+        })
         .then(folders => {
+          onChange(4 / STEP);
+
           for (let folder of folders) {
             if (folder.name === "bulb") {
               this.bulbFolderId = folder.id;
@@ -488,6 +512,8 @@ export default class OneDriveManager {
           throw new Error(`Unable to verify the integrity of file structure. (err: ${err})`);
         })
         .then(ids => {
+          onChange(5 / STEP);
+
           this.bulbFolderId = ids[0].id || ids[0];
           this.coreFolderId = ids[1].id || ids[1];
           this.queueFolderId = ids[2].id || ids[2];
@@ -499,9 +525,17 @@ export default class OneDriveManager {
             this.createFolderById(this.resourceFolderId, year)
           ])
         })
-        .then(ids => {
-          // Lastly, if this is the end of the year, try to create a folder for
-          // the next year
+        .then(() => {
+          onChange(6 / STEP);
+
+          // Create empty data file if it is empty
+          this.createEmptyData(year);
+        })
+        .then(() => {
+          onChange(7 / STEP);
+
+          // Lastly, if this is the end of the year, try to create folders and
+          // empty data for the next year
 
           let now = new Date();
           if (now.getMonth() === 11 && now.getDate() === 31) {
@@ -516,8 +550,10 @@ export default class OneDriveManager {
   /**
    * Returns a promise with a list of elements, each element being represented
    * as { id: xxx, name: {filename}, content: xxx, [imageId: xxx] }
+   * @params onChange - on callback function to update how many bulbs are
+   *     fetched
    */
-  static getBulbs() {
+  static getBulbs(onChange) {
     const TEXT_BULB_NAME_LENGTH = 13;
 
     return this.getChildrenById(this.bulbFolderId)
@@ -525,7 +561,7 @@ export default class OneDriveManager {
           // Separate text and images
           let textBulbs = [], images = [];
 
-          for (let bulb of textBulbs) {
+          for (let bulb of bulbs) {
             if (bulb.name.length === TEXT_BULB_NAME_LENGTH) {
               textBulbs.push(bulb);
             } else {
@@ -544,19 +580,23 @@ export default class OneDriveManager {
                         bulb.content = content;
                       }
 
+                      if (typeof onChange === "function") {
+                        onChange((1 + counter) / textBulbs.length);
+                      }
+
                       // Test if all the contents have been fetched
-                      if (++counter === bulbs.length) {
+                      if (++counter === textBulbs.length) {
                         // Merge image id with text bulbs
-                        for (let textBulb of bulbs) {
+                        for (let bulb of textBulbs) {
                           let image = images.find(
-                              image => image.name.startsWith(textBulb.name));
+                              image => image.name.startsWith(bulb.name));
 
                           if (image) {
-                            textBulb.imageId = image.id;
+                            bulb.imageId = image.id;
                           }
                         }
 
-                        resolve(bulbs);
+                        resolve(textBulbs);
                       }
                     });
               }

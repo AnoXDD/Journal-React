@@ -150,7 +150,7 @@ class EntryList extends Component {
           return Math.floor(deltaMinutes / 60) + " hr";
         }
       } else if (yearDay + 1 === nowYearDay) {
-        dateHeader = "Yesterday";
+        dateHeader = "Yester";
       } else {
         // Test for this week
         var firstWeekDay = firstDay.getDay(),
@@ -160,7 +160,6 @@ class EntryList extends Component {
         switch (nowYearWeek - yearWeek) {
           case 1:
             // It was the last week
-            dateHeader = "Last ";
             // Intentionally omit `break`
             // eslint-disable-next-line
           case 0:

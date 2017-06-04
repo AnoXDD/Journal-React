@@ -17,9 +17,9 @@ import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
 
-const BULB_WEB_URL_PATTERN = /(.+)@(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))(.*)/g,
+const BULB_WEB_URL_PATTERN = /(.+)@(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))(.*)/,
     BULB_LOCATION_PATTERN = /(.+)#\[(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/,
-    BULB_LOCATION_PATTERN_WITH_NAME = /(.+)#\[(.+),(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/g;
+    BULB_LOCATION_PATTERN_WITH_NAME = /(.+)#\[(.+),(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/;
 
 
 function upgradeDataFromVersion2To3(oldData) {
@@ -292,15 +292,7 @@ export default class MainContent extends Component {
     this.notificationSystem = this.refs.notificationSystem;
 
     // Fetch data from server
-    OneDriveManager.verifyFileStructure(this.state.year)
-        .then(() => {
-          this.setState({
-            loadingPrompt: "Merging bulbs ..."
-          });
-
-          return OneDriveManager.getBulbs()
-              .then(bulbs => this.handleNewRawBulbs(bulbs));
-        })
+    OneDriveManager.verifyFileStructure(this.state.year, console.log)
         .then(() => {
           this.setState({
             loadingPrompt: "Downloading content ..."
@@ -308,20 +300,23 @@ export default class MainContent extends Component {
 
           return OneDriveManager.getData(this.state.year);
         })
-        .catch(err => {
-          if (err.statusCode === 404) {
-            // That's okay - welcome new user!
-            return;
-          }
+        .then(content => {
+          this.handleNewContent(content);
 
+          this.setState({
+            loadingPrompt: "Merging bulbs ..."
+          });
+
+          return OneDriveManager.getBulbs(console.log)
+              .then(bulbs => this.handleNewRawBulbs(bulbs));
+        })
+        .catch(err => {
           this.setState({
             loadingPrompt: "Looks like there is an error fetching you data. Refresh the website and try again."
           });
           throw new Error(JSON.stringify(err));
         })
-        .then(content => {
-          this.handleNewContent(content);
-
+        .then(() => {
           this.setState({
             loadingPrompt: "Downloading images ..."
           });
@@ -396,12 +391,12 @@ export default class MainContent extends Component {
    * @returns {number}
    */
   convertBulbTime(myStr) {
-    var month = parseInt(myStr.substr(0, 2));
-    var day = parseInt(myStr.substr(2, 2));
-    var year = 2000 + parseInt(myStr.substr(4, 2));
-    var hour = parseInt(myStr.substr(7, 2));
-    var minute = parseInt(myStr.substr(9, 2));
-    var second = parseInt(myStr.substr(11, 2));
+    var month = parseInt(myStr.substr(0, 2), 10);
+    var day = parseInt(myStr.substr(2, 2), 10);
+    var year = 2000 + parseInt(myStr.substr(4, 2), 10);
+    var hour = parseInt(myStr.substr(7, 2), 10);
+    var minute = parseInt(myStr.substr(9, 2), 10);
+    var second = parseInt(myStr.substr(11, 2), 10);
 
     return new Date(year, month - 1, day, hour, minute, second).getTime();
   }
@@ -446,6 +441,8 @@ export default class MainContent extends Component {
       };
 
       for (let bulb of bulbObject) {
+        bulb.content = bulb.content.replace(/\r*\n/g, " ");
+
         this.extractRawContent(bulb);
       }
 
@@ -465,6 +462,8 @@ export default class MainContent extends Component {
         }
 
         if (merged) {
+          bulb.merged = true;
+          onBulbFinish();
           continue;
         }
 
@@ -487,43 +486,58 @@ export default class MainContent extends Component {
   }
 
   handleNewProcessedBulbs(bulbObject, uploadedImageIds) {
-    if (--this.unprocessedBulbs === 0) {
-      let processedBulbs = [];
+    let processedBulbs = [],
+        processedBulbIds = [];
 
-      for (let bulb of bulbObject) {
-        bulb.body = bulb.content;
-
-        // Add image to the bulb if applicable
+    for (let bulb of bulbObject) {
+      // First see if this bulb has been merged already
+      if (bulb.merged) {
+        processedBulbIds.push(bulb.id);
         if (bulb.imageId) {
-          let image = uploadedImageIds.find(
-              image => image.id === bulb.imageId);
-
-          if (image) {
-            // Uploaded successfully!
-            bulb.images = [image.name];
-          } else {
-            continue;
-          }
+          processedBulbIds.push(bulb.imageId);
         }
 
-        // Remove unnecessary keys
-        delete bulb.id;
-        delete bulb.name;
-        delete bulb.content;
-        delete bulb.imageId;
-
-        processedBulbs.push(R.copy(bulb));
+        continue;
       }
 
+      bulb.body = bulb.content;
+      bulb.type = R.TYPE_BULB;
+
+      // Add image to the bulb if applicable
+      if (bulb.imageId) {
+        let image = uploadedImageIds.find(
+            image => image.id === bulb.imageId);
+
+        if (image) {
+          // Uploaded successfully!
+          bulb.images = [image.name];
+        } else {
+          continue;
+        }
+      }
+
+      processedBulbIds.push(bulb.id);
+
+      // Remove unnecessary keys
+      delete bulb.id;
+      delete bulb.name;
+      delete bulb.content;
+      delete bulb.imageId;
+
+      processedBulbs.push(R.copy(bulb));
+    }
+
+    if (processedBulbs.length) {
       return this.uploadUnprocessedData([...this.state.data, ...processedBulbs])
           .then(() =>
               // This works because if an bulb with image is not loaded
               // successfully, the id will not be deleted (see several
               // lines above)
-              OneDriveManager.removeBulbs(bulbObject.filter(
-                  bulb => !bulb.id))
+              OneDriveManager.removeBulbs(processedBulbIds)
           );
     }
+
+    return OneDriveManager.removeBulbs(processedBulbIds);
   };
 
   handleNewImageMap(images) {
