@@ -186,7 +186,7 @@ img.center {
   .btn:not(.underlined):hover .original, .Options .option:not(.underlined):hover .original, .toggle:not(.underlined):hover .original {
     opacity: 0; }
   .btn:not(.accent):hover, .Options .option:not(.accent):hover, .btn:not(.accent):active, .Options .option:not(.accent):active, .toggle:not(.accent):hover, .toggle:not(.accent):active {
-    color: #2962FF; }
+    color: #448AFF; }
     .btn:not(.accent):hover span, .Options .option:not(.accent):hover span, .btn:not(.accent):active span, .Options .option:not(.accent):active span, .toggle:not(.accent):hover span, .toggle:not(.accent):active span {
       opacity: 1; }
   .btn .icon-wrapper, .Options .option .icon-wrapper, .btn .text-wrapper, .Options .option .text-wrapper, .toggle .icon-wrapper, .toggle .text-wrapper {
@@ -197,7 +197,8 @@ img.center {
     position: absolute;
     left: 0;
     top: 0;
-    width: 60px; }
+    width: 60px;
+    transition: .4s ease; }
 
 .flex-center {
   display: flex;
@@ -1260,7 +1261,8 @@ nav.nav {
       display: flex;
       flex-direction: column;
       width: 100%;
-      height: 100%; }
+      height: 100%;
+      overflow: hidden; }
     .MainContent > main .main-header {
       width: 100%;
       height: 80px;

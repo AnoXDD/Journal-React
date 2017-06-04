@@ -423,10 +423,10 @@ export default class OneDriveManager {
 
   static createEmptyData(year) {
     // First, try to see if the file already exists
-    this.getChildrenByPath(`core/${year}`)
+    return this.getChildrenByPath(`core/${year}`)
         .then(stuffs => {
           if (!stuffs || stuffs.length === 0) {
-            this.upload(year, "3[]");
+            return this.upload(year, "3[]");
           }
         });
   }
@@ -529,7 +529,7 @@ export default class OneDriveManager {
           onChange(6 / STEP);
 
           // Create empty data file if it is empty
-          this.createEmptyData(year);
+          return this.createEmptyData(year);
         })
         .then(() => {
           onChange(7 / STEP);
@@ -662,6 +662,13 @@ export default class OneDriveManager {
    */
   static removeImageById(id) {
     return this.moveItemById(id, "queue");
+  }
+
+  static getAvailableYears() {
+    return this.getChildrenByPath("core")
+        .then(res => res.map(v => parseInt(v.name, 10))
+            .filter(year => year)
+            .sort());
   }
 
   // region alias

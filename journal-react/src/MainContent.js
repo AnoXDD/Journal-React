@@ -202,7 +202,6 @@ export default class MainContent extends Component {
 
   state = {
     data   : [],
-    year   : new Date().getFullYear(),
     version: 0,
 
     isDisplaying        : this.TAB.LIST,
@@ -214,7 +213,9 @@ export default class MainContent extends Component {
 
     editArticleIndex: undefined,
 
-    loadingPrompt: "Signing in ...",
+    loadingPrompt        : "Signing in ...",
+    isLoadingPreviousYear: false,
+    isLoadingNextYear    : false,
   };
 
   data = {};
@@ -253,6 +254,7 @@ export default class MainContent extends Component {
 
     this.updateContentStyle = this.updateContentStyle.bind(this);
 
+    this.loadData = this.loadData.bind(this);
     this.extractRawContent = this.extractRawContent.bind(this);
     this.handleNewRawBulbs = this.handleNewRawBulbs.bind(this);
     this.handleNewContent = this.handleNewContent.bind(this);
@@ -291,14 +293,22 @@ export default class MainContent extends Component {
   componentDidMount() {
     this.notificationSystem = this.refs.notificationSystem;
 
+    this.loadData();
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+  }
+
+  loadData() {
     // Fetch data from server
-    OneDriveManager.verifyFileStructure(this.state.year, console.log)
+    return OneDriveManager.verifyFileStructure(this.year, console.log)
         .then(() => {
           this.setState({
             loadingPrompt: "Downloading content ..."
           });
 
-          return OneDriveManager.getData(this.state.year);
+          return OneDriveManager.getData(this.year);
         })
         .then(content => {
           this.handleNewContent(content);
@@ -321,7 +331,7 @@ export default class MainContent extends Component {
             loadingPrompt: "Downloading images ..."
           });
 
-          return OneDriveManager.getImages(this.state.year);
+          return OneDriveManager.getImages(this.year);
         })
         .then(images => {
           this.handleNewImageMap(images);
@@ -332,10 +342,6 @@ export default class MainContent extends Component {
             version            : new Date().getTime(),
           });
         });
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
   // region Utility functions
@@ -578,11 +584,11 @@ export default class MainContent extends Component {
     if (c.simple && !c.keywords.length) {
       // Empty
       this.setState({
-        data   : this.data[this.state.year],
+        data   : this.data[this.year],
         version: new Date().getTime(),
       });
     } else {
-      let newData = this.data[this.state.year].filter(d => {
+      let newData = this.data[this.year].filter(d => {
         // First, type
         if (!c.simple && ((!c.hasArticle && d.type === R.TYPE_ARTICLE) ||
             (!c.hasBulb && d.type === R.TYPE_BULB))) {
@@ -747,7 +753,7 @@ export default class MainContent extends Component {
           R.notifyError(this.notificationSystem,
               "Unable to upload the data. Try again!");
         })
-        .then(() => OneDriveManager.getImages(this.state.year))
+        .then(() => OneDriveManager.getImages(this.year))
         .then(images => {
           this.handleNewImageMap(images);
 
@@ -827,6 +833,58 @@ export default class MainContent extends Component {
     this.contentStyle.height = Math.max(articleHeight, bulbHeight);
   }
 
+  toPreviousYear() {
+    this.setState({
+      isLoadingPreviousYear: true
+    });
+
+    return OneDriveManager.getAvailableYears()
+        .then(years => {
+          let i = years.findIndex(year => year === this.year);
+
+          if (i !== 0) {
+            this.year = years[i - 1];
+            this.loadData()
+                .then(() => {
+                  this.setState({
+                    isLoadingPreviousYear: false,
+                  });
+                }, () => {
+                  this.year = years[i];
+                  this.forceUpdate();
+                });
+          } else {
+            R.notify(this.notificationSystem, "You've reached the earliest days of your journal");
+          }
+        });
+  }
+
+  toNextYear() {
+    this.setState({
+      isLoadingNextYear: true
+    });
+
+    return OneDriveManager.getAvailableYears()
+        .then(years => {
+          let i = years.findIndex(year => year === this.year);
+
+          if (i !== years.length - 1) {
+            this.year = years[i + 1];
+            this.loadData()
+                .then(() => {
+                  this.setState({
+                    isLoadingNextYear: false,
+                  });
+                }, () => {
+                  this.year = years[i];
+                  this.forceUpdate();
+                });
+          } else {
+            R.notify(this.notificationSystem, "You can't travel to the future");
+          }
+        });
+  }
+
   render() {
     const BUTTONS = [{
       text     : "LIST",
@@ -886,11 +944,17 @@ export default class MainContent extends Component {
                 <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}
                            onChange={this.handleChangeCriteria}
                 />
-                <Button className="dark">navigate_before</Button>
-                <span className="year">Year: {this.year}</span>
+                <Button className="dark"
+                        onClick={this.toPreviousYear.bind(this)}
+                        disabled={this.state.isLoadingNextYear}
+                        loading={this.state.isLoadingPreviousYear}
+                >navigate_before</Button>
+                <span className="year">{this.year}</span>
                 <Button
                     className="dark"
-                    disabled={this.year === new Date().getFullYear()}>
+                    onClick={this.toNextYear.bind(this)}
+                    loading={this.state.isLoadingNextYear}
+                    disabled={this.year === new Date().getFullYear() || this.state.isLoadingPreviousYear}>
                   navigate_next
                 </Button>
               </header>
