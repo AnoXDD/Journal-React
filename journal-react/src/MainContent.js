@@ -30,10 +30,10 @@ function upgradeDataFromVersion2To3(oldData) {
     let entry = {};
     entry.type = d.contentType === 1 ? R.TYPE_BULB : R.TYPE_ARTICLE;
     entry.time = Object.assign({}, d.time);
-    // entry.body = d.text.body;
+    entry.body = d.text.body;
     // for debug here
-    entry.body = d.text.body.replace(/[a-z0-9]/gi,
-        Math.random().toString(36).charAt(3));
+    // entry.body = d.text.body.replace(/[a-z0-9]/gi,
+    //     Math.random().toString(36).charAt(3));
 
     if (d.images && d.images.length) {
       let images = [];
@@ -49,10 +49,10 @@ function upgradeDataFromVersion2To3(oldData) {
     }
 
     if (entry.type === R.TYPE_ARTICLE) {
-      // entry.title = d.title;
+      entry.title = d.title;
       // for debug here
-      entry.title = d.title.replace(/[a-z]/gi,
-          Math.random().toString(36).charAt(3));
+      // entry.title = d.title.replace(/[a-z]/gi,
+      //     Math.random().toString(36).charAt(3));
       entry.tags = d.tags.split("|");
 
       if (d.music && d.music.length) {
@@ -557,11 +557,16 @@ export default class MainContent extends Component {
   }
 
   handleNewContent(raw) {
-    // todo do something if it is a different version
-
-    this.setState({
-      data: raw ? JSON.parse(raw.substr(1)) : [],
-    });
+    if (raw) {
+      this.setState({
+        data: raw[0] === '2' ? upgradeDataFromVersion2To3(JSON.parse(raw.substr(
+            1))) : JSON.parse(raw.substr(1)),
+      });
+    } else {
+      this.setState({
+        data: [],
+      });
+    }
   }
 
   handleKeyDown(e) {
@@ -854,7 +859,8 @@ export default class MainContent extends Component {
                   this.forceUpdate();
                 });
           } else {
-            R.notify(this.notificationSystem, "You've reached the earliest days of your journal");
+            R.notify(this.notificationSystem,
+                "You've reached the earliest days of your journal");
           }
         });
   }
