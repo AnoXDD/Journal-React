@@ -351,6 +351,13 @@ export default class OneDriveManager {
         );
   }
 
+  /**
+   *Returns a promise with following: { id: xxx, name: xxx , ... }
+   * @param id
+   * @param dest
+   * @param newName
+   * @returns {Promise.<*>}
+   */
   static moveItemById(id, dest, newName) {
     return this.getClient()
         .then(client =>
@@ -508,11 +515,24 @@ export default class OneDriveManager {
 
   /**
    * Returns a promise with a list of elements, each element being represented
-   * as { id: xxx, name: {filename}, content: xxx }
+   * as { id: xxx, name: {filename}, content: xxx, [imageId: xxx] }
    */
   static getBulbs() {
+    const TEXT_BULB_NAME_LENGTH = 13;
+
     return this.getChildrenById(this.bulbFolderId)
         .then(bulbs => bulbs.length ? new Promise(resolve => {
+          // Separate text and images
+          let textBulbs = [], images = [];
+
+          for (let bulb of textBulbs) {
+            if (bulb.name.length === TEXT_BULB_NAME_LENGTH) {
+              textBulbs.push(bulb);
+            } else {
+              images.push(bulb);
+            }
+          }
+
           let counter = 0,
               getContent = bulb => {
                 this.getItemContentById(bulb.id)
@@ -526,12 +546,22 @@ export default class OneDriveManager {
 
                       // Test if all the contents have been fetched
                       if (++counter === bulbs.length) {
+                        // Merge image id with text bulbs
+                        for (let textBulb of bulbs) {
+                          let image = images.find(
+                              image => image.name.startsWith(textBulb.name));
+
+                          if (image) {
+                            textBulb.imageId = image.id;
+                          }
+                        }
+
                         resolve(bulbs);
                       }
                     });
               }
 
-          for (let bulb of bulbs) {
+          for (let bulb of textBulbs) {
             getContent(bulb);
           }
         }) : []);

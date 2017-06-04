@@ -17,6 +17,11 @@ import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
 
+const BULB_WEB_URL_PATTERN = /(.+)@(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))(.*)/g,
+    BULB_LOCATION_PATTERN = /(.+)#\[(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/,
+    BULB_LOCATION_PATTERN_WITH_NAME = /(.+)#\[(.+),(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/g;
+
+
 function upgradeDataFromVersion2To3(oldData) {
   let data = [],
       list = ["video", "voice", "place", "book"];
@@ -231,6 +236,8 @@ export default class MainContent extends Component {
   editorVersion = 0;
   editedEntryTimestamp = 0;
 
+  unprocessedBulbs = 0;
+
   /* Press escape anywhere to return to this tab */
   escapeToReturn = this.TAB.NO_CHANGE;
 
@@ -246,6 +253,8 @@ export default class MainContent extends Component {
 
     this.updateContentStyle = this.updateContentStyle.bind(this);
 
+    this.extractRawContent = this.extractRawContent.bind(this);
+    this.handleNewRawBulbs = this.handleNewRawBulbs.bind(this);
     this.handleNewContent = this.handleNewContent.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
@@ -286,6 +295,14 @@ export default class MainContent extends Component {
     OneDriveManager.verifyFileStructure(this.state.year)
         .then(() => {
           this.setState({
+            loadingPrompt: "Merging bulbs ..."
+          });
+
+          return OneDriveManager.getBulbs()
+              .then(bulbs => this.handleNewRawBulbs(bulbs));
+        })
+        .then(() => {
+          this.setState({
             loadingPrompt: "Downloading content ..."
           });
 
@@ -293,7 +310,7 @@ export default class MainContent extends Component {
         })
         .catch(err => {
           if (err.statusCode === 404) {
-            // That's okay - welcome to user!
+            // That's okay - welcome new user!
             return;
           }
 
@@ -325,6 +342,189 @@ export default class MainContent extends Component {
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyDown.bind(this));
   }
+
+  // region Utility functions
+
+  extractWebsiteFromContent(bulb) {
+    var result = BULB_WEB_URL_PATTERN.exec(bulb.content);
+    if (result) {
+      bulb.links = result[2];
+
+      // Remove the website
+      bulb.content = result[1] + result[result.length - 1];
+    }
+  }
+
+  extractLocationFromContent(bulb) {
+    // Location, without name
+    var data = bulb.content;
+    var result = BULB_LOCATION_PATTERN.exec(data);
+
+    if (result) {
+      bulb.place = {
+        title    : result[2] + "," + result[3],
+        latitude : result[2],
+        longitude: result[3]
+      };
+
+      // Remove the location
+      bulb.content = result[1] + result[result.length - 1];
+    } else {
+      // Location, with name
+      result = BULB_LOCATION_PATTERN_WITH_NAME.exec(data);
+      if (result) {
+        bulb.place = {
+          title    : result[2],
+          latitude : result[3],
+          longitude: result[4]
+        };
+
+        // Remove the location
+        bulb.content = result[1] + result[result.length - 1];
+      }
+    }
+  }
+
+  extractRawContent(bulb) {
+    this.extractWebsiteFromContent(bulb);
+    this.extractLocationFromContent(bulb);
+  }
+
+  /**
+   * Converts the name of the bulb to the seconds from epoch
+   * @param myStr - e.g. 050711_080523
+   * @returns {number}
+   */
+  convertBulbTime(myStr) {
+    var month = parseInt(myStr.substr(0, 2));
+    var day = parseInt(myStr.substr(2, 2));
+    var year = 2000 + parseInt(myStr.substr(4, 2));
+    var hour = parseInt(myStr.substr(7, 2));
+    var minute = parseInt(myStr.substr(9, 2));
+    var second = parseInt(myStr.substr(11, 2));
+
+    return new Date(year, month - 1, day, hour, minute, second).getTime();
+  }
+
+  // endregion
+
+  /**
+   * Process a bulb object and merge it with data. Upload it if
+   * `this.unprocessedBulbs` is equal to 0
+   * DO NOT call this function while other bulb handling function is not
+   * finished
+   * @param bulbContent
+   */
+  handleNewRawBulb(bulbContent) {
+    this.unprocessedBulbs = 1;
+
+    return this.handleNewProcessedBulbs([{
+      time   : {created: new Date().getTime()},
+      content: bulbContent
+    }], []);
+  }
+
+  /**
+   *
+   * @param bulbObject - the object that takes from the promise of
+   *     OneDriveManager.getBulbs()
+   * @returns {Promise}
+   */
+  handleNewRawBulbs(bulbObject) {
+    return new Promise((resolve, rej) => {
+      if (!bulbObject || bulbObject.length === 0) {
+        resolve();
+      }
+
+      let uploadedImageIds = [];
+
+      const onBulbFinish = () => {
+        if (--this.unprocessedBulbs === 0) {
+          this.handleNewProcessedBulbs(bulbObject, uploadedImageIds)
+              .then(res => resolve(res));
+        }
+      };
+
+      for (let bulb of bulbObject) {
+        this.extractRawContent(bulb);
+      }
+
+      this.unprocessedBulbs = bulbObject.length;
+
+      for (let bulb of bulbObject) {
+        // Check if the bulb has not been merged
+        let merged = false,
+            time = this.convertBulbTime(bulb.name);
+        for (let entry of this.state.data) {
+          if (entry.type === R.TYPE_BULB) {
+            if (entry.time.created <= time) {
+              merged = entry.time.created === time;
+              break;
+            }
+          }
+        }
+
+        if (merged) {
+          continue;
+        }
+
+        bulb.time = {created: time};
+
+        // First, transfer the image (if any)
+        if (bulb.imageId) {
+          OneDriveManager.addImageById(bulb.imageId, this.year)
+              .then(image => {
+                uploadedImageIds.push({id: image.id, name: image.name});
+                onBulbFinish();
+              }, ()=> {
+                onBulbFinish();
+              })
+        } else {
+          onBulbFinish();
+        }
+      }
+    });
+  }
+
+  handleNewProcessedBulbs(bulbObject, uploadedImageIds) {
+    if (--this.unprocessedBulbs === 0) {
+      let processedBulbs = [];
+
+      for (let bulb of bulbObject) {
+        bulb.body = bulb.content;
+
+        // Add image to the bulb if applicable
+        if (bulb.imageId) {
+          let image = uploadedImageIds.find(
+              image => image.id === bulb.imageId);
+
+          if (image) {
+            // Uploaded successfully!
+            bulb.images = [image.name];
+          } else {
+            continue;
+          }
+        }
+
+        // Remove unnecessary keys
+        delete bulb.id;
+        delete bulb.name;
+        delete bulb.content;
+        delete bulb.imageId;
+
+        processedBulbs.push(R.copy(bulb));
+      }
+
+      return this.uploadUnprocessedData([...this.state.data, ...processedBulbs])
+          .then(() =>
+              // This works because if an bulb with image is not loaded
+              // successfully, the id will not be deleted (see several
+              // lines above)
+              OneDriveManager.removeBulbs(bulbObject.filter(
+                  bulb => !bulb.id))
+          );
+    }
+  };
 
   handleNewImageMap(images) {
     this.imageMap = {};
