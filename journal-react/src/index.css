@@ -1496,4 +1496,21 @@ nav.nav {
       position: fixed;
       bottom: 0; }
 
+.loading-screen {
+  flex-direction: column; }
+  .loading-screen .progress-bar {
+    margin-top: 25px;
+    width: 30vw;
+    height: 3px;
+    background: #2962FF;
+    position: relative;
+    overflow: hidden; }
+    .loading-screen .progress-bar .progress {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      transition: left .4s ease; }
+
 /*# sourceMappingURL=index.css.map */

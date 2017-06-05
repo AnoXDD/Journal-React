@@ -1840,3 +1840,25 @@ nav.nav {
     }
   }
 }
+
+.loading-screen {
+  flex-direction: column;
+
+  .progress-bar {
+    margin-top: 25px;
+    width: 30vw;
+    height: 3px;
+    background: $cpd;
+    position: relative;
+    overflow: hidden;
+
+    .progress {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, .7);
+      transition: left .4s ease;
+    }
+  }
+}

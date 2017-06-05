@@ -14,6 +14,7 @@ import SearchBar from "./SearchBar";
 import BulbMap from "./BulbMap";
 import Chart from "./Chart";
 import BulbEditor from "./BulbEditor";
+import LoadingScreen from "./LoadingScreen";
 import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
@@ -308,10 +309,12 @@ export default class MainContent extends Component {
 
   loadData() {
     // Fetch data from server
-    return OneDriveManager.verifyFileStructure(this.year, console.log)
+    return OneDriveManager.verifyFileStructure(this.year,
+        val => this.setState({loadingProgress: val}))
         .then(() => {
           this.setState({
-            loadingPrompt: "Downloading content ..."
+            loadingProgress: 0,
+            loadingPrompt  : "Downloading content ..."
           });
 
           return OneDriveManager.getData(this.year);
@@ -323,7 +326,8 @@ export default class MainContent extends Component {
             loadingPrompt: "Merging bulbs ..."
           });
 
-          return OneDriveManager.getBulbs(console.log)
+          return OneDriveManager.getBulbs(
+              val => this.setState({loadingProgress: val}))
               .then(bulbs => this.handleNewRawBulbs(bulbs));
         })
         .catch(err => {
@@ -334,6 +338,7 @@ export default class MainContent extends Component {
         })
         .then(() => {
           this.setState({
+            loadingProgress: 0,
             loadingPrompt: "Downloading images ..."
           });
 
@@ -1058,10 +1063,8 @@ export default class MainContent extends Component {
                   data={this.state.data}/>
             </div>
           </main>
-          { this.state.loadingPrompt ? (
-              <div
-                  className="loading-screen flex-center">{this.state.loadingPrompt}</div>
-          ) : null }
+          <LoadingScreen title={this.state.loadingPrompt}
+                         progress={this.state.loadingProgress}/>
         </div>
     );
   }
