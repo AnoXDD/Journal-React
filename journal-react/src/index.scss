@@ -240,13 +240,7 @@ nav.nav {
     }
 
     .btns {
-      justify-content: center;
-      display: flex;
       padding: 10px 20px 20px;
-
-      .btn {
-        padding-right: $button-width;
-      }
 
       .yes {
         background: $cp;
@@ -255,14 +249,6 @@ nav.nav {
         &:hover {
           background: $lightgreen;
         }
-      }
-
-      .text-wrapper {
-        flex: none;
-        width: auto;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
       }
     }
   }
@@ -1619,6 +1605,7 @@ nav.nav {
   }
 
   .form {
+    position: absolute;
     max-width: $max-width;
   }
 }
@@ -1810,7 +1797,8 @@ nav.nav {
     .about {
       width: 160px;
       position: fixed;
-      bottom: 0;
+      right: 0;
+      top: 0;
     }
   }
 }
@@ -1839,5 +1827,13 @@ nav.nav {
 
 .settings {
   height: 100%;
-  
+
+  .settings-wrapper {
+    width: 800px;
+    background: white;
+  }
+
+  .title-dark {
+    margin-right: 20px;
+  }
 }

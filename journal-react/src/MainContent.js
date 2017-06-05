@@ -224,7 +224,7 @@ export default class MainContent extends Component {
     isShowingBulbEditor: false,
   };
 
-  data = {};
+  data = [];
   imageMap = {};
 
   year = new Date().getFullYear();
@@ -257,7 +257,7 @@ export default class MainContent extends Component {
      * `this.data` stores all the data that can be displayed, while
      * `this.state.data` stores the data that are actually displayed
      */
-    this.data = {2016: this.state.data};
+    this.data = [...this.state.data];
 
     this.updateContentStyle = this.updateContentStyle.bind(this);
 
@@ -574,11 +574,15 @@ export default class MainContent extends Component {
 
   handleNewContent(raw) {
     if (raw) {
+      this.data = raw[0] === '2' ? upgradeDataFromVersion2To3(JSON.parse(raw.substr(
+          1))) : JSON.parse(raw.substr(1));
+
       this.setState({
-        data: raw[0] === '2' ? upgradeDataFromVersion2To3(JSON.parse(raw.substr(
-            1))) : JSON.parse(raw.substr(1)),
+        data: this.data,
       });
     } else {
+      this.data = [];
+
       this.setState({
         data: [],
       });
@@ -605,11 +609,11 @@ export default class MainContent extends Component {
     if (c.simple && !c.keywords.length) {
       // Empty
       this.setState({
-        data   : this.data[this.year],
+        data   : this.data,
         version: new Date().getTime(),
       });
     } else {
-      let newData = this.data[this.year].filter(d => {
+      let newData = this.data.filter(d => {
         // First, type
         if (!c.simple && ((!c.hasArticle && d.type === R.TYPE_ARTICLE) ||
             (!c.hasBulb && d.type === R.TYPE_BULB))) {
@@ -791,12 +795,15 @@ export default class MainContent extends Component {
 
           return new Promise(res => {
             if (missingImages.length === 0) {
+              R.notify(this.notificationSystem, "No missing images found");
               res();
             }
 
             let unprocessed = missingImages.length,
                 onFinished = () => {
                   if (--unprocessed === 0) {
+                    R.notify(this.notificationSystem,
+                        `Fixed ${missingImages.length} missing images`);
                     res();
                   }
                 };
@@ -994,8 +1001,9 @@ export default class MainContent extends Component {
       text: "STATS",
       icon: "show_chart"
     }, {
-      text: "OPTIONS",
-      icon: "settings"
+      text     : "OPTIONS",
+      icon     : "settings",
+      className: `list-tab dark ${this.state.isDisplaying === this.TAB.OPTIONS ? "active" : ""}`
     }];
 
     // <Button onClick={() => OneDriveManager.test()}>code</Button>

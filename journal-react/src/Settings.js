@@ -29,7 +29,7 @@ export default class Settings extends Component {
       isLoadingMissingImages: true,
     });
 
-    this.props.handleMissingImages.then(() => {
+    this.props.handleMissingImages().then(() => {
           this.setState({
             isLoadingMissingImages: false,
           });
@@ -43,14 +43,28 @@ export default class Settings extends Component {
 
   render() {
     return (
-        <div className="flex-center settings">
-          <div className="form">
-            <div className="form-row">
-              <div className="title-dark flex-center">Missing images</div>
-              <p className="flex-center">Missing images? Click to fix them</p>
-              <Button onClick={this.handleMissingImages}
+        <div className="flex-center settings bg-grey">
+          <div className="settings-wrapper shadow">
+            <div className="form">
+              <div className="form-row">
+                <div className="title-dark flex-center">Missing images?</div>
+                <div className="btns">
+                  <Button
+                      text="fix"
+                      onClick={this.handleMissingImages}
                       loading={this.state.isLoadingMissingImages}
-              >search</Button>
+                  >build</Button>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="title-dark flex-center">User</div>
+                <div className="btns">
+                  <Button
+                      text="sign out"
+                      onClick={this.props.signOut}
+                  >exit_to_app</Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

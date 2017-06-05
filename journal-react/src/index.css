@@ -125,7 +125,8 @@ img.center {
   transition: .4s ease;
   user-select: none;
   cursor: pointer;
-  border-radius: 1px; }
+  border-radius: 1px;
+  background: white; }
   .btn[disabled], .Options [disabled].option, .btn.disabled, .Options .disabled.option, .toggle[disabled], .toggle.disabled {
     pointer-events: none;
     opacity: .5; }
@@ -201,6 +202,18 @@ img.center {
     background: inherit;
     transition: .4s ease; }
 
+.btns {
+  justify-content: center;
+  display: flex; }
+  .btns .btn, .btns .Options .option, .Options .btns .option {
+    padding-right: 60px; }
+    .btns .btn .text-wrapper, .btns .Options .option .text-wrapper, .Options .btns .option .text-wrapper {
+      flex: none;
+      width: auto;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis; }
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -236,7 +249,6 @@ img.center {
   margin-right: 5px; }
 
 .form {
-  position: absolute;
   width: 100%;
   padding: 15px 0 20px;
   z-index: 9999;
@@ -400,22 +412,12 @@ nav.nav {
         height: 1px;
         background: #ddd; }
     .Prompt .dialog .btns {
-      justify-content: center;
-      display: flex;
       padding: 10px 20px 20px; }
-      .Prompt .dialog .btns .btn, .Prompt .dialog .btns .Options .option, .Options .Prompt .dialog .btns .option {
-        padding-right: 60px; }
       .Prompt .dialog .btns .yes {
         background: #448AFF;
         color: white; }
         .Prompt .dialog .btns .yes:hover {
           background: #8BC34A; }
-      .Prompt .dialog .btns .text-wrapper {
-        flex: none;
-        width: auto;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis; }
   .Prompt .dialog, .Prompt .prompt-box {
     z-index: 999999999; }
   .Prompt .prompt-child {
@@ -1374,6 +1376,7 @@ nav.nav {
       background: #212121;
       color: white; }
   .SearchBar .form {
+    position: absolute;
     max-width: 900px; }
 
 .Options {
@@ -1497,7 +1500,8 @@ nav.nav {
     .trak .intro .about {
       width: 160px;
       position: fixed;
-      bottom: 0; }
+      right: 0;
+      top: 0; }
 
 .loading-screen {
   flex-direction: column; }
@@ -1518,5 +1522,10 @@ nav.nav {
 
 .settings {
   height: 100%; }
+  .settings .settings-wrapper {
+    width: 800px;
+    background: white; }
+  .settings .title-dark {
+    margin-right: 20px; }
 
 /*# sourceMappingURL=index.css.map */

@@ -239,6 +239,7 @@ img.center {
   user-select: none;
   cursor: pointer;
   border-radius: 1px;
+  background: white;
 
   &[disabled], &.disabled {
     pointer-events: none;
@@ -372,6 +373,23 @@ img.center {
   }
 }
 
+.btns {
+  justify-content: center;
+  display: flex;
+
+  .btn {
+    padding-right: $button-width;
+
+    .text-wrapper {
+      flex: none;
+      width: auto;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -414,7 +432,6 @@ img.center {
 }
 
 .form {
-  position: absolute;
   width: 100%;
   padding: 15px 0 20px;
   z-index: 9999;

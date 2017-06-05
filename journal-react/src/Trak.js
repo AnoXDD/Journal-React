@@ -60,7 +60,7 @@ export default class Trak extends Component {
             <div className={`error ${this.state.signInError ? "" : "hidden"}`}>
               {this.state.signInError}
             </div>
-            <Button className="about"
+            <Button className="dark about"
                     text="About me"
                     onClick={() => window.open("http://anoxic.me")}>supervisor_account</Button>
           </div>
