@@ -229,6 +229,28 @@ img.center {
 .bg-grey {
   background: #eeeced; }
 
+.title-dark {
+  padding: 0 20px;
+  background: #212121;
+  color: white;
+  margin-right: 5px; }
+
+.form {
+  position: absolute;
+  width: 100%;
+  padding: 15px 0 20px;
+  z-index: 9999;
+  left: 0;
+  background: white; }
+  .form .form-wrapper {
+    width: 100%;
+    max-width: 900px;
+    margin: auto; }
+  .form .form-row {
+    display: flex;
+    padding: 0 50px;
+    margin-top: 5px; }
+
 html, body {
   height: 100%;
   width: 100%;
@@ -1352,26 +1374,7 @@ nav.nav {
       background: #212121;
       color: white; }
   .SearchBar .form {
-    position: absolute;
-    width: 100%;
-    max-width: 900px;
-    padding: 15px 0 20px;
-    z-index: 9999;
-    left: 0;
-    background: white; }
-    .SearchBar .form .form-wrapper {
-      width: 100%;
-      max-width: 900px;
-      margin: auto; }
-    .SearchBar .form .form-col {
-      display: flex;
-      padding: 0 50px;
-      margin-top: 5px; }
-      .SearchBar .form .form-col .title {
-        padding: 0 20px;
-        background: #212121;
-        color: white;
-        margin-right: 5px; }
+    max-width: 900px; }
 
 .Options {
   display: flex;
@@ -1512,5 +1515,8 @@ nav.nav {
       height: 100%;
       background: rgba(255, 255, 255, 0.7);
       transition: left .4s ease; }
+
+.settings {
+  height: 100%; }
 
 /*# sourceMappingURL=index.css.map */

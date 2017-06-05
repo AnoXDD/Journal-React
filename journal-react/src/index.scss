@@ -1615,37 +1615,11 @@ nav.nav {
     &[disabled] {
       background: $darkgrey;
       color: white;
-
     }
   }
 
   .form {
-    position: absolute;
-    width: 100%;
     max-width: $max-width;
-    padding: 15px 0 20px;
-    z-index: 9999;
-    left: 0;
-    background: white;
-
-    .form-wrapper {
-      width: 100%;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .form-col {
-      display: flex;
-      padding: 0 50px;
-      margin-top: 5px;
-
-      .title {
-        padding: 0 20px;
-        background: $darkgrey;
-        color: white;
-        margin-right: 5px;
-      }
-    }
   }
 }
 
@@ -1861,4 +1835,9 @@ nav.nav {
       transition: left .4s ease;
     }
   }
+}
+
+.settings {
+  height: 100%;
+  
 }

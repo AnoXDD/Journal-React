@@ -44,7 +44,7 @@ export default class BulbEditor extends Component {
   render() {
     return (
         <Prompt
-            className={this.props.hidden ? "hidden" : ""}
+            className={`dim-bg flex-center ${this.props.hidden ? "hidden" : ""}`}
             onClose={this.props.onClose}>
           <div className="prompt-box shadow">
             <div className="dialog">

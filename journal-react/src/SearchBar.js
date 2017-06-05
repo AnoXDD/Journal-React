@@ -65,7 +65,7 @@ class Options extends Component {
 class SearchBarTitle extends Component {
   render() {
     return (
-        <div className="vertical-align title">
+        <div className="vertical-align title-dark">
           <div className="vertical-align-wrapper">{this.props.children}</div>
         </div>
     );
@@ -253,7 +253,7 @@ export default class SearchBar extends Component {
           >
             <div
                 className={`form prompt-child shadow`}>
-              <div className="form-col">
+              <div className="form-row">
                 <SearchBarTitle>Keyword</SearchBarTitle>
                 <PredictionInputs
                     className={`tag white-background new-tag-wrapper`}
@@ -262,7 +262,7 @@ export default class SearchBar extends Component {
                     onChange={keywords => this.setState({keywords: keywords})}
                 />
               </div>
-              <div className="form-col">
+              <div className="form-row">
                 <SearchBarTitle>Tags</SearchBarTitle>
                 <PredictionInputs
                     className={`tag white-background new-tag-wrapper`}
@@ -271,21 +271,21 @@ export default class SearchBar extends Component {
                     onChange={tags => this.setState({tags: tags})}
                 />
               </div>
-              <div className="form-col">
+              <div className="form-row">
                 <SearchBarTitle>Time</SearchBarTitle>
                 <Options
                     options="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
                     value={this.state.months}
                     onChange={months => this.setState({months: months})}/>
               </div>
-              <div className="form-col">
+              <div className="form-row">
                 <SearchBarTitle>Type</SearchBarTitle>
                 <Options options={`${R.TYPE_ARTICLE} ${R.TYPE_BULB}`}
                          icons="description lightbulb_outline"
                          value={this.state.types}
                          onChange={types => this.setState({types: types})}/>
               </div>
-              <div className="form-col">
+              <div className="form-row">
                 <SearchBarTitle>Attachments</SearchBarTitle>
                 <Options options={this.ATTACHMENTS}
                          icons="photo_library library_music movie link more_horiz"

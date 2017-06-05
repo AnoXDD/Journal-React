@@ -670,7 +670,7 @@ export default class OneDriveManager {
             .filter(year => year)
             .sort());
   }
-
+  
   // region alias
 
   static getData(year) {

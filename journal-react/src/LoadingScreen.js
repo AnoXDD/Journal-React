@@ -24,7 +24,8 @@ export default class LoadingScreen extends Component {
           <div className="title">{this.props.title}</div>
           <div className="progress-bar">
             <span className="progress"
-                 style={{left: `${(this.props.progress||0)*100}%`}}></span>
+                  style={{left: `${(this.props.progress||0)*100}%`,
+                   transition: this.props.progress === 0 ? "none" : undefined}}></span>
           </div>
         </div>
     );

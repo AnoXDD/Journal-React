@@ -31,7 +31,7 @@ export default class Prompt extends Component {
     if (this.props.children) {
       // Has customized window
       return (
-          <div className={`Prompt dim-bg flex-center ${this.props.className || ""}`}>
+          <div className={`Prompt ${this.props.className || ""}`}>
             <span className="block"
                   onClick={this.props.onClose}/>
             {this.props.children}

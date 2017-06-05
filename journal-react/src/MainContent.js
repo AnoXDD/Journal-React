@@ -15,6 +15,8 @@ import BulbMap from "./BulbMap";
 import Chart from "./Chart";
 import BulbEditor from "./BulbEditor";
 import LoadingScreen from "./LoadingScreen";
+import Settings from "./Settings";
+
 import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
@@ -199,7 +201,7 @@ export default class MainContent extends Component {
     EDITOR   : 1 << 2,
     HISTORY  : 1 << 3,
     STATS    : 1 << 4,
-    SETTINGS : 1 << 5,
+    OPTIONS  : 1 << 5,
   };
 
   state = {
@@ -211,7 +213,7 @@ export default class MainContent extends Component {
     isDisplayingMapView : true,
 
     // Use | to connect them later
-    enabledTabs: this.TAB.LIST | this.TAB.STATS,
+    enabledTabs: this.TAB.LIST | this.TAB.STATS | this.TAB.OPTIONS,
 
     editArticleIndex: undefined,
 
@@ -272,6 +274,7 @@ export default class MainContent extends Component {
     this.handlePromptCancel = this.handlePromptCancel.bind(this);
     this.handleBulbEditorSend = this.handleBulbEditorSend.bind(this);
     this.handleBulbEditorEdit = this.handleBulbEditorEdit.bind(this);
+    this.handleMissingImages = this.handleMissingImages.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
     this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
@@ -339,7 +342,7 @@ export default class MainContent extends Component {
         .then(() => {
           this.setState({
             loadingProgress: 0,
-            loadingPrompt: "Downloading images ..."
+            loadingPrompt  : "Downloading images ..."
           });
 
           return OneDriveManager.getImages(this.year);
@@ -767,6 +770,47 @@ export default class MainContent extends Component {
   }
 
   /**
+   * Finds all the images in the resource folder that doesn't belong to any
+   * bulbs and articles and move them to `queue`
+   */
+  handleMissingImages() {
+    // First, make a list of all the images
+    let images = [];
+
+    for (let entry of this.state.data) {
+      if (entry.images) {
+        images = [...images, ...entry.images];
+      }
+    }
+
+    // Then get a list of all the images in the folder
+    return OneDriveManager.getJournalImagesByYear(this.year)
+        .then(journalImages => {
+          let missingImages = journalImages.filter(
+              journalImage => images.indexOf(journalImage.name) === -1);
+
+          return new Promise(res => {
+            if (missingImages.length === 0) {
+              res();
+            }
+
+            let unprocessed = missingImages.length,
+                onFinished = () => {
+                  if (--unprocessed === 0) {
+                    res();
+                  }
+                };
+
+            for (let image of missingImages) {
+              OneDriveManager.removeImageById(image.id)
+                  .then(() => onFinished());
+            }
+          });
+        });
+
+  }
+
+  /**
    * Tring to upload an unprocessed data, which means the data will be
    * processed and then uploaded
    * @param data
@@ -950,7 +994,7 @@ export default class MainContent extends Component {
       text: "STATS",
       icon: "show_chart"
     }, {
-      text: "SETTINGS",
+      text: "OPTIONS",
       icon: "settings"
     }];
 
@@ -1061,6 +1105,13 @@ export default class MainContent extends Component {
               <Chart
                   hidden={this.state.isDisplaying !== this.TAB.STATS}
                   data={this.state.data}/>
+            </div>
+            <div
+                className={`flex-extend-inner-wrapper options-view ${this.state.isDisplaying === this.TAB.OPTIONS ? "" : "hidden"}`}>
+              <Settings hidden={this.state.isDisplaying === this.TAB.OPTIONS}
+                        handleMissingImages={this.handleMissingImages}
+                        OneDriveManager={OneDriveManager}
+              />
             </div>
           </main>
           <LoadingScreen title={this.state.loadingPrompt}
