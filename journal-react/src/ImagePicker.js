@@ -7,6 +7,7 @@
 import React, {Component} from "react";
 
 import Button from "./Button";
+import ProgressBar from "./ProgressBar";
 import OneDriveManager from "./OneDriveManager";
 
 export default class ImagePicker extends Component {
@@ -20,7 +21,8 @@ export default class ImagePicker extends Component {
     this.id = `image-picker-${new Date().getTime()}`;
 
     this.state = {
-      loading: false,
+      loading : false,
+      progress: 0,
     };
 
     this.handleFileSelect = this.handleFileSelect.bind(this);
@@ -28,15 +30,24 @@ export default class ImagePicker extends Component {
   }
 
   uploadImage(f) {
-    return OneDriveManager.uploadToQueue(f);
+    return OneDriveManager.uploadToQueue(f, val => {
+      console.log(val);
+      this.setState({
+        progress: val,
+      });
+    });
   }
 
   handleFileSelect(e) {
+    if (!e.target.files || e.target.files.length === 0) {
+      return;
+    }
+
     this.setState({
       loading: true,
     });
 
-    return new Promise(res => {
+    return new Promise((res, rej) => {
       let files = e.target.files,
           fileObjects = [],
           unprocessed = files.length,
@@ -72,10 +83,20 @@ export default class ImagePicker extends Component {
                     });
                   })
                   .then(() => {
+                    this.input.value = null;
+
                     this.setState({
-                      loading: false,
+                      progress: 0,
+                      loading : false,
                     });
                     res();
+                  })
+                  .catch(err => {
+                    this.setState({
+                      progress: 0,
+                      loading : false,
+                    });
+                    rej();
                   });
             }
           };
@@ -103,21 +124,26 @@ export default class ImagePicker extends Component {
 
   render() {
     return (
-        <label className={`btn label-btn ${this.state.loading ? "disabled" : ""} ${this.props.className || ""}`}
-               htmlFor={this.id}>
+        <label
+            className={`label-btn ${this.state.loading ? "disabled" : ""} ${this.props.className || ""}`}
+            htmlFor={this.id}>
           <Button loading={this.state.loading}>
             {this.props.children || "file_upload"}
           </Button>
           {this.props.multiple ? (
               <input type="file" id={this.id}
                      className="hidden"
+                     ref={ref => this.input = ref}
                      onChange={this.handleFileSelect} accept="image/*"
                      multiple/>
           ) : (
               <input type="file" id={this.id}
                      className="hidden"
+                     ref={ref => this.input = ref}
                      onChange={this.handleFileSelect} accept="image/*"/>
           )}
+          <ProgressBar className={this.state.progress ? "" : "transparent"}
+                       progress={this.state.progress}/>
         </label>
     );
   }

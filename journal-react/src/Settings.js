@@ -20,7 +20,7 @@ export default class Settings extends Component {
     this.handleMissingImages = this.handleMissingImages.bind(this);
   }
 
-  componentShouldUpdate(nextProps) {
+  shouldComponentUpdate(nextProps) {
     return !(this.props.hidden && nextProps.hidden);
   }
 

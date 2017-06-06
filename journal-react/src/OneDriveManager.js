@@ -688,15 +688,19 @@ export default class OneDriveManager {
    *     xxx, content: xxx}
    * @returns {Promise.<*>}
    */
-  static uploadToQueue(data) {
+  static uploadToQueue(data, onChange) {
+    onChange = onChange || (() => void(0));
+
     if (typeof data === "object") {
       return new Promise(resolve => {
         let counter = 0,
             f = () => {
+              onChange((counter + 1) / data.length);
+
               if (++counter === data.length) {
                 resolve();
               }
-            }
+            };
 
         for (let i = 0; i < data.length; ++i) {
           let c = data[i];
@@ -709,7 +713,10 @@ export default class OneDriveManager {
     }
 
     return this.uploadItemByPath(`queue/${this.generateNewImageName(data.name,
-        0)}`, data.content, data.contentType);
+        0)}`, data.content, data.contentType)
+        .then(() => {
+          onChange(1);
+        });
   }
 
   // region alias

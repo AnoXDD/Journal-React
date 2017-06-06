@@ -127,8 +127,6 @@ img.center {
   cursor: pointer;
   border-radius: 1px;
   background: white; }
-  .btn.label-btn, .Options .label-btn.option, .toggle.label-btn {
-    overflow: hidden; }
   .btn[disabled], .Options [disabled].option, .btn.disabled, .Options .disabled.option, .toggle[disabled], .toggle.disabled {
     pointer-events: none;
     opacity: .5; }
@@ -1505,22 +1503,25 @@ nav.nav {
       right: 0;
       top: 0; }
 
+.progress-bar {
+  height: 3px;
+  background: #2962FF;
+  position: relative;
+  overflow: hidden;
+  width: 100%; }
+  .progress-bar .progress {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    transition: .4s ease; }
+
 .loading-screen {
   flex-direction: column; }
   .loading-screen .progress-bar {
     margin-top: 25px;
-    width: 30vw;
-    height: 3px;
-    background: #2962FF;
-    position: relative;
-    overflow: hidden; }
-    .loading-screen .progress-bar .progress {
-      position: absolute;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.7);
-      transition: left .4s ease; }
+    width: 30vw; }
 
 .settings {
   height: 100%; }
@@ -1529,5 +1530,15 @@ nav.nav {
     background: white; }
   .settings .title-dark {
     margin-right: 20px; }
+
+.label-btn {
+  position: relative; }
+  .label-btn.disabled {
+    pointer-events: none; }
+  .label-btn .progress-bar {
+    background: #212121;
+    position: absolute;
+    bottom: 0;
+    transition: opacity .4s ease; }
 
 /*# sourceMappingURL=index.css.map */

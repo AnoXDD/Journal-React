@@ -6,6 +6,7 @@
 import React, {Component} from "react";
 
 import Button from "./Button";
+import ProgressBar from "./ProgressBar";
 
 export default class LoadingScreen extends Component {
 
@@ -22,11 +23,7 @@ export default class LoadingScreen extends Component {
         <div className="loading-screen flex-center">
           <Button loading={true}>clear</Button>
           <div className="title">{this.props.title}</div>
-          <div className="progress-bar">
-            <span className="progress"
-                  style={{left: `${(this.props.progress||0)*100}%`,
-                   transition: this.props.progress === 0 ? "none" : undefined}}></span>
-          </div>
+          <ProgressBar progress={this.props.progress}/>
         </div>
     );
   }
