@@ -127,6 +127,8 @@ img.center {
   cursor: pointer;
   border-radius: 1px;
   background: white; }
+  .btn.label-btn, .Options .label-btn.option, .toggle.label-btn {
+    overflow: hidden; }
   .btn[disabled], .Options [disabled].option, .btn.disabled, .Options .disabled.option, .toggle[disabled], .toggle.disabled {
     pointer-events: none;
     opacity: .5; }
