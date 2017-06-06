@@ -767,7 +767,8 @@ export default class MainContent extends Component {
 
           return OneDriveManager.getImagesInQueue();
         })
-        .catch(err=> {
+        .catch(err => {
+          console.error(err.stack);
           R.notifyError(this.notificationSystem,
               "There was an error when fetching the queue. Try again");
         });

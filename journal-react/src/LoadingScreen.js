@@ -9,7 +9,7 @@ import Button from "./Button";
 
 export default class LoadingScreen extends Component {
 
-  componentShouldUpdate(nextProps) {
+  shouldComponenUpdate(nextProps) {
     return nextProps.title !== "" || this.props.title !== "";
   }
 

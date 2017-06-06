@@ -53,6 +53,13 @@ export default class OneDriveManager {
 
   // region general utility functions
 
+  static generateNewImageName(name, i) {
+    let suffix = name.lastIndexOf(".");
+    suffix = name.substr(suffix);
+
+    return `${new Date().getTime()}_${i}${suffix}`;
+  }
+
   static getCookie(name) {
     name += "=";
     var cookies = document.cookie,
@@ -288,12 +295,15 @@ export default class OneDriveManager {
         })
         .then(res => this.getFullList(res))
         .then(res => res.value.map(val => {
-          if (val.thumbnails) {
+          if (val.thumbnails && val.thumbnails[0] && val.thumbnails[0].large) {
             val.thumbnails = val.thumbnails[0].large.url;
+          } else {
+            delete val.thumbnails;
           }
 
           return val;
-        }));
+        }))
+        .then(res => res.filter(res => res.thumbnails));
   }
 
   static getIdByPath(path) {
@@ -318,10 +328,11 @@ export default class OneDriveManager {
             .post(DATA));
   }
 
-  static uploadItemByPath(path, content) {
+  static uploadItemByPath(path, content, contentType) {
     return this.getClient()
         .then(client =>
             client.api(`me${this.getPathHeader(path)}:/content`)
+                .header("Content-Type", contentType || "text/plain")
                 .put(content)
         );
   }
@@ -670,7 +681,37 @@ export default class OneDriveManager {
             .filter(year => year)
             .sort());
   }
-  
+
+  /**
+   * Uploads the image(s) to the queue folder
+   * @param data - an object of a list of objects of {name: xxx, contentType:
+   *     xxx, content: xxx}
+   * @returns {Promise.<*>}
+   */
+  static uploadToQueue(data) {
+    if (typeof data === "object") {
+      return new Promise(resolve => {
+        let counter = 0,
+            f = () => {
+              if (++counter === data.length) {
+                resolve();
+              }
+            }
+
+        for (let i = 0; i < data.length; ++i) {
+          let c = data[i];
+
+          this.uploadItemByPath(`queue/${this.generateNewImageName(c.name, i)}`,
+              c.content, c.contentType)
+              .then(() => f());
+        }
+      });
+    }
+
+    return this.uploadItemByPath(`queue/${this.generateNewImageName(data.name,
+        0)}`, data.content, data.contentType);
+  }
+
   // region alias
 
   static getData(year) {

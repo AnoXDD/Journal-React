@@ -13,6 +13,7 @@ import Button from "./Button";
 import NumberCard from "./NumberCard";
 import Prompt from "./Prompt";
 import Image from "./Image";
+import ImagePicker from "./ImagePicker";
 
 import R from "./R";
 
@@ -466,6 +467,8 @@ class Editor extends Component {
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
+    this.refreshPhoto = this.refreshPhoto.bind(this);
+    this.addAllPhotos = this.addAllPhotos.bind(this);
     this.extractUploadableData = this.extractUploadableData.bind(this);
     this.restorePreviousBody = this.restorePreviousBody.bind(this);
     this.addToPhotosInTransfer = this.addToPhotosInTransfer.bind(this);
@@ -1135,9 +1138,16 @@ class Editor extends Component {
       isLoadingImages: true,
     });
 
-    this.props.onRefreshQueue()
-        .then(list => list.map(photo => photo.name))
+    return this.props.onRefreshQueue()
+        .then(list => list ? list.map(photo => photo.name) : undefined)
         .then(names => {
+          if (typeof names === "undefined") {
+            this.setState({
+              isLoadingImages: false,
+            });
+            return;
+          }
+
           // Combining current photo list with new ones
           let currentNames = this.state.photos.map(photo => photo.name),
               newNames = [];
@@ -1333,15 +1343,20 @@ class Editor extends Component {
               ></Toggle>
               <Button
                   className={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.isEditing ? "hidden" : ""}
-                  onClick={this.refreshPhoto.bind(this)}
+                  onClick={this.refreshPhoto}
                   loading={this.state.isLoadingImages}
               >refresh</Button>
               <Button
                   className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.photos.length && this.state.isEditing ? "" : "hidden"}
-                  onClick={this.addAllPhotos.bind(this)}
+                  onClick={this.addAllPhotos}
                   loading={this.state.photosInTransfer.length}
               >library_add</Button>
-              <span className="breaker"></span>
+              <ImagePicker
+                  className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.isEditing ? "" : "hidden"}
+                  onFinish={this.refreshPhoto} multiple
+              />
+              <span
+                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} breaker`}></span>
               { [["photos", "photo_library"],
                 ["musics", "library_music"],
                 ["movies", "movie"],

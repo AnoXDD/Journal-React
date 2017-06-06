@@ -47,13 +47,18 @@ export default class Settings extends Component {
           <div className="settings-wrapper shadow">
             <div className="form">
               <div className="form-row">
-                <div className="title-dark flex-center">Missing images?</div>
+                <div className="title-dark flex-center">Image management</div>
                 <div className="btns">
                   <Button
-                      text="fix"
+                      text="fix missing images"
                       onClick={this.handleMissingImages}
                       loading={this.state.isLoadingMissingImages}
                   >build</Button>
+                  <Button
+                      text="delete unused images"
+                      onClick={this.handleMissingImages}
+                      loading={this.state.isLoadingMissingImages}
+                  >delete</Button>
                 </div>
               </div>
               <div className="form-row">
