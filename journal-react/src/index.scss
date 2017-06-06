@@ -207,6 +207,12 @@ nav.nav {
     }
   }
 
+  &.bulb-prompt {
+    .message:after {
+      display: none;
+    }
+  }
+
   .dialog {
     width: 700px;
     background-color: #fafafa;
@@ -241,6 +247,10 @@ nav.nav {
 
     .btns {
       padding: 10px 20px 20px;
+
+      .btn:not(.yes) {
+        background: transparent;
+      }
 
       .yes {
         background: $cp;
@@ -488,6 +498,7 @@ nav.nav {
   position: absolute;
   flex-flow: column;
   padding: $editor-padding;
+  overflow: hidden;
 
   &.fullscreen {
     @include max-z-index;
@@ -654,12 +665,12 @@ nav.nav {
           margin-left: $button-width / 2;
           flex: 0 0 $button-width-accent;
         }
-
-        span {
-          transition: opacity .4s ease;
-          opacity: 0;
-          pointer-events: none;
-        }
+        //
+        //span {
+        //  transition: opacity .4s ease;
+        //  opacity: 0;
+        //  pointer-events: none;
+        //}
       }
     }
 
@@ -855,6 +866,9 @@ nav.nav {
             position: static;
             padding: 0;
             height: 18px;
+          }
+          .btn {
+            background: inherit;
           }
         }
 

@@ -25,6 +25,12 @@ export default class Button extends Component {
               {this.props.children}
             </i>
           </div>
+          { this.props.tooltip ? (
+              <div className="tooltip flex-center">
+                <span className="tooltip-text">
+                  {this.props.tooltip}
+                </span>
+              </div>) : null }
           { this.props.text ? (
               <div className="vertical-align text-wrapper">
                 <span className="vertical-align-wrapper btn-text">

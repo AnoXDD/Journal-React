@@ -180,6 +180,9 @@ img.center {
     background: black; }
   .btn.underlined.active:after, .Options .underlined.active.option:after, .btn.underlined:hover:after, .Options .underlined.option:hover:after, .toggle.underlined.active:after, .toggle.underlined:hover:after {
     background: #448AFF; }
+  .btn:hover .tooltip, .Options .option:hover .tooltip, .toggle:hover .tooltip {
+    opacity: 1;
+    bottom: -32px; }
   .btn.active, .Options .active.option, .btn:hover, .Options .option:hover, .toggle.active, .toggle:hover {
     color: #448AFF; }
   .btn:not(.underlined):hover .add-circle, .Options .option:not(.underlined):hover .add-circle, .toggle:not(.underlined):hover .add-circle {
@@ -201,6 +204,23 @@ img.center {
     width: 100%;
     background: inherit;
     transition: .4s ease; }
+  .btn .tooltip, .Options .option .tooltip, .toggle .tooltip {
+    z-index: 999999999;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    bottom: -20px;
+    transition: opacity .4s ease, bottom .4s ease;
+    text-transform: none;
+    width: 100%;
+    height: 32px; }
+    .btn .tooltip .tooltip-text, .Options .option .tooltip .tooltip-text, .toggle .tooltip .tooltip-text {
+      background: #212121;
+      color: white;
+      padding: 8px 10px;
+      border-radius: 2px;
+      font-size: 10px;
+      white-space: nowrap; }
 
 .btns {
   justify-content: center;
@@ -388,6 +408,8 @@ nav.nav {
     left: 0; }
     .Prompt.dim-bg .block {
       background: rgba(255, 255, 255, 0.5); }
+  .Prompt.bulb-prompt .message:after {
+    display: none; }
   .Prompt .dialog {
     width: 700px;
     background-color: #fafafa; }
@@ -413,6 +435,8 @@ nav.nav {
         background: #ddd; }
     .Prompt .dialog .btns {
       padding: 10px 20px 20px; }
+      .Prompt .dialog .btns .btn:not(.yes), .Prompt .dialog .btns .Options .option:not(.yes), .Options .Prompt .dialog .btns .option:not(.yes) {
+        background: transparent; }
       .Prompt .dialog .btns .yes {
         background: #448AFF;
         color: white; }
@@ -633,7 +657,8 @@ nav.nav {
   display: flex;
   position: absolute;
   flex-flow: column;
-  padding: 50px; }
+  padding: 50px;
+  overflow: hidden; }
   .Editor.fullscreen {
     z-index: 999999999;
     position: fixed;
@@ -748,10 +773,6 @@ nav.nav {
           width: 120px;
           margin-left: 30px;
           flex: 0 0 120px; }
-        .Editor .extras .buttons .btn span, .Editor .extras .buttons .Options .option span, .Options .Editor .extras .buttons .option span {
-          transition: opacity .4s ease;
-          opacity: 0;
-          pointer-events: none; }
     .Editor .extras .more-info {
       margin-top: 10px;
       width: inherit;
@@ -875,6 +896,8 @@ nav.nav {
             position: static;
             padding: 0;
             height: 18px; }
+          .Editor .extras .other-wrapper .type-wrapper.add .btn, .Editor .extras .other-wrapper .type-wrapper.add .Options .option, .Options .Editor .extras .other-wrapper .type-wrapper.add .option {
+            background: inherit; }
         .Editor .extras .other-wrapper .type-wrapper .btn:hover, .Editor .extras .other-wrapper .type-wrapper .Options .option:hover, .Options .Editor .extras .other-wrapper .type-wrapper .option:hover {
           color: black; }
         .Editor .extras .other-wrapper .type-wrapper .type {

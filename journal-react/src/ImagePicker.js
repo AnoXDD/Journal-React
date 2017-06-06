@@ -127,7 +127,9 @@ export default class ImagePicker extends Component {
         <label
             className={`label-btn ${this.state.loading ? "disabled" : ""} ${this.props.className || ""}`}
             htmlFor={this.id}>
-          <Button loading={this.state.loading}>
+          <Button loading={this.state.loading}
+                  tooltip="Upload images"
+          >
             {this.props.children || "file_upload"}
           </Button>
           {this.props.multiple ? (

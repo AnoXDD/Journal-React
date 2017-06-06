@@ -1255,18 +1255,24 @@ class Editor extends Component {
           />
           <nav className="nav has-hint">
             <Button
+                tooltip="Restore draft"
                 className={(this.state.isEditing && localStorage.previousBody) ? "" : "hidden"}
                 onClick={this.restorePreviousBody}>restore</Button>
-            <Button className={`${this.state.isFullscreen ? "" : "hidden"}`}
-                    onClick={this.toggleDarkMode}>highlight</Button>
-            <Button onClick={this.onDecreasingTextBodyWidth}>format_indent_increase</Button>
-            <Button onClick={this.onIncreasingTextBodyWidth}>format_indent_decrease</Button>
+            <Button
+                tooltip="Toggle dark mode"
+                className={`${this.state.isFullscreen ? "" : "hidden"}`}
+                onClick={this.toggleDarkMode}>highlight</Button>
+            <Button tooltip="Narrower editor"
+                    onClick={this.onDecreasingTextBodyWidth}>format_indent_increase</Button>
+            <Button tooltip="Wider editor"
+                    onClick={this.onIncreasingTextBodyWidth}>format_indent_decrease</Button>
             <Toggle
                 className="btn fullscreen"
                 isChanging={this.state.isFullscreen}
                 onClick={this.toggleFullscreen}
                 firstIcon="fullscreen"
                 secondIcon="fullscreen_exit"
+                tooltip="Fullscreen"
             />
             <Button className="hint">more_vert</Button>
           </nav>
@@ -1340,16 +1346,19 @@ class Editor extends Component {
                   onClick={this.togglePhotoPreview}
                   firstIcon="zoom_in"
                   secondIcon="zoom_out"
+                  tooltip="Preview images"
               ></Toggle>
               <Button
                   className={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.isEditing ? "hidden" : ""}
                   onClick={this.refreshPhoto}
                   loading={this.state.isLoadingImages}
+                  tooltip="Refresh available images"
               >refresh</Button>
               <Button
                   className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.photos.length && this.state.isEditing ? "" : "hidden"}
                   onClick={this.addAllPhotos}
                   loading={this.state.photosInTransfer.length}
+                  tooltip="Add all"
               >library_add</Button>
               <ImagePicker
                   className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.isEditing ? "" : "hidden"}
@@ -1379,6 +1388,7 @@ class Editor extends Component {
               <span className="breaker"></span>
               <Button className={`${this.state.isEditing ? "" : "hidden"}`}
                       loading={this.state.isSaving}
+                      tooltip="Save"
                       onClick={this.saveEdit}>save</Button>
               <Toggle
                   className="btn send-edit accent"
@@ -1386,6 +1396,7 @@ class Editor extends Component {
                   isChanging={!this.state.isEditing}
                   firstIcon="send"
                   secondIcon="mode_edit"
+                  tooltip="Save and quit editing"
                   onClick={this.toggleEditMode}
               />
             </div>

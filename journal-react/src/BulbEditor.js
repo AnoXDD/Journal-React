@@ -44,7 +44,7 @@ export default class BulbEditor extends Component {
   render() {
     return (
         <Prompt
-            className={`dim-bg flex-center ${this.props.hidden ? "hidden" : ""}`}
+            className={`dim-bg flex-center bulb-prompt ${this.props.hidden ? "hidden" : ""}`}
             onClose={this.props.onClose}>
           <div className="prompt-box shadow">
             <div className="dialog">
@@ -60,6 +60,7 @@ export default class BulbEditor extends Component {
                       >
                         <textarea className="text-body"
                                   onChange={e => this.setState({value: e.target.value})}
+                                  placeholder="Write something here ..."
                                   value={this.state.value}/>
                       </NoScrollArea>
                     </div>

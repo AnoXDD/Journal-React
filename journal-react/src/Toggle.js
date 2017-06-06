@@ -29,6 +29,12 @@ export default class Toggle extends Component {
             {...disabled}
         >
           <Ink/>
+          { this.props.tooltip ? (
+              <div className="tooltip flex-center">
+                <span className="tooltip-text">
+                  {this.props.tooltip}
+                </span>
+              </div>) : null }
           <i className="material-icons flex-center loading-icon">remove</i>
           <i className="flex-center first material-icons">{firstIcon}</i>
           <i className="flex-center second material-icons">{secondIcon}</i>
