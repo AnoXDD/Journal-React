@@ -195,6 +195,8 @@ nav.nav {
   @include max-z-index;
   position: relative;
 
+  $dialog-background: #fafafa;
+
   &.dim-bg {
     position: fixed;
     width: 100%;
@@ -215,7 +217,7 @@ nav.nav {
 
   .dialog {
     width: 700px;
-    background-color: #fafafa;
+    background-color: $dialog-background;
 
     .title {
       background: $darkgrey;
@@ -249,7 +251,7 @@ nav.nav {
       padding: 10px 20px 20px;
 
       .btn:not(.yes) {
-        background: transparent;
+        background: $dialog-background;
       }
 
       .yes {
@@ -1168,6 +1170,10 @@ nav.nav {
 
     .nav {
       z-index: inherit;
+
+      .btn {
+        background: transparent;
+      }
     }
 
     .bulb-image-viewer-wrapper {
@@ -1868,5 +1874,15 @@ nav.nav {
     position: absolute;
     bottom: 0;
     transition: opacity .4s ease;
+  }
+}
+
+.bulb-prompt {
+  .message {
+    display: flex;
+
+    .image-wrapper {
+      flex: 0 0 20%;
+    }
   }
 }

@@ -328,6 +328,13 @@ export default class OneDriveManager {
             .post(DATA));
   }
 
+  /**
+   * @param path - the path, including the filename
+   * @param content
+   * @param contentType
+   * @returns {Promise.<*>} - a promise with following: { id: xxx, name: xxx ,
+   *     ... }
+   */
   static uploadItemByPath(path, content, contentType) {
     return this.getClient()
         .then(client =>
@@ -363,7 +370,7 @@ export default class OneDriveManager {
   }
 
   /**
-   *Returns a promise with following: { id: xxx, name: xxx , ... }
+   * Returns a promise with following: { id: xxx, name: xxx , ... }
    * @param id
    * @param dest
    * @param newName
@@ -691,7 +698,8 @@ export default class OneDriveManager {
   static uploadToQueue(data, onChange) {
     onChange = onChange || (() => void(0));
 
-    if (typeof data === "object") {
+    // Treat it differently based on if it is an array of just one object
+    if (Array.isArray(data)) {
       return new Promise(resolve => {
         let counter = 0,
             f = () => {
@@ -714,8 +722,10 @@ export default class OneDriveManager {
 
     return this.uploadItemByPath(`queue/${this.generateNewImageName(data.name,
         0)}`, data.content, data.contentType)
-        .then(() => {
+        .then(res => {
           onChange(1);
+
+          return res;
         });
   }
 

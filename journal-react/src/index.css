@@ -436,7 +436,7 @@ nav.nav {
     .Prompt .dialog .btns {
       padding: 10px 20px 20px; }
       .Prompt .dialog .btns .btn:not(.yes), .Prompt .dialog .btns .Options .option:not(.yes), .Options .Prompt .dialog .btns .option:not(.yes) {
-        background: transparent; }
+        background: #fafafa; }
       .Prompt .dialog .btns .yes {
         background: #448AFF;
         color: white; }
@@ -1081,6 +1081,8 @@ nav.nav {
       pointer-events: auto; }
     .EntryView .bulb-image-viewer .nav {
       z-index: inherit; }
+      .EntryView .bulb-image-viewer .nav .btn, .EntryView .bulb-image-viewer .nav .Options .option, .Options .EntryView .bulb-image-viewer .nav .option {
+        background: transparent; }
     .EntryView .bulb-image-viewer .bulb-image-viewer-wrapper {
       background: #eeeced;
       height: 100%;
@@ -1563,5 +1565,10 @@ nav.nav {
     position: absolute;
     bottom: 0;
     transition: opacity .4s ease; }
+
+.bulb-prompt .message {
+  display: flex; }
+  .bulb-prompt .message .image-wrapper {
+    flex: 0 0 20%; }
 
 /*# sourceMappingURL=index.css.map */

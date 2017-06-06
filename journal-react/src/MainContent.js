@@ -428,15 +428,26 @@ export default class MainContent extends Component {
    * `this.unprocessedBulbs` is equal to 0
    * DO NOT call this function while other bulb handling function is not
    * finished
-   * @param bulbContent
+   * @param bulbContent - a string of the content of bulb
+   * @param image - an object an image { id : xxx , name : xxx }
    */
-  handleNewRawBulb(bulbContent) {
+  handleNewRawBulb(bulbContent, image) {
     this.unprocessedBulbs = 1;
 
-    return this.handleNewProcessedBulbs([{
+    let bulb = {
       time   : {created: new Date().getTime()},
       content: bulbContent
-    }], []);
+    };
+
+    this.extractRawContent(bulb);
+
+    if (image) {
+      bulb.imageId = image.id;
+      return OneDriveManager.addImageById(bulb.imageId, this.year)
+          .then(() => this.handleNewProcessedBulbs([bulb], [image]));
+    }
+
+    return this.handleNewProcessedBulbs([bulb], []);
   }
 
   /**
@@ -451,11 +462,11 @@ export default class MainContent extends Component {
         resolve();
       }
 
-      let uploadedImageIds = [];
+      let uploadedImages = [];
 
       const onBulbFinish = () => {
         if (--this.unprocessedBulbs === 0) {
-          this.handleNewProcessedBulbs(bulbObject, uploadedImageIds)
+          this.handleNewProcessedBulbs(bulbObject, uploadedImages)
               .then(res => resolve(res));
         }
       };
@@ -489,11 +500,11 @@ export default class MainContent extends Component {
 
         bulb.time = {created: time};
 
-        // First, transfer the image (if any)
+        // Transfer the image (if any)
         if (bulb.imageId) {
           OneDriveManager.addImageById(bulb.imageId, this.year)
               .then(image => {
-                uploadedImageIds.push({id: image.id, name: image.name});
+                uploadedImages.push({id: image.id, name: image.name});
                 onBulbFinish();
               }, ()=> {
                 onBulbFinish();
@@ -505,11 +516,16 @@ export default class MainContent extends Component {
     });
   }
 
-  handleNewProcessedBulbs(bulbObject, uploadedImageIds) {
+  /**
+   * Handles the new processed bulbs.
+   * @param bulbObjects - a list of bulb object { content: xxx, (imageId: xxx)}
+   * @param uploadedImages - a list of image objects { id: xxx, name: xxx}
+   */
+  handleNewProcessedBulbs(bulbObjects, uploadedImages) {
     let processedBulbs = [],
         processedBulbIds = [];
 
-    for (let bulb of bulbObject) {
+    for (let bulb of bulbObjects) {
       // First see if this bulb has been merged already
       if (bulb.merged) {
         processedBulbIds.push(bulb.id);
@@ -525,7 +541,7 @@ export default class MainContent extends Component {
 
       // Add image to the bulb if applicable
       if (bulb.imageId) {
-        let image = uploadedImageIds.find(
+        let image = uploadedImages.find(
             image => image.id === bulb.imageId);
 
         if (image) {
@@ -699,8 +715,8 @@ export default class MainContent extends Component {
     this.handleCalendarClick(top);
   }
 
-  handleBulbEditorSend(bulbContent) {
-    return this.handleNewRawBulb(bulbContent)
+  handleBulbEditorSend(bulbContent, imageId) {
+    return this.handleNewRawBulb(bulbContent, imageId)
         .then(() => {
           this.setState({
             isShowingBulbEditor: false,

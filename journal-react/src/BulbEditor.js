@@ -3,6 +3,9 @@ import React, {Component} from 'react';
 import NoScrollArea from "./NoScrollArea";
 import Button from "./Button";
 import Prompt from "./Prompt";
+import Image from "./Image";
+import ImagePicker from "./ImagePicker";
+import OneDriveManager from "./OneDriveManager";
 
 /**
  * This editor is only appropriate to edit a bulb, NOT for an article, since
@@ -10,6 +13,11 @@ import Prompt from "./Prompt";
  */
 
 export default class BulbEditor extends Component {
+
+  /* The last imageId associated with this bulb */
+  id = "";
+  name = "";
+
   constructor(props) {
     super(props);
 
@@ -17,20 +25,53 @@ export default class BulbEditor extends Component {
       value: "",
 
       sending: false,
+      src    : null,
     };
+
+    this.handleFinish = this.handleFinish.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !this.props.hidden || !nextProps.hidden;
   }
 
+  handleFinish(image) {
+    let {id, name} = image,
+        src = image["@microsoft.graph.downloadUrl"],
+        onFinish = ()=> {
+          this.id = id;
+          this.name = name;
+          this.setState({
+            src: src,
+          });
+        }
+
+    if (this.id) {
+      // There is a previous image uploaded, and we want to remove it
+      return OneDriveManager.removeItemById(this.id)
+          .catch(err => {
+            console.error(err.stack);
+          })
+          .then(() => {
+            onFinish();
+          });
+    }
+
+    return new Promise(res => {
+      onFinish();
+      res();
+    });
+  }
+
+  // todo how to remove it?
 
   send() {
     this.setState({
       sending: true,
     });
 
-    this.props.onSend(this.state.value)
+    this.props.onSend(this.state.value,
+        this.id && this.name ? {id: this.id, name: this.name} : undefined)
         .then(() => {
           this.setState({
             value  : "",
@@ -38,6 +79,10 @@ export default class BulbEditor extends Component {
           });
         }, () => {
           this.setState({sending: false});
+        })
+        .then(() => {
+          this.id = "";
+          this.name = "";
         });
   }
 
@@ -66,15 +111,21 @@ export default class BulbEditor extends Component {
                     </div>
                   </div>
                 </div>
+                <div
+                    className={`image-wrapper ${this.state.src ? "" :"hidden"}`}>
+                  <Image contain src={this.state.src}/>
+                </div>
               </div>
               <div className="btns">
                 <Button
                     onClick={this.props.onClose}
                     text="cancel">clear</Button>
+                <ImagePicker onFinish={this.handleFinish} text="upload"/>
                 <Button
                     className={`no ${this.state.sending ? "disabled" : ""}`}
                     onClick={() => {this.props.onEdit(this.state.value)}}
-                    text="write in editor"
+                    text="editor"
+                    tooltip="Write in a more advanced editor"
                 >edit</Button>
                 <Button
                     className={`yes ${this.state.value.length === 0 ? "disabled" : ""}`}

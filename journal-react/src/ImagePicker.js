@@ -30,8 +30,11 @@ export default class ImagePicker extends Component {
   }
 
   uploadImage(f) {
+    if (f.length === 1) {
+      f = f[0];
+    }
+
     return OneDriveManager.uploadToQueue(f, val => {
-      console.log(val);
       this.setState({
         progress: val,
       });
@@ -58,13 +61,13 @@ export default class ImagePicker extends Component {
               contentType: e.target.contentType,
             });
 
-            let onChangeFinish = () => {
+            let onChangeFinish = r => {
               this.setState({
                 loading: false,
               });
 
               if (typeof this.props.onFinish === "function") {
-                return this.props.onFinish();
+                return this.props.onFinish(r);
               }
             };
 
@@ -72,12 +75,15 @@ export default class ImagePicker extends Component {
               (typeof this.props.onChange === "function" ?
                   this.props.onChange(fileObjects)
                   : this.uploadImage(fileObjects))
-                  .then(() => {
-                    return new Promise(res => {
+                  .then(response => {
+                    return new Promise(resolve => {
                       setTimeout(() => {
-                        onChangeFinish()
+                        onChangeFinish(response)
                             .then(() => {
-                              res();
+                              resolve();
+                            })
+                            .catch(err => {
+                              console.error(err.stack);
                             })
                       }, this.COOLDOWN);
                     });
@@ -129,6 +135,7 @@ export default class ImagePicker extends Component {
             htmlFor={this.id}>
           <Button loading={this.state.loading}
                   tooltip="Upload images"
+                  text={this.props.text}
           >
             {this.props.children || "file_upload"}
           </Button>
