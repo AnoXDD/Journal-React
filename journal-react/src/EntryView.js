@@ -264,12 +264,25 @@ class EntryList extends Component {
                   <article key={`bulb-preview-${bulb.time.created}`}
                       {...this.generateBulbProp(bulb, i)}
                   >
-                    <header className="vertical-align">
-                      <div className="time vertical-align-wrapper">
-                        {this.generateHumanFormTimeFromArticle(bulb.time)}
+                    <div className="bulb-content">
+                      <div className="bulb-content-inner flex-inner-wrapper">
+                        <header className="time flex-center">
+                          {this.generateHumanFormTimeFromArticle(bulb.time)}
+                        </header>
+                        <div className="details">{bulb.body}</div>
                       </div>
-                    </header>
-                    <div className="details">{bulb.body}</div>
+                    </div>
+                    <div className="buttons flex-center">
+                      <Button className="small delete">delete</Button>
+                      <Button
+                          className={`small icon ${bulb.place ? "" : "transparent"}`}>
+                        location_on
+                      </Button>
+                      <Button
+                          className={`small icon ${bulb.images && bulb.images.length ? "" : "transparent"}`}>
+                        photo
+                      </Button>
+                    </div>
                   </article>
               )
             })}

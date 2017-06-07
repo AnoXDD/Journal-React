@@ -151,7 +151,7 @@ export default class BulbEditor extends Component {
                 <Button
                     className={`no ${this.state.sending ? "disabled" : ""}`}
                     onClick={() => {this.props.onEdit(this.state.value)}}
-                    text="editor"
+                    text="editor" 
                     tooltip="Write in a more advanced editor"
                 >edit</Button>
                 <Button

@@ -246,6 +246,10 @@ img.center {
     opacity: .5;
   }
 
+  &.icon {
+    pointer-events: none;
+  }
+
   &.dark {
     background: $darkgrey;
     color: white;
@@ -359,6 +363,14 @@ img.center {
       span {
         opacity: 1;
       }
+    }
+  }
+
+  &.small {
+    height: $button-height/2;
+    width: $button-width/2;
+    .material-icons {
+      font-size: 20px;
     }
   }
 

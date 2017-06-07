@@ -979,6 +979,7 @@ nav.nav {
   position: relative;
   width: 100%;
   height: 100%;
+  background: transparent;
 
   &.toggle {
     .image {
@@ -1383,8 +1384,10 @@ nav.nav {
       &:hover, &.active {
         height: auto;
         z-index: 5;
-        background: white;
-        box-shadow: 0 1px 4px grey;
+
+        .bulb-content {
+          box-shadow: 0 1px 4px grey;
+        }
 
         header {
           background: $darkgrey;
@@ -1394,6 +1397,7 @@ nav.nav {
         .details {
           overflow: visible;
           white-space: normal;
+          background: white;
         }
 
         &:before {
@@ -1405,6 +1409,26 @@ nav.nav {
 
           left: $timeline-dot-left;
           top: $article-height / 2; //- $timeline-dot-radius-small;
+        }
+
+        .buttons .delete {
+          opacity: 1;
+        }
+      }
+
+      .buttons {
+        margin-left: 5px;
+        width: $button-width * 3 / 2;
+        flex: 0 0 $button-width * 3 / 2;
+        height: 32px;
+
+        .btn {
+          width: $button-width / 2;
+          background: $bg-grey;
+        }
+
+        .delete {
+          opacity: 0;
         }
       }
     }
@@ -1418,14 +1442,27 @@ nav.nav {
       transition: background .2s ease, color .2s ease;
     }
 
+    .bulb-content {
+      flex: 1 1 auto;
+      overflow: hidden;
+      transition: box-shadow .2s ease;
+    }
+
+    .bulb-content-inner {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+    }
+
     .details {
       padding: $padding 2*$padding;
+      width: 100%;
+      transition: background .2s ease;
     }
 
     .image {
       position: absolute;
       right: calc(100% + #{$timeline-width});
-
     }
   }
 }
