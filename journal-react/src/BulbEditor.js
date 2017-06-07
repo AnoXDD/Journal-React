@@ -143,6 +143,7 @@ export default class BulbEditor extends Component {
                     onClick={this.props.onClose}
                     text="cancel">clear</Button>
                 <ImagePicker
+                    cooldown={1}
                     version={this.state.clipboardImageVersion}
                     file={this.state.clipboardImage}
                     onFinish={this.handleFinish}

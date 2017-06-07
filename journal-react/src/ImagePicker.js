@@ -90,7 +90,7 @@ export default class ImagePicker extends Component {
                             .catch(err => {
                               console.error(err.stack);
                             })
-                      }, this.COOLDOWN);
+                      }, this.props.cooldown || this.COOLDOWN);
                     });
                   })
                   .then(() => {
