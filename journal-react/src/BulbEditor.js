@@ -29,6 +29,7 @@ export default class BulbEditor extends Component {
     };
 
     this.handleFinish = this.handleFinish.bind(this);
+    this.handlePaste = this.handlePaste.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -63,6 +64,19 @@ export default class BulbEditor extends Component {
     });
   }
 
+  handlePaste(e) {
+    if (e.clipboardData.items && e.clipboardData.items.length) {
+      let item = e.clipboardData.items[0];
+
+      if (item.type && item.type.match(/image\/*/)) {
+        // This is an image
+        let file = item.getAsFile();
+
+        console.log(file);
+      }
+    }
+  }
+
   // todo how to remove it?
 
   send() {
@@ -75,7 +89,8 @@ export default class BulbEditor extends Component {
         .then(() => {
           this.setState({
             value  : "",
-            sending: false
+            sending: false,
+            src    : "",
           });
         }, () => {
           this.setState({sending: false});
@@ -104,6 +119,7 @@ export default class BulbEditor extends Component {
                                     padding="10px"
                       >
                         <textarea className="text-body"
+                                  onPaste={this.handlePaste}
                                   onChange={e => this.setState({value: e.target.value})}
                                   placeholder="Write something here ..."
                                   value={this.state.value}/>
