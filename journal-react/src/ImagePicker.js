@@ -14,6 +14,8 @@ export default class ImagePicker extends Component {
 
   COOLDOWN = 5000;
 
+  version = 0;
+
   constructor(props) {
     super(props);
 
@@ -29,6 +31,13 @@ export default class ImagePicker extends Component {
     this.uploadImage = this.uploadImage.bind(this);
   }
 
+  componentWillUpdate(nextProps) {
+    if (nextProps.version > this.version) {
+      this.version = nextProps.version;
+      this.handleNewImage([nextProps.file]);
+    }
+  }
+
   uploadImage(f) {
     if (f.length === 1) {
       f = f[0];
@@ -41,18 +50,14 @@ export default class ImagePicker extends Component {
     });
   }
 
-  handleFileSelect(e) {
-    if (!e.target.files || e.target.files.length === 0) {
-      return;
-    }
-
+  handleNewImage(files) {
     this.setState({
-      loading: true,
+      progress: 0,
+      loading : true,
     });
 
     return new Promise((res, rej) => {
-      let files = e.target.files,
-          fileObjects = [],
+      let fileObjects = [],
           unprocessed = files.length,
           onFinish = e => {
             fileObjects.push({
@@ -126,6 +131,14 @@ export default class ImagePicker extends Component {
         reader.readAsArrayBuffer(f);
       }
     });
+  }
+
+  handleFileSelect(e) {
+    if (!e.target.files || e.target.files.length === 0) {
+      return;
+    }
+
+    this.handleNewImage(e.target.files);
   }
 
   render() {

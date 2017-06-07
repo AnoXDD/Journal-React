@@ -26,6 +26,9 @@ export default class BulbEditor extends Component {
 
       sending: false,
       src    : null,
+
+      clipboardImage       : null,
+      clipboardImageVersion: 0,
     };
 
     this.handleFinish = this.handleFinish.bind(this);
@@ -72,7 +75,10 @@ export default class BulbEditor extends Component {
         // This is an image
         let file = item.getAsFile();
 
-        console.log(file);
+        this.setState({
+          clipboardImage       : file,
+          clipboardImageVersion: new Date().getTime(),
+        });
       }
     }
   }
@@ -136,7 +142,11 @@ export default class BulbEditor extends Component {
                 <Button
                     onClick={this.props.onClose}
                     text="cancel">clear</Button>
-                <ImagePicker onFinish={this.handleFinish} text="upload"/>
+                <ImagePicker
+                    version={this.state.clipboardImageVersion}
+                    file={this.state.clipboardImage}
+                    onFinish={this.handleFinish}
+                    text="upload"/>
                 <Button
                     className={`no ${this.state.sending ? "disabled" : ""}`}
                     onClick={() => {this.props.onEdit(this.state.value)}}
