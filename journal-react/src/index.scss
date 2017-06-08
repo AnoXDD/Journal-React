@@ -143,64 +143,6 @@ nav.nav {
   }
 }
 
-.toggle {
-  cursor: pointer;
-  position: relative;
-  display: inline-block;
-
-  .material-icons {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform: none;
-  }
-
-  .first, .second, .loading-icon {
-    transition: opacity .4s ease;
-  }
-
-  &.accent {
-    .first, .second {
-      width: 120px;
-    }
-  }
-
-  .first {
-    opacity: 1;
-  }
-
-  .second, .loading-icon {
-    opacity: 0;
-    animation-play-state: paused;
-  }
-
-  &.change-hover:hover.show-second, &:not(.change-hover).show-second {
-    .first {
-      opacity: 0;
-    }
-
-    .second {
-      opacity: 1;
-    }
-  }
-
-  &.loading {
-    opacity: .8;
-    pointer-events: none;
-
-    .first, .second {
-      opacity: 0;
-    }
-
-    .loading-icon {
-      opacity: 1;
-      animation: spin 1s linear infinite;
-    }
-  }
-}
-
 .Prompt {
   @include max-z-index;
   position: relative;

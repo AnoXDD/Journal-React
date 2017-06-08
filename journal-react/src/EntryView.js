@@ -103,6 +103,69 @@ class ContentArticle extends Component {
   }
 }
 
+class ContentBulb extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isRemoving: false,
+    };
+
+    this.handleRemoveClick = this.handleRemoveClick.bind(this);
+  }
+
+  handleRemoveClick(e) {
+    this.setState({
+      isRemoving: true
+    });
+
+    this.props.onRemoveClick()
+        .then(() => {
+          // Nothing needs to be done since it will be gone
+        }, () => {
+          this.setState({
+            isRemoving: false,
+          });
+        });
+
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  render() {
+    let {bulb} = this.props;
+
+    return (
+        <article {...this.props.style}>
+          <div className="bulb-content">
+            <div className="bulb-content-inner">
+              <header className="time flex-center">
+                <div className="buttons flex-center">
+                  <Button
+                      className={`icon ${bulb.place ? "" : "hidden"}`}>
+                    location_on
+                  </Button>
+                  <Button
+                      className={`icon ${bulb.images && bulb.images.length ? "" : "hidden"}`}>
+                    photo
+                  </Button>
+                </div>
+                {this.props.time}
+              </header>
+              <div className="details">{bulb.body}</div>
+            </div>
+          </div>
+          <div className="delete-wrapper flex-center">
+            <Button className="delete"
+                    loading={this.state.isRemoving}
+                    onClick={this.handleRemoveClick}>delete</Button>
+          </div>
+        </article>
+    )
+  }
+}
+
 class EntryList extends Component {
 
   currentVersion = 0;
@@ -261,32 +324,13 @@ class EntryList extends Component {
           <div className="flex-extend-inner-wrapper">
             {this.props.bulbs.map((bulb, i) => {
               return (
-                  <article key={`bulb-preview-${bulb.time.created}`}
-                      {...this.generateBulbProp(bulb, i)}
-                  >
-                    <div className="bulb-content">
-                      <div className="bulb-content-inner">
-                        <header className="time flex-center">
-                          <div className="buttons flex-center">
-                            <Button
-                                className={`icon ${bulb.place ? "" : "hidden"}`}>
-                              location_on
-                            </Button>
-                            <Button
-                                className={`icon ${bulb.images && bulb.images.length ? "" : "hidden"}`}>
-                              photo
-                            </Button>
-                          </div>
-                          {this.generateHumanFormTimeFromArticle(bulb.time)}
-                        </header>
-                        <div className="details">{bulb.body}</div>
-                      </div>
-                    </div>
-                    <div className="delete-wrapper flex-center">
-                      <Button className="delete">delete</Button>
-                    </div>
-                  </article>
-              )
+                  <ContentBulb key={`bulb-preview-${bulb.time.created}`}
+                               style={this.generateBulbProp(bulb, i)}
+                               bulb={bulb}
+                               time={this.generateHumanFormTimeFromArticle(bulb.time)}
+                               onRemoveClick={() => this.props.onBulbRemove(i)}
+                  />
+              );
             })}
           </div>
         </div>

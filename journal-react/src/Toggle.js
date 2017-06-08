@@ -35,7 +35,12 @@ export default class Toggle extends Component {
                   {this.props.tooltip}
                 </span>
               </div>) : null }
-          <i className="material-icons flex-center loading-icon">remove</i>
+          <div
+              className={`flex-center icon-wrapper loading-icon ${this.props.loading ? "" : "transparent"}`}>
+            <i className="material-icons">
+              remove
+            </i>
+          </div>
           <i className="flex-center first material-icons">{firstIcon}</i>
           <i className="flex-center second material-icons">{secondIcon}</i>
         </a>

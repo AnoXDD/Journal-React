@@ -269,7 +269,12 @@ export default class MainContent extends Component {
     this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
     this.handleCalendarClick = this.handleCalendarClick.bind(this);
     this.handleArticleClick = this.handleArticleClick.bind(this);
+    this.handleArticleRemove = this.handleArticleRemove.bind(this);
+    this.handleArticleChange = this.handleArticleChange.bind(this);
+    this.handleEditorRefreshQueue = this.handleEditorRefreshQueue.bind(this);
     this.handleBulbClick = this.handleBulbClick.bind(this);
+    this.handleBulbRemove = this.handleBulbRemove.bind(this);
+    this.handleDataRemoveByIndex = this.handleDataRemoveByIndex.bind(this);
     this.handleCreateArticle = this.handleCreateArticle.bind(this);
     this.handlePromptCancel = this.handlePromptCancel.bind(this);
     this.handleBulbEditorSend = this.handleBulbEditorSend.bind(this);
@@ -278,6 +283,8 @@ export default class MainContent extends Component {
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
     this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
+        this);
+    this.findDataIndexByBulbIndex = this.findDataIndexByBulbIndex.bind(
         this);
 
     this.updateContentStyle(this.state.data);
@@ -760,8 +767,19 @@ export default class MainContent extends Component {
    * @param articleIndex
    */
   handleArticleRemove(articleIndex) {
-    let index = this.findDataIndexByArticleIndex(articleIndex),
-        dataCopy = [...this.state.data];
+    let index = this.findDataIndexByArticleIndex(articleIndex);
+
+    return this.handleDataRemoveByIndex(index);
+  }
+
+  handleBulbRemove(bulbIndex) {
+    let index = this.findDataIndexByBulbIndex(bulbIndex);
+
+    return this.handleDataRemoveByIndex(index);
+  }
+
+  handleDataRemoveByIndex(index) {
+    let dataCopy = [...this.state.data];
 
     if (index !== -1) {
       dataCopy.splice(index, 1);
@@ -770,7 +788,7 @@ export default class MainContent extends Component {
     } else {
       // Technically this shouldn't happen
       R.notifyError(this.notificationSystem,
-          "Unable to upload the data. Try refreshing the website");
+          "Unable to upload the data: illegal index. Try refreshing the website");
       return new Promise((res, rej) => rej());
     }
   }
@@ -890,14 +908,25 @@ export default class MainContent extends Component {
    */
   findDataIndexByArticleIndex(articleIndex) {
     let timestamp = this.articleList[articleIndex].time.created;
-    for (let i = 0; i < this.state.data.length; ++i) {
-      let entry = this.state.data[i];
-      if (entry.type === R.TYPE_ARTICLE && entry.time.created === timestamp) {
-        return i;
-      }
-    }
 
-    return -1;
+    return this.state.data.findIndex(
+        entry => (entry.type === R.TYPE_ARTICLE && entry.time.created === timestamp)
+    );
+  }
+
+  /**
+   * To make the querying easier, the program breaks the data into a list of
+   * articles and a list of bulbs. But to do data manipulation, the real index
+   * of data is needed. This functions converts the bulb index into the data
+   * index.
+   * @param articleIndex
+   */
+  findDataIndexByBulbIndex(bulbIndex) {
+    let timestamp = this.bulbList[bulbIndex].time.created;
+
+    return this.state.data.findIndex(
+        entry => (entry.type === R.TYPE_BULB && entry.time.created === timestamp)
+    );
   }
 
   /**
@@ -1097,7 +1126,8 @@ export default class MainContent extends Component {
                       bulbs={this.bulbList}
                       highlightBulbIndex={this.highlightBulbIndex}
                       onArticleClick={this.handleArticleClick}
-                      onArticleRemove={this.handleArticleRemove.bind(this)}
+                      onArticleRemove={this.handleArticleRemove}
+                      onBulbRemove={this.handleBulbRemove}
                   />
                   <div
                       className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>
@@ -1119,8 +1149,8 @@ export default class MainContent extends Component {
                   imageMap={this.imageMap}
                   version={this.editorVersion}
                   tagPrediction={R.TAG_PREDICTION_DICTIONARY}
-                  onChange={this.handleArticleChange.bind(this)}
-                  onRefreshQueue={this.handleEditorRefreshQueue.bind(this)}
+                  onChange={this.handleArticleChange}
+                  onRefreshQueue={this.handleEditorRefreshQueue}
                   year={this.year}
                   oneDriveManager={OneDriveManager}
               />
