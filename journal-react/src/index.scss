@@ -3,6 +3,16 @@
 $main-header-height: 80px;
 $sidebar-width: 250px;
 
+@keyframes blink {
+  0%, 100% {
+    opacity: 0;
+  }
+
+  30%, 70% {
+    opacity: 1;
+  }
+}
+
 html, body {
   height: 100%;
   width: 100%;
@@ -1411,53 +1421,77 @@ nav.nav {
           top: $article-height / 2; //- $timeline-dot-radius-small;
         }
 
-        .buttons .delete {
-          opacity: 1;
-        }
-      }
-
-      .buttons {
-        margin-left: 5px;
-        width: $button-width * 3 / 2;
-        flex: 0 0 $button-width * 3 / 2;
-        height: 32px;
-
-        .btn {
-          width: $button-width / 2;
-          background: $bg-grey;
+        .delete-wrapper {
+          display: block;
+          color: $darkgrey;
         }
 
-        .delete {
-          opacity: 0;
+        .buttons {
+          animation: blink 1.5s;
         }
       }
     }
 
-    header {
+    .time {
       flex: 0 0 80px;
       text-align: center;
       padding: 6px 8px;
       background: transparent;
       color: $darkgrey-l;
       transition: background .2s ease, color .2s ease;
+
+      .icon {
+        height: 100%;
+        background: transparent;
+
+        .material-icons {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .delete-wrapper {
+      display: none;
+      margin-left: 5px;
+      width: auto;
+      flex: 0 0 auto;
+      height: 32px;
+
+      .btn {
+        height: 100%;
+        background: $bg-grey;
+      }
+    }
+
+    .buttons {
+      position: absolute;
+      justify-content: space-around;
+      opacity: 0;
+      color: white;
+      background: $darkgrey;
+      width: 80px;
+
+      .btn {
+        flex: 0 0 30px;
+        width: 30px;
+      }
     }
 
     .bulb-content {
       flex: 1 1 auto;
       overflow: hidden;
-      transition: box-shadow .2s ease;
     }
 
     .bulb-content-inner {
       display: flex;
       flex-direction: row;
       height: 100%;
+      position: relative;
     }
 
     .details {
       padding: $padding 2*$padding;
       width: 100%;
-      transition: background .2s ease;
     }
 
     .image {

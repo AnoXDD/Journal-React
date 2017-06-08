@@ -366,14 +366,6 @@ img.center {
     }
   }
 
-  &.small {
-    height: $button-height/2;
-    width: $button-width/2;
-    .material-icons {
-      font-size: 20px;
-    }
-  }
-
   .icon-wrapper, .text-wrapper {
     height: 100%;
   }

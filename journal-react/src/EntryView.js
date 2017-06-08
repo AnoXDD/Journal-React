@@ -265,23 +265,25 @@ class EntryList extends Component {
                       {...this.generateBulbProp(bulb, i)}
                   >
                     <div className="bulb-content">
-                      <div className="bulb-content-inner flex-inner-wrapper">
+                      <div className="bulb-content-inner">
                         <header className="time flex-center">
+                          <div className="buttons flex-center">
+                            <Button
+                                className={`icon ${bulb.place ? "" : "hidden"}`}>
+                              location_on
+                            </Button>
+                            <Button
+                                className={`icon ${bulb.images && bulb.images.length ? "" : "hidden"}`}>
+                              photo
+                            </Button>
+                          </div>
                           {this.generateHumanFormTimeFromArticle(bulb.time)}
                         </header>
                         <div className="details">{bulb.body}</div>
                       </div>
                     </div>
-                    <div className="buttons flex-center">
-                      <Button className="small delete">delete</Button>
-                      <Button
-                          className={`small icon ${bulb.place ? "" : "transparent"}`}>
-                        location_on
-                      </Button>
-                      <Button
-                          className={`small icon ${bulb.images && bulb.images.length ? "" : "transparent"}`}>
-                        photo
-                      </Button>
+                    <div className="delete-wrapper flex-center">
+                      <Button className="delete">delete</Button>
                     </div>
                   </article>
               )

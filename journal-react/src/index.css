@@ -195,11 +195,6 @@ img.center {
     color: #448AFF; }
     .btn:not(.accent):hover span, .Options .option:not(.accent):hover span, .btn:not(.accent):active span, .Options .option:not(.accent):active span, .toggle:not(.accent):hover span, .toggle:not(.accent):active span {
       opacity: 1; }
-  .btn.small, .Options .small.option, .toggle.small {
-    height: 25px;
-    width: 30px; }
-    .btn.small .material-icons, .Options .small.option .material-icons, .toggle.small .material-icons {
-      font-size: 20px; }
   .btn .icon-wrapper, .Options .option .icon-wrapper, .btn .text-wrapper, .Options .option .text-wrapper, .toggle .icon-wrapper, .toggle .text-wrapper {
     height: 100%; }
   .btn .text-wrapper, .Options .option .text-wrapper, .toggle .text-wrapper {
@@ -290,6 +285,11 @@ img.center {
     padding: 0 50px;
     margin-top: 5px; }
 
+@keyframes blink {
+  0%, 100% {
+    opacity: 0; }
+  30%, 70% {
+    opacity: 1; } }
 html, body {
   height: 100%;
   width: 100%;
@@ -1276,37 +1276,53 @@ nav.nav {
           box-shadow: 0 0 2px 2px #00BCD4;
           left: -18px;
           top: 13.5px; }
-        .EntryView .bulb-list article:hover .buttons .delete, .EntryView .bulb-list article.active .buttons .delete {
-          opacity: 1; }
-      .EntryView .bulb-list article .buttons {
-        margin-left: 5px;
-        width: 90px;
-        flex: 0 0 90px;
-        height: 32px; }
-        .EntryView .bulb-list article .buttons .btn, .EntryView .bulb-list article .buttons .Options .option, .Options .EntryView .bulb-list article .buttons .option {
-          width: 30px;
-          background: #eeeced; }
-        .EntryView .bulb-list article .buttons .delete {
-          opacity: 0; }
-    .EntryView .bulb-list header {
+        .EntryView .bulb-list article:hover .delete-wrapper, .EntryView .bulb-list article.active .delete-wrapper {
+          display: block;
+          color: #212121; }
+        .EntryView .bulb-list article:hover .buttons, .EntryView .bulb-list article.active .buttons {
+          animation: blink 1.5s; }
+    .EntryView .bulb-list .time {
       flex: 0 0 80px;
       text-align: center;
       padding: 6px 8px;
       background: transparent;
       color: #424242;
       transition: background .2s ease, color .2s ease; }
+      .EntryView .bulb-list .time .icon {
+        height: 100%;
+        background: transparent; }
+        .EntryView .bulb-list .time .icon .material-icons {
+          font-size: 18px; }
+    .EntryView .bulb-list .delete-wrapper {
+      display: none;
+      margin-left: 5px;
+      width: auto;
+      flex: 0 0 auto;
+      height: 32px; }
+      .EntryView .bulb-list .delete-wrapper .btn, .EntryView .bulb-list .delete-wrapper .Options .option, .Options .EntryView .bulb-list .delete-wrapper .option {
+        height: 100%;
+        background: #eeeced; }
+    .EntryView .bulb-list .buttons {
+      position: absolute;
+      justify-content: space-around;
+      opacity: 0;
+      color: white;
+      background: #212121;
+      width: 80px; }
+      .EntryView .bulb-list .buttons .btn, .EntryView .bulb-list .buttons .Options .option, .Options .EntryView .bulb-list .buttons .option {
+        flex: 0 0 30px;
+        width: 30px; }
     .EntryView .bulb-list .bulb-content {
       flex: 1 1 auto;
-      overflow: hidden;
-      transition: box-shadow .2s ease; }
+      overflow: hidden; }
     .EntryView .bulb-list .bulb-content-inner {
       display: flex;
       flex-direction: row;
-      height: 100%; }
+      height: 100%;
+      position: relative; }
     .EntryView .bulb-list .details {
       padding: 4px 8px;
-      width: 100%;
-      transition: background .2s ease; }
+      width: 100%; }
     .EntryView .bulb-list .image {
       position: absolute;
       right: calc(100% + 50px); }
