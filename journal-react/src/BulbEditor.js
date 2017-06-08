@@ -217,7 +217,7 @@ export default class BulbEditor extends Component {
                 </div>
                 <div
                     className={`image-wrapper shadow-light ${this.state.src ? "" :"hidden"}`}>
-                  <Button onClick={this.removeAttachedImage}>clear</Button>
+                  <Button className="clear-image dark" onClick={this.removeAttachedImage}>clear</Button>
                   <Image contain src={this.state.src}/>
                 </div>
               </div>

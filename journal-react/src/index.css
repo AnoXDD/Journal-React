@@ -1612,8 +1612,19 @@ nav.nav {
 .bulb-prompt .message {
   display: flex; }
   .bulb-prompt .message .image-wrapper {
-    flex: 0 0 20%; }
+    flex: 0 0 20%;
+    position: relative; }
+    .bulb-prompt .message .image-wrapper:hover .clear-image {
+      opacity: 1; }
 .bulb-prompt .yes {
   margin-left: 30px; }
+.bulb-prompt .clear-image {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 200;
+  width: 100%;
+  height: 100%; }
 
 /*# sourceMappingURL=index.css.map */

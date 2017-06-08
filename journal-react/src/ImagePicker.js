@@ -56,9 +56,11 @@ export default class ImagePicker extends Component {
     }
 
     // Pre-screen files
-    files = files.filter(file => file && file.type.match('image.*'));
-    if (!files.length) {
-      return false;
+    if (Array.isArray(files)) {
+      files = files.filter(file => file && file.type.match('image.*'));
+      if (!files.length) {
+        return false;
+      }
     }
 
     this.setState({
