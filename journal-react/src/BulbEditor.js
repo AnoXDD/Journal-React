@@ -37,14 +37,23 @@ export default class BulbEditor extends Component {
     };
 
     this.handleFinish = this.handleFinish.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handlePaste = this.handlePaste.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
     this.toggleCurrentLocation = this.toggleCurrentLocation.bind(this);
     this.getCurrentLocation = this.getCurrentLocation.bind(this);
+    this.removeAttachedImage = this.removeAttachedImage.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !this.props.hidden || !nextProps.hidden;
+  }
+
+  componentDidUpdate(prevProps) {
+    // Ask for focus the first time it popped up
+    if (prevProps.hidden && !this.props.hidden) {
+      this.input.focus();
+    }
   }
 
   toggleCurrentLocation() {
@@ -84,6 +93,15 @@ export default class BulbEditor extends Component {
     });
   }
 
+  removeAttachedImage() {
+    this.id = "";
+    this.name = "";
+
+    this.setState({
+      src: null,
+    });
+  }
+
   handleEditClick() {
     let {value} = this.state;
 
@@ -92,6 +110,15 @@ export default class BulbEditor extends Component {
     });
 
     this.props.onEdit(value);
+  }
+
+  handleKeyDown(e) {
+    if (e.key === "Enter") {
+      // Send the bulb
+      this.send();
+
+      e.preventDefault();
+    }
   }
 
   handleFinish(image) {
@@ -138,8 +165,6 @@ export default class BulbEditor extends Component {
     }
   }
 
-  // todo how to remove it?
-
   send() {
     this.setState({
       sending: true,
@@ -181,8 +206,10 @@ export default class BulbEditor extends Component {
                       >
                         <textarea className="text-body"
                                   onPaste={this.handlePaste}
+                                  onKeyDown={this.handleKeyDown}
                                   onChange={e => this.setState({value: e.target.value})}
                                   placeholder="Write something here ..."
+                                  ref={input => this.input = input}
                                   value={this.state.value}/>
                       </NoScrollArea>
                     </div>
@@ -190,6 +217,7 @@ export default class BulbEditor extends Component {
                 </div>
                 <div
                     className={`image-wrapper shadow-light ${this.state.src ? "" :"hidden"}`}>
+                  <Button onClick={this.removeAttachedImage}>clear</Button>
                   <Image contain src={this.state.src}/>
                 </div>
               </div>

@@ -55,6 +55,12 @@ export default class ImagePicker extends Component {
       return false;
     }
 
+    // Pre-screen files
+    files = files.filter(file => file && file.type.match('image.*'));
+    if (!files.length) {
+      return false;
+    }
+
     this.setState({
       progress: 0,
       loading : true,
@@ -119,10 +125,6 @@ export default class ImagePicker extends Component {
       // Loop through the FileList and render image files as thumbnails.
       for (let i = 0; i < files.length; i++) {
         let f = files[i];
-        // Only process image files.
-        if (!f || !f.type.match('image.*')) {
-          continue;
-        }
 
         var reader = new FileReader();
 
