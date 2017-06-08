@@ -202,7 +202,7 @@ nav.nav {
     .btns {
       padding: 10px 20px 20px;
 
-      .btn:not(.yes) {
+      .toggle, .btn:not(.yes) {
         background: $dialog-background;
       }
 
@@ -698,12 +698,6 @@ nav.nav {
     .current-tags-wrapper {
       flex: 1 0 auto;
       width: calc(100% - #{$button-width});
-    }
-
-    .breaker {
-      margin: 10px 10px;
-      width: 1px;
-      background: lightgrey;
     }
 
     .photos {
@@ -1897,5 +1891,9 @@ nav.nav {
     .image-wrapper {
       flex: 0 0 20%;
     }
+  }
+
+  .yes {
+    margin-left: 30px;
   }
 }

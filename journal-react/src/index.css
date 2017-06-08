@@ -159,7 +159,7 @@ img.center {
       white-space: nowrap; }
   .btn.loading, .Options .loading.option, .toggle.loading {
     opacity: .8; }
-    .btn.loading .icon-wrapper .material-icons, .Options .loading.option .icon-wrapper .material-icons, .toggle.loading .icon-wrapper .material-icons {
+    .btn.loading .loading-icon .material-icons, .Options .loading.option .loading-icon .material-icons, .toggle.loading .loading-icon .material-icons {
       flex: 1 1 auto;
       animation: spin 1s linear infinite; }
   .btn.narrow, .Options .narrow.option, .toggle.narrow {
@@ -253,17 +253,21 @@ img.center {
     .toggle.loading .loading-icon {
       opacity: 1; }
 
+.btn-breaker {
+  margin: 10px 10px;
+  width: 1px;
+  background: lightgrey; }
+
 .btns {
   justify-content: center;
   display: flex; }
-  .btns .btn, .btns .Options .option, .Options .btns .option {
+  .btns .text-wrapper {
+    flex: none;
+    width: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     padding-right: 60px; }
-    .btns .btn .text-wrapper, .btns .Options .option .text-wrapper, .Options .btns .option .text-wrapper {
-      flex: none;
-      width: auto;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis; }
 
 .flex-center {
   display: flex;
@@ -438,7 +442,7 @@ nav.nav {
         background: #ddd; }
     .Prompt .dialog .btns {
       padding: 10px 20px 20px; }
-      .Prompt .dialog .btns .btn:not(.yes), .Prompt .dialog .btns .Options .option:not(.yes), .Options .Prompt .dialog .btns .option:not(.yes) {
+      .Prompt .dialog .btns .toggle, .Prompt .dialog .btns .btn:not(.yes), .Prompt .dialog .btns .Options .option:not(.yes), .Options .Prompt .dialog .btns .option:not(.yes) {
         background: #fafafa; }
       .Prompt .dialog .btns .yes {
         background: #448AFF;
@@ -826,10 +830,6 @@ nav.nav {
     .Editor .extras .current-tags-wrapper {
       flex: 1 0 auto;
       width: calc(100% - 60px); }
-    .Editor .extras .breaker {
-      margin: 10px 10px;
-      width: 1px;
-      background: lightgrey; }
     .Editor .extras .photos {
       text-align: left;
       display: block; }
@@ -1613,5 +1613,7 @@ nav.nav {
   display: flex; }
   .bulb-prompt .message .image-wrapper {
     flex: 0 0 20%; }
+.bulb-prompt .yes {
+  margin-left: 30px; }
 
 /*# sourceMappingURL=index.css.map */

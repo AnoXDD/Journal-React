@@ -51,6 +51,10 @@ export default class ImagePicker extends Component {
   }
 
   handleNewImage(files) {
+    if (this.state.loading) {
+      return false;
+    }
+
     this.setState({
       progress: 0,
       loading : true,
@@ -116,7 +120,7 @@ export default class ImagePicker extends Component {
       for (let i = 0; i < files.length; i++) {
         let f = files[i];
         // Only process image files.
-        if (!f.type.match('image.*')) {
+        if (!f || !f.type.match('image.*')) {
           continue;
         }
 

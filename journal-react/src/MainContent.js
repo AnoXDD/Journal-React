@@ -490,7 +490,7 @@ export default class MainContent extends Component {
         // Check if the bulb has not been merged
         let merged = false,
             time = this.convertBulbTime(bulb.name);
-        for (let entry of this.state.data) {
+        for (let entry of this.data) {
           if (entry.type === R.TYPE_BULB) {
             if (entry.time.created <= time) {
               merged = entry.time.created === time;
@@ -573,7 +573,7 @@ export default class MainContent extends Component {
     }
 
     if (processedBulbs.length) {
-      return this.uploadUnprocessedData([...this.state.data, ...processedBulbs])
+      return this.uploadUnprocessedData([...this.data, ...processedBulbs])
           .then(() => {
                 if (processedBulbIds.length) {
                   return OneDriveManager.removeBulbs(processedBulbIds);
@@ -745,7 +745,7 @@ export default class MainContent extends Component {
 
     if (this.articleList[this.state.editArticleIndex]) {
       let index = this.findDataIndexByArticleIndex(this.state.editArticleIndex),
-          dataCopy = [...this.state.data];
+          dataCopy = [...this.data];
 
       if (index !== -1) {
         dataCopy[index] = newEntry;
@@ -759,7 +759,7 @@ export default class MainContent extends Component {
     }
 
     // Adding a new entry
-    return this.uploadUnprocessedData([...this.state.data, newEntry]);
+    return this.uploadUnprocessedData([...this.data, newEntry]);
   }
 
   /**
@@ -779,7 +779,7 @@ export default class MainContent extends Component {
   }
 
   handleDataRemoveByIndex(index) {
-    let dataCopy = [...this.state.data];
+    let dataCopy = [...this.data];
 
     if (index !== -1) {
       dataCopy.splice(index, 1);
@@ -816,7 +816,7 @@ export default class MainContent extends Component {
     // First, make a list of all the images
     let images = [];
 
-    for (let entry of this.state.data) {
+    for (let entry of this.data) {
       if (entry.images) {
         images = [...images, ...entry.images];
       }
@@ -868,8 +868,10 @@ export default class MainContent extends Component {
    * @param data
    */
   uploadData(data) {
+    let raw = R.DATA_VERSION + JSON.stringify(data);
+
     return OneDriveManager.upload(this.year,
-            R.DATA_VERSION + JSON.stringify(data))
+            raw)
         .then(() => {
           R.notify(this.notificationSystem, "Uploaded");
         }, () => {
@@ -879,6 +881,7 @@ export default class MainContent extends Component {
         .then(() => OneDriveManager.getImages(this.year))
         .then(images => {
           this.handleNewImageMap(images);
+          this.handleNewContent(raw);
 
           this.setState({
             data   : data,
@@ -909,7 +912,7 @@ export default class MainContent extends Component {
   findDataIndexByArticleIndex(articleIndex) {
     let timestamp = this.articleList[articleIndex].time.created;
 
-    return this.state.data.findIndex(
+    return this.data.findIndex(
         entry => (entry.type === R.TYPE_ARTICLE && entry.time.created === timestamp)
     );
   }
@@ -924,7 +927,7 @@ export default class MainContent extends Component {
   findDataIndexByBulbIndex(bulbIndex) {
     let timestamp = this.bulbList[bulbIndex].time.created;
 
-    return this.state.data.findIndex(
+    return this.data.findIndex(
         entry => (entry.type === R.TYPE_BULB && entry.time.created === timestamp)
     );
   }
@@ -1058,10 +1061,12 @@ export default class MainContent extends Component {
         <div className="MainContent">
           <NotificationSystem ref="notificationSystem"
                               style={notificationStyle}/>
-          <BulbEditor hidden={!this.state.isShowingBulbEditor}
-                      onClose={() => this.setState({isShowingBulbEditor: false})}
-                      onEdit={this.handleBulbEditorEdit}
-                      onSend={this.handleBulbEditorSend}
+          <BulbEditor
+              notificationSystem={this.notificationSystem}
+              hidden={!this.state.isShowingBulbEditor}
+              onClose={() => this.setState({isShowingBulbEditor: false})}
+              onEdit={this.handleBulbEditorEdit}
+              onSend={this.handleBulbEditorSend}
           />
           <aside className="sidebar">
             <div className="create-btn">

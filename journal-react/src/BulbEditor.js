@@ -2,10 +2,13 @@ import React, {Component} from 'react';
 
 import NoScrollArea from "./NoScrollArea";
 import Button from "./Button";
+import Toggle from "./Toggle";
 import Prompt from "./Prompt";
 import Image from "./Image";
 import ImagePicker from "./ImagePicker";
 import OneDriveManager from "./OneDriveManager";
+
+import R from "./R";
 
 /**
  * This editor is only appropriate to edit a bulb, NOT for an article, since
@@ -22,10 +25,12 @@ export default class BulbEditor extends Component {
     super(props);
 
     this.state = {
-      value: "",
+      value   : "",
+      location: "",
 
-      sending: false,
-      src    : null,
+      sending        : false,
+      loadingLocation: false,
+      src            : null,
 
       clipboardImage       : null,
       clipboardImageVersion: 0,
@@ -33,10 +38,60 @@ export default class BulbEditor extends Component {
 
     this.handleFinish = this.handleFinish.bind(this);
     this.handlePaste = this.handlePaste.bind(this);
+    this.handleEditClick = this.handleEditClick.bind(this);
+    this.toggleCurrentLocation = this.toggleCurrentLocation.bind(this);
+    this.getCurrentLocation = this.getCurrentLocation.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !this.props.hidden || !nextProps.hidden;
+  }
+
+  toggleCurrentLocation() {
+    if (!this.state.location) {
+      this.getCurrentLocation();
+    } else {
+      this.setState({
+        location: "",
+      });
+    }
+  }
+
+  getCurrentLocation() {
+    this.setState({
+      loadingLocation: true,
+    });
+
+    navigator.geolocation.getCurrentPosition(pos => {
+      var crd = pos.coords;
+
+      this.setState({
+        location       : ` #[${crd.latitude},${crd.longitude}]`,
+        loadingLocation: false,
+      });
+    }, err => {
+      console.error(`ERROR(${err.code}): ${err.message}`);
+
+      R.notifyError(this.props.notificationSystem,
+          "Unable to get current location. Did you grant access?");
+
+      this.setState({
+        loadingLocation: false,
+      });
+    }, {
+      enableHighAccuracy: true,
+      maximumAge        : 0,
+    });
+  }
+
+  handleEditClick() {
+    let {value} = this.state;
+
+    this.setState({
+      value: "",
+    });
+
+    this.props.onEdit(value);
   }
 
   handleFinish(image) {
@@ -90,7 +145,7 @@ export default class BulbEditor extends Component {
       sending: true,
     });
 
-    this.props.onSend(this.state.value,
+    this.props.onSend(this.state.value + this.state.location,
         this.id && this.name ? {id: this.id, name: this.name} : undefined)
         .then(() => {
           this.setState({
@@ -134,7 +189,7 @@ export default class BulbEditor extends Component {
                   </div>
                 </div>
                 <div
-                    className={`image-wrapper ${this.state.src ? "" :"hidden"}`}>
+                    className={`image-wrapper shadow-light ${this.state.src ? "" :"hidden"}`}>
                   <Image contain src={this.state.src}/>
                 </div>
               </div>
@@ -142,18 +197,24 @@ export default class BulbEditor extends Component {
                 <Button
                     onClick={this.props.onClose}
                     text="cancel">clear</Button>
+                <span className="btn-breaker"/>
                 <ImagePicker
                     cooldown={1}
                     version={this.state.clipboardImageVersion}
                     file={this.state.clipboardImage}
-                    onFinish={this.handleFinish}
-                    text="upload"/>
+                    onFinish={this.handleFinish}/>
+                <Toggle firstIcon="location_on"
+                        secondIcon="location_off"
+                        isChanging={this.state.location}
+                        onClick={this.toggleCurrentLocation}
+                        tooltip="Attach current location to the bulb"
+                />
                 <Button
                     className={`no ${this.state.sending ? "disabled" : ""}`}
-                    onClick={() => {this.props.onEdit(this.state.value)}}
-                    text="editor" 
+                    onClick={this.handleEditClick}
                     tooltip="Write in a more advanced editor"
                 >edit</Button>
+                <span className="btn-breaker"/>
                 <Button
                     className={`yes ${this.state.value.length === 0 ? "disabled" : ""}`}
                     onClick={this.send.bind(this)}

@@ -1338,7 +1338,7 @@ class Editor extends Component {
               <div className="flex-last-item"></div>
               <Button>access_time</Button>
               <span
-                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} breaker`}></span>
+                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
               <Toggle
                   className="btn"
                   isHidden={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.photos.length}
@@ -1365,7 +1365,7 @@ class Editor extends Component {
                   onFinish={this.refreshPhoto} multiple
               />
               <span
-                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} breaker`}></span>
+                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
               { [["photos", "photo_library"],
                 ["musics", "library_music"],
                 ["movies", "movie"],
@@ -1385,7 +1385,7 @@ class Editor extends Component {
                         />
                     );
                   }) }
-              <span className="breaker"></span>
+              <span className="btn-breaker"></span>
               <Button className={`${this.state.isEditing ? "" : "hidden"}`}
                       loading={this.state.isSaving}
                       tooltip="Save"

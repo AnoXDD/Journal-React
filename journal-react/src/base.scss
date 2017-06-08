@@ -292,7 +292,7 @@ img.center {
   &.loading {
     opacity: .8;
 
-    .icon-wrapper .material-icons {
+    .loading-icon .material-icons {
       flex: 1 1 auto;
       animation: spin 1s linear infinite;
     }
@@ -457,20 +457,23 @@ img.center {
   }
 }
 
+.btn-breaker {
+  margin: 10px 10px;
+  width: 1px;
+  background: lightgrey;
+}
+
 .btns {
   justify-content: center;
   display: flex;
 
-  .btn {
+  .text-wrapper {
+    flex: none;
+    width: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     padding-right: $button-width;
-
-    .text-wrapper {
-      flex: none;
-      width: auto;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
   }
 }
 
