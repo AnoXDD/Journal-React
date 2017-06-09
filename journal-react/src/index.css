@@ -195,6 +195,8 @@ img.center {
     color: #448AFF; }
     .btn:not(.accent):hover span, .Options .option:not(.accent):hover span, .btn:not(.accent):active span, .Options .option:not(.accent):active span, .toggle:not(.accent):hover span, .toggle:not(.accent):active span {
       opacity: 1; }
+  .btn.border, .Options .border.option, .toggle.border {
+    border: 1px solid #212121; }
   .btn .icon-wrapper, .Options .option .icon-wrapper, .btn .text-wrapper, .Options .option .text-wrapper, .toggle .icon-wrapper, .toggle .text-wrapper {
     height: 100%; }
   .btn .text-wrapper, .Options .option .text-wrapper, .toggle .text-wrapper {
@@ -1597,7 +1599,19 @@ nav.nav {
     width: 800px;
     background: white; }
   .settings .title-dark {
+    width: 100px;
     margin-right: 20px; }
+  .settings .form-contents {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    margin-right: -20px; }
+    .settings .form-contents .form-content {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start; }
+    .settings .form-contents .description {
+      flex: 1 1 auto; }
 
 .label-btn {
   position: relative; }

@@ -634,8 +634,12 @@ export default class OneDriveManager {
    * successful
    * @param ids
    */
-  static removeBulbs(ids) {
+  static removeItemsById(ids) {
     return new Promise(resolve => {
+      if (!ids || ids.length === 0) {
+        resolve();
+      }
+
       let counter = 0,
           f = () => {
             if (++counter === ids.length) {
@@ -729,6 +733,12 @@ export default class OneDriveManager {
         });
   }
 
+  static emptyQueueFolder() {
+    return this.getImagesInQueue()
+        .then(items => items.map(item => item.id))
+        .then(ids => this.removeItemsById(ids));
+  }
+
   // region alias
 
   static getData(year) {
@@ -814,7 +824,7 @@ export default class OneDriveManager {
           console.log(`And the contents are: ${bulbs.map(bulb => bulb.content)
               .join(" ")}, and expect "1 2 3 4" or something like that`);
           console.log("Then we try to remove them");
-          return this.removeBulbs(bulbs.map(bulb=>bulb.id));
+          return this.removeItemsById(bulbs.map(bulb=>bulb.id));
         })
         .then(() => {
           console.log("Let's see if everything is removed");

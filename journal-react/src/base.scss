@@ -366,6 +366,10 @@ img.center {
     }
   }
 
+  &.border {
+    border: 1px solid $darkgrey;
+  }
+
   .icon-wrapper, .text-wrapper {
     height: 100%;
   }

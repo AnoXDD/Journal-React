@@ -1865,7 +1865,25 @@ nav.nav {
   }
 
   .title-dark {
+    width: 100px;
     margin-right: 20px;
+  }
+
+  .form-contents {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    margin-right: -20px;
+
+    .form-content {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .description {
+      flex: 1 1 auto;
+    }
   }
 }
 

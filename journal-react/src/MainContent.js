@@ -576,13 +576,13 @@ export default class MainContent extends Component {
       return this.uploadUnprocessedData([...this.data, ...processedBulbs])
           .then(() => {
                 if (processedBulbIds.length) {
-                  return OneDriveManager.removeBulbs(processedBulbIds);
+                  return OneDriveManager.removeItemsById(processedBulbIds);
                 }
               }
           );
     }
 
-    return OneDriveManager.removeBulbs(processedBulbIds);
+    return OneDriveManager.removeItemsById(processedBulbIds);
   };
 
   handleNewImageMap(images) {
@@ -871,7 +871,7 @@ export default class MainContent extends Component {
     let raw = R.DATA_VERSION + JSON.stringify(data);
 
     return OneDriveManager.upload(this.year,
-            raw)
+        raw)
         .then(() => {
           R.notify(this.notificationSystem, "Uploaded");
         }, () => {
@@ -1168,7 +1168,8 @@ export default class MainContent extends Component {
             </div>
             <div
                 className={`flex-extend-inner-wrapper options-view ${this.state.isDisplaying === this.TAB.OPTIONS ? "" : "hidden"}`}>
-              <Settings hidden={this.state.isDisplaying === this.TAB.OPTIONS}
+              <Settings hidden={this.state.isDisplaying !== this.TAB.OPTIONS}
+                        notificationSystem={this.notificationSystem}
                         handleMissingImages={this.handleMissingImages}
                         OneDriveManager={OneDriveManager}
               />
