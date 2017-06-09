@@ -1576,19 +1576,6 @@ nav.nav {
       background: $darkgrey;
     }
   }
-
-  .loading-screen {
-    @include max-z-index;
-
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    background: white;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
 }
 
 .SearchBar {
@@ -1832,7 +1819,7 @@ nav.nav {
 
 .progress-bar {
   height: 3px;
-  background: $cpd;
+  background: $cp;
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -1848,7 +1835,18 @@ nav.nav {
 }
 
 .loading-screen {
+  @include max-z-index;
+
+  background: $darkgrey;
   flex-direction: column;
+  color: white;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
   .progress-bar {
     margin-top: 25px;

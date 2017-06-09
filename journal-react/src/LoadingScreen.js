@@ -21,7 +21,7 @@ export default class LoadingScreen extends Component {
 
     return (
         <div className="loading-screen flex-center">
-          <Button loading={true}>clear</Button>
+          <Button className="dark" loading={true}>clear</Button>
           <div className="title">{this.props.title}</div>
           <ProgressBar progress={this.props.progress}/>
         </div>

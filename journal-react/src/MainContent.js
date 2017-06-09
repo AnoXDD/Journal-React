@@ -109,7 +109,7 @@ const defaultColors = {
         hex: '#369cc7'
       }
     },
-    notificationBoxShadow = "1px 2px 6px grey",
+    notificationBoxShadow = "3px 2px 9px #333",
     notificationStyle = {
       Title: {
         DefaultStyle: {
@@ -1090,6 +1090,12 @@ export default class MainContent extends Component {
                 <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}
                            onChange={this.handleChangeCriteria}
                 />
+                <Button className="dark"
+                        tooltip="Re-download data"
+                        loading={this.state.loadingPrompt}
+                        onClick={this.loadData}>
+                  refresh
+                </Button>
                 <Button className="dark"
                         onClick={this.toPreviousYear.bind(this)}
                         disabled={this.state.isLoadingNextYear}

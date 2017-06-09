@@ -1409,16 +1409,6 @@ nav.nav {
     .MainContent > main .inner-content {
       display: flex;
       background: #212121; }
-  .MainContent .loading-screen {
-    z-index: 999999999;
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    background: white;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0; }
 
 .SearchBar {
   height: 100%;
@@ -1575,7 +1565,7 @@ nav.nav {
 
 .progress-bar {
   height: 3px;
-  background: #2962FF;
+  background: #448AFF;
   position: relative;
   overflow: hidden;
   width: 100%; }
@@ -1588,7 +1578,17 @@ nav.nav {
     transition: .4s ease; }
 
 .loading-screen {
-  flex-direction: column; }
+  z-index: 999999999;
+  background: #212121;
+  flex-direction: column;
+  color: white;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; }
   .loading-screen .progress-bar {
     margin-top: 25px;
     width: 30vw; }
