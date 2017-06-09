@@ -305,10 +305,12 @@ export default class SearchBar extends Component {
                 disabled={this.state.isAdvancedSearch}
             />
             <Button className="dark z-index-inherit"
+                    tooltip="Clear keyword"
                     onClick={this.clearSearch}
             >clear</Button>
             <Toggle firstIcon="expand_more" secondIcon="expand_less"
                     className="dark z-index-inherit"
+                    tooltip="More options"
                     onClick={this.toggleIsAdvancedSearch}
                     isChanging={this.state.isAdvancedSearch}
             />

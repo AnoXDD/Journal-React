@@ -46,6 +46,7 @@ class NewKeyword extends Component {
             <div
                 className="cell-keyword-wrapper flex-center">
               <Button className="dark narrow"
+                      tooltip="Add keyword"
                       onClick={() => this.props.onClick(this.state.value)}
               >add</Button>
               <input className="dark normal underlined"
@@ -277,11 +278,13 @@ export default class Chart extends Component {
                                 <div
                                     className="cell-keyword-wrapper flex-center">
                                   <Toggle className="dark narrow"
+                                          tooltip="Toggle visibility in the chart"
                                           onClick={() => this.handleKeywordToggleVisibility(index)}
                                           isChanging={this.state.hiddenKeywords.indexOf(keyword) !== -1}
                                           firstIcon="check_box"
                                           secondIcon="check_box_outline_blank"/>
                                   <Button className="dark narrow"
+                                          tooltip="Remove keyword"
                                           onClick={() => this.handleKeywordRemove(index)}
                                   >clear</Button>
                                   <input className="dark normal underlined"
