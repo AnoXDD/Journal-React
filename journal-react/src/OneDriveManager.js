@@ -43,6 +43,8 @@ const APPROOT = "Apps/Trak/",
 //   popup.focus();
 // }
 
+const DATA_NAME = "data.js";
+
 export default class OneDriveManager {
 
   static bulbFolderId = "";
@@ -655,15 +657,17 @@ export default class OneDriveManager {
   }
 
   static getJournalByYear(year) {
-    return this.getItemContentByPath(`core/${year}/data.js`);
+    return this.getItemContentByPath(`core/${year}/${DATA_NAME}`);
   }
 
   static backupJournalByYear(year, newName) {
-    return this.moveItemByPath(`core/${year}/data.js`, `core/${year}`, newName);
+    return this.moveItemByPath(`core/${year}/${DATA_NAME}`,
+        `core/${year}`,
+        newName);
   }
 
   static uploadJournalByYear(year, content) {
-    return this.uploadItemByPath(`core/${year}/data.js`, content);
+    return this.uploadItemByPath(`core/${year}/${DATA_NAME}`, content);
   }
 
   static getJournalImagesByYear(year) {
@@ -737,6 +741,37 @@ export default class OneDriveManager {
     return this.getImagesInQueue()
         .then(items => items.map(item => item.id))
         .then(ids => this.removeItemsById(ids));
+  }
+
+  static getLatestBackupData(year) {
+    return new Promise(resolve => {
+      this.getClient().then(client => {
+            return client.api(`me${this.getPathHeader(`core/${year}`)}:/children`)
+                .select("id", "name")
+                .orderby("lastModifiedDateTime")
+                .top(2)
+                .get();
+          })
+          .then(res => res.value)
+          .then(res => {
+            if (res.length < 2) {
+              // No backup data or no data
+              resolve(null);
+            }
+
+            // One of them is ${DATA_NAME}
+            let backup = res.find(item => item.name !== DATA_NAME);
+
+            if (backup) {
+              this.getItemContentById(backup.id)
+                  .then(content => {
+                    resolve(content);
+                  });
+            }
+
+            resolve(null);
+          });
+    });
   }
 
   // region alias

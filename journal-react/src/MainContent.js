@@ -203,6 +203,8 @@ export default class MainContent extends Component {
     STATS    : 1 << 4,
     OPTIONS  : 1 << 5,
   };
+  /* The interval between each backup should occur, in miliseconds */
+  BACKUP_INTERVAL = 3600000;
 
   state = {
     data   : [],
@@ -249,6 +251,8 @@ export default class MainContent extends Component {
   /* Press escape anywhere to return to this tab */
   escapeToReturn = this.TAB.NO_CHANGE;
 
+  lastBackup = 0;
+
 
   constructor(props) {
     super(props);
@@ -286,6 +290,9 @@ export default class MainContent extends Component {
         this);
     this.findDataIndexByBulbIndex = this.findDataIndexByBulbIndex.bind(
         this);
+    this.backupAnduploadData = this.backupAnduploadData.bind(this);
+    this.backupData = this.backupData.bind(this);
+    this.uploadData = this.uploadData.bind(this);
 
     this.updateContentStyle(this.state.data);
   }
@@ -366,6 +373,19 @@ export default class MainContent extends Component {
   }
 
   // region Utility functions
+
+
+  /**
+   * Converts the data (or this.state.data) to the form that to be stored online
+   * @param data
+   */
+  convertDataToString(data) {
+    return R.DATA_VERSION + JSON.stringify(data);
+  }
+
+  generateBackupFileName() {
+    return `data_${new Date().getTime()}.js`;
+  }
 
   extractWebsiteFromContent(bulb) {
     var result = BULB_WEB_URL_PATTERN.exec(bulb.content);
@@ -730,6 +750,8 @@ export default class MainContent extends Component {
           })
         })
         .catch(err => {
+          console.error(err.stack);
+
           R.notifyError(this.notificationSystem,
               "There is an error when publishing the bulb. Try again");
         });
@@ -784,7 +806,7 @@ export default class MainContent extends Component {
     if (index !== -1) {
       dataCopy.splice(index, 1);
 
-      return this.uploadData(dataCopy);
+      return this.backupAnduploadData(dataCopy);
     } else {
       // Technically this shouldn't happen
       R.notifyError(this.notificationSystem,
@@ -858,36 +880,71 @@ export default class MainContent extends Component {
    * @param data
    */
   uploadUnprocessedData(data) {
-    return this.uploadData(
+    return this.backupAnduploadData(
         data.sort((lhs, rhs) => rhs.time.created - lhs.time.created)
     );
   }
 
   /**
-   * Uploads the data, assuming that the data is sorted
+   * Backs up and uploads the data, assuming that the data is sorted
    * @param data
    */
-  uploadData(data) {
-    let raw = R.DATA_VERSION + JSON.stringify(data);
+  backupAnduploadData(data) {
+    let dataString = this.convertDataToString(data);
 
-    return OneDriveManager.upload(this.year,
-        raw)
-        .then(() => {
-          R.notify(this.notificationSystem, "Uploaded");
-        }, () => {
-          R.notifyError(this.notificationSystem,
-              "Unable to upload the data. Try again!");
-        })
+    return this.backupData(dataString)
+        .then(() => this.uploadData(dataString))
         .then(() => OneDriveManager.getImages(this.year))
         .then(images => {
           this.handleNewImageMap(images);
-          this.handleNewContent(raw);
+          this.handleNewContent(dataString);
 
           this.setState({
             data   : data,
             version: new Date().getTime()
           });
         });
+  }
+
+
+  /**
+   * Uploads the data to server
+   * @param dataString - the EXACT string data to be uploaded
+   */
+  uploadData(dataString) {
+    return OneDriveManager.upload(this.year, dataString)
+        .then(() => {
+          R.notify(this.notificationSystem, "Uploaded");
+        }, err => {
+          console.error(err.stack);
+
+          R.notifyError(this.notificationSystem,
+              "Unable to upload the data. Try again!");
+        })
+  }
+
+  /**
+   * Backs up current data
+   * @param currentDataString - the EXACT string data to be uploaded
+   */
+  backupData(currentDataString) {
+    if (new Date().getTime() - this.lastBackup >= this.BACKUP_INTERVAL) {
+      return OneDriveManager.getLatestBackupData(this.year)
+          .then(backupData => {
+            if (backupData === null || backupData !== currentDataString) {
+              return OneDriveManager.backupJournalByYear(this.year,
+                  this.generateBackupFileName());
+            }
+          })
+          .then(() => {
+            // Either the backup is needed or not, update lastBackup time
+            this.lastBackup = new Date().getTime();
+          });
+    }
+
+    return new Promise(res => {
+      res();
+    });
   }
 
   toggleIsDisplayingCalendar() {
