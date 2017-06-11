@@ -1274,11 +1274,9 @@ nav.nav {
           box-shadow: 0 0 2px 2px #00BCD4;
           left: -18px;
           top: 13.5px; }
-        .EntryView .bulb-list article:hover .delete-wrapper, .EntryView .bulb-list article.active .delete-wrapper {
+        .EntryView .bulb-list article:hover .buttons, .EntryView .bulb-list article.active .buttons {
           display: block;
           color: #212121; }
-        .EntryView .bulb-list article:hover .buttons, .EntryView .bulb-list article.active .buttons {
-          animation: blink 1.5s; }
     .EntryView .bulb-list .time {
       flex: 0 0 80px;
       text-align: center;
@@ -1291,25 +1289,15 @@ nav.nav {
         background: transparent; }
         .EntryView .bulb-list .time .icon .material-icons {
           font-size: 18px; }
-    .EntryView .bulb-list .delete-wrapper {
+    .EntryView .bulb-list .buttons {
       display: none;
       margin-left: 5px;
       width: auto;
       flex: 0 0 auto;
       height: 32px; }
-      .EntryView .bulb-list .delete-wrapper .btn, .EntryView .bulb-list .delete-wrapper .Options .option, .Options .EntryView .bulb-list .delete-wrapper .option {
+      .EntryView .bulb-list .buttons .btn, .EntryView .bulb-list .buttons .Options .option, .Options .EntryView .bulb-list .buttons .option {
         height: 100%;
         background: #eeeced; }
-    .EntryView .bulb-list .buttons {
-      position: absolute;
-      justify-content: space-around;
-      opacity: 0;
-      color: white;
-      background: #212121;
-      width: 80px; }
-      .EntryView .bulb-list .buttons .btn, .EntryView .bulb-list .buttons .Options .option, .Options .EntryView .bulb-list .buttons .option {
-        flex: 0 0 30px;
-        width: 30px; }
     .EntryView .bulb-list .bulb-content {
       flex: 1 1 auto;
       overflow: hidden; }
@@ -1319,6 +1307,8 @@ nav.nav {
       height: 100%;
       position: relative; }
     .EntryView .bulb-list .details {
+      display: flex;
+      justify-content: flex-start;
       padding: 4px 8px;
       width: 100%; }
     .EntryView .bulb-list .image {

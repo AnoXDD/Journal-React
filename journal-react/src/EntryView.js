@@ -141,24 +141,21 @@ class ContentBulb extends Component {
           <div className="bulb-content">
             <div className="bulb-content-inner">
               <header className="time flex-center">
-                <div className="buttons flex-center">
-                  <Button
-                      className={`icon ${bulb.place ? "" : "hidden"}`}>
-                    location_on
-                  </Button>
-                  <Button
-                      className={`icon ${bulb.images && bulb.images.length ? "" : "hidden"}`}>
-                    photo
-                  </Button>
-                </div>
                 {this.props.time}
               </header>
               <div className="details">{bulb.body}</div>
             </div>
           </div>
-          <div className="delete-wrapper flex-center">
-            <Button className="delete"
-                    loading={this.state.isRemoving}
+          <div className="buttons flex-center">
+            <Button className={bulb.place ? "" : "hidden"}>
+              location_on
+            </Button>
+            <Button
+                onClick={this.props.onPhotoClick}
+                className={bulb.images && bulb.images.length ? "" : "hidden"}>
+              photo
+            </Button>
+            <Button loading={this.state.isRemoving}
                     onClick={this.handleRemoveClick}>delete</Button>
           </div>
         </article>
@@ -300,19 +297,16 @@ class EntryList extends Component {
           style    : {top: top},
         };
 
-    if (this.props.debug) {
-      bulb.images = [undefined];
-
-      let rand = (bulb.time.created / 1000) % 5;
-      prop.onClick = () => {
-        this.props.onBulbClick(bulb.images[0] || `https://unsplash.it/300/${200 + rand * 100}?image=${rand}`);
-      };
-    } else if (bulb.images) {
-
-      prop.onClick = () => {
-        this.props.onBulbClick(this.props.imageMap[bulb.images[0]].thumbnail);
-      };
-    }
+    // if (this.props.debug) {
+    //   bulb.images = [undefined];
+    //
+    //   let rand = (bulb.time.created / 1000) % 5;
+    //   prop.onClick = () => {
+    //     this.props.onBulbClick(bulb.images[0] ||
+    // `https://unsplash.it/300/${200 + rand * 100}?image=${rand}`); }; } else
+    // if (bulb.images) {  prop.onClick = () => {
+    // this.props.onBulbClick(this.props.imageMap[bulb.images[0]].thumbnail);
+    // }; }
 
     return prop;
   }
@@ -328,6 +322,7 @@ class EntryList extends Component {
                                style={this.generateBulbProp(bulb, i)}
                                bulb={bulb}
                                time={this.generateHumanFormTimeFromArticle(bulb.time)}
+                               onPhotoClick={() => this.props.onBulbClick(this.props.imageMap[bulb.images[0]].thumbnail)}
                                onRemoveClick={() => this.props.onBulbRemove(i)}
                   />
               );

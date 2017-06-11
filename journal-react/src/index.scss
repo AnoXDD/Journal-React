@@ -1357,13 +1357,9 @@ nav.nav {
           top: $article-height / 2; //- $timeline-dot-radius-small;
         }
 
-        .delete-wrapper {
+        .buttons {
           display: block;
           color: $darkgrey;
-        }
-
-        .buttons {
-          animation: blink 1.5s;
         }
       }
     }
@@ -1386,7 +1382,7 @@ nav.nav {
       }
     }
 
-    .delete-wrapper {
+    .buttons {
       display: none;
       margin-left: 5px;
       width: auto;
@@ -1396,20 +1392,6 @@ nav.nav {
       .btn {
         height: 100%;
         background: $bg-grey;
-      }
-    }
-
-    .buttons {
-      position: absolute;
-      justify-content: space-around;
-      opacity: 0;
-      color: white;
-      background: $darkgrey;
-      width: 80px;
-
-      .btn {
-        flex: 0 0 30px;
-        width: 30px;
       }
     }
 
@@ -1426,6 +1408,8 @@ nav.nav {
     }
 
     .details {
+      display: flex;
+      justify-content: flex-start;
       padding: $padding 2*$padding;
       width: 100%;
     }
