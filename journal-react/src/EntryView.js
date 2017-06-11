@@ -138,26 +138,27 @@ class ContentBulb extends Component {
 
     return (
         <article {...this.props.style}>
-          <div className="bulb-content">
-            <div className="bulb-content-inner">
-              <header className="time flex-center">
-                {this.props.time}
-              </header>
-              <div className="details">{bulb.body}</div>
+          <div className="hover-trigger"></div>
+            <div className="bulb-content">
+              <div className="bulb-content-inner">
+                <header className="time flex-center">
+                  {this.props.time}
+                </header>
+                <div className="details">{bulb.body}</div>
+              </div>
             </div>
-          </div>
-          <div className="buttons flex-center">
-            <Button className={bulb.place ? "" : "hidden"}>
-              location_on
-            </Button>
-            <Button
-                onClick={this.props.onPhotoClick}
-                className={bulb.images && bulb.images.length ? "" : "hidden"}>
-              photo
-            </Button>
-            <Button loading={this.state.isRemoving}
-                    onClick={this.handleRemoveClick}>delete</Button>
-          </div>
+            <div className="buttons flex-center">
+              <Button className={bulb.place ? "" : "hidden"}>
+                location_on
+              </Button>
+              <Button
+                  onClick={this.props.onPhotoClick}
+                  className={bulb.images && bulb.images.length ? "" : "hidden"}>
+                photo
+              </Button>
+              <Button loading={this.state.isRemoving}
+                      onClick={this.handleRemoveClick}>delete</Button>
+            </div>
         </article>
     )
   }

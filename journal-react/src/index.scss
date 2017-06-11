@@ -1308,9 +1308,10 @@ nav.nav {
 
       font-size: 16px;
       font-weight: normal;
-      display: flex;
       width: 100%;
       position: absolute;
+      display: flex;
+      //height: $article-height;
       transition: background .2s ease;
 
       &:before {
@@ -1327,23 +1328,27 @@ nav.nav {
         top: $article-height / 2; //- $timeline-dot-radius-small;
       }
 
-      &:hover, &.active {
-        height: auto;
+      .hover-trigger {
+        position: absolute;
+        height: $article-height + 6px;
+        width: 100%;
         z-index: 5;
+      }
+
+      &:hover, &.active {
+        z-index: 2;
 
         .bulb-content {
           box-shadow: 0 1px 4px grey;
         }
 
+        .details {
+          background: white;
+        }
+
         header {
           background: $darkgrey;
           color: white;
-        }
-
-        .details {
-          overflow: visible;
-          white-space: normal;
-          background: white;
         }
 
         &:before {
@@ -1360,6 +1365,17 @@ nav.nav {
         .buttons {
           display: block;
           color: $darkgrey;
+          position: relative;
+          z-index: 5;
+        }
+
+        .hover-trigger:hover + .bulb-content {
+          height: auto;
+
+          .details {
+            overflow: visible;
+            white-space: normal;
+          }
         }
       }
     }
@@ -1396,6 +1412,7 @@ nav.nav {
     }
 
     .bulb-content {
+      height: auto;
       flex: 1 1 auto;
       overflow: hidden;
     }

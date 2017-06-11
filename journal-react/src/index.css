@@ -1223,9 +1223,9 @@ nav.nav {
     .EntryView .bulb-list article {
       font-size: 16px;
       font-weight: normal;
-      display: flex;
       width: 100%;
       position: absolute;
+      display: flex;
       transition: background .2s ease; }
       .EntryView .bulb-list article:before {
         left: -15px;
@@ -1245,18 +1245,20 @@ nav.nav {
         background: #80DEEA;
         left: -18px;
         top: 13.5px; }
-      .EntryView .bulb-list article:hover, .EntryView .bulb-list article.active {
-        height: auto;
+      .EntryView .bulb-list article .hover-trigger {
+        position: absolute;
+        height: 33px;
+        width: 100%;
         z-index: 5; }
+      .EntryView .bulb-list article:hover, .EntryView .bulb-list article.active {
+        z-index: 2; }
         .EntryView .bulb-list article:hover .bulb-content, .EntryView .bulb-list article.active .bulb-content {
           box-shadow: 0 1px 4px grey; }
+        .EntryView .bulb-list article:hover .details, .EntryView .bulb-list article.active .details {
+          background: white; }
         .EntryView .bulb-list article:hover header, .EntryView .bulb-list article.active header {
           background: #212121;
           color: white; }
-        .EntryView .bulb-list article:hover .details, .EntryView .bulb-list article.active .details {
-          overflow: visible;
-          white-space: normal;
-          background: white; }
         .EntryView .bulb-list article:hover:before, .EntryView .bulb-list article.active:before {
           width: 15px; }
         .EntryView .bulb-list article:hover:after, .EntryView .bulb-list article.active:after {
@@ -1276,7 +1278,14 @@ nav.nav {
           top: 13.5px; }
         .EntryView .bulb-list article:hover .buttons, .EntryView .bulb-list article.active .buttons {
           display: block;
-          color: #212121; }
+          color: #212121;
+          position: relative;
+          z-index: 5; }
+        .EntryView .bulb-list article:hover .hover-trigger:hover + .bulb-content, .EntryView .bulb-list article.active .hover-trigger:hover + .bulb-content {
+          height: auto; }
+          .EntryView .bulb-list article:hover .hover-trigger:hover + .bulb-content .details, .EntryView .bulb-list article.active .hover-trigger:hover + .bulb-content .details {
+            overflow: visible;
+            white-space: normal; }
     .EntryView .bulb-list .time {
       flex: 0 0 80px;
       text-align: center;
@@ -1299,6 +1308,7 @@ nav.nav {
         height: 100%;
         background: #eeeced; }
     .EntryView .bulb-list .bulb-content {
+      height: auto;
       flex: 1 1 auto;
       overflow: hidden; }
     .EntryView .bulb-list .bulb-content-inner {
