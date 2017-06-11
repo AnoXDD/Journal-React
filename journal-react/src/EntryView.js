@@ -413,7 +413,7 @@ export default class EntryView extends Component {
       // display
       if (nextProps.highlightBulbIndex !== this.props.highlightBulbIndex) {
         // A new image should be displayed (if the bulb has an image)
-        let {images} = this.bulbs[nextProps.highlightBulbIndex];
+        let {images} = this.props.bulbs[nextProps.highlightBulbIndex];
         if (images) {
           nextState.isShowingBulbViewer = true;
           nextState.bulbImage = this.props.imageMap[images[0]].thumbnail;
