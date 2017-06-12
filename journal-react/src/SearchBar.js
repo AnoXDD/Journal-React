@@ -88,8 +88,6 @@ export default class SearchBar extends Component {
     attachments: DEFAULT_ATTACHMENTS,
     inputValue : "",
 
-    isBoundSearch: false,
-
     isAdvancedSearch   : false,
     advancedSearchValue: "",
   };
@@ -187,7 +185,7 @@ export default class SearchBar extends Component {
       months     : DEFAULT_MONTH,
       types      : DEFAULT_TYPES,
       attachments: DEFAULT_ATTACHMENTS,
-    }, this.handleSubmit);
+    }, () => this.handleSubmit(true));
   }
 
   handleInputChange(e) {
@@ -202,7 +200,9 @@ export default class SearchBar extends Component {
     }
   }
 
-  handleSubmit() {
+  handleSubmit(isClear) {
+    isClear = isClear === true;
+    
     if (this.state.isAdvancedSearch) {
       for (let d of this.state.types) {
         if (d === R.TYPE_ARTICLE) {
@@ -230,6 +230,7 @@ export default class SearchBar extends Component {
         keywords   : this.state.keywords,
         tags       : this.state.tags,
         simple     : false,
+        clear      : isClear,
       });
     } else {
       let value = this.state.inputValue.trim();
@@ -237,6 +238,7 @@ export default class SearchBar extends Component {
       this.props.onChange({
         keywords: value.length ? value.split(" ") : [],
         simple  : true,
+        clear   : isClear,
       });
     }
   }
@@ -306,20 +308,23 @@ export default class SearchBar extends Component {
                 onKeyDown={this.handleInputKeyDown}
                 disabled={this.state.isAdvancedSearch}
             />
-            <Button className="dark z-index-inherit"
-                    tooltip="Clear keyword"
-                    onClick={this.clearSearch}
-            >clear</Button>
-            <Toggle firstIcon="expand_more" secondIcon="expand_less"
-                    className="dark z-index-inherit"
-                    tooltip="More options"
-                    onClick={this.toggleIsAdvancedSearch}
-                    isChanging={this.state.isAdvancedSearch}
-            />
-            <Button className="dark z-index-inherit"
-                    text="search"
-                    onClick={this.handleSubmit}
-            >search</Button>
+            <div className="btns">
+              <Button className="dark z-index-inherit"
+                      tooltip="Clear keyword"
+                      onClick={this.clearSearch}
+              >clear</Button>
+              <Toggle firstIcon="expand_more" secondIcon="expand_less"
+                      className="dark z-index-inherit"
+                      tooltip="More options"
+                      onClick={this.toggleIsAdvancedSearch}
+                      isChanging={this.state.isAdvancedSearch}
+              />
+              <Button className="dark z-index-inherit"
+                      text={`search${this.props.isBoundSearch ? " in this area" : ""}`}
+                      onClick={this.handleSubmit}
+                      tooltip="Toggle map view to limit search in an area"
+              >search</Button>
+            </div>
           </div>
         </div>
     );

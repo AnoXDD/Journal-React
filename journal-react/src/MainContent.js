@@ -7,7 +7,6 @@ import React, {Component} from "react";
 import NotificationSystem from "react-notification-system";
 
 import Button from "./Button";
-import Toggle from "./Toggle";
 
 import Editor from './Editor';
 import Calendar from "./Calendar";
@@ -227,10 +226,8 @@ export default class MainContent extends Component {
 
     isShowingBulbEditor: false,
 
-    mapCenter    : null,
-    mapVersion   : 0,
-    mapBound     : null,
-    isBoundSearch: false,
+    mapCenter : null,
+    mapVersion: 0,
   };
 
   data = [];
@@ -260,7 +257,7 @@ export default class MainContent extends Component {
 
   lastBackup = 0;
 
-  lastSearchCriteria = null;
+  mapBound = null;
 
   constructor(props) {
     super(props);
@@ -296,7 +293,6 @@ export default class MainContent extends Component {
     this.handleBoundChange = this.handleBoundChange.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
-    this.toggleIsBoundSearch = this.toggleIsBoundSearch.bind(this);
     this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
         this);
     this.findDataIndexByBulbIndex = this.findDataIndexByBulbIndex.bind(
@@ -662,12 +658,9 @@ export default class MainContent extends Component {
   }
 
   handleChangeCriteria(c) {
-    c = c || this.lastSearchCriteria;
-    this.lastSearchCriteria = R.copy(c);
-
     let data = this.data;
-    if (this.state.isBoundSearch && this.state.mapBound) {
-      let {west, east, north, south} = this.state.mapBound;
+    if (!c.clear && this.state.isDisplayingMapView && this.mapBound) {
+      let {west, east, north, south} = this.mapBound;
 
       data = data.filter(entry => {
         if (entry.place) {
@@ -675,14 +668,14 @@ export default class MainContent extends Component {
 
           return latitude >= south && latitude <= north &&
               (west < east ? (longitude >= west && longitude <= east) :
-                  (longitude <= west || longitude >= east));
+                  (longitude >= west || longitude <= east));
         }
 
         return false;
       })
     }
 
-    if (c || (c.simple && !c.keywords.length)) {
+    if (c.clear || (c.simple && !c.keywords.length)) {
       // Empty
       this.setState({
         data   : data,
@@ -842,9 +835,7 @@ export default class MainContent extends Component {
   }
 
   handleBoundChange(bound) {
-    this.setState({
-      mapBound: bound,
-    });
+    this.mapBound = bound;
   }
 
   handleDataRemoveByIndex(index) {
@@ -1003,12 +994,6 @@ export default class MainContent extends Component {
   toggleIsDisplayingMapView() {
     this.setState({
       isDisplayingMapView: !this.state.isDisplayingMapView,
-    });
-  }
-
-  toggleIsBoundSearch() {
-    this.setState({
-      isBoundSearch: !this.state.isBoundSearch,
     });
   }
 
@@ -1209,13 +1194,8 @@ export default class MainContent extends Component {
               <header className="main-header flex-center">
                 <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}
                            onChange={this.handleChangeCriteria}
-                />
-                <Toggle firstIcon="location_searching"
-                        secondIcon="location_disabled"
-                        isChanging={this.state.isBoundSearch}
-                        className={`dark ${this.state.isDisplayingMapView ? "" : "hidden"}`}
-                        tooltip="Toggle search in this area"
-                        onClick={this.toggleIsBoundSearch}
+                           mapBound={this.mapBound}
+                           isBoundSearch={this.state.isDisplayingMapView}
                 />
                 <Button className="dark"
                         tooltip="Re-download data"

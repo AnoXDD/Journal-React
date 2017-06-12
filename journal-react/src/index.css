@@ -1423,8 +1423,6 @@ nav.nav {
     top: 80px; }
   .SearchBar .btn.text, .SearchBar .Options .text.option, .Options .SearchBar .text.option, .SearchBar .toggle {
     flex: 0 0 auto; }
-  .SearchBar .btn.text, .SearchBar .Options .text.option, .Options .SearchBar .text.option {
-    width: 150px; }
   .SearchBar .keyword {
     border-radius: 2px;
     flex: 1 1 auto;
