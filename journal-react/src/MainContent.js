@@ -224,6 +224,9 @@ export default class MainContent extends Component {
     isLoadingNextYear    : false,
 
     isShowingBulbEditor: false,
+
+    mapCenter : null,
+    mapVersion: 0,
   };
 
   data = [];
@@ -277,6 +280,7 @@ export default class MainContent extends Component {
     this.handleArticleChange = this.handleArticleChange.bind(this);
     this.handleEditorRefreshQueue = this.handleEditorRefreshQueue.bind(this);
     this.handleBulbClick = this.handleBulbClick.bind(this);
+    this.handleBulbLocationClick = this.handleBulbLocationClick.bind(this);
     this.handleBulbRemove = this.handleBulbRemove.bind(this);
     this.handleDataRemoveByIndex = this.handleDataRemoveByIndex.bind(this);
     this.handleCreateArticle = this.handleCreateArticle.bind(this);
@@ -293,6 +297,8 @@ export default class MainContent extends Component {
     this.backupAnduploadData = this.backupAnduploadData.bind(this);
     this.backupData = this.backupData.bind(this);
     this.uploadData = this.uploadData.bind(this);
+    this.toPrevousYear = this.toPreviousYear.bind(this);
+    this.toNextYear = this.toNextYear.bind(this);
 
     this.updateContentStyle(this.state.data);
   }
@@ -800,6 +806,14 @@ export default class MainContent extends Component {
     return this.handleDataRemoveByIndex(index);
   }
 
+  handleBulbLocationClick(place) {
+    this.setState({
+      mapCenter          : place,
+      mapVersion         : new Date().getTime(),
+      isDisplayingMapView: true,
+    });
+  }
+
   handleDataRemoveByIndex(index) {
     let dataCopy = [...this.data];
 
@@ -989,6 +1003,15 @@ export default class MainContent extends Component {
     );
   }
 
+  sanitizeBulbContent(content) {
+    if (content.place) {
+      content.place = {
+        latitude : parseFloat(content.place.latitude, 10),
+        longitude: parseFloat(content.place.longitude, 10),
+      };
+    }
+  }
+
   /**
    * Return the correct state based on this.props
    */
@@ -1003,6 +1026,7 @@ export default class MainContent extends Component {
     for (let content of data) {
       if (content.type === R.TYPE_BULB) {
         // Bulb
+        this.sanitizeBulbContent(content);
         this.bulbList.push(content);
 
         // Calculate the height
@@ -1154,14 +1178,14 @@ export default class MainContent extends Component {
                   refresh
                 </Button>
                 <Button className="dark"
-                        onClick={this.toPreviousYear.bind(this)}
+                        onClick={this.toPreviousYear}
                         disabled={this.state.isLoadingNextYear}
                         loading={this.state.isLoadingPreviousYear}
                 >navigate_before</Button>
                 <span className="year">{this.year}</span>
                 <Button
                     className="dark"
-                    onClick={this.toNextYear.bind(this)}
+                    onClick={this.toNextYear}
                     loading={this.state.isLoadingNextYear}
                     disabled={this.year === new Date().getFullYear() || this.state.isLoadingPreviousYear}>
                   navigate_next
@@ -1196,6 +1220,7 @@ export default class MainContent extends Component {
                       onArticleClick={this.handleArticleClick}
                       onArticleRemove={this.handleArticleRemove}
                       onBulbRemove={this.handleBulbRemove}
+                      onLocationClick={this.handleBulbLocationClick}
                   />
                   <div
                       className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>
@@ -1204,6 +1229,8 @@ export default class MainContent extends Component {
                         data={this.bulbList}
                         contentStyle={this.contentStyle}
                         onBulbClick={this.handleBulbClick}
+                        center={this.state.mapCenter}
+                        version={this.state.mapVersion}
                     />
                   </div>
                 </div>

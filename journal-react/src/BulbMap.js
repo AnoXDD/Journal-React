@@ -19,17 +19,6 @@ var getGoogleClusterInlineSvg = function(color) {
   return ('data:image/svg+xml;base64,' + encoded);
 };
 
-/**
- * Change the location of this number a little bit to avoid the same position
- * having multiple stuffs
- * @param num = num +- ERROR
- */
-function adjustNumber(num) {
-  const ERROR = .00002;
-
-  return num + ERROR * (Math.random() - 1);
-}
-
 const mapMarkerIcon = `data:image/svg+xml;base64,${window.btoa(
     '<svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"><g><ellipse ry="5" rx="5" cy="5" cx="5" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#212121"/></g></svg>')}`;
 
@@ -92,8 +81,8 @@ const BulbGoogleMap = withGoogleMap(props => (
             return (
                 <Marker
                     key={bulb.time.created}
-                    position={{lat:adjustNumber(parseFloat(bulb.place.latitude,10)),
-                               lng:adjustNumber(parseFloat(bulb.place.longitude,10))}}
+                    position={{lat:parseFloat(bulb.place.latitude,10),
+                               lng:parseFloat(bulb.place.longitude,10)}}
                     icon={mapMarkerIcon}
                     onClick={() => props.onBulbClick(props.contentStyle[bulb.time.created], index)}
                 />
@@ -106,9 +95,12 @@ const BulbGoogleMap = withGoogleMap(props => (
     </GoogleMap>
 ));
 
+const PAN_BOUND_SIZE = .05;
+
 export default class BulbMap extends Component {
 
   map = null;
+  version = 0;
 
   constructor(props) {
     super(props);
@@ -118,6 +110,27 @@ export default class BulbMap extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return !nextProps.hidden;
+  }
+
+  componentWillUpdate(nextProps) {
+    if (nextProps.version > this.version && nextProps.center) {
+      let {latitude, longitude} = nextProps.center,
+          center = {
+            lat: latitude,
+            lng: longitude,
+          },
+          bound = {
+            west : longitude - PAN_BOUND_SIZE,
+            east : longitude + PAN_BOUND_SIZE,
+            south: latitude + PAN_BOUND_SIZE,
+            north: latitude - PAN_BOUND_SIZE,
+          };
+
+      this.map.panTo(center);
+      this.map.fitBounds(bound);
+
+      this.version = nextProps.version;
+    }
   }
 
   handleMapLoad(map) {

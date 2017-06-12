@@ -148,7 +148,9 @@ class ContentBulb extends Component {
               </div>
             </div>
             <div className="buttons flex-center">
-              <Button className={bulb.place ? "" : "hidden"}>
+              <Button
+                  onClick={this.props.onLocationClick}
+                  className={bulb.place ? "" : "hidden"}>
                 location_on
               </Button>
               <Button
@@ -323,6 +325,7 @@ class EntryList extends Component {
                                style={this.generateBulbProp(bulb, i)}
                                bulb={bulb}
                                time={this.generateHumanFormTimeFromArticle(bulb.time)}
+                               onLocationClick={() => this.props.onLocationClick(bulb.place)}
                                onPhotoClick={() => this.props.onBulbClick(this.props.imageMap[bulb.images[0]].thumbnail)}
                                onRemoveClick={() => this.props.onBulbRemove(i)}
                   />
@@ -476,6 +479,7 @@ export default class EntryView extends Component {
                   scrollTop={this.state.scrollTop}
                   scrollBottom={this.state.scrollBottom}
                   version={this.state.displayVersion}
+                  onLocationClick={this.props.onLocationClick}
                   onBulbClick={src => this.handleBulbClick(src)}
                   highlightBulbIndex={this.props.highlightBulbIndex}
               />
