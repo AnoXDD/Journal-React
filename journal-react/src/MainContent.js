@@ -7,6 +7,8 @@ import React, {Component} from "react";
 import NotificationSystem from "react-notification-system";
 
 import Button from "./Button";
+import Toggle from "./Toggle";
+
 import Editor from './Editor';
 import Calendar from "./Calendar";
 import EntryView from "./EntryView";
@@ -225,8 +227,10 @@ export default class MainContent extends Component {
 
     isShowingBulbEditor: false,
 
-    mapCenter : null,
-    mapVersion: 0,
+    mapCenter    : null,
+    mapVersion   : 0,
+    mapBound     : null,
+    isBoundSearch: false,
   };
 
   data = [];
@@ -256,6 +260,7 @@ export default class MainContent extends Component {
 
   lastBackup = 0;
 
+  lastSearchCriteria = null;
 
   constructor(props) {
     super(props);
@@ -288,8 +293,10 @@ export default class MainContent extends Component {
     this.handleBulbEditorSend = this.handleBulbEditorSend.bind(this);
     this.handleBulbEditorEdit = this.handleBulbEditorEdit.bind(this);
     this.handleMissingImages = this.handleMissingImages.bind(this);
+    this.handleBoundChange = this.handleBoundChange.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
+    this.toggleIsBoundSearch = this.toggleIsBoundSearch.bind(this);
     this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
         this);
     this.findDataIndexByBulbIndex = this.findDataIndexByBulbIndex.bind(
@@ -297,7 +304,7 @@ export default class MainContent extends Component {
     this.backupAnduploadData = this.backupAnduploadData.bind(this);
     this.backupData = this.backupData.bind(this);
     this.uploadData = this.uploadData.bind(this);
-    this.toPrevousYear = this.toPreviousYear.bind(this);
+    this.toPreviousYear = this.toPreviousYear.bind(this);
     this.toNextYear = this.toNextYear.bind(this);
 
     this.updateContentStyle(this.state.data);
@@ -655,14 +662,34 @@ export default class MainContent extends Component {
   }
 
   handleChangeCriteria(c) {
-    if (c.simple && !c.keywords.length) {
+    c = c || this.lastSearchCriteria;
+    this.lastSearchCriteria = R.copy(c);
+
+    let data = this.data;
+    if (this.state.isBoundSearch && this.state.mapBound) {
+      let {west, east, north, south} = this.state.mapBound;
+
+      data = data.filter(entry => {
+        if (entry.place) {
+          let {latitude, longitude} = entry.place;
+
+          return latitude >= south && latitude <= north &&
+              (west < east ? (longitude >= west && longitude <= east) :
+                  (longitude <= west || longitude >= east));
+        }
+
+        return false;
+      })
+    }
+
+    if (c || (c.simple && !c.keywords.length)) {
       // Empty
       this.setState({
-        data   : this.data,
+        data   : data,
         version: new Date().getTime(),
       });
     } else {
-      let newData = this.data.filter(d => {
+      let newData = data.filter(d => {
         // First, type
         if (!c.simple && ((!c.hasArticle && d.type === R.TYPE_ARTICLE) ||
             (!c.hasBulb && d.type === R.TYPE_BULB))) {
@@ -811,6 +838,12 @@ export default class MainContent extends Component {
       mapCenter          : place,
       mapVersion         : new Date().getTime(),
       isDisplayingMapView: true,
+    });
+  }
+
+  handleBoundChange(bound) {
+    this.setState({
+      mapBound: bound,
     });
   }
 
@@ -970,6 +1003,12 @@ export default class MainContent extends Component {
   toggleIsDisplayingMapView() {
     this.setState({
       isDisplayingMapView: !this.state.isDisplayingMapView,
+    });
+  }
+
+  toggleIsBoundSearch() {
+    this.setState({
+      isBoundSearch: !this.state.isBoundSearch,
     });
   }
 
@@ -1171,6 +1210,13 @@ export default class MainContent extends Component {
                 <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}
                            onChange={this.handleChangeCriteria}
                 />
+                <Toggle firstIcon="location_searching"
+                        secondIcon="location_disabled"
+                        isChanging={this.state.isBoundSearch}
+                        className={`dark ${this.state.isDisplayingMapView ? "" : "hidden"}`}
+                        tooltip="Toggle search in this area"
+                        onClick={this.toggleIsBoundSearch}
+                />
                 <Button className="dark"
                         tooltip="Re-download data"
                         loading={this.state.loadingPrompt}
@@ -1231,6 +1277,7 @@ export default class MainContent extends Component {
                         onBulbClick={this.handleBulbClick}
                         center={this.state.mapCenter}
                         version={this.state.mapVersion}
+                        onBoundChange={this.handleBoundChange}
                     />
                   </div>
                 </div>

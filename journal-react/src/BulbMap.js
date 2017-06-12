@@ -70,6 +70,7 @@ const BulbGoogleMap = withGoogleMap(props => (
         ref={props.onMapLoad}
         defaultZoom={3}
         defaultCenter={{ lat: 32.8689785, lng: -117.2382162 }}
+        onBoundsChanged={props.onBoundChange}
     >
       <MarkerClusterer
           averageCenter={ true }
@@ -102,10 +103,15 @@ export default class BulbMap extends Component {
   map = null;
   version = 0;
 
+  lastTimeout = -1;
+  BOUND_CHANGE_COOLDOWN = 1000;
+
   constructor(props) {
     super(props);
 
     this.handleMapLoad = this.handleMapLoad.bind(this);
+    this.handleBoundChange = this.handleBoundChange.bind(this);
+    this.notifyHandleChange = this.notifyHandleChange.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -133,6 +139,25 @@ export default class BulbMap extends Component {
     }
   }
 
+  handleBoundChange() {
+    clearTimeout(this.lastTimeout);
+    this.lastTimeout = setTimeout(this.notifyHandleChange, this.BOUND_CHANGE_COOLDOWN);
+  }
+
+  notifyHandleChange() {
+    this.isBoundChanging = false;
+
+    let bound = this.map.getBounds();
+
+    // todo for some reason this part is obfuscated
+    this.props.onBoundChange({
+      south: bound.f.b,
+      north: bound.f.f,
+      west : bound.b.b,
+      east : bound.b.f,
+    });
+  }
+
   handleMapLoad(map) {
     this.map = map;
     if (map) {
@@ -154,6 +179,7 @@ export default class BulbMap extends Component {
               bulbList={this.props.data}
               contentStyle={this.props.contentStyle}
               onBulbClick={this.props.onBulbClick}
+              onBoundChange={this.handleBoundChange}
           />
         </div>
     );

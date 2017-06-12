@@ -88,6 +88,8 @@ export default class SearchBar extends Component {
     attachments: DEFAULT_ATTACHMENTS,
     inputValue : "",
 
+    isBoundSearch: false,
+
     isAdvancedSearch   : false,
     advancedSearchValue: "",
   };
