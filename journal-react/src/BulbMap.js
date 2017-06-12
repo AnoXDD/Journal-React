@@ -96,7 +96,18 @@ const BulbGoogleMap = withGoogleMap(props => (
     </GoogleMap>
 ));
 
-const PAN_BOUND_SIZE = .05;
+/**
+ * Set the size of the bound that map will expand to four directions when the
+ * user clicks on a bulb with location
+ * @type {number}
+ */
+const PAN_BOUND_SIZE = .005;
+/**
+ * To avoid continuously calling the change function, only call it after
+ * this amount of time. The unit is MILISECONDS
+ * @type {number}
+ */
+const BOUND_CHANGE_COOLDOWN = 500;
 
 export default class BulbMap extends Component {
 
@@ -104,7 +115,6 @@ export default class BulbMap extends Component {
   version = 0;
 
   lastTimeout = -1;
-  BOUND_CHANGE_COOLDOWN = 1000;
 
   constructor(props) {
     super(props);
@@ -141,7 +151,8 @@ export default class BulbMap extends Component {
 
   handleBoundChange() {
     clearTimeout(this.lastTimeout);
-    this.lastTimeout = setTimeout(this.notifyHandleChange, this.BOUND_CHANGE_COOLDOWN);
+    this.lastTimeout = setTimeout(this.notifyHandleChange,
+        BOUND_CHANGE_COOLDOWN);
   }
 
   notifyHandleChange() {

@@ -21,6 +21,7 @@ import Settings from "./Settings";
 import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
+// import TestData from "./TestData";
 
 const BULB_WEB_URL_PATTERN = /(.+)@(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))(.*)/,
     BULB_LOCATION_PATTERN = /(.+)#\[(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/,
@@ -360,6 +361,8 @@ export default class MainContent extends Component {
           this.setState({
             loadingPrompt: "Looks like there is an error fetching you data. Refresh the website and try again."
           });
+          console.error(err.stack);
+
           throw new Error(JSON.stringify(err));
         })
         .then(() => {
@@ -625,6 +628,7 @@ export default class MainContent extends Component {
   }
 
   handleNewContent(raw) {
+    // raw = '2' + JSON.stringify(TestData.data);
     if (raw) {
       this.data = raw[0] === '2' ? upgradeDataFromVersion2To3(JSON.parse(raw.substr(
           1))) : JSON.parse(raw.substr(1));

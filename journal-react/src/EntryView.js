@@ -38,7 +38,7 @@ class ContentArticle extends Component {
     super(props);
 
     this.state = {
-      image     : props.article.images ? this.props.imageMap[props.article.images[0]].thumbnail : undefined,
+      image     : (props.article.images && this.props.imageMap[props.article.images[0]]) ? this.props.imageMap[props.article.images[0]].thumbnail : undefined,
       isRemoving: false,
     };
 
@@ -49,9 +49,11 @@ class ContentArticle extends Component {
     let i = parseInt(Math.min((e.clientX - e.target.getBoundingClientRect().left) / e.target.offsetWidth,
             .999999999) * images.length, 10);
 
-    this.setState({
-      image: this.props.imageMap[images[i]].thumbnail,
-    });
+    if (this.props.imageMap[images[i]]) {
+      this.setState({
+        image: this.props.imageMap[images[i]].thumbnail,
+      });
+    }
   }
 
   handleRemoveClick(e) {
@@ -139,28 +141,28 @@ class ContentBulb extends Component {
     return (
         <article {...this.props.style}>
           <div className="hover-trigger"></div>
-            <div className="bulb-content">
-              <div className="bulb-content-inner">
-                <header className="time flex-center">
-                  {this.props.time}
-                </header>
-                <div className="details">{bulb.body}</div>
-              </div>
+          <div className="bulb-content">
+            <div className="bulb-content-inner">
+              <header className="time flex-center">
+                {this.props.time}
+              </header>
+              <div className="details">{bulb.body}</div>
             </div>
-            <div className="buttons flex-center">
-              <Button
-                  onClick={this.props.onLocationClick}
-                  className={bulb.place ? "" : "hidden"}>
-                location_on
-              </Button>
-              <Button
-                  onClick={this.props.onPhotoClick}
-                  className={bulb.images && bulb.images.length ? "" : "hidden"}>
-                photo
-              </Button>
-              <Button loading={this.state.isRemoving}
-                      onClick={this.handleRemoveClick}>delete</Button>
-            </div>
+          </div>
+          <div className="buttons flex-center">
+            <Button
+                onClick={this.props.onLocationClick}
+                className={bulb.place ? "" : "hidden"}>
+              location_on
+            </Button>
+            <Button
+                onClick={this.props.onPhotoClick}
+                className={bulb.images && bulb.images.length ? "" : "hidden"}>
+              photo
+            </Button>
+            <Button loading={this.state.isRemoving}
+                    onClick={this.handleRemoveClick}>delete</Button>
+          </div>
         </article>
     )
   }
