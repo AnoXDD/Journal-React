@@ -8,30 +8,53 @@ import React, {Component} from "react";
 export default class Image extends Component {
   toggle = false;
   lastSrc = this.props.src;
-  
-  
 
-  shouldComponentUpdate(nextProps) {
-    return nextProps.src !== this.props.src;
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isFullscreen: false,
+    };
+
+    this.handleClick = this.handleClick.bind(this);
   }
 
-  componentWillUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.src !== this.props.src || this.state.isFullscreen !== nextState.isFullscreen;
+  }
+
+  componentWillUpdate(nextProps, nextState) {
     this.lastSrc = this.props.src;
+    if (this.state.isFullscreen === nextState.isFullscreen) {
+      this.toggle = !this.toggle;
+    }
   }
 
-  componentDidUpdate() {
-    this.toggle = !this.toggle;
+  componentDidUpdate(prevProps, prevState) {
+
+  }
+
+  handleClick(e) {
+    if (this.props.onClick) {
+      // Toggle fullscreen
+      this.setState({
+        isFullscreen: !this.state.isFullscreen,
+      });
+
+      e.stopPropagation();
+    }
   }
 
   render() {
-    let className = `Image ${this.toggle ? "toggle" : ""} ${this.props.className || ""}`;
+    let className = `Image ${this.toggle ? "toggle" : ""} ${this.props.className || ""} ${this.state.isFullscreen ? "fullscreen" : ""}`;
 
     if (this.props.blank) {
       return (
-          <div className={className}>
+          <div className={className}
+              {...(this.state.isFullscreen ? {onClick: this.handleClick} : {})}>
             <img className="image center" src={this.lastSrc} alt=""/>
             <img className="image center" src={this.props.src}
-                 onClick={this.props.onClick}
+                 onClick={this.handleClick}
                  alt=""/>
           </div>
       );
@@ -40,13 +63,15 @@ export default class Image extends Component {
     // Fill the entire thing
     return (
         <div className={className}
-             onClick={this.props.onClick}
+             onClick={this.handleClick}
         >
-          <div className={`image ${!this.props.contain ? "stretch" : "contain"}`}
-               style={{backgroundImage: `url("${this.lastSrc}")`}}></div>
-          <div className={`image ${!this.props.contain ? "stretch" : "contain"}`}
-               onClick={this.props.onClick}
-               style={{backgroundImage: `url("${this.props.src}")`}}></div>
+          <div
+              className={`image ${!this.props.contain ? "stretch" : "contain"}`}
+              style={{backgroundImage: `url("${this.lastSrc}")`}}></div>
+          <div
+              className={`image ${!this.props.contain ? "stretch" : "contain"}`}
+              onClick={this.handleClick}
+              style={{backgroundImage: `url("${this.props.src}")`}}></div>
         </div>
     );
   }

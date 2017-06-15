@@ -926,30 +926,41 @@ nav.nav {
   width: 100%;
   height: 100%;
   background: transparent;
+  cursor: pointer;
+  transition: none;
 
   &.toggle {
     .image {
       &:first-child {
         opacity: 0;
-        animation: fade-out-2 .4s ease;
+        animation: fade-out-2 .4s linear;
       }
 
       &:last-child {
         opacity: 1;
-        animation: fade-in-2 .4s ease;
+        animation: fade-in-2 .4s linear;
       }
     }
+  }
+
+  &.fullscreen {
+    @include max-z-index;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: $darkgrey;
   }
 
   .image {
     &:first-child {
       opacity: 0;
-      animation: fade-out .4s ease;
+      animation: fade-out .4s linear;
     }
 
     &:last-child {
       opacity: 1;
-      animation: fade-in .4s ease;
+      animation: fade-in .4s linear;
     }
   }
 
@@ -1104,7 +1115,7 @@ nav.nav {
     max-width: 530px;
     top: 0;
     height: 100%;
-    z-index: 10;
+    z-index: 1000;
     text-align: center;
     pointer-events: none;
     opacity: 0;
@@ -1530,6 +1541,8 @@ nav.nav {
     }
 
     .content {
+      @include max-z-index;
+
       width: 100%;
       flex: 1 1 auto;
       display: flex;

@@ -25,7 +25,7 @@ class BulbImageView extends Component {
           <div className="bulb-image-viewer-wrapper">
             <Image
                 blank={true}
-                onClick={() => {window.open(this.props.src)}}
+                onClick={true}
                 src={`${this.props.src || ""}`}
             />
           </div>
@@ -357,7 +357,9 @@ class EntryList extends Component {
             .then(newElem => {
               if (this.currentImage === imageName) {
                 // Update the viewer with new image
-                this.props.onBulbClick(mapElem.url);
+                let image = new window.Image();
+                image.onload = () => this.props.onBulbClick(mapElem.url);
+                image.src = mapElem.url;
               }
             });
       }
