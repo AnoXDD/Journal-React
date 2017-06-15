@@ -392,7 +392,10 @@ export default class MainContent extends Component {
    * @param data
    */
   convertDataToString(data) {
-    return R.DATA_VERSION + JSON.stringify(data);
+    return JSON.stringify({
+      version: R.DATA_VERSION,
+      data   : data,
+    });
   }
 
   generateBackupFileName() {
@@ -630,8 +633,17 @@ export default class MainContent extends Component {
   handleNewContent(raw) {
     // raw = '2' + JSON.stringify(TestData.data);
     if (raw) {
-      this.data = raw[0] === '2' ? upgradeDataFromVersion2To3(JSON.parse(raw.substr(
-          1))) : JSON.parse(raw.substr(1));
+
+      if (raw[0] === '2') {
+        this.data = upgradeDataFromVersion2To3(JSON.parse(raw.substr(1)));
+      } else if (raw[0] === '3') {
+        // todo remove this branch when released - this line is for debug only
+        this.data = JSON.parse(raw.substr(1));
+      } else {
+        let parsedData = JSON.parse(raw);
+        this.data = parsedData.data;
+        // We can do other stuffs like settings here ...
+      }
 
       this.setState({
         data: this.data,
