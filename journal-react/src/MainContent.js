@@ -340,8 +340,9 @@ export default class MainContent extends Component {
         val => this.setState({loadingProgress: val}))
         .then(() => {
           this.setState({
-            loadingProgress: 0,
-            loadingPrompt  : "Downloading content ..."
+            loadingProgress    : 0,
+            loadingPrompt      : "Downloading content ...",
+            isDisplayingMapView: false,
           });
 
           return OneDriveManager.getData(this.year);
@@ -377,9 +378,8 @@ export default class MainContent extends Component {
           this.handleNewImageMap(images);
 
           this.setState({
-            loadingPrompt      : "",
-            isDisplayingMapView: false,
-            version            : new Date().getTime(),
+            loadingPrompt: "",
+            version      : new Date().getTime(),
           });
         });
   }
