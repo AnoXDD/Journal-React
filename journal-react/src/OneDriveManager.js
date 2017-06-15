@@ -191,25 +191,24 @@ export default class OneDriveManager {
     });
   }
 
+  static getItemUrlById(id) {
+    return this.getClient()
+        .then(client => client.api(`me/drive/items/${id}`).get())
+        .then(res => res["@microsoft.graph.downloadUrl"]);
+  }
+
   /**
    * Returns a promise with URL of the content
    * @param id
    */
   static getItemContentById(id) {
-    return this.getClient()
-        .then(client => {
-          return client.api(`me/drive/items/${id}`)
-              .get();
-        })
-        .then(res => res["@microsoft.graph.downloadUrl"])
+    return this.getItemUrlById(id)
         .then(url => this.getItemContentByUrl(url));
   }
 
   static getItemContentByPath(path) {
-    return this.getClient().then(client => {
-          return client.api(`me${this.getPathHeader(path)}`)
-              .get();
-        })
+    return this.getClient()
+        .then(client => client.api(`me${this.getPathHeader(path)}`).get())
         .then(res => res["@microsoft.graph.downloadUrl"])
         .then(url => this.getItemContentByUrl(url));
   }
@@ -772,6 +771,25 @@ export default class OneDriveManager {
             resolve(null);
           });
     });
+  }
+
+  /**
+   * Given an element of imageMap, fetch the original file url from the server.
+   * Since each element is an object, this elem is passed as a reference
+   * @param elem
+   * @return a promise with newElem as parameter
+   */
+  static updateImageMapElement(elem) {
+    if (elem.url) {
+      // Don't fetch it again
+      return new Promise(res => res());
+    }
+
+    return this.getItemUrlById(elem.id)
+        .then(url => {
+          elem.url = url;
+          return elem;
+        });
   }
 
   // region alias

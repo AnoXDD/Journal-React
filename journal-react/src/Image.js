@@ -8,6 +8,8 @@ import React, {Component} from "react";
 export default class Image extends Component {
   toggle = false;
   lastSrc = this.props.src;
+  
+  
 
   shouldComponentUpdate(nextProps) {
     return nextProps.src !== this.props.src;

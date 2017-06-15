@@ -7,6 +7,8 @@ import React, {Component} from "react";
 import NoScrollArea from "./NoScrollArea";
 import Button from "./Button";
 import Image from "./Image";
+import OneDriveManager from "./OneDriveManager";
+
 import R from "./R";
 
 class BulbImageView extends Component {
@@ -171,12 +173,14 @@ class ContentBulb extends Component {
 class EntryList extends Component {
 
   currentVersion = 0;
+  currentImage = "";
 
   constructor(props) {
     super(props);
 
     this.generateArticleList = this.generateArticleList.bind(this);
     this.generateBulbList = this.generateBulbList.bind(this);
+    this.handlePhotoClick = this.handlePhotoClick.bind(this);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -328,7 +332,7 @@ class EntryList extends Component {
                                bulb={bulb}
                                time={this.generateHumanFormTimeFromArticle(bulb.time)}
                                onLocationClick={() => this.props.onLocationClick(bulb.place)}
-                               onPhotoClick={() => this.props.onBulbClick(this.props.imageMap[bulb.images[0]].thumbnail)}
+                               onPhotoClick={() => this.handlePhotoClick(bulb.images[0])}
                                onRemoveClick={() => this.props.onBulbRemove(i)}
                   />
               );
@@ -336,6 +340,28 @@ class EntryList extends Component {
           </div>
         </div>
     );
+  }
+
+  handlePhotoClick(imageName) {
+    this.currentImage = imageName;
+
+    let mapElem = this.props.imageMap[imageName];
+    if (mapElem) {
+      if (mapElem.url) {
+        this.props.onBulbClick(mapElem.url);
+      } else {
+        // Try to get the url
+        this.props.onBulbClick(mapElem.thumbnail);
+
+        OneDriveManager.updateImageMapElement(mapElem)
+            .then(newElem => {
+              if (this.currentImage === imageName) {
+                // Update the viewer with new image
+                this.props.onBulbClick(mapElem.url);
+              }
+            });
+      }
+    }
   }
 
   render() {
