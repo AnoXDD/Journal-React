@@ -302,7 +302,7 @@ export default class SearchBar extends Component {
               className={`flex-center search-bar-wrapper ${this.state.isAdvancedSearch ? "max-z-index" : ""}`}>
             <input
                 type="text"
-                className="keyword normal underlined max-z-index"
+                className={`keyword normal underlined ${this.state.isAdvancedSearch ? "max-z-index" : ""}`}
                 value={this.state.inputValue}
                 onChange={this.handleInputChange}
                 onKeyDown={this.handleInputKeyDown}

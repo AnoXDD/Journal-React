@@ -14,6 +14,7 @@ import NumberCard from "./NumberCard";
 import Prompt from "./Prompt";
 import Image from "./Image";
 import ImagePicker from "./ImagePicker";
+import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
 
@@ -144,19 +145,48 @@ class ExtraAttachments extends Component {
 
 class PhotoPreview extends Component {
 
+  currentImage = "";
+
   state = {
-    previewIndex: 0,
+    src: "",
   };
+
+  constructor(props) {
+    super(props);
+
+    this.handleMouseOver = this.handleMouseOver.bind(this);
+  }
+
+  handleMouseOver(imageName) {
+    this.currentImage = imageName;
+
+    let mapElem = this.props.imageMap[imageName];
+    if (mapElem) {
+      if (mapElem.url) {
+        this.setState({src: mapElem.url});
+      } else {
+        // Try to get the url
+        this.setState({src: mapElem.thumbnail});
+
+        OneDriveManager.updateImageMapElement(mapElem)
+            .then(newElem => {
+              if (this.currentImage === imageName) {
+                // Update the viewer with new image
+                let image = new window.Image();
+                image.onload = () => this.setState({src: mapElem.url});
+                image.src = mapElem.url;
+              }
+            });
+      }
+    }
+  }
 
   render() {
     if (this.props.photos.length === 0) {
       return;
     }
 
-    // todo download the actual image (not just the thumbnail)
-
     let {photos, isSelected, isEditing} = this.props;
-    let src = photos[this.state.previewIndex].src;
 
     return (
         <div className="photo-preview">
@@ -165,17 +195,17 @@ class PhotoPreview extends Component {
                 className="photo-wrapper">
               <Image className="center"
                      contain={true}
-                     onClick={() => {window.open(src)}}
-                     src={src} alt=""/>
+                     onClick={true}
+                     src={this.state.src} alt=""/>
             </div>
           </div>
           <div className="photo-no-scroll">
             <NoScrollArea padding="10px">
               <div className={`photos ${isEditing ? "show-all" : ""} `}>
-                {photos.map((photo, index) =>
+                {photos.map(photo =>
                     <div key={`photo-preview-${photo.id}`}
                          className={`photo ${isSelected(photo.status) ? "selected": ""} `}
-                         onMouseOver={() => {this.setState({previewIndex: index})}}
+                         onMouseOver={() => this.handleMouseOver(photo.name)}
                     >
                       <img src={photo.src} alt="" height="90px"/>
                     </div>
@@ -866,6 +896,7 @@ class Editor extends Component {
         return (
             <PhotoPreview
                 photos={this.state.photos}
+                imageMap={this.props.imageMap}
                 isSelected={status => status === this.PHOTO_STATUS.SELECTED}
                 isEditing={this.state.isEditing}
             ></PhotoPreview>

@@ -1541,8 +1541,6 @@ nav.nav {
     }
 
     .content {
-      @include max-z-index;
-
       width: 100%;
       flex: 1 1 auto;
       display: flex;

@@ -1390,7 +1390,6 @@ nav.nav {
         position: absolute;
         left: 0; }
     .MainContent > main .content {
-      z-index: 999999999;
       width: 100%;
       flex: 1 1 auto;
       display: flex;
