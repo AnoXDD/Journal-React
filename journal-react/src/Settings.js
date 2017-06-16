@@ -96,6 +96,7 @@ export default class Settings extends Component {
     this.handleSetDefaultLocationClick = this.handleSetDefaultLocationClick.bind(
         this);
     this.handleSave = this.handleSave.bind(this);
+    this.handleSignOut = this.handleSignOut.bind(this);
     this.emptyQueueFolder = this.emptyQueueFolder.bind(this);
   }
 
@@ -201,6 +202,21 @@ export default class Settings extends Component {
         })
   }
 
+  handleSignOut() {
+    // Clear all the cache
+    var cookies = document.cookie.split(";");
+
+    for (var i = 0; i < cookies.length; i++) {
+      var cookie = cookies[i];
+      var eqPos = cookie.indexOf("=");
+      var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+
+    // Reload the website
+    window.location.reload(true);
+  }
+
   render() {
     return (
         <div className="flex-center settings bg-grey">
@@ -231,7 +247,7 @@ export default class Settings extends Component {
                 <FormContent title="">
                   <Button
                       text="sign out"
-                      onClick={this.props.signOut}
+                      onClick={this.handleSignOut}
                   >exit_to_app</Button>
                 </FormContent>
               </div>

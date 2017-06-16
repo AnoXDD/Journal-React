@@ -1204,9 +1204,9 @@ export default class MainContent extends Component {
     }, {
       text: "EDITOR",
       icon: "edit"
-    }, {
-      text: "HISTORY",
-      icon: "restore"
+    // }, {
+    //   text: "HISTORY",
+    //   icon: "restore"
     }, {
       text: "STATS",
       icon: "show_chart"

@@ -22,11 +22,12 @@ export default class Trak extends Component {
   }
 
   componentDidMount() {
-    OneDriveManager.silentSignIn().then(() => {
-      this.setState({
-        signedIn: true,
-      });
-    })
+    OneDriveManager.silentSignIn()
+        .then(() => {
+          this.setState({
+            signedIn: true,
+          });
+        })
   }
 
   handleSignIn() {
@@ -34,14 +35,16 @@ export default class Trak extends Component {
       signingIn: true,
     });
 
-    OneDriveManager.signIn().then(() => this.setState({
-      signedIn: true,
-    })).catch(err => {
-      this.setState({
-        signInError: err,
-        signingIn  : false,
-      });
-    });
+    OneDriveManager.signIn()
+        .then(() => this.setState({
+          signedIn: true,
+        }))
+        .catch(err => {
+          this.setState({
+            signInError: err,
+            signingIn  : false,
+          });
+        });
   }
 
   render() {

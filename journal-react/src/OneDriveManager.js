@@ -10,7 +10,8 @@
 const MicrosoftGraph = require("@microsoft/microsoft-graph-client");
 
 const APPROOT = "Apps/Trak/",
-    TOP_LIST = 1000;
+    TOP_LIST = 1000,
+    REDIRECT_URI = "https://anoxdd.github.io/"
 // const client_id = "00000000441D0A11",
 // scope = encodeURIComponent("wl.signin wl.offline_access onedrive.readwrite"),
 // redirect_uri = encodeURIComponent(
