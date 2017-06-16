@@ -194,6 +194,13 @@ const defaultColors = {
       },
     };
 
+const DEFAULT_SETTINGS = {
+  bulbMapCenter: {
+    latitude : 0,
+    longitude: 0,
+  },
+};
+
 export default class MainContent extends Component {
 
   SEARCH_BAR_TAGS = ["tags", "months", "attachments"];
@@ -292,13 +299,15 @@ export default class MainContent extends Component {
     this.handleBulbEditorEdit = this.handleBulbEditorEdit.bind(this);
     this.handleMissingImages = this.handleMissingImages.bind(this);
     this.handleBoundChange = this.handleBoundChange.bind(this);
+    this.handleSettingsChange = this.handleSettingsChange.bind(this);
+    this.applySettings = this.applySettings.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
     this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
         this);
     this.findDataIndexByBulbIndex = this.findDataIndexByBulbIndex.bind(
         this);
-    this.backupAnduploadData = this.backupAnduploadData.bind(this);
+    this.backupAndUploadData = this.backupAndUploadData.bind(this);
     this.backupData = this.backupData.bind(this);
     this.uploadData = this.uploadData.bind(this);
     this.toPreviousYear = this.toPreviousYear.bind(this);
@@ -393,8 +402,9 @@ export default class MainContent extends Component {
    */
   convertDataToString(data) {
     return JSON.stringify({
-      version: R.DATA_VERSION,
-      data   : data,
+      version : R.DATA_VERSION,
+      data    : data,
+      settings: this.state.settings,
     });
   }
 
@@ -634,6 +644,8 @@ export default class MainContent extends Component {
     // raw = '2' + JSON.stringify(TestData.data);
     if (raw) {
 
+      let settings = R.copy(DEFAULT_SETTINGS);
+
       if (raw[0] === '2') {
         this.data = upgradeDataFromVersion2To3(JSON.parse(raw.substr(1)));
       } else if (raw[0] === '3') {
@@ -642,11 +654,14 @@ export default class MainContent extends Component {
       } else {
         let parsedData = JSON.parse(raw);
         this.data = parsedData.data;
-        // We can do other stuffs like settings here ...
+
+        settings = Object.assign(settings, parsedData.settings);
+        this.applySettings(settings);
       }
 
       this.setState({
-        data: this.data,
+        data    : this.data,
+        settings: settings,
       });
     } else {
       this.data = [];
@@ -860,7 +875,7 @@ export default class MainContent extends Component {
     if (index !== -1) {
       dataCopy.splice(index, 1);
 
-      return this.backupAnduploadData(dataCopy);
+      return this.backupAndUploadData(dataCopy);
     } else {
       // Technically this shouldn't happen
       R.notifyError(this.notificationSystem,
@@ -928,13 +943,36 @@ export default class MainContent extends Component {
 
   }
 
+  handleSettingsChange(settings) {
+    this.setState({
+      settings: settings,
+    });
+
+    // R.notify(this.notificationSystem, "Saved");
+  }
+
+  /**
+   * Applies the settings from somewhere, assuming that `settings` has every
+   * field of settings
+   * @param settings
+   */
+  applySettings(settings) {
+    let state = {};
+
+    // Bulb map center
+    state.mapVersion = new Date().getTime();
+    state.mapCenter = settings.bulbMapCenter;
+
+    this.setState(R.copy(state));
+  }
+
   /**
    * Tring to upload an unprocessed data, which means the data will be
    * processed and then uploaded
    * @param data
    */
   uploadUnprocessedData(data) {
-    return this.backupAnduploadData(
+    return this.backupAndUploadData(
         data.sort((lhs, rhs) => rhs.time.created - lhs.time.created)
     );
   }
@@ -943,7 +981,9 @@ export default class MainContent extends Component {
    * Backs up and uploads the data, assuming that the data is sorted
    * @param data
    */
-  backupAnduploadData(data) {
+  backupAndUploadData(data) {
+    data = data || this.data;
+
     let dataString = this.convertDataToString(data);
 
     return this.backupData(dataString)
@@ -1304,7 +1344,9 @@ export default class MainContent extends Component {
               <Settings hidden={this.state.isDisplaying !== this.TAB.OPTIONS}
                         notificationSystem={this.notificationSystem}
                         handleMissingImages={this.handleMissingImages}
-                        OneDriveManager={OneDriveManager}
+                        data={this.state.settings || DEFAULT_SETTINGS}
+                        onChange={this.handleSettingsChange}
+                        onSave={this.backupAndUploadData}
               />
             </div>
           </main>

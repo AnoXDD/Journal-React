@@ -1867,12 +1867,21 @@ nav.nav {
 
   .settings-wrapper {
     width: 800px;
-    background: white;
+    background: transparent;
   }
 
   .title-dark {
     width: 100px;
+    flex: 0 0 100px;
     margin-right: 20px;
+  }
+
+  .form {
+    margin-bottom: 20px;
+  }
+
+  .form-row.button {
+    margin-top: 20px;
   }
 
   .form-contents {
@@ -1885,12 +1894,22 @@ nav.nav {
       display: flex;
       align-items: center;
       justify-content: flex-start;
+      height: 50px;
     }
 
     .description {
       flex: 1 1 auto;
     }
   }
+
+  .input-label {
+    padding: 0 10px;
+  }
+
+  .normal.underlined {
+    width: 90px;
+  }
+
 }
 
 .label-btn {
