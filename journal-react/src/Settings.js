@@ -16,7 +16,8 @@ class FormContent extends Component {
   render() {
     return (
         <div className="form-content">
-          <div className="description">{this.props.title}</div>
+          <div
+              className={`description ${this.props.subTitle ? "sub-title" : ""}`}>{this.props.title}</div>
           <div className="btns">{this.props.children}</div>
         </div>
     );
@@ -88,6 +89,12 @@ export default class Settings extends Component {
       isLoadingMissingImages: false,
       isEmptyingQueueFolder : false,
       isSaving              : false,
+
+      password       : "",
+      passwordConfirm: "",
+
+      mapCenterLatitude : NaN,
+      mapCenterLongitude: NaN,
     };
 
     this.handleMissingImages = this.handleMissingImages.bind(this);
@@ -97,6 +104,8 @@ export default class Settings extends Component {
         this);
     this.handleSave = this.handleSave.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
+    this.validateSettings = this.validateSettings.bind(this);
+    this.generateSettingsData = this.generateSettingsData.bind(this);
     this.emptyQueueFolder = this.emptyQueueFolder.bind(this);
   }
 
@@ -123,17 +132,15 @@ export default class Settings extends Component {
   }
 
   handleLatitudeChange(e) {
-    let data = R.copy(this.props.data);
-    data.bulbMapCenter.latitude = parseFloat(e.target.value, 10);
-
-    this.props.onChange(data);
+    this.setState({
+      mapCenterLatitude: parseFloat(e.target.value, 10),
+    });
   }
 
   handleLongitudeChange(e) {
-    let data = R.copy(this.props.data);
-    data.bulbMapCenter.longitude = parseFloat(e.target.value, 10);
-
-    this.props.onChange(data);
+    this.setState({
+      mapCenterLongitude: parseFloat(e.target.value, 10),
+    });
   }
 
   handleSetDefaultLocationClick() {
@@ -158,12 +165,38 @@ export default class Settings extends Component {
     });
   }
 
+  validateSettings() {
+    if (this.state.password !== this.state.passwordConfirm) {
+      R.notifyError(this.props.notificationSystem,
+          "Password does not match. No changes are saved. ");
+      return false;
+    }
+
+    return true;
+  }
+
+  generateSettingsData() {
+    return {
+      password     : this.state.password,
+      bulbMapCenter: {
+        latitude : isNaN(this.state.mapCenterLatitude) ? this.props.bulbMapCenter.latitude : this.state.latitude,
+        longitude: isNaN(this.state.mapCenterLongitude) ? this.props.bulbMapCenter.longitude : this.state.longitude,
+      },
+    };
+  }
+
   handleSave() {
+    if (!this.validateSettings()) {
+      return;
+    }
+
+    let data = this.generateSettingsData();
+
     this.setState({
       isSaving: true,
     });
 
-    this.props.onSave()
+    this.props.onSave(data)
         .then(() => {
           this.setState({
             isSaving: false,
@@ -220,83 +253,125 @@ export default class Settings extends Component {
   render() {
     return (
         <div className="flex-center settings bg-grey">
-          <div className="settings-wrapper">
-            <div className="form shadow">
-              <div className="form-row">
-                <div className="title-dark flex-center">Images</div>
-                <div className="form-contents">
-                  <FormContent title="Lost some images when you deleted them?">
-                    <Button
-                        text="fix"
-                        onClick={this.handleMissingImages}
-                        loading={this.state.isLoadingMissingImages}
-                    >build</Button>
-                  </FormContent>
-                  <FormContent
-                      title="Remove all the images that don't belong to anything">
-                    <Button
-                        text="clean"
-                        onClick={this.emptyQueueFolder}
-                        loading={this.state.isEmptyingQueueFolder}
-                    >delete</Button>
-                  </FormContent>
-                </div>
-              </div>
-              <div className="form-row">
-                <div className="title-dark flex-center">User</div>
-                <FormContent title="">
-                  <Button
-                      text="sign out"
-                      onClick={this.handleSignOut}
-                  >exit_to_app</Button>
-                </FormContent>
-              </div>
+          <header className="main-header flex-center">
+            <div className="btns">
+              <Button className="dark align-right"
+                      onClick={this.handleSave}
+                      loading={this.state.isSaving}
+                      text="save">save</Button>
             </div>
-            <div className="form shadow">
-              <div className="form-title">Personalization</div>
-              <div className="form-row">
-                <div className="title-dark flex-center">Bulb Map</div>
-                <div className="form-contents">
-                  <FormContent
-                      title="Set the default center of the bulb map">
-                    <span></span>
-                  </FormContent>
-                  <FormContent>
-                    <p className="input-label">Latitude</p>
-                    <div className="flex-center">
-                      <DigitInput className="normal underlined"
-                                  value={this.props.data.bulbMapCenter.latitude}
-                                  min={-180}
-                                  max={180}
-                                  onChange={this.handleLatitudeChange}
-                      />
-                    </div>
-                    <p className="input-label">Longitude</p>
-                    <div className="flex-center">
-                      <DigitInput className="normal underlined"
-                                  value={this.props.data.bulbMapCenter.longitude}
-                                  min={-90}
-                                  max={90}
-                                  onChange={this.handleLongitudeChange}
-                      />
-                    </div>
-                    <Button
-                        onClick={this.handleSetDefaultLocationClick}
-                        text="get location"
-                        tooltip="Set as current location">
-                      my_location
-                    </Button>
-                  </FormContent>
+          </header>
+          <div className="content flex-center">
+            <div className="settings-wrapper">
+              <div className="form shadow">
+                <div className="form-title">Content</div>
+                <div className="form-row">
+                  <div className="title-dark flex-center">Images</div>
+                  <div className="form-contents">
+                    <FormContent
+                        title="Lost some images when you deleted them?">
+                      <Button
+                          text="fix"
+                          onClick={this.handleMissingImages}
+                          loading={this.state.isLoadingMissingImages}
+                      >build</Button>
+                    </FormContent>
+                    <FormContent
+                        title="Remove all the images that don't belong to anything">
+                      <Button
+                          text="clean"
+                          onClick={this.emptyQueueFolder}
+                          loading={this.state.isEmptyingQueueFolder}
+                      >delete</Button>
+                    </FormContent>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="title-dark flex-center">User</div>
+                  <div className="form-contents">
+                    <FormContent title="">
+                      <Button
+                          text="sign out"
+                          onClick={this.handleSignOut}
+                      >exit_to_app</Button>
+                    </FormContent>
+                  </div>
                 </div>
               </div>
-              <div className="form-row button">
-                <div className="form-contents">
-                  <FormContent title="">
-                    <Button className="accent"
-                            onClick={this.handleSave}
-                            loading={this.state.isSaving}
-                            text="save">save</Button>
-                  </FormContent>
+              <div className="form shadow">
+                <div className="form-title">Personalization</div>
+                <div className="form-row">
+                  <div className="title-dark flex-center">Bulb Map</div>
+                  <div className="form-contents">
+                    <FormContent
+                        title="Set the default center of the bulb map">
+                      <Button
+                          onClick={this.handleSetDefaultLocationClick}
+                          text="get location"
+                          tooltip="Set as current location">
+                        my_location
+                      </Button>
+                    </FormContent>
+                    <FormContent>
+                      <p className="input-label">Latitude</p>
+                      <div className="flex-center">
+                        <DigitInput className="normal underlined"
+                                    value={this.props.data.bulbMapCenter.latitude || this.state.mapCenterLatitude}
+                                    min={-180}
+                                    max={180}
+                                    onChange={this.handleLatitudeChange}
+                        />
+                      </div>
+                      <p className="input-label">Longitude</p>
+                      <div className="flex-center">
+                        <DigitInput className="normal underlined"
+                                    value={this.props.data.bulbMapCenter.longitude || this.state.mapCenterLongitude}
+                                    min={-90}
+                                    max={90}
+                                    onChange={this.handleLongitudeChange}
+                        />
+                      </div>
+                    </FormContent>
+                  </div>
+                </div>
+              </div>
+              <div className="form shadow">
+                <div className="form-title">Security</div>
+                <div className="form-row">
+                  <div className="title-dark flex-center">Data</div>
+                  <div className="form-contents">
+                    <FormContent
+                        title="Encrypt your data with password">
+                      <span></span>
+                    </FormContent>
+                    <FormContent
+                        subTitle
+                        title="By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. This means that the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so you are responsible for remembering the password: if you lost it, there is NO WAY to recover it">
+                      <span></span>
+                    </FormContent>
+                    <FormContent>
+                      <p className="input-label">Password</p>
+                      <div className="flex-center">
+                        <input
+                            className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
+                            type="password"
+                            value={this.props.data.password || this.state.password}
+                            onChange={e => this.setState({password: e.target.value})}
+                        />
+                      </div>
+                    </FormContent>
+                    <FormContent>
+                      <p className="input-label">Confirm password</p>
+                      <div className="flex-center">
+                        <input
+                            className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
+                            type="password"
+                            value={this.props.data.password || this.state.passwordConfirm}
+                            onChange={e => this.setState({passwordConfirm: e.target.value})}
+                        />
+                      </div>
+                    </FormContent>
+                  </div>
                 </div>
               </div>
             </div>

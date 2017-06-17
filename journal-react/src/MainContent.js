@@ -304,7 +304,7 @@ export default class MainContent extends Component {
     this.handleBulbEditorEdit = this.handleBulbEditorEdit.bind(this);
     this.handleMissingImages = this.handleMissingImages.bind(this);
     this.handleBoundChange = this.handleBoundChange.bind(this);
-    this.handleSettingsChange = this.handleSettingsChange.bind(this);
+    this.handleSettingsSave = this.handleSettingsSave.bind(this);
     this.handlePasswordFromUser = this.handlePasswordFromUser.bind(this);
     this.applySettings = this.applySettings.bind(this);
     this.encryptData = this.encryptData.bind(this);
@@ -1007,9 +1007,14 @@ export default class MainContent extends Component {
 
   }
 
-  handleSettingsChange(settings) {
+  handleSettingsSave(settings) {
+    this.password = settings.password;
     this.setState({
-      settings: settings,
+      settings: {
+        mapCenter: settings.bulbMapCenter,
+      },
+    }, () => {
+      this.backupAndUploadData();
     });
 
     // R.notify(this.notificationSystem, "Saved");
@@ -1461,8 +1466,7 @@ export default class MainContent extends Component {
                         notificationSystem={this.notificationSystem}
                         handleMissingImages={this.handleMissingImages}
                         data={this.state.settings || DEFAULT_SETTINGS}
-                        onChange={this.handleSettingsChange}
-                        onSave={this.backupAndUploadData}
+                        onSave={this.handleSettingsSave}
               />
             </div>
           </main>

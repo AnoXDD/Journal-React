@@ -53,7 +53,7 @@ export default class Trak extends Component {
           <div
               className={`intro flex-center ${this.state.signedIn ? "hidden" : ""}`}>
             <div className="background"></div>
-            <div className="title">TRAK</div>
+            <div className="title">Trak</div>
             <div className="description">An online journal tool, stored in your
               own personal OneDrive
             </div>
