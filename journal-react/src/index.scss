@@ -1860,6 +1860,34 @@ nav.nav {
     margin-top: 25px;
     width: 30vw;
   }
+
+  .dialog {
+    color: black;
+
+    .message {
+      margin-top: 40px;
+      padding: 0px 40px;
+
+      .normal, .btn {
+        background: transparent;
+      }
+
+      .normal {
+        width: 300px;
+      }
+    }
+
+    .input-wrapper {
+      margin-top: 0px;
+      padding: 20px 40px 0;
+    }
+
+    .error {
+      color: $red;
+      margin: 0;
+      padding: 10px 40px 40px;
+    }
+  }
 }
 
 .settings {

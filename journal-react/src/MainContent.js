@@ -23,6 +23,8 @@ import OneDriveManager from "./OneDriveManager";
 import R from "./R";
 // import TestData from "./TestData";
 
+const CryptoJS = require("crypto-js");
+
 const BULB_WEB_URL_PATTERN = /(.+)@(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))(.*)/,
     BULB_LOCATION_PATTERN = /(.+)#\[(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/,
     BULB_LOCATION_PATTERN_WITH_NAME = /(.+)#\[(.+),(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/;
@@ -228,9 +230,10 @@ export default class MainContent extends Component {
 
     editArticleIndex: undefined,
 
-    loadingPrompt        : "Signing in ...",
-    isLoadingPreviousYear: false,
-    isLoadingNextYear    : false,
+    loadingPrompt                 : "Signing in ...",
+    loadingPromptRequiringPassword: false,
+    isLoadingPreviousYear         : false,
+    isLoadingNextYear             : false,
 
     isShowingBulbEditor: false,
 
@@ -267,6 +270,8 @@ export default class MainContent extends Component {
 
   mapBound = null;
 
+  password = null;
+
   constructor(props) {
     super(props);
 
@@ -300,7 +305,10 @@ export default class MainContent extends Component {
     this.handleMissingImages = this.handleMissingImages.bind(this);
     this.handleBoundChange = this.handleBoundChange.bind(this);
     this.handleSettingsChange = this.handleSettingsChange.bind(this);
+    this.handlePasswordFromUser = this.handlePasswordFromUser.bind(this);
     this.applySettings = this.applySettings.bind(this);
+    this.encryptData = this.encryptData.bind(this);
+    this.decryptData = this.decryptData.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
     this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
@@ -357,10 +365,42 @@ export default class MainContent extends Component {
           return OneDriveManager.getData(this.year);
         })
         .then(content => {
-          this.handleNewContent(content);
+          // Now, we try to decrypt it
+          return new Promise(res => {
+            if (this.handleNewContent(content, true)) {
+              res();
+            }
 
+            // Prompt the user for a password
+            this.setState({
+              loadingPrompt                 : "",
+              loadingPromptRequiringPassword: true,
+            });
+
+            let oldPassword = this.password,
+                interval = setInterval(() => {
+                  if (this.password !== oldPassword) {
+                    // We have a new password
+                    oldPassword = this.password;
+
+                    if (this.handleNewContent(content, true)) {
+                      // Matches!
+                      clearInterval(interval);
+                      res();
+                    } else {
+                      this.setState({
+                        loadingPrompt: "Password does not work",
+                      });
+                    }
+                  }
+                }, 1000);
+          })
+        })
+        .then(() => {
+          // The data was successfully decrypted (or is not encrypted)
           this.setState({
-            loadingPrompt: "Merging bulbs ..."
+            loadingPromptRequiringPassword: false,
+            loadingPrompt                 : "Merging bulbs ..."
           });
 
           return OneDriveManager.getBulbs(
@@ -403,7 +443,7 @@ export default class MainContent extends Component {
   convertDataToString(data) {
     return JSON.stringify({
       version : R.DATA_VERSION,
-      data    : data,
+      data    : this.encryptData(data),
       settings: this.state.settings,
     });
   }
@@ -640,7 +680,15 @@ export default class MainContent extends Component {
     }
   }
 
-  handleNewContent(raw) {
+  /**
+   * Handles new content fetched directly from server, given an optional
+   * password
+   * @param raw
+   * @param isEncrypted - if the programs needs to decrypt it
+   * @return boolean - true if handle is successful, false otherwise (e.g.
+   *     wrong password)
+   */
+  handleNewContent(raw, isEncrypted) {
     // raw = '2' + JSON.stringify(TestData.data);
     if (raw) {
 
@@ -653,7 +701,21 @@ export default class MainContent extends Component {
         this.data = JSON.parse(raw.substr(1));
       } else {
         let parsedData = JSON.parse(raw);
-        this.data = parsedData.data;
+
+        if (typeof parsedData.data === "string") {
+          if (isEncrypted) {
+            this.data = this.decryptData(parsedData.data);
+          } else {
+            this.data = JSON.parse(parsedData.data);
+          }
+        } else {
+          this.data = parsedData.data;
+        }
+
+        if (this.data === null) {
+          // Decrypting fails
+          return false;
+        }
 
         settings = Object.assign(settings, parsedData.settings);
         this.applySettings(settings);
@@ -670,6 +732,8 @@ export default class MainContent extends Component {
         data: [],
       });
     }
+
+    return true;
   }
 
   handleKeyDown(e) {
@@ -951,6 +1015,10 @@ export default class MainContent extends Component {
     // R.notify(this.notificationSystem, "Saved");
   }
 
+  handlePasswordFromUser(password) {
+    this.password = password;
+  }
+
   /**
    * Applies the settings from somewhere, assuming that `settings` has every
    * field of settings
@@ -964,6 +1032,54 @@ export default class MainContent extends Component {
     state.mapCenter = settings.bulbMapCenter;
 
     this.setState(R.copy(state));
+  }
+
+  /**
+   * Encrypts the data with `this.password` if applicable
+   * @param data
+   * @returns {string} - the JSON representation of the data, or the encrypted
+   *     data
+   */
+  encryptData(data) {
+    if (this.password) {
+      return CryptoJS.AES.encrypt(JSON.stringify(data),
+          this.password).toString();
+    }
+
+    return JSON.stringify(data);
+  }
+
+  /**
+   * Decrypts the data with `this.password` if it is not null or empty. If
+   * `this.password` is not set up, it will simply convert it from string to
+   * JSON object
+   * @param encrypted {string} - the encrypted string
+   * @returns {object} - the decrypted object if the password is correct.
+   *     `null` if the password is invalid
+   */
+  decryptData(encrypted) {
+    let decrypted = encrypted;
+    if (this.password) {
+      let bytes = CryptoJS.AES.decrypt(encrypted, this.password);
+      decrypted = bytes.toString(CryptoJS.enc.Utf8);
+    }
+
+    // Try to conver to JSON
+    try {
+      var o = JSON.parse(decrypted);
+
+      // Handle non-exception-throwing cases:
+      // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the
+      // type-checking, but... JSON.parse(null) returns null, and typeof null
+      // === "object",  so we must check for that, too. Thankfully, null is
+      // falsey, so this suffices:
+      if (o && typeof o === "object") {
+        return o;
+      }
+    } catch (e) {
+    }
+
+    return null;
   }
 
   /**
@@ -991,7 +1107,7 @@ export default class MainContent extends Component {
         .then(() => OneDriveManager.getImages(this.year))
         .then(images => {
           this.handleNewImageMap(images);
-          this.handleNewContent(dataString);
+          this.handleNewContent(dataString, false);
 
           this.setState({
             data   : data,
@@ -1204,9 +1320,9 @@ export default class MainContent extends Component {
     }, {
       text: "EDITOR",
       icon: "edit"
-    // }, {
-    //   text: "HISTORY",
-    //   icon: "restore"
+      // }, {
+      //   text: "HISTORY",
+      //   icon: "restore"
     }, {
       text: "STATS",
       icon: "show_chart"
@@ -1351,6 +1467,8 @@ export default class MainContent extends Component {
             </div>
           </main>
           <LoadingScreen title={this.state.loadingPrompt}
+                         requirePassword={this.state.loadingPromptRequiringPassword}
+                         handlePassword={this.handlePasswordFromUser}
                          progress={this.state.loadingProgress}/>
         </div>
     );

@@ -1604,6 +1604,22 @@ nav.nav {
   .loading-screen .progress-bar {
     margin-top: 25px;
     width: 30vw; }
+  .loading-screen .dialog {
+    color: black; }
+    .loading-screen .dialog .message {
+      margin-top: 40px;
+      padding: 0px 40px; }
+      .loading-screen .dialog .message .normal, .loading-screen .dialog .message .btn, .loading-screen .dialog .message .Options .option, .Options .loading-screen .dialog .message .option {
+        background: transparent; }
+      .loading-screen .dialog .message .normal {
+        width: 300px; }
+    .loading-screen .dialog .input-wrapper {
+      margin-top: 0px;
+      padding: 20px 40px 0; }
+    .loading-screen .dialog .error {
+      color: #F44336;
+      margin: 0;
+      padding: 10px 40px 40px; }
 
 .settings {
   height: 100%; }
