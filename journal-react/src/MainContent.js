@@ -237,8 +237,8 @@ export default class MainContent extends Component {
 
     isShowingBulbEditor: false,
 
-    mapCenter : null,
-    mapVersion: 0,
+    bulbMapCenter: null,
+    mapVersion   : 0,
   };
 
   data = [];
@@ -270,7 +270,10 @@ export default class MainContent extends Component {
 
   mapBound = null;
 
-  password = null;
+  password = "";
+  /* This function is to be called in the loading menu to process the password given by the user. */
+  redeemPassword = () => {
+  };
 
   constructor(props) {
     super(props);
@@ -305,7 +308,6 @@ export default class MainContent extends Component {
     this.handleMissingImages = this.handleMissingImages.bind(this);
     this.handleBoundChange = this.handleBoundChange.bind(this);
     this.handleSettingsSave = this.handleSettingsSave.bind(this);
-    this.handlePasswordFromUser = this.handlePasswordFromUser.bind(this);
     this.applySettings = this.applySettings.bind(this);
     this.encryptData = this.encryptData.bind(this);
     this.decryptData = this.decryptData.bind(this);
@@ -367,8 +369,22 @@ export default class MainContent extends Component {
         .then(content => {
           // Now, we try to decrypt it
           return new Promise(res => {
-            if (this.handleNewContent(content, true)) {
+            if (this.handleNewContent(content)) {
               res();
+            }
+
+            // Set the way to use the password
+            this.redeemPassword = password => {
+              this.password = password;
+
+              if (this.handleNewContent(content)) {
+                // Matches!
+                res();
+              } else {
+                this.setState({
+                  loadingPrompt: "Password does not work",
+                });
+              }
             }
 
             // Prompt the user for a password
@@ -377,23 +393,6 @@ export default class MainContent extends Component {
               loadingPromptRequiringPassword: true,
             });
 
-            let oldPassword = this.password,
-                interval = setInterval(() => {
-                  if (this.password !== oldPassword) {
-                    // We have a new password
-                    oldPassword = this.password;
-
-                    if (this.handleNewContent(content, true)) {
-                      // Matches!
-                      clearInterval(interval);
-                      res();
-                    } else {
-                      this.setState({
-                        loadingPrompt: "Password does not work",
-                      });
-                    }
-                  }
-                }, 1000);
           })
         })
         .then(() => {
@@ -684,11 +683,10 @@ export default class MainContent extends Component {
    * Handles new content fetched directly from server, given an optional
    * password
    * @param raw
-   * @param isEncrypted - if the programs needs to decrypt it
    * @return boolean - true if handle is successful, false otherwise (e.g.
    *     wrong password)
    */
-  handleNewContent(raw, isEncrypted) {
+  handleNewContent(raw) {
     // raw = '2' + JSON.stringify(TestData.data);
     if (raw) {
 
@@ -703,11 +701,7 @@ export default class MainContent extends Component {
         let parsedData = JSON.parse(raw);
 
         if (typeof parsedData.data === "string") {
-          if (isEncrypted) {
-            this.data = this.decryptData(parsedData.data);
-          } else {
-            this.data = JSON.parse(parsedData.data);
-          }
+          this.data = this.decryptData(parsedData.data);
         } else {
           this.data = parsedData.data;
         }
@@ -717,7 +711,9 @@ export default class MainContent extends Component {
           return false;
         }
 
-        settings = Object.assign(settings, parsedData.settings);
+        settings = Object.assign(settings,
+            parsedData.settings,
+            {password: this.password});
         this.applySettings(settings);
       }
 
@@ -923,7 +919,7 @@ export default class MainContent extends Component {
 
   handleBulbLocationClick(place) {
     this.setState({
-      mapCenter          : place,
+      bulbMapCenter      : place,
       mapVersion         : new Date().getTime(),
       isDisplayingMapView: true,
     });
@@ -1008,20 +1004,21 @@ export default class MainContent extends Component {
   }
 
   handleSettingsSave(settings) {
-    this.password = settings.password;
-    this.setState({
-      settings: {
-        mapCenter: settings.bulbMapCenter,
-      },
-    }, () => {
-      this.backupAndUploadData();
-    });
+    return new Promise(res => {
+      this.password = settings.password;
+      this.setState({
+        settings: {
+          bulbMapCenter: settings.bulbMapCenter,
+        },
+      }, () => {
+        this.backupAndUploadData()
+            .then(() => {
+              res();
+            });
+      });
 
-    // R.notify(this.notificationSystem, "Saved");
-  }
-
-  handlePasswordFromUser(password) {
-    this.password = password;
+      // R.notify(this.notificationSystem, "Saved");
+    })
   }
 
   /**
@@ -1034,7 +1031,7 @@ export default class MainContent extends Component {
 
     // Bulb map center
     state.mapVersion = new Date().getTime();
-    state.mapCenter = settings.bulbMapCenter;
+    state.bulbMapCenter = settings.bulbMapCenter;
 
     this.setState(R.copy(state));
   }
@@ -1063,14 +1060,14 @@ export default class MainContent extends Component {
    *     `null` if the password is invalid
    */
   decryptData(encrypted) {
-    let decrypted = encrypted;
-    if (this.password) {
-      let bytes = CryptoJS.AES.decrypt(encrypted, this.password);
-      decrypted = bytes.toString(CryptoJS.enc.Utf8);
-    }
-
-    // Try to conver to JSON
+    // Try to convert to JSON
     try {
+      let decrypted = encrypted;
+      if (this.password) {
+        let bytes = CryptoJS.AES.decrypt(encrypted, this.password);
+        decrypted = bytes.toString(CryptoJS.enc.Utf8);
+      }
+
       var o = JSON.parse(decrypted);
 
       // Handle non-exception-throwing cases:
@@ -1112,7 +1109,7 @@ export default class MainContent extends Component {
         .then(() => OneDriveManager.getImages(this.year))
         .then(images => {
           this.handleNewImageMap(images);
-          this.handleNewContent(dataString, false);
+          this.handleNewContent(dataString);
 
           this.setState({
             data   : data,
@@ -1432,7 +1429,7 @@ export default class MainContent extends Component {
                         data={this.bulbList}
                         contentStyle={this.contentStyle}
                         onBulbClick={this.handleBulbClick}
-                        center={this.state.mapCenter}
+                        center={this.state.bulbMapCenter}
                         version={this.state.mapVersion}
                         onBoundChange={this.handleBoundChange}
                     />
@@ -1472,7 +1469,7 @@ export default class MainContent extends Component {
           </main>
           <LoadingScreen title={this.state.loadingPrompt}
                          requirePassword={this.state.loadingPromptRequiringPassword}
-                         handlePassword={this.handlePasswordFromUser}
+                         handlePassword={this.redeemPassword}
                          progress={this.state.loadingProgress}/>
         </div>
     );

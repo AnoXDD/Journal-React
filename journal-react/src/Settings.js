@@ -90,11 +90,11 @@ export default class Settings extends Component {
       isEmptyingQueueFolder : false,
       isSaving              : false,
 
-      password       : "",
-      passwordConfirm: "",
+      password       : null,
+      passwordConfirm: null,
 
-      mapCenterLatitude : NaN,
-      mapCenterLongitude: NaN,
+      bulbMapCenterLatitude : NaN,
+      bulbMapCenterLongitude: NaN,
     };
 
     this.handleMissingImages = this.handleMissingImages.bind(this);
@@ -133,27 +133,24 @@ export default class Settings extends Component {
 
   handleLatitudeChange(e) {
     this.setState({
-      mapCenterLatitude: parseFloat(e.target.value, 10),
+      bulbMapCenterLatitude: parseFloat(e.target.value, 10),
     });
   }
 
   handleLongitudeChange(e) {
     this.setState({
-      mapCenterLongitude: parseFloat(e.target.value, 10),
+      bulbMapCenterLongitude: parseFloat(e.target.value, 10),
     });
   }
 
   handleSetDefaultLocationClick() {
     navigator.geolocation.getCurrentPosition(pos => {
-      let data = R.copy(this.props.data),
-          crd = pos.coords;
+      let crd = pos.coords;
 
-      data.bulbMapCenter = {
-        latitude : crd.latitude,
-        longitude: crd.longitude,
-      };
-
-      this.props.onChange(data);
+      this.setState({
+        bulbMapCenterLatitude : crd.latitude,
+        bulbMapCenterLongitude: crd.longitude,
+      });
     }, err => {
       console.error(`ERROR(${err.code}): ${err.message}`);
 
@@ -179,22 +176,27 @@ export default class Settings extends Component {
     return {
       password     : this.state.password,
       bulbMapCenter: {
-        latitude : isNaN(this.state.mapCenterLatitude) ? this.props.bulbMapCenter.latitude : this.state.latitude,
-        longitude: isNaN(this.state.mapCenterLongitude) ? this.props.bulbMapCenter.longitude : this.state.longitude,
+        latitude : isNaN(this.state.bulbMapCenterLatitude) ?
+            this.props.data.bulbMapCenter.latitude : this.state.bulbMapCenterLatitude,
+        longitude: isNaN(this.state.bulbMapCenterLongitude) ?
+            this.props.data.bulbMapCenter.longitude : this.state.bulbMapCenterLongitude,
       },
     };
   }
 
   handleSave() {
+    this.setState({
+      isSaving: true,
+    });
+
     if (!this.validateSettings()) {
+      this.setState({
+        isSaving: false,
+      });
       return;
     }
 
     let data = this.generateSettingsData();
-
-    this.setState({
-      isSaving: true,
-    });
 
     this.props.onSave(data)
         .then(() => {
@@ -316,7 +318,7 @@ export default class Settings extends Component {
                       <p className="input-label">Latitude</p>
                       <div className="flex-center">
                         <DigitInput className="normal underlined"
-                                    value={this.props.data.bulbMapCenter.latitude || this.state.mapCenterLatitude}
+                                    value={isNaN(this.state.bulbMapCenterLatitude) ? this.props.data.bulbMapCenter.latitude : this.state.bulbMapCenterLatitude}
                                     min={-180}
                                     max={180}
                                     onChange={this.handleLatitudeChange}
@@ -325,7 +327,7 @@ export default class Settings extends Component {
                       <p className="input-label">Longitude</p>
                       <div className="flex-center">
                         <DigitInput className="normal underlined"
-                                    value={this.props.data.bulbMapCenter.longitude || this.state.mapCenterLongitude}
+                                    value={isNaN(this.state.bulbMapCenterLongitude) ? this.props.data.bulbMapCenter.longitude : this.state.bulbMapCenterLongitude}
                                     min={-90}
                                     max={90}
                                     onChange={this.handleLongitudeChange}
@@ -346,7 +348,7 @@ export default class Settings extends Component {
                     </FormContent>
                     <FormContent
                         subTitle
-                        title="By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. This means that the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so you are responsible for remembering the password: if you lost it, there is NO WAY to recover it">
+                        title="By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. This means that the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so YOU ARE RESPONSIBLE FOR REMEMBERING THE PASSWORD: IF YOU LOST IT, THERE IS NO WAY TO RETRIEVE IT">
                       <span></span>
                     </FormContent>
                     <FormContent>
@@ -355,7 +357,7 @@ export default class Settings extends Component {
                         <input
                             className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
                             type="password"
-                            value={this.props.data.password || this.state.password}
+                            value={this.state.password === null ? this.props.data.password : this.state.password}
                             onChange={e => this.setState({password: e.target.value})}
                         />
                       </div>
@@ -366,7 +368,7 @@ export default class Settings extends Component {
                         <input
                             className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
                             type="password"
-                            value={this.props.data.password || this.state.passwordConfirm}
+                            value={this.state.passwordConfirm === null ? this.props.data.password : this.state.passwordConfirm}
                             onChange={e => this.setState({passwordConfirm: e.target.value})}
                         />
                       </div>

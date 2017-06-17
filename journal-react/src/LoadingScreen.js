@@ -11,6 +11,8 @@ import Prompt from "./Prompt";
 
 export default class LoadingScreen extends Component {
 
+  input = null;
+
   constructor(props) {
     super(props);
 
@@ -25,6 +27,13 @@ export default class LoadingScreen extends Component {
 
   shouldComponenUpdate(nextProps) {
     return nextProps.title !== "" || this.props.title !== "";
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.requirePassword && !prevProps.requirePassword) {
+      // The new loading screen is prompting for password
+      this.input.focus();
+    }
   }
 
   handlePassword() {
@@ -62,31 +71,30 @@ export default class LoadingScreen extends Component {
           <Button className="dark" loading={true}>clear</Button>
           <div className="title">{this.props.title}</div>
           <ProgressBar progress={this.props.progress}/>
-          {this.props.requirePassword ? (
-              <Prompt className="dim-bg flex-center bulb-prompt">
-                <div className="prompt-box shadow">
-                  <div className="dialog">
-                    <div className="title">Password required</div>
-                    <div className="message">Your data is protected with
-                      password. Please note that there is no way to retrieve
-                      your password, but you can try unlimited amount of
-                      times until it is a match
-                    </div>
-                    <div className="message input-wrapper flex-center">
-                      <input className="normal underlined"
-                             type="password"
-                             value={this.state.password}
-                             onChange={this.handleChange}
-                             onKeyDown={this.handleKeyDown}
-                      />
-                      <Button onClick={this.handlePassword}>lock_open</Button>
-                    </div>
-                    <div
-                        className="message error flex-center">{this.props.title}</div>
-                  </div>
+          <Prompt
+              className={`dim-bg flex-center bulb-prompt ${this.props.requirePassword ? "" : "hidden"}`}>
+            <div className="prompt-box shadow">
+              <div className="dialog">
+                <div className="title">Password required</div>
+                <div className="message">Your data is protected with
+                  password. Please note that there is no way to retrieve
+                  your password, but you can try unlimited amount of
+                  times until it is a match
                 </div>
-              </Prompt>
-          ) : null}
+                <div className="message input-wrapper flex-center">
+                  <input className="normal underlined"
+                         type="password"
+                         value={this.state.password}
+                         onChange={this.handleChange}
+                         onKeyDown={this.handleKeyDown}
+                         ref={ref => this.input = ref}
+                  />
+                </div>
+                <div
+                    className="message error flex-center">{this.props.title}</div>
+              </div>
+            </div>
+          </Prompt>
         </div>
     );
   }

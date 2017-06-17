@@ -1893,6 +1893,7 @@ nav.nav {
 .settings {
   height: 100%;
   flex-direction: column;
+  overflow: hidden;
 
   .settings-wrapper {
     width: 800px;
@@ -1949,14 +1950,6 @@ nav.nav {
       width: 200px;
     }
   }
-
-  //.btn {
-  //  color: $cp;
-  //
-  //  &:hover {
-  //    background: #eee;
-  //  }
-  //}
 }
 
 .label-btn {
