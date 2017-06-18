@@ -1009,6 +1009,7 @@ export default class MainContent extends Component {
       this.setState({
         settings: {
           bulbMapCenter: settings.bulbMapCenter,
+          password     : settings.password,
         },
       }, () => {
         this.backupAndUploadData()

@@ -8,6 +8,7 @@ import React, {Component} from "react";
 
 import Button from "./Button";
 import OneDriveManager from "./OneDriveManager";
+import Toggle from "./Toggle";
 
 import R from "./R";
 
@@ -15,7 +16,7 @@ import R from "./R";
 class FormContent extends Component {
   render() {
     return (
-        <div className="form-content">
+        <div className={`form-content ${this.props.className || ""}`}>
           <div
               className={`description ${this.props.subTitle ? "sub-title" : ""}`}>{this.props.title}</div>
           <div className="btns">{this.props.children}</div>
@@ -74,6 +75,7 @@ class DigitInput extends Component {
   render() {
     return (
         <input type="text" className={this.props.className || ""}
+               name={this.props.name}
                value={this.props.value}
                onChange={this.handleChange}/>
     )
@@ -92,25 +94,30 @@ export default class Settings extends Component {
 
       password       : null,
       passwordConfirm: null,
+      passwordEnabled: undefined,
 
       bulbMapCenterLatitude : NaN,
       bulbMapCenterLongitude: NaN,
     };
 
     this.handleMissingImages = this.handleMissingImages.bind(this);
-    this.handleLatitudeChange = this.handleLatitudeChange.bind(this);
-    this.handleLongitudeChange = this.handleLongitudeChange.bind(this);
+    this.handleNumberInputChange = this.handleNumberInputChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleSetDefaultLocationClick = this.handleSetDefaultLocationClick.bind(
         this);
     this.handleSave = this.handleSave.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
+    this.handleTogglePasswordEnabled = this.handleTogglePasswordEnabled.bind(
+        this);
     this.validateSettings = this.validateSettings.bind(this);
     this.generateSettingsData = this.generateSettingsData.bind(this);
     this.emptyQueueFolder = this.emptyQueueFolder.bind(this);
   }
 
-  shouldComponentUpdate(nextProps) {
-    return !(this.props.hidden && nextProps.hidden);
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.data.password !== this.props.data.password) {
+      nextState.passwordEnabled = !!nextProps.data.password;
+    }
   }
 
   handleMissingImages() {
@@ -131,15 +138,16 @@ export default class Settings extends Component {
         });
   }
 
-  handleLatitudeChange(e) {
+
+  handleNumberInputChange(e) {
     this.setState({
-      bulbMapCenterLatitude: parseFloat(e.target.value, 10),
+      [e.target.name]: parseFloat(e.target.value, 10),
     });
   }
 
-  handleLongitudeChange(e) {
+  handleChange(e) {
     this.setState({
-      bulbMapCenterLongitude: parseFloat(e.target.value, 10),
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -173,8 +181,15 @@ export default class Settings extends Component {
   }
 
   generateSettingsData() {
+    let password = "";
+    if (typeof this.state.passwordEnabled === "undefined") {
+      password = this.props.data.password;
+    } else if (this.state.passwordEnabled) {
+      password = this.state.password;
+    }
+
     return {
-      password     : this.state.password,
+      password     : password,
       bulbMapCenter: {
         latitude : isNaN(this.state.bulbMapCenterLatitude) ?
             this.props.data.bulbMapCenter.latitude : this.state.bulbMapCenterLatitude,
@@ -211,6 +226,20 @@ export default class Settings extends Component {
             isSaving: false,
           });
         });
+  }
+
+  handleTogglePasswordEnabled() {
+    let enabled = typeof this.state.passwordEnabled === "undefined" ? this.props.data.password : this.state.passwordEnabled;
+
+    if (!enabled) {
+      this.setState({
+        passwordEnabled: true,
+      });
+    } else {
+      this.setState({
+        passwordEnabled: false,
+      });
+    }
   }
 
   emptyQueueFolder() {
@@ -318,19 +347,21 @@ export default class Settings extends Component {
                       <p className="input-label">Latitude</p>
                       <div className="flex-center">
                         <DigitInput className="normal underlined"
+                                    name="bulbMapCenterLatitude"
                                     value={isNaN(this.state.bulbMapCenterLatitude) ? this.props.data.bulbMapCenter.latitude : this.state.bulbMapCenterLatitude}
                                     min={-180}
                                     max={180}
-                                    onChange={this.handleLatitudeChange}
+                                    onChange={this.handleNumberInputChange}
                         />
                       </div>
                       <p className="input-label">Longitude</p>
                       <div className="flex-center">
                         <DigitInput className="normal underlined"
+                                    name="bulbMapCenterLongitude"
                                     value={isNaN(this.state.bulbMapCenterLongitude) ? this.props.data.bulbMapCenter.longitude : this.state.bulbMapCenterLongitude}
                                     min={-90}
                                     max={90}
-                                    onChange={this.handleLongitudeChange}
+                                    onChange={this.handleNumberInputChange}
                         />
                       </div>
                     </FormContent>
@@ -344,32 +375,42 @@ export default class Settings extends Component {
                   <div className="form-contents">
                     <FormContent
                         title="Encrypt your data with password">
-                      <span></span>
+                      <Toggle onClick={this.handleTogglePasswordEnabled}
+                              isChanging={this.state.passwordEnabled}
+                              firstIcon="check_box_outline_blank"
+                              secondIcon="check_box"/>
                     </FormContent>
                     <FormContent
                         subTitle
+                        className={(typeof this.state.passwordEnabled === "undefined" ? this.props.data.password : this.state.passwordEnabled) ? "" : "hidden"}
                         title="By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. This means that the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so YOU ARE RESPONSIBLE FOR REMEMBERING THE PASSWORD: IF YOU LOST IT, THERE IS NO WAY TO RETRIEVE IT">
                       <span></span>
                     </FormContent>
-                    <FormContent>
+                    <FormContent
+                        className={(typeof this.state.passwordEnabled === "undefined" ? this.props.data.password : this.state.passwordEnabled) ? "" : "hidden"}
+                    >
                       <p className="input-label">Password</p>
                       <div className="flex-center">
                         <input
                             className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
+                            name="password"
                             type="password"
                             value={this.state.password === null ? this.props.data.password : this.state.password}
-                            onChange={e => this.setState({password: e.target.value})}
+                            onChange={this.handleChange}
                         />
                       </div>
                     </FormContent>
-                    <FormContent>
+                    <FormContent
+                        className={(typeof this.state.passwordEnabled === "undefined" ? this.props.data.password : this.state.passwordEnabled) ? "" : "hidden"}
+                    >
                       <p className="input-label">Confirm password</p>
                       <div className="flex-center">
                         <input
                             className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
+                            name="passwordConfirm"
                             type="password"
                             value={this.state.passwordConfirm === null ? this.props.data.password : this.state.passwordConfirm}
-                            onChange={e => this.setState({passwordConfirm: e.target.value})}
+                            onChange={this.handleChange}
                         />
                       </div>
                     </FormContent>
