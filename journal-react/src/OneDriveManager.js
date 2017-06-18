@@ -11,38 +11,41 @@ const MicrosoftGraph = require("@microsoft/microsoft-graph-client");
 
 const APPROOT = "Apps/Trak/",
     TOP_LIST = 1000,
-    REDIRECT_URI = "https://anoxdd.github.io/"
-// const client_id = "00000000441D0A11",
-// scope = encodeURIComponent("wl.signin wl.offline_access onedrive.readwrite"),
-// redirect_uri = encodeURIComponent(
-//     "https://anoxdd.github.io");
-//
-// function popup(url) {
-//   var width = 525,
-//       height = 525,
-//       screenX = window.screenX,
-//       screenY = window.screenY,
-//       outerWidth = window.outerWidth,
-//       outerHeight = window.outerHeight;
-//
-//   var left = screenX + Math.max(outerWidth - width, 0) / 2;
-//   var top = screenY + Math.max(outerHeight - height, 0) / 2;
-//
-//   var features = [
-//     "width=" + width,
-//     "height=" + height,
-//     "top=" + top,
-//     "left=" + left,
-//     "status=no",
-//     "resizable=yes",
-//     "toolbar=no",
-//     "menubar=no",
-//     "scrollbars=yes"
-//   ];
-//   var popup = window.open(url, "oauth", features.join(","));
-//
-//   popup.focus();
-// }
+    REDIRECT_URI = "https://anoxdd.github.io/";
+
+const client_id = "00000000441D0A11",
+    scope = encodeURIComponent("wl.signin wl.offline_access onedrive.readwrite"),
+    redirect_uri = encodeURIComponent(
+        "https://anoxdd.github.io");
+
+function popup(url) {
+  var width = 525,
+      height = 525,
+      screenX = window.screenX,
+      screenY = window.screenY,
+      outerWidth = window.outerWidth,
+      outerHeight = window.outerHeight;
+
+  var left = screenX + Math.max(outerWidth - width, 0) / 2;
+  var top = screenY + Math.max(outerHeight - height, 0) / 2;
+
+  var features = [
+    "width=" + width,
+    "height=" + height,
+    "top=" + top,
+    "left=" + left,
+    "status=no",
+    "resizable=yes",
+    "toolbar=no",
+    "menubar=no",
+    "scrollbars=yes"
+  ];
+  var popup = window.open(url, "oauth", features.join(","));
+
+  popup.focus();
+
+  return popup;
+}
 
 const DATA_NAME = "data.js";
 
@@ -90,15 +93,28 @@ export default class OneDriveManager {
   }
 
   static getCurrentToken() {
-    // todo use the real token
     return new Promise((resolve, reject) => {
       let cookie = this.getTokenFromCookie();
 
       if (cookie) {
         resolve(cookie);
       } else {
-        // popup(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${client_id}&scope=${scope}&response_type=code&redirect_uri=${redirect_uri}`);
-        reject("Currently testing in Beta");
+        let popup = popup(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${client_id}&scope=${scope}&response_type=code&redirect_uri=${redirect_uri}`);
+
+        // The pop should take care of setting the access token, so we just
+        // check if the authentication has completed every second
+        let id = setInterval(() => {
+          let cookie = this.getTokenFromCookie();
+
+          if (cookie) {
+            clearInterval(id);
+            resolve(cookie);
+          } else if (popup.closed) {
+            clearInterval(id);
+            reject(
+                "Someone has closed the window before authentication completes");
+          }
+        }, 1000);
       }
     })
   }
