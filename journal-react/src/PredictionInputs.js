@@ -24,41 +24,43 @@ export default class PredictionInputs extends Component {
   }
 
   handleKeyDown(event, prediction) {
-    const onEnter = (event) => {
-      let newTag = event.target.value.trim();
+    if (!this.props.disabled) {
+      const onEnter = (event) => {
+        let newTag = event.target.value.trim();
 
-      // Only add it when not found
-      if (newTag.length && this.props.tags.indexOf(newTag) === -1) {
-        this.setState({
-          tagPrediction: "",
-        });
+        // Only add it when not found
+        if (newTag.length && this.props.tags.indexOf(newTag) === -1) {
+          this.setState({
+            tagPrediction: "",
+          });
 
-        // Submit the changed result
-        this.props.onChange([...this.props.tags, newTag]);
+          // Submit the changed result
+          this.props.onChange([...this.props.tags, newTag]);
+        }
+
+        event.target.value = "";
       }
 
-      event.target.value = "";
-    }
+      if (event.key === "Tab") {
 
-    if (event.key === "Tab") {
+        event.preventDefault();
+        if (event.target.value === prediction) {
+          onEnter(event);
+        } else {
+          event.target.value = prediction;
+        }
 
-      event.preventDefault();
-      if (event.target.value === prediction) {
+      } else if (event.key === "Enter") {
         onEnter(event);
-      } else {
-        event.target.value = prediction;
-      }
 
-    } else if (event.key === "Enter") {
-      onEnter(event);
+      } else if (event.key === "Backspace") {
 
-    } else if (event.key === "Backspace") {
+        if (!event.target.value && this.props.tags.length) {
+          let newTags = [...this.props.tags];
+          event.target.value = (newTags.pop() || "") + " ";
 
-      if (!event.target.value && this.props.tags.length) {
-        let newTags = [...this.props.tags];
-        event.target.value = (newTags.pop() || "") + " ";
-
-        this.props.onChange(newTags);
+          this.props.onChange(newTags);
+        }
       }
     }
   }
@@ -69,7 +71,9 @@ export default class PredictionInputs extends Component {
           <span
               key={`tag-${tag}`}
               className="tag"
-              onClick={(event) => {this.removeTagAtIndex(index);}}
+              onClick={(event) => {
+                this.removeTagAtIndex(index);
+              }}
           >{tag}</span>
       );
     });

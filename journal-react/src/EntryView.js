@@ -331,7 +331,8 @@ class EntryList extends Component {
                                style={this.generateBulbProp(bulb, i)}
                                bulb={bulb}
                                time={this.generateHumanFormTimeFromArticle(bulb.time)}
-                               onLocationClick={() => this.props.onLocationClick(bulb.place)}
+                               onLocationClick={() => this.props.onLocationClick(
+                                   bulb.place)}
                                onPhotoClick={() => this.handlePhotoClick(bulb.images[0])}
                                onRemoveClick={() => this.props.onBulbRemove(i)}
                   />
@@ -358,7 +359,11 @@ class EntryList extends Component {
               if (this.currentImage === imageName) {
                 // Update the viewer with new image
                 let image = new window.Image();
-                image.onload = () => this.props.onBulbClick(mapElem.url);
+                image.onload = () => {
+                  if (this.currentImage === imageName) {
+                    this.props.onBulbClick(mapElem.url);
+                  }
+                };
                 image.src = mapElem.url;
               }
             });

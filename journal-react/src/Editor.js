@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {
-    SortableContainer,
-    SortableElement,
-    arrayMove
+  SortableContainer,
+  SortableElement,
+  arrayMove
 } from 'react-sortable-hoc';
 import AutosizeInput from "react-input-autosize";
 
@@ -42,7 +42,9 @@ class ExtraAttachmentsAddProp extends Component {
                 type="text"
                 className={`new-key normal underlined ${isEditing ? "" : "disabled"}`}
                 value={this.state.key}
-                onChange={(e) => {this.setState({key: e.target.value});}}
+                onChange={(e) => {
+                  this.setState({key: e.target.value});
+                }}
                 disabled={!isEditing}
             />
             <span className="text">:</span>
@@ -50,9 +52,15 @@ class ExtraAttachmentsAddProp extends Component {
                 type="text"
                 className={`normal underlined ${isEditing ? "" : "disabled"}`}
                 value={this.state.value}
-                onChange={(e) => {this.setState({value: e.target.value});}}
+                onChange={(e) => {
+                  this.setState({value: e.target.value});
+                }}
                 disabled={!isEditing}
-                onKeyDown={(e) => {if (e.key === "Enter") {onClickAdd();}}}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    onClickAdd();
+                  }
+                }}
             />
             <Button className={isEditing ? "" : "transparent"}
                     onClick={onClickAdd}>
@@ -87,7 +95,11 @@ class ExtraAttachments extends Component {
                           <input
                               type="text"
                               className={`normal underlined ${this.props.isEditing ? "" : "disabled"}`}
-                              onBlur={(e) => {this.props.onChange(index, prop, e.target.value);}}
+                              onBlur={(e) => {
+                                this.props.onChange(index,
+                                    prop,
+                                    e.target.value);
+                              }}
                               disabled={!this.props.isEditing}
                               defaultValue={this.state.others[index][prop] || ""}/>
                           { removePanel(index, prop) }
@@ -115,7 +127,11 @@ class ExtraAttachments extends Component {
                             type="text"
                             className={`type normal ${this.props.isEditing ? "" : "disabled"}`}
                             value={other.type}
-                            onChange={(e) => {this.props.onChange(index, "type", e.target.value);}}
+                            onChange={(e) => {
+                              this.props.onChange(index,
+                                  "type",
+                                  e.target.value);
+                            }}
                             disabled={!this.props.isEditing}
                         />
                         { this.props.removePanel(index) }
@@ -173,7 +189,11 @@ class PhotoPreview extends Component {
               if (this.currentImage === imageName) {
                 // Update the viewer with new image
                 let image = new window.Image();
-                image.onload = () => this.setState({src: mapElem.url});
+                image.onload = () => {
+                  if (this.currentImage === imageName) {
+                    this.setState({src: mapElem.url});
+                  }
+                };
                 image.src = mapElem.url;
               }
             });
@@ -204,7 +224,7 @@ class PhotoPreview extends Component {
               <div className={`photos ${isEditing ? "show-all" : ""} `}>
                 {photos.map(photo =>
                     <div key={`photo-preview-${photo.id}`}
-                         className={`photo ${isSelected(photo.status) ? "selected": ""} `}
+                         className={`photo ${isSelected(photo.status) ? "selected" : ""} `}
                          onMouseOver={() => this.handleMouseOver(photo.name)}
                     >
                       <img src={photo.src} alt="" height="90px"/>
@@ -220,8 +240,10 @@ class PhotoPreview extends Component {
 
 const SortableItem = SortableElement(({item, status, i, isSelected, handleClick, loading}) =>
     <div
-        className={`photo ${isSelected(status) ? "selected" : ""} ${loading ? "loading" :""}`}
-        onClick={() => {handleClick(i);}}
+        className={`photo ${isSelected(status) ? "selected" : ""} ${loading ? "loading" : ""}`}
+        onClick={() => {
+          handleClick(i);
+        }}
     >
       <img src={item.src}
            alt=""
@@ -754,7 +776,9 @@ class Editor extends Component {
     return (
         <div className="more-info-wrapper">
           <Button className="icon-wrapper"
-                  onClick={() => { this.setState(state); }}>
+                  onClick={() => {
+                    this.setState(state);
+                  }}>
             add_circle_outline
           </Button>
         </div>
@@ -884,10 +908,13 @@ class Editor extends Component {
         return (
             <SortableList items={this.state.photos}
                           isEditing={this.state.isEditing}
-                          isSelected={status => status === this.PHOTO_STATUS.SELECTED}
+                          isSelected={
+                            status => status === this.PHOTO_STATUS.SELECTED}
                           photosInTransfer={this.state.photosInTransfer}
                           distance={5}
-                          handleClick={(i) => {this.togglePhotoStatus(i)}}
+                          handleClick={(i) => {
+                            this.togglePhotoStatus(i)
+                          }}
                           axis="xy"
                           onSortEnd={this.onPhotoSortEnd}/>
         );
@@ -1340,7 +1367,10 @@ class Editor extends Component {
           <div
               className={`text-body-wrapper ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "transparent" : ""}`}>
             <div className="text-body-wrapper-2"
-                 style={{padding: `0 ${50-this.state.bodyWidth/2}%`, width: `${this.state.bodyWidth}%`}}
+                 style={{
+                   padding: `0 ${50 - this.state.bodyWidth / 2}%`,
+                   width  : `${this.state.bodyWidth}%`
+                 }}
             >
               <NoScrollArea
                   backgroundColor={`${this.state.isDarkMode ? "#212121" : "white"}`}>
@@ -1364,6 +1394,7 @@ class Editor extends Component {
                     tagPrediction={this.props.tagPrediction}
                     tags={this.state.tags}
                     onChange={tags => this.setState({tags: tags})}
+                    disabled={!this.state.isEditing}
                 />
               </div>
               <div className="flex-last-item"></div>
@@ -1407,7 +1438,9 @@ class Editor extends Component {
                         <Toggle
                             key={tag[0]}
                             className={`${tag[0]} btn ${this.props.className || ""} ${this.state[tag[0]].length ? "underlined" : ""} ${this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
-                            onClick={() => { this.setIsDisplaying(this.DISPLAYING[tag[0].toUpperCase()]) }}
+                            onClick={() => {
+                              this.setIsDisplaying(this.DISPLAYING[tag[0].toUpperCase()])
+                            }}
                             firstIcon={tag[1]}
                             secondIcon="add_circle_outline"
                             isChangingOnHover={true}
