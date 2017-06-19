@@ -10,13 +10,12 @@
 const MicrosoftGraph = require("@microsoft/microsoft-graph-client");
 
 const APPROOT = "Apps/Trak/",
-    TOP_LIST = 1000,
-    REDIRECT_URI = "https://anoxdd.github.io/";
+    TOP_LIST = 1000;
 
 const client_id = "00000000441D0A11",
-    scope = encodeURIComponent("wl.signin wl.offline_access onedrive.readwrite"),
+    scope = encodeURIComponent("files.readwrite"),
     redirect_uri = encodeURIComponent(
-        "https://anoxdd.github.io");
+        "https://trak.anoxic.me/callback.html");
 
 function popup(url) {
   var width = 525,
@@ -99,7 +98,7 @@ export default class OneDriveManager {
       if (cookie) {
         resolve(cookie);
       } else {
-        let popup = popup(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${client_id}&scope=${scope}&response_type=code&redirect_uri=${redirect_uri}`);
+        let p = popup(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${client_id}&scope=${scope}&response_type=token&redirect_uri=${redirect_uri}`);
 
         // The pop should take care of setting the access token, so we just
         // check if the authentication has completed every second
@@ -109,7 +108,7 @@ export default class OneDriveManager {
           if (cookie) {
             clearInterval(id);
             resolve(cookie);
-          } else if (popup.closed) {
+          } else if (p.closed) {
             clearInterval(id);
             reject(
                 "Someone has closed the window before authentication completes");
@@ -271,11 +270,11 @@ export default class OneDriveManager {
    */
   static getChildrenByPath(path) {
     return this.getClient().then(client => {
-          return client.api(`me${this.getPathHeader(path)}:/children`)
-              .select("id", "name")
-              .top(TOP_LIST)
-              .get();
-        })
+      return client.api(`me${this.getPathHeader(path)}:/children`)
+          .select("id", "name")
+          .top(TOP_LIST)
+          .get();
+    })
         .then(res => this.getFullList(res))
         .then(res => res.value);
   }
@@ -288,11 +287,11 @@ export default class OneDriveManager {
    */
   static getChildrenById(id) {
     return this.getClient().then(client => {
-          return client.api(`me/drive/items/${id}/children`)
-              .select("id", "name", "folder")
-              .top(TOP_LIST)
-              .get();
-        })
+      return client.api(`me/drive/items/${id}/children`)
+          .select("id", "name", "folder")
+          .top(TOP_LIST)
+          .get();
+    })
         .then(res => this.getFullList(res))
         .then(res => res.value);
   }
@@ -305,12 +304,12 @@ export default class OneDriveManager {
    */
   static getChildrenByPathWithThumbnails(path) {
     return this.getClient().then(client => {
-          return client.api(`me${this.getPathHeader(path)}:/children`)
-              .select("id", "name")
-              .query({"expand": "thumbnails"})
-              .top(TOP_LIST)
-              .get();
-        })
+      return client.api(`me${this.getPathHeader(path)}:/children`)
+          .select("id", "name")
+          .query({"expand": "thumbnails"})
+          .top(TOP_LIST)
+          .get();
+    })
         .then(res => this.getFullList(res))
         .then(res => res.value.map(val => {
           if (val.thumbnails && val.thumbnails[0] && val.thumbnails[0].large) {
@@ -762,12 +761,12 @@ export default class OneDriveManager {
   static getLatestBackupData(year) {
     return new Promise(resolve => {
       this.getClient().then(client => {
-            return client.api(`me${this.getPathHeader(`core/${year}`)}:/children`)
-                .select("id", "name")
-                .orderby("lastModifiedDateTime")
-                .top(2)
-                .get();
-          })
+        return client.api(`me${this.getPathHeader(`core/${year}`)}:/children`)
+            .select("id", "name")
+            .orderby("lastModifiedDateTime")
+            .top(2)
+            .get();
+      })
           .then(res => res.value)
           .then(res => {
             if (res.length < 2) {
@@ -894,7 +893,7 @@ export default class OneDriveManager {
           console.log(`And the contents are: ${bulbs.map(bulb => bulb.content)
               .join(" ")}, and expect "1 2 3 4" or something like that`);
           console.log("Then we try to remove them");
-          return this.removeItemsById(bulbs.map(bulb=>bulb.id));
+          return this.removeItemsById(bulbs.map(bulb => bulb.id));
         })
         .then(() => {
           console.log("Let's see if everything is removed");
