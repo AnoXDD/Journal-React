@@ -1398,7 +1398,6 @@ class Editor extends Component {
                 />
               </div>
               <div className="flex-last-item"></div>
-              <Button>access_time</Button>
               <span
                   className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
               <Toggle
