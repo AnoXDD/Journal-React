@@ -6,13 +6,13 @@
 
 import React, {Component} from "react";
 import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    Tooltip,
-    Legend,
-    ResponsiveContainer
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
 } from "recharts";
 
 import NoScrollArea from "./NoScrollArea";
@@ -20,6 +20,7 @@ import Button from "./Button";
 import Toggle from "./Toggle";
 import R from "./R";
 
+const KEYWORD_DELIMITOR = ",";
 
 class NewKeyword extends Component {
 
@@ -29,14 +30,23 @@ class NewKeyword extends Component {
 
   constructor(props) {
     super(props);
+
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
 
   handleKeyDown(e) {
     if (e.key === "Enter") {
-      this.props.onClick(this.state.value);
+      this.handleClick(e);
     }
+  }
+
+  handleClick(e) {
+    this.props.onClick(this.state.value);
+    this.setState({
+      value: 0,
+    });
   }
 
   render() {
@@ -46,7 +56,7 @@ class NewKeyword extends Component {
             <div
                 className="cell-keyword-wrapper flex-center">
               <Button className="dark narrow"
-                      tooltip="Add keyword"
+                      tooltip={`Add keyword, use comma(${KEYWORD_DELIMITOR}) to separate synonyms`}
                       onClick={() => this.props.onClick(this.state.value)}
               >add</Button>
               <input className="dark normal underlined"
@@ -66,7 +76,6 @@ export default class Chart extends Component {
   data = [];
   dataMonthChart = [];
   dataMonthTable = {};
-  dataReverse = [];
 
   /**
    * Records the original keyword on focus
@@ -146,7 +155,7 @@ export default class Chart extends Component {
     if (hiddenKeywordIndex === -1) {
       this.setState({keywords: keywords});
     } else {
-      let {hiddenKeywords}  = this.state;
+      let {hiddenKeywords} = this.state;
       hiddenKeywords.splice(hiddenKeywordIndex, 1);
 
       this.setState({
@@ -207,12 +216,17 @@ export default class Chart extends Component {
         this.dataMonthTable[keyword] = this.dataMonthTable[keyword] || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         // Test if this key needs to be re-calculated
         if (this.processedKeyWords.indexOf(keyword) === -1 || hasNewData) {
-          if ((data.title && data.title.indexOf(keyword) !== -1) ||
-              data.body.indexOf(keyword) !== -1) {
-            // This keyword is found
-            ++this.dataMonthTable[keyword][month];
-            ++this.dataMonthChart[month][keyword];
-            ++this.data[index][keyword];
+          let keywordArray = keyword.split(KEYWORD_DELIMITOR);
+
+          for (let k of keywordArray) {
+            if ((data.title && data.title.indexOf(k) !== -1) ||
+                data.body.indexOf(k) !== -1) {
+              // This keyword is found
+              ++this.dataMonthTable[keyword][month];
+              ++this.dataMonthChart[month][keyword];
+              ++this.data[index][keyword];
+              break;
+            }
           }
         }
       }
@@ -279,18 +293,23 @@ export default class Chart extends Component {
                                     className="cell-keyword-wrapper flex-center">
                                   <Toggle className="dark narrow"
                                           tooltip="Toggle visibility in the chart"
-                                          onClick={() => this.handleKeywordToggleVisibility(index)}
-                                          isChanging={this.state.hiddenKeywords.indexOf(keyword) !== -1}
+                                          onClick={() => this.handleKeywordToggleVisibility(
+                                              index)}
+                                          isChanging={this.state.hiddenKeywords.indexOf(
+                                              keyword) !== -1}
                                           firstIcon="check_box"
                                           secondIcon="check_box_outline_blank"/>
                                   <Button className="dark narrow"
                                           tooltip="Remove keyword"
-                                          onClick={() => this.handleKeywordRemove(index)}
+                                          onClick={() => this.handleKeywordRemove(
+                                              index)}
                                   >clear</Button>
                                   <input className="dark normal underlined"
                                          defaultValue={keyword}
-                                         onFocus={e => this.lastKeywordInput = e.target.value}
-                                         onBlur={e => this.handleKeywordBlur(e, index)}
+                                         onFocus={
+                                           e => this.lastKeywordInput = e.target.value}
+                                         onBlur={e => this.handleKeywordBlur(e,
+                                             index)}
                                   />
                                 </div>
                               </td>
