@@ -597,7 +597,7 @@ export default class MainContent extends Component {
               .then(image => {
                 uploadedImages.push({id: image.id, name: image.name});
                 onBulbFinish();
-              }, ()=> {
+              }, () => {
                 onBulbFinish();
               })
         } else {
@@ -692,7 +692,9 @@ export default class MainContent extends Component {
 
       let settings = R.copy(DEFAULT_SETTINGS);
 
-      if (raw[0] === '2') {
+      if (raw[0] === '[') {
+        this.data = upgradeDataFromVersion2To3(JSON.parse(raw));
+      } else if (raw[0] === '2') {
         this.data = upgradeDataFromVersion2To3(JSON.parse(raw.substr(1)));
       } else if (raw[0] === '3') {
         // todo remove this branch when released - this line is for debug only
@@ -1351,14 +1353,17 @@ export default class MainContent extends Component {
           <aside className="sidebar">
             <div className="create-btn">
               <Button className="accent" text="create"
-                      onClick={() => {this.setState({isShowingBulbEditor: true})}}>add</Button>
+                      onClick={() => {
+                        this.setState({isShowingBulbEditor: true})
+                      }}>add</Button>
             </div>
             <div className="other-btn">
               {BUTTONS.map(b =>
                   <Button key={b.text}
                           className={`${(this.state.enabledTabs & this.TAB[b.text]) || b.indent ? "" : "disabled" } ${b.className || `dark ${this.state.isDisplaying === this.TAB[b.text] ? "active" : ""}`} ${b.indent || ""}`}
                           text={b.text}
-                          onClick={b.onClick || (() => this.handleViewChange(this.TAB[b.text]))}
+                          onClick={b.onClick || (() => this.handleViewChange(
+                              this.TAB[b.text]))}
                   >{b.icon}</Button>
               )}
             </div>
@@ -1441,15 +1446,15 @@ export default class MainContent extends Component {
             <div
                 className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
               <Editor {...(R.copy(this.articleList[this.state.editArticleIndex]) || {newData: this.bulbEditorContent})}
-                  hidden={this.state.isDisplaying !== this.TAB.EDITOR}
-                  onPromptCancel={this.handlePromptCancel}
-                  imageMap={this.imageMap}
-                  version={this.editorVersion}
-                  tagPrediction={R.TAG_PREDICTION_DICTIONARY}
-                  onChange={this.handleArticleChange}
-                  onRefreshQueue={this.handleEditorRefreshQueue}
-                  year={this.year}
-                  oneDriveManager={OneDriveManager}
+                      hidden={this.state.isDisplaying !== this.TAB.EDITOR}
+                      onPromptCancel={this.handlePromptCancel}
+                      imageMap={this.imageMap}
+                      version={this.editorVersion}
+                      tagPrediction={R.TAG_PREDICTION_DICTIONARY}
+                      onChange={this.handleArticleChange}
+                      onRefreshQueue={this.handleEditorRefreshQueue}
+                      year={this.year}
+                      oneDriveManager={OneDriveManager}
               />
             </div>
             <div
