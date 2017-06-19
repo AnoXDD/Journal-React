@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trak Callback</title>
+</head>
+<body>
+<script>
+
+  function getAuthInfoFromUrl() {
+    if (window.location.hash) {
+      var authResponse = window.location.hash.substring(1);
+      var authInfo = JSON.parse(
+          "{\"" + authResponse.replace(/&/g, "\",\"")
+              .replace(/=/g, "\":\"") + "\"}",
+          function(key, value) {
+            return key === "" ? value : decodeURIComponent(value);
+          });
+      return authInfo;
+    } else {
+      window.close();
+    }
+  }
+
+  var authInfo = getAuthInfoFromUrl(),
+      token = authInfo["access_token"];
+
+  window.opener.setCookie(token);
+  window.close();
+
+</script>
+</body>
+</html>
