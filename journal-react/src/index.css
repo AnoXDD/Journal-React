@@ -1,6 +1,6 @@
 @import "https://fonts.googleapis.com/icon?family=Material+Icons";
-@import "http://fonts.googleapis.com/css?family=Lato";
-@import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+@import "https://fonts.googleapis.com/css?family=Lato";
+@import "https://fonts.googleapis.com/earlyaccess/notosanssc.css";
 @keyframes fade-in {
   from {
     opacity: 0; }
@@ -326,7 +326,7 @@ img.center {
     font-size: 18px;
     text-transform: uppercase;
     box-sizing: border-box;
-    padding: 20px 50px 35px; }
+    padding: 20px 50px 25px; }
 
 @keyframes blink {
   0%, 100% {
