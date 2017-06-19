@@ -32,7 +32,7 @@ module.exports = {
   //this.BULB_HEIGHT_ORIGINAL + this.BULB_MARGIN_TOP;
   BULB_HEIGHT            : 34,
 
-  TAG_PREDICTION_DICTIONARY: "journal friendship thoughts code 和和和",
+  TAG_PREDICTION_DICTIONARY: "journal thoughts ingress minecraft dream code letter handwriting wechat friendship snooker skateboard relationship star food leisure info baby fun travel health outfit shopping pets work sports cook makeup home car clear overcast raining snowing thundering windy happy notbad surprised sad angry",
 
   DATA_VERSION: 3,
 

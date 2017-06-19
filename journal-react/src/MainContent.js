@@ -275,6 +275,8 @@ export default class MainContent extends Component {
   redeemPassword = () => {
   };
 
+  tagPrediction = "";
+
   constructor(props) {
     super(props);
 
@@ -285,6 +287,7 @@ export default class MainContent extends Component {
     this.data = [...this.state.data];
 
     this.updateContentStyle = this.updateContentStyle.bind(this);
+    this.updateTagPrediction = this.updateTagPrediction.bind(this);
 
     this.loadData = this.loadData.bind(this);
     this.extractRawContent = this.extractRawContent.bind(this);
@@ -718,6 +721,8 @@ export default class MainContent extends Component {
             {password: this.password});
         this.applySettings(settings);
       }
+
+      this.updateTagPrediction(this.data);
 
       this.setState({
         data    : this.data,
@@ -1214,6 +1219,33 @@ export default class MainContent extends Component {
   }
 
   /**
+   * Give the prediction based on the tags we have so far
+   * @param data
+   */
+  updateTagPrediction(data) {
+    // this.tagPrediction = "";
+    let map = {};
+
+    // Propogate pre-defined
+    for (let tag of R.TAG_PREDICTION_DICTIONARY) {
+      map[tag] = 1;
+    }
+
+    // User content
+    for (let content of data) {
+      if (content.tags) {
+        for (let tag of content.tags) {
+          map[tag] = ++map[tag] || 1;
+        }
+      }
+    }
+
+    this.tagPrediction = Object.keys(map)
+        .sort((a, b) => map[b] - map[a])
+        .join(" ");
+  }
+
+  /**
    * Return the correct state based on this.props
    */
   updateContentStyle(data) {
@@ -1372,7 +1404,7 @@ export default class MainContent extends Component {
             <div
                 className={`flex-extend-inner-wrapper inner-main ${this.state.isDisplaying === this.TAB.LIST ? "" : "hidden"}`}>
               <header className="main-header flex-center">
-                <SearchBar tagPrediction={R.TAG_PREDICTION_DICTIONARY}
+                <SearchBar tagPrediction={this.tagPrediction}
                            onChange={this.handleChangeCriteria}
                            mapBound={this.mapBound}
                            isBoundSearch={this.state.isDisplayingMapView}
@@ -1450,7 +1482,7 @@ export default class MainContent extends Component {
                       onPromptCancel={this.handlePromptCancel}
                       imageMap={this.imageMap}
                       version={this.editorVersion}
-                      tagPrediction={R.TAG_PREDICTION_DICTIONARY}
+                      tagPrediction={this.tagPrediction}
                       onChange={this.handleArticleChange}
                       onRefreshQueue={this.handleEditorRefreshQueue}
                       year={this.year}

@@ -49,7 +49,7 @@ class DigitInput extends Component {
   }
 
   handleChange(e) {
-    let {value}  = e.target;
+    let {value} = e.target;
 
     if (value > this.max) {
       value = this.max;
@@ -131,7 +131,7 @@ export default class Settings extends Component {
             isLoadingMissingImages: false,
           });
         })
-        .catch(()=> {
+        .catch(() => {
           this.setState({
             isLoadingMissingImages: false,
           });
@@ -413,6 +413,17 @@ export default class Settings extends Component {
                             onChange={this.handleChange}
                         />
                       </div>
+                    </FormContent>
+                  </div>
+                </div>
+              </div>
+              <div className="form shadow">
+                <div className="form-row">
+                  <div className="title-dark flex-center">Last built</div>
+                  <div className="form-contents">
+                    <FormContent
+                        title={document.lastModified}>
+                      <span></span>
                     </FormContent>
                   </div>
                 </div>

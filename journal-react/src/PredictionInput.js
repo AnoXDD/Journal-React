@@ -20,6 +20,11 @@ export default class PredictionInput extends Component {
     this.getPrediction = this.getPrediction.bind(this);
   }
 
+  componentWillUpdate(nextProps) {
+    if (nextProps.candidates !== this.props.candidates) {
+      this.candidates = nextProps.candidates.split(" ");
+    }
+  }
 
   handleChange(event) {
     this.setState({
