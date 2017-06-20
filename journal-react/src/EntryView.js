@@ -191,7 +191,7 @@ class EntryList extends Component {
    * Generate a form list "Yesterday 12:34 - 12:56"
    */
   generateHumanFormTimeFromArticle(time) {
-    var date = new Date(time.created || time.start),
+    var date = new Date(time.begin || time.created),
         hour = date.getHours(),
         minute = date.getMinutes(),
         year = date.getFullYear(),

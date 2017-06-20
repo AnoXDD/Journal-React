@@ -1083,7 +1083,6 @@ class Editor extends Component {
       // Process the body
       let t = e.target,
           lines = t.value.split(/\r*\n/),
-          isChanged = false,
           {stats} = this.state;
 
       // Store this body
@@ -1094,6 +1093,9 @@ class Editor extends Component {
         ["Created @ ", "timeCreated"]];
 
       for (let i = 0; i < lines.length; ++i) {
+        // Add space
+        lines[i] = this.addSpaceBetweenCharacters(lines[i]);
+
         let line = lines[i];
 
         for (let pair of tags) {
@@ -1101,7 +1103,6 @@ class Editor extends Component {
             let time = this.convertFromDateTime(line.substring(pair[0].length));
             if (time && new Date(time).getFullYear() === this.props.year) {
               stats[pair[1]] = time;
-              isChanged = true;
 
               lines.splice(i--, 1);
 
@@ -1111,12 +1112,10 @@ class Editor extends Component {
         }
       }
 
-      if (isChanged) {
-        this.setState({
-          stats: stats,
-          body : lines.join("\r\n"),
-        });
-      }
+      this.setState({
+        stats: stats,
+        body : lines.join("\r\n"),
+      });
     } else {
 
       // Scroll to the bottom if applicable
@@ -1253,6 +1252,16 @@ class Editor extends Component {
   // endregion listeners
 
   // region Utility functions
+
+  /**
+   * Adds a space between English and Chinese, for example, 一a一 will become 一 a
+   * 一
+   * @param str
+   */
+  addSpaceBetweenCharacters(str) {
+    return str.replace(/([\u00ff-\uffff])([A-Za-z])/g, "$1 $2")
+        .replace(/([A-Za-z])([\u00ff-\uffff])/g, "$1 $2");
+  }
 
   countChars(str) {
     return (str.match(/[\u00ff-\uffff]|\S+/g) || []).length;
