@@ -82,6 +82,23 @@ class DigitInput extends Component {
   }
 }
 
+/**
+ * To add a new setting to be uploaded:
+ * 1. Add the appropriate html code in render()
+ *   a) For `isChanging` of the Toggle, put something like
+ *      typeof this.state.newState === "undefined" ? this.props.data.newState :
+ * this.tate.newState
+ * 2. In the constructor, add the field, and set it initially as undefined
+ * 3. In `generateSettingsData`, add a key of the new setting with the value
+ * 4. In `handleSettingsSave` of MainContent.js, add the new field into the
+ * settings
+ * 5. If applicable, also add something new in `applySettings` of
+ * MainContent.js. This function is called every time a new settings is
+ * introduced from the server
+ * 6. If a default value is preferred, and it in `DEFAULT_SETTINGS` of
+ * MainContent.js
+ */
+
 export default class Settings extends Component {
 
   constructor(props) {
@@ -98,6 +115,8 @@ export default class Settings extends Component {
 
       bulbMapCenterLatitude : NaN,
       bulbMapCenterLongitude: NaN,
+
+      bulbAttachLocation: undefined,
     };
 
     this.handleMissingImages = this.handleMissingImages.bind(this);
@@ -108,6 +127,8 @@ export default class Settings extends Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.handleTogglePasswordEnabled = this.handleTogglePasswordEnabled.bind(
+        this);
+    this.handleToggleBulbAttachLocationByDefault = this.handleToggleBulbAttachLocationByDefault.bind(
         this);
     this.validateSettings = this.validateSettings.bind(this);
     this.generateSettingsData = this.generateSettingsData.bind(this);
@@ -189,13 +210,14 @@ export default class Settings extends Component {
     }
 
     return {
-      password     : password,
-      bulbMapCenter: {
+      password          : password,
+      bulbMapCenter     : {
         latitude : isNaN(this.state.bulbMapCenterLatitude) ?
             this.props.data.bulbMapCenter.latitude : this.state.bulbMapCenterLatitude,
         longitude: isNaN(this.state.bulbMapCenterLongitude) ?
             this.props.data.bulbMapCenter.longitude : this.state.bulbMapCenterLongitude,
       },
+      bulbAttachLocation: (typeof this.state.bulbAttachLocation === "undefined") ? this.props.data.bulbAttachLocation : this.state.bulbAttachLocation,
     };
   }
 
@@ -240,6 +262,12 @@ export default class Settings extends Component {
         passwordEnabled: false,
       });
     }
+  }
+
+  handleToggleBulbAttachLocationByDefault() {
+    this.setState({
+      bulbAttachLocation: !this.state.bulbAttachLocation,
+    });
   }
 
   emptyQueueFolder() {
@@ -364,6 +392,19 @@ export default class Settings extends Component {
                                     onChange={this.handleNumberInputChange}
                         />
                       </div>
+                    </FormContent>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="title-dark flex-center">Bulb</div>
+                  <div className="form-contents">
+                    <FormContent
+                        title="Should bulb include your location by default">
+                      <Toggle
+                          onClick={this.handleToggleBulbAttachLocationByDefault}
+                          isChanging={(typeof this.state.bulbAttachLocation === "undefined") ? this.props.data.bulbAttachLocation : this.state.bulbAttachLocation}
+                          firstIcon="check_box_outline_blank"
+                          secondIcon="check_box"/>
                     </FormContent>
                   </div>
                 </div>

@@ -197,10 +197,11 @@ const defaultColors = {
     };
 
 const DEFAULT_SETTINGS = {
-  bulbMapCenter: {
+  bulbMapCenter     : {
     latitude : 0,
     longitude: 0,
   },
+  bulbAttachLocation: false,
 };
 
 export default class MainContent extends Component {
@@ -719,6 +720,7 @@ export default class MainContent extends Component {
         settings = Object.assign(settings,
             parsedData.settings,
             {password: this.password});
+
         this.applySettings(settings);
       }
 
@@ -1015,8 +1017,9 @@ export default class MainContent extends Component {
       this.password = settings.password;
       this.setState({
         settings: {
-          bulbMapCenter: settings.bulbMapCenter,
-          password     : settings.password,
+          bulbMapCenter     : settings.bulbMapCenter,
+          password          : settings.password,
+          bulbAttachLocation: settings.bulbAttachLocation,
         },
       }, () => {
         this.backupAndUploadData()
@@ -1377,6 +1380,7 @@ export default class MainContent extends Component {
                               style={notificationStyle}/>
           <BulbEditor
               notificationSystem={this.notificationSystem}
+              bulbAttachLocation={this.state.settings.bulbAttachLocation}
               hidden={!this.state.isShowingBulbEditor}
               onClose={() => this.setState({isShowingBulbEditor: false})}
               onEdit={this.handleBulbEditorEdit}

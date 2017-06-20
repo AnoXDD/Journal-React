@@ -50,9 +50,15 @@ export default class BulbEditor extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // Ask for focus the first time it popped up
+    // Do something when it got popped up
     if (prevProps.hidden && !this.props.hidden) {
+      // Ask for focus when it popped up
       this.input.focus();
+
+      // Get current location if settings say so
+      if (this.props.bulbAttachLocation && !this.state.location) {
+        this.toggleCurrentLocation();
+      }
     }
   }
 
@@ -124,7 +130,7 @@ export default class BulbEditor extends Component {
   handleFinish(image) {
     let {id, name} = image,
         src = image["@microsoft.graph.downloadUrl"],
-        onFinish = ()=> {
+        onFinish = () => {
           this.id = id;
           this.name = name;
           this.setState({
@@ -207,7 +213,8 @@ export default class BulbEditor extends Component {
                         <textarea className="text-body"
                                   onPaste={this.handlePaste}
                                   onKeyDown={this.handleKeyDown}
-                                  onChange={e => this.setState({value: e.target.value})}
+                                  onChange={
+                                    e => this.setState({value: e.target.value})}
                                   placeholder="Write something here ..."
                                   ref={input => this.input = input}
                                   value={this.state.value}/>
@@ -216,8 +223,9 @@ export default class BulbEditor extends Component {
                   </div>
                 </div>
                 <div
-                    className={`image-wrapper shadow-light ${this.state.src ? "" :"hidden"}`}>
-                  <Button className="clear-image dark" onClick={this.removeAttachedImage}>clear</Button>
+                    className={`image-wrapper shadow-light ${this.state.src ? "" : "hidden"}`}>
+                  <Button className="clear-image dark"
+                          onClick={this.removeAttachedImage}>clear</Button>
                   <Image contain src={this.state.src}/>
                 </div>
               </div>
