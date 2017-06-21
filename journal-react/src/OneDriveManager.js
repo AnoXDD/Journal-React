@@ -9,7 +9,11 @@
 
 const MicrosoftGraph = require("@microsoft/microsoft-graph-client");
 
-const APPROOT = "Apps/Trak/",
+/**
+ * Change the approot to toggle between debug
+ * @type {string}
+ */
+const APPROOT = "Apps/Trak_debug/",
     TOP_LIST = 1000;
 
 const client_id = "00000000441D0A11",
@@ -55,6 +59,7 @@ export default class OneDriveManager {
   static queueFolderId = "";
   static resourceFolderId = "";
   static client = null;
+  static token = null;
 
   // region general utility functions
 
@@ -123,17 +128,19 @@ export default class OneDriveManager {
   }
 
   static getClient() {
-    return this.getCurrentToken().then(token => {
-      if (this.client) {
-        return this.client;
-      }
+    return this.getCurrentToken()
+        .then(token => {
+          if (token === this.token) {
+            return this.client;
+          }
 
-      return (this.client = MicrosoftGraph.Client.init({
-        authProvider: (done) => {
-          done(null, token);
-        }
-      }));
-    })
+          this.token = token;
+          return (this.client = MicrosoftGraph.Client.init({
+            authProvider: (done) => {
+              done(null, token);
+            }
+          }));
+        });
   }
 
   static getRootId() {

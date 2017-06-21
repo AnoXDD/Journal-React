@@ -238,8 +238,8 @@ export default class MainContent extends Component {
 
     isShowingBulbEditor: false,
 
-    bulbMapCenter: null,
-    mapVersion   : 0,
+    mapVersion: 0,
+    settings  : R.copy(DEFAULT_SETTINGS),
   };
 
   data = [];
@@ -720,15 +720,14 @@ export default class MainContent extends Component {
         settings = Object.assign(settings,
             parsedData.settings,
             {password: this.password});
-
-        this.applySettings(settings);
       }
+
+      this.applySettings(settings);
 
       this.updateTagPrediction(this.data);
 
       this.setState({
-        data    : this.data,
-        settings: settings,
+        data: this.data,
       });
     } else {
       this.data = [];
@@ -1042,7 +1041,7 @@ export default class MainContent extends Component {
 
     // Bulb map center
     state.mapVersion = new Date().getTime();
-    state.bulbMapCenter = settings.bulbMapCenter;
+    state.settings = settings;
 
     this.setState(R.copy(state));
   }
@@ -1471,7 +1470,7 @@ export default class MainContent extends Component {
                         data={this.bulbList}
                         contentStyle={this.contentStyle}
                         onBulbClick={this.handleBulbClick}
-                        center={this.state.bulbMapCenter}
+                        center={this.state.settings.bulbMapCenter}
                         version={this.state.mapVersion}
                         onBoundChange={this.handleBoundChange}
                     />
