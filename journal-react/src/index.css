@@ -342,6 +342,10 @@ html, body {
   height: 100%;
   width: 100%; }
 
+.highlight {
+  font-weight: bold;
+  background: yellow; }
+
 nav.nav {
   position: absolute;
   top: 0;

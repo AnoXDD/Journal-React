@@ -440,6 +440,34 @@ export default class MainContent extends Component {
 
   // region Utility functions
 
+  /**
+   *
+   * @param dataArray
+   * @param keyword
+   * @returns {Array|*} - an array of mixed strings and JSX
+   */
+  highlightDataWithKeyword(dataArray, keyword) {
+    for (let i = 0; i < dataArray.length; ++i) {
+      if (typeof dataArray[i] === "string") {
+        // For each string, break them into different groups
+        let group = dataArray[i].split(keyword),
+            realGroup = [];
+
+        // Then insert a highlighted version of keyword between each element
+        for (let g of group) {
+          realGroup.push(g);
+          realGroup.push(<span className="highlight">{keyword}</span>);
+        }
+
+        realGroup.pop();
+
+        dataArray[i] = realGroup;
+      }
+    }
+
+    // Flatten the array
+    return dataArray.reduce((a, b) => a.concat(b));
+  }
 
   /**
    * Converts the data (or this.state.data) to the form that to be stored online
@@ -823,7 +851,29 @@ export default class MainContent extends Component {
         }
 
         return true;
-      })
+      });
+
+      // Highlight the keyword
+      if (c.keywords && c.keywords.length) {
+        newData = newData.map(d => {
+
+          d = R.copy(d);
+          if (d.title) {
+            d.title = [d.title];
+          }
+          d.body = [d.body];
+
+          for (let keyword of c.keywords) {
+            if (d.title) {
+              d.title = this.highlightDataWithKeyword(d.title, keyword);
+            }
+
+            d.body = this.highlightDataWithKeyword(d.body, keyword);
+          }
+
+          return d;
+        });
+      }
 
       this.setState({
         data   : newData,
