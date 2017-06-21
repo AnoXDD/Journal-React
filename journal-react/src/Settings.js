@@ -85,59 +85,79 @@ class DigitInput extends Component {
 /**
  * To add a new setting to be uploaded:
  * 1. Add the appropriate html code in render()
- *   a) For `isChanging` of the Toggle, put something like
- *      typeof this.state.newState === "undefined" ? this.props.data.newState :
- * this.tate.newState
- * 2. In the constructor, add the field, and set it initially as undefined
- * 3. In `generateSettingsData`, add a key of the new setting with the value
- * 4. In `handleSettingsSave` of MainContent.js, add the new field into the
- * settings
- * 5. If applicable, also add something new in `applySettings` of
- * MainContent.js. This function is called every time a new settings is
- * introduced from the server
- * 6. If a default value is preferred, and it in `DEFAULT_SETTINGS` of
+ * 2. Add the default value in `DEFAULT_SETTINGS_STATE`
+ * 3. Add appropriate behavior when it needs to update this.state
+ * 4. In `MainContent.js`:
+ *    - If applicable (anything other than this.state.settings) needed to be
+ *      changed, do it in `handleSettingsSave`. This function is called every
+ *      time new settings are saved
+ *    - If applicable, also add something new in `applySettings` of
+ *      MainContent.js. This function is called every time a new settings is
+ *      introduced from the server
+ * 5. If a default value is preferred, and it in `DEFAULT_SETTINGS` of
  * MainContent.js
  */
 
+const DEFAULT_SETTINGS_STATE = {
+  password       : "",
+  passwordConfirm: "",
+  passwordEnabled: false,
+
+  bulbMapCenter: {
+    latitude : 0,
+    longitude: 0,
+  },
+
+  bulbAttachLocation: false,
+};
+
 export default class Settings extends Component {
+
+  version = 0;
 
   constructor(props) {
     super(props);
 
-    this.state = {
+    this.state = Object.assign({
       isLoadingMissingImages: false,
       isEmptyingQueueFolder : false,
       isSaving              : false,
-
-      password       : null,
-      passwordConfirm: null,
-      passwordEnabled: undefined,
-
-      bulbMapCenterLatitude : NaN,
-      bulbMapCenterLongitude: NaN,
-
-      bulbAttachLocation: undefined,
-    };
+    }, R.copy(DEFAULT_SETTINGS_STATE));
 
     this.handleMissingImages = this.handleMissingImages.bind(this);
-    this.handleNumberInputChange = this.handleNumberInputChange.bind(this);
+    this.handleLocationInputChange = this.handleLocationInputChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSetDefaultLocationClick = this.handleSetDefaultLocationClick.bind(
         this);
     this.handleSave = this.handleSave.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
-    this.handleTogglePasswordEnabled = this.handleTogglePasswordEnabled.bind(
-        this);
-    this.handleToggleBulbAttachLocationByDefault = this.handleToggleBulbAttachLocationByDefault.bind(
-        this);
+    this.handleToggle = this.handleToggle.bind(this);
     this.validateSettings = this.validateSettings.bind(this);
     this.generateSettingsData = this.generateSettingsData.bind(this);
     this.emptyQueueFolder = this.emptyQueueFolder.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (nextProps.data.password !== this.props.data.password) {
+    if (!nextState.passwordEnabled) {
+      nextState.password = "";
+      nextState.passwordConfirm = "";
+    }
+
+    if (nextProps.version > this.version) {
+      this.version = nextProps.version;
+
+      // Apply settings from props
       nextState.passwordEnabled = !!nextProps.data.password;
+      nextState.passwordConfirm = nextProps.data.password;
+
+      let keys = Object.keys(nextProps.data);
+      for (let key of keys) {
+        if (typeof nextProps.data[key] === "object") {
+          nextState[key] = R.copy(nextProps.data[key]);
+        } else {
+          nextState[key] = nextProps.data[key];
+        }
+      }
     }
   }
 
@@ -160,9 +180,12 @@ export default class Settings extends Component {
   }
 
 
-  handleNumberInputChange(e) {
+  handleLocationInputChange(e) {
+    let center = this.state.bulbMapCenter;
+    center[e.target.name] = parseFloat(e.target.value, 10);
+
     this.setState({
-      [e.target.name]: parseFloat(e.target.value, 10),
+      bulbMapCenter: center,
     });
   }
 
@@ -177,8 +200,10 @@ export default class Settings extends Component {
       let crd = pos.coords;
 
       this.setState({
-        bulbMapCenterLatitude : crd.latitude,
-        bulbMapCenterLongitude: crd.longitude,
+        bulbMapCenter: {
+          latitude : crd.latitude,
+          longitude: crd.longitude,
+        }
       });
     }, err => {
       console.error(`ERROR(${err.code}): ${err.message}`);
@@ -202,23 +227,18 @@ export default class Settings extends Component {
   }
 
   generateSettingsData() {
-    let password = "";
-    if (typeof this.state.passwordEnabled === "undefined") {
-      password = this.props.data.password;
-    } else if (this.state.passwordEnabled) {
-      password = this.state.password;
+    let settings = {};
+
+    let keys = Object.keys(this.props.data);
+    for (let key of keys) {
+      if (typeof this.state[key] === "object") {
+        settings[key] = R.copy(this.state[key]);
+      } else {
+        settings[key] = this.state[key];
+      }
     }
 
-    return {
-      password          : password,
-      bulbMapCenter     : {
-        latitude : isNaN(this.state.bulbMapCenterLatitude) ?
-            this.props.data.bulbMapCenter.latitude : this.state.bulbMapCenterLatitude,
-        longitude: isNaN(this.state.bulbMapCenterLongitude) ?
-            this.props.data.bulbMapCenter.longitude : this.state.bulbMapCenterLongitude,
-      },
-      bulbAttachLocation: (typeof this.state.bulbAttachLocation === "undefined") ? this.props.data.bulbAttachLocation : this.state.bulbAttachLocation,
-    };
+    return settings;
   }
 
   handleSave() {
@@ -250,23 +270,11 @@ export default class Settings extends Component {
         });
   }
 
-  handleTogglePasswordEnabled() {
-    let enabled = typeof this.state.passwordEnabled === "undefined" ? this.props.data.password : this.state.passwordEnabled;
+  handleToggle(e) {
+    let {tag} = e.target.dataset;
 
-    if (!enabled) {
-      this.setState({
-        passwordEnabled: true,
-      });
-    } else {
-      this.setState({
-        passwordEnabled: false,
-      });
-    }
-  }
-
-  handleToggleBulbAttachLocationByDefault() {
     this.setState({
-      bulbAttachLocation: !this.state.bulbAttachLocation,
+      [tag]: !this.state[tag],
     });
   }
 
@@ -375,21 +383,21 @@ export default class Settings extends Component {
                       <p className="input-label">Latitude</p>
                       <div className="flex-center">
                         <DigitInput className="normal underlined"
-                                    name="bulbMapCenterLatitude"
-                                    value={isNaN(this.state.bulbMapCenterLatitude) ? this.props.data.bulbMapCenter.latitude : this.state.bulbMapCenterLatitude}
+                                    name="latitude"
+                                    value={this.state.bulbMapCenter.latitude}
                                     min={-180}
                                     max={180}
-                                    onChange={this.handleNumberInputChange}
+                                    onChange={this.handleLocationInputChange}
                         />
                       </div>
                       <p className="input-label">Longitude</p>
                       <div className="flex-center">
                         <DigitInput className="normal underlined"
-                                    name="bulbMapCenterLongitude"
-                                    value={isNaN(this.state.bulbMapCenterLongitude) ? this.props.data.bulbMapCenter.longitude : this.state.bulbMapCenterLongitude}
+                                    name="longitude"
+                                    value={this.state.bulbMapCenter.longitude}
                                     min={-90}
                                     max={90}
-                                    onChange={this.handleNumberInputChange}
+                                    onChange={this.handleLocationInputChange}
                         />
                       </div>
                     </FormContent>
@@ -399,10 +407,11 @@ export default class Settings extends Component {
                   <div className="title-dark flex-center">Bulb</div>
                   <div className="form-contents">
                     <FormContent
-                        title="Should bulb include your location by default">
+                        title="Bulb will include your location by default">
                       <Toggle
-                          onClick={this.handleToggleBulbAttachLocationByDefault}
-                          isChanging={(typeof this.state.bulbAttachLocation === "undefined") ? this.props.data.bulbAttachLocation : this.state.bulbAttachLocation}
+                          data-tag="bulbAttachLocation"
+                          onClick={this.handleToggle}
+                          isChanging={this.state.bulbAttachLocation}
                           firstIcon="check_box_outline_blank"
                           secondIcon="check_box"/>
                     </FormContent>
@@ -416,19 +425,21 @@ export default class Settings extends Component {
                   <div className="form-contents">
                     <FormContent
                         title="Encrypt your data with password">
-                      <Toggle onClick={this.handleTogglePasswordEnabled}
-                              isChanging={this.state.passwordEnabled}
-                              firstIcon="check_box_outline_blank"
-                              secondIcon="check_box"/>
+                      <Toggle
+data-tag="passwordEnabled"
+                          onClick={this.handleToggle}
+                          isChanging={this.state.passwordEnabled}
+                          firstIcon="check_box_outline_blank"
+                          secondIcon="check_box"/>
                     </FormContent>
                     <FormContent
                         subTitle
-                        className={(typeof this.state.passwordEnabled === "undefined" ? this.props.data.password : this.state.passwordEnabled) ? "" : "hidden"}
+                        className={this.state.passwordEnabled ? "" : "hidden"}
                         title="By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. As a result, the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so YOU ARE RESPONSIBLE FOR REMEMBERING THE PASSWORD: IF YOU LOST IT, THERE IS NO WAY TO RETRIEVE IT">
                       <span></span>
                     </FormContent>
                     <FormContent
-                        className={(typeof this.state.passwordEnabled === "undefined" ? this.props.data.password : this.state.passwordEnabled) ? "" : "hidden"}
+                        className={this.state.passwordEnabled ? "" : "hidden"}
                     >
                       <p className="input-label">Password</p>
                       <div className="flex-center">
@@ -436,13 +447,13 @@ export default class Settings extends Component {
                             className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
                             name="password"
                             type="password"
-                            value={this.state.password === null ? this.props.data.password : this.state.password}
+                            value={ this.state.password}
                             onChange={this.handleChange}
                         />
                       </div>
                     </FormContent>
                     <FormContent
-                        className={(typeof this.state.passwordEnabled === "undefined" ? this.props.data.password : this.state.passwordEnabled) ? "" : "hidden"}
+                        className={(this.state.passwordEnabled) ? "" : "hidden"}
                     >
                       <p className="input-label">Confirm password</p>
                       <div className="flex-center">
@@ -450,7 +461,7 @@ export default class Settings extends Component {
                             className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
                             name="passwordConfirm"
                             type="password"
-                            value={this.state.passwordConfirm === null ? this.props.data.password : this.state.passwordConfirm}
+                            value={this.state.passwordConfirm}
                             onChange={this.handleChange}
                         />
                       </div>

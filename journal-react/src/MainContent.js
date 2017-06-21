@@ -202,6 +202,7 @@ const DEFAULT_SETTINGS = {
     longitude: 0,
   },
   bulbAttachLocation: false,
+  // passcode: undefined,
 };
 
 export default class MainContent extends Component {
@@ -238,8 +239,9 @@ export default class MainContent extends Component {
 
     isShowingBulbEditor: false,
 
-    mapVersion: 0,
-    settings  : R.copy(DEFAULT_SETTINGS),
+    mapVersion     : 0,
+    settingsVersion: 0,
+    settings       : R.copy(DEFAULT_SETTINGS),
   };
 
   data = [];
@@ -1015,11 +1017,7 @@ export default class MainContent extends Component {
     return new Promise(res => {
       this.password = settings.password;
       this.setState({
-        settings: {
-          bulbMapCenter     : settings.bulbMapCenter,
-          password          : settings.password,
-          bulbAttachLocation: settings.bulbAttachLocation,
-        },
+        settings: R.copy(settings),
       }, () => {
         this.backupAndUploadData()
             .then(() => {
@@ -1041,6 +1039,7 @@ export default class MainContent extends Component {
 
     // Bulb map center
     state.mapVersion = new Date().getTime();
+    state.settingsVersion = new Date().getTime();
     state.settings = settings;
 
     this.setState(R.copy(state));
@@ -1505,6 +1504,7 @@ export default class MainContent extends Component {
                         handleMissingImages={this.handleMissingImages}
                         data={this.state.settings || DEFAULT_SETTINGS}
                         onSave={this.handleSettingsSave}
+                        version={this.state.settingsVersion}
               />
             </div>
           </main>

@@ -14,6 +14,7 @@ export default class Toggle extends Component {
 
   render() {
     let {className, isHidden, isChangingOnHover, isChanging, onClick, firstIcon, secondIcon} = this.props;
+    let tag = this.props["data-tag"];
 
     let disabled = {};
     if (this.props.disabled) {
@@ -23,14 +24,16 @@ export default class Toggle extends Component {
     return (
         <a className={`toggle ${this.props.loading ? "loading" : ""} ${className || ""} ${isHidden ? "hidden" : ""} ${isChangingOnHover ? "change-hover" : ""} ${isChanging ? "show-second" : ""} `}
            onClick={onClick}
-            {...disabled}
+           {...disabled}
         >
           <Ink/>
           <div
+              data-tag={tag}
               className={`flex-center first icon-wrapper ${!this.props.loading ? "" : "transparent"}`}>
             <i className="material-icons">{firstIcon}</i>
           </div>
           <div
+              data-tag={tag}
               className={`flex-center second icon-wrapper ${!this.props.loading ? "" : "transparent"}`}>
             <i className="material-icons">{secondIcon}</i>
           </div>
