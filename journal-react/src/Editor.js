@@ -1088,14 +1088,13 @@ class Editor extends Component {
       // Store this body
       localStorage.previousBody = t.value;
 
+      let selectionStart = t.selectionStart;
+
       const tags = [["Begin @ ", "timeBegin"],
         ["End @ ", "timeEnd"],
         ["Created @ ", "timeCreated"]];
 
       for (let i = 0; i < lines.length; ++i) {
-        // Add space
-        lines[i] = this.addSpaceBetweenCharacters(lines[i]);
-
         let line = lines[i];
 
         for (let pair of tags) {
@@ -1110,11 +1109,19 @@ class Editor extends Component {
             }
           }
         }
+
+        // Add space
+        lines[i] = this.addSpaceBetweenCharacters(line);
+        // Add the difference
+        selectionStart += lines[i].length - line.length;
       }
+
 
       this.setState({
         stats: stats,
         body : lines.join("\r\n"),
+      }, () => {
+        t.selectionStart = (t.selectionEnd = selectionStart);
       });
     } else {
 
@@ -1259,8 +1266,8 @@ class Editor extends Component {
    * @param str
    */
   addSpaceBetweenCharacters(str) {
-    return str.replace(/([\u00ff-\uffff])([A-Za-z])/g, "$1 $2")
-        .replace(/([A-Za-z])([\u00ff-\uffff])/g, "$1 $2");
+    return str.replace(/([\u00ff-\uffff])([A-Za-z0-9])/g, "$1 $2")
+        .replace(/([A-Za-z0-9])([\u00ff-\uffff])/g, "$1 $2");
   }
 
   countChars(str) {
