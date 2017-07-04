@@ -9,6 +9,7 @@ import React, {Component} from "react";
 import Button from "./Button";
 import OneDriveManager from "./OneDriveManager";
 import Toggle from "./Toggle";
+import NoScrollArea from "./NoScrollArea";
 
 import R from "./R";
 
@@ -328,160 +329,163 @@ export default class Settings extends Component {
                       text="save">save</Button>
             </div>
           </header>
-          <div className="content flex-center">
-            <div className="settings-wrapper">
-              <div className="form shadow">
-                <div className="form-title">Content</div>
-                <div className="form-row">
-                  <div className="title-dark flex-center">Images</div>
-                  <div className="form-contents">
-                    <FormContent
-                        title="Lost some images when you deleted them?">
-                      <Button
-                          text="fix"
-                          onClick={this.handleMissingImages}
-                          loading={this.state.isLoadingMissingImages}
-                      >build</Button>
-                    </FormContent>
-                    <FormContent
-                        title="Remove all the images that don't belong to anything">
-                      <Button
-                          text="clean"
-                          onClick={this.emptyQueueFolder}
-                          loading={this.state.isEmptyingQueueFolder}
-                      >delete</Button>
-                    </FormContent>
+          <NoScrollArea
+              backgroundColor="#eeeced">
+            <div className="content flex-center">
+              <div className="settings-wrapper">
+                <div className="form shadow">
+                  <div className="form-title">Content</div>
+                  <div className="form-row">
+                    <div className="title-dark flex-center">Images</div>
+                    <div className="form-contents">
+                      <FormContent
+                          title="Lost some images when you deleted them?">
+                        <Button
+                            text="fix"
+                            onClick={this.handleMissingImages}
+                            loading={this.state.isLoadingMissingImages}
+                        >build</Button>
+                      </FormContent>
+                      <FormContent
+                          title="Remove all the images that don't belong to anything">
+                        <Button
+                            text="clean"
+                            onClick={this.emptyQueueFolder}
+                            loading={this.state.isEmptyingQueueFolder}
+                        >delete</Button>
+                      </FormContent>
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="title-dark flex-center">User</div>
+                    <div className="form-contents">
+                      <FormContent title="">
+                        <Button
+                            text="sign out"
+                            onClick={this.handleSignOut}
+                        >exit_to_app</Button>
+                      </FormContent>
+                    </div>
                   </div>
                 </div>
-                <div className="form-row">
-                  <div className="title-dark flex-center">User</div>
-                  <div className="form-contents">
-                    <FormContent title="">
-                      <Button
-                          text="sign out"
-                          onClick={this.handleSignOut}
-                      >exit_to_app</Button>
-                    </FormContent>
+                <div className="form shadow">
+                  <div className="form-title">Personalization</div>
+                  <div className="form-row">
+                    <div className="title-dark flex-center">Bulb Map</div>
+                    <div className="form-contents">
+                      <FormContent
+                          title="Set the default center of the bulb map">
+                        <Button
+                            onClick={this.handleSetDefaultLocationClick}
+                            text="get location"
+                            tooltip="Set as current location">
+                          my_location
+                        </Button>
+                      </FormContent>
+                      <FormContent>
+                        <p className="input-label">Latitude</p>
+                        <div className="flex-center">
+                          <DigitInput className="normal underlined"
+                                      name="latitude"
+                                      value={this.state.bulbMapCenter.latitude}
+                                      min={-180}
+                                      max={180}
+                                      onChange={this.handleLocationInputChange}
+                          />
+                        </div>
+                        <p className="input-label">Longitude</p>
+                        <div className="flex-center">
+                          <DigitInput className="normal underlined"
+                                      name="longitude"
+                                      value={this.state.bulbMapCenter.longitude}
+                                      min={-90}
+                                      max={90}
+                                      onChange={this.handleLocationInputChange}
+                          />
+                        </div>
+                      </FormContent>
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div className="title-dark flex-center">Bulb</div>
+                    <div className="form-contents">
+                      <FormContent
+                          title="Bulb will include your location by default">
+                        <Toggle
+                            data-tag="bulbAttachLocation"
+                            onClick={this.handleToggle}
+                            isChanging={this.state.bulbAttachLocation}
+                            firstIcon="check_box_outline_blank"
+                            secondIcon="check_box"/>
+                      </FormContent>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="form shadow">
-                <div className="form-title">Personalization</div>
-                <div className="form-row">
-                  <div className="title-dark flex-center">Bulb Map</div>
-                  <div className="form-contents">
-                    <FormContent
-                        title="Set the default center of the bulb map">
-                      <Button
-                          onClick={this.handleSetDefaultLocationClick}
-                          text="get location"
-                          tooltip="Set as current location">
-                        my_location
-                      </Button>
-                    </FormContent>
-                    <FormContent>
-                      <p className="input-label">Latitude</p>
-                      <div className="flex-center">
-                        <DigitInput className="normal underlined"
-                                    name="latitude"
-                                    value={this.state.bulbMapCenter.latitude}
-                                    min={-180}
-                                    max={180}
-                                    onChange={this.handleLocationInputChange}
-                        />
-                      </div>
-                      <p className="input-label">Longitude</p>
-                      <div className="flex-center">
-                        <DigitInput className="normal underlined"
-                                    name="longitude"
-                                    value={this.state.bulbMapCenter.longitude}
-                                    min={-90}
-                                    max={90}
-                                    onChange={this.handleLocationInputChange}
-                        />
-                      </div>
-                    </FormContent>
+                <div className="form shadow">
+                  <div className="form-title">Security</div>
+                  <div className="form-row">
+                    <div className="title-dark flex-center">Data</div>
+                    <div className="form-contents">
+                      <FormContent
+                          title="Encrypt your data with password">
+                        <Toggle
+                            data-tag="passwordEnabled"
+                            onClick={this.handleToggle}
+                            isChanging={this.state.passwordEnabled}
+                            firstIcon="check_box_outline_blank"
+                            secondIcon="check_box"/>
+                      </FormContent>
+                      <FormContent
+                          subTitle
+                          className={this.state.passwordEnabled ? "" : "hidden"}
+                          title="By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. As a result, the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so YOU ARE RESPONSIBLE FOR REMEMBERING THE PASSWORD: IF YOU LOST IT, THERE IS NO WAY TO RETRIEVE IT">
+                        <span></span>
+                      </FormContent>
+                      <FormContent
+                          className={this.state.passwordEnabled ? "" : "hidden"}
+                      >
+                        <p className="input-label">Password</p>
+                        <div className="flex-center">
+                          <input
+                              className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
+                              name="password"
+                              type="password"
+                              value={ this.state.password}
+                              onChange={this.handleChange}
+                          />
+                        </div>
+                      </FormContent>
+                      <FormContent
+                          className={(this.state.passwordEnabled) ? "" : "hidden"}
+                      >
+                        <p className="input-label">Confirm password</p>
+                        <div className="flex-center">
+                          <input
+                              className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
+                              name="passwordConfirm"
+                              type="password"
+                              value={this.state.passwordConfirm}
+                              onChange={this.handleChange}
+                          />
+                        </div>
+                      </FormContent>
+                    </div>
                   </div>
                 </div>
-                <div className="form-row">
-                  <div className="title-dark flex-center">Bulb</div>
-                  <div className="form-contents">
-                    <FormContent
-                        title="Bulb will include your location by default">
-                      <Toggle
-                          data-tag="bulbAttachLocation"
-                          onClick={this.handleToggle}
-                          isChanging={this.state.bulbAttachLocation}
-                          firstIcon="check_box_outline_blank"
-                          secondIcon="check_box"/>
-                    </FormContent>
-                  </div>
-                </div>
-              </div>
-              <div className="form shadow">
-                <div className="form-title">Security</div>
-                <div className="form-row">
-                  <div className="title-dark flex-center">Data</div>
-                  <div className="form-contents">
-                    <FormContent
-                        title="Encrypt your data with password">
-                      <Toggle
-data-tag="passwordEnabled"
-                          onClick={this.handleToggle}
-                          isChanging={this.state.passwordEnabled}
-                          firstIcon="check_box_outline_blank"
-                          secondIcon="check_box"/>
-                    </FormContent>
-                    <FormContent
-                        subTitle
-                        className={this.state.passwordEnabled ? "" : "hidden"}
-                        title="By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. As a result, the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so YOU ARE RESPONSIBLE FOR REMEMBERING THE PASSWORD: IF YOU LOST IT, THERE IS NO WAY TO RETRIEVE IT">
-                      <span></span>
-                    </FormContent>
-                    <FormContent
-                        className={this.state.passwordEnabled ? "" : "hidden"}
-                    >
-                      <p className="input-label">Password</p>
-                      <div className="flex-center">
-                        <input
-                            className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
-                            name="password"
-                            type="password"
-                            value={ this.state.password}
-                            onChange={this.handleChange}
-                        />
-                      </div>
-                    </FormContent>
-                    <FormContent
-                        className={(this.state.passwordEnabled) ? "" : "hidden"}
-                    >
-                      <p className="input-label">Confirm password</p>
-                      <div className="flex-center">
-                        <input
-                            className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
-                            name="passwordConfirm"
-                            type="password"
-                            value={this.state.passwordConfirm}
-                            onChange={this.handleChange}
-                        />
-                      </div>
-                    </FormContent>
-                  </div>
-                </div>
-              </div>
-              <div className="form shadow">
-                <div className="form-row">
-                  <div className="title-dark flex-center">Last built</div>
-                  <div className="form-contents">
-                    <FormContent
-                        title={document.lastModified}>
-                      <span></span>
-                    </FormContent>
+                <div className="form shadow">
+                  <div className="form-row">
+                    <div className="title-dark flex-center">Last built</div>
+                    <div className="form-contents">
+                      <FormContent
+                          title={document.lastModified}>
+                        <span></span>
+                      </FormContent>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </NoScrollArea>
         </div>
     );
   }
