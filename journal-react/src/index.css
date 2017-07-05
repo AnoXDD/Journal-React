@@ -768,7 +768,7 @@ nav.nav {
     position: relative;
     left: .5em; }
     .Editor .text-body .highlight {
-      font-family: inher;
+      font-family: inherit;
       font-weight: lighter; }
   .Editor .extras {
     position: relative;

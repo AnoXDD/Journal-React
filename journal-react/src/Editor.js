@@ -555,21 +555,9 @@ class Editor extends Component {
           ;
           this.hasUnsavedChanges = true;
         } else {
-          nextState.title = nextProps.title;
+          nextState.title = this.convertHighlightArrayToString(nextProps.title);
           nextState.bodyObject = R.highlightArrayToJSX(nextProps.body);
-
-          if (typeof nextProps.body === "string") {
-            nextState.body = nextProps.body;
-          } else {
-            nextState.body = nextProps.body.map(b => {
-              if (typeof b === "string") {
-                return b;
-              }
-
-              return b.highlight;
-            })
-                .join("");
-          }
+          nextState.body = this.convertHighlightArrayToString(nextProps.body);
 
           nextState.stats = {
             timeCreated: nextProps.time.created,
@@ -602,6 +590,20 @@ class Editor extends Component {
       // We're modifying current changes
       nextState.bodyObject = nextState.body;
     }
+  }
+
+  convertHighlightArrayToString(body) {
+    if (typeof body === "string") {
+      return body;
+    }
+    return body.map(b => {
+      if (typeof b === "string") {
+        return b;
+      }
+
+      return b.highlight;
+    })
+        .join("");
   }
 
   /**

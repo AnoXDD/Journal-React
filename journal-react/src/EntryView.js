@@ -93,7 +93,7 @@ class ContentArticle extends Component {
           <Image src={this.state.image}/>
           <div className="text">
             <div className="flex-filler"></div>
-            <div className="title">{article.title}</div>
+            <div className="title">{R.highlightArrayToJSX(article.title)}</div>
             <div className="time">{time}</div>
             <div className="details">{R.highlightArrayToJSX(article.body)}</div>
           </div>
@@ -288,7 +288,7 @@ class EntryList extends Component {
                       onRemoveClick={() => this.props.onArticleRemove(index)}
                       article={article}
                       imageMap={this.props.imageMap}
-                      key={`article-preview-${article.time.created}`}
+                      key={`article-preview-${article.time.created}-${index}`}
                       time={this.generateHumanFormTimeFromArticle(article.time)}
                       {...this.generateArticleStyle(article)}
                   />

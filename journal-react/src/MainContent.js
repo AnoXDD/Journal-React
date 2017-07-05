@@ -61,7 +61,7 @@ function upgradeDataFromVersion2To3(oldData) {
       // for debug here
       // entry.title = d.title.replace(/[a-z]/gi,
       //     Math.random().toString(36).charAt(3));
-      entry.tags = d.tags.split("|");
+      entry.tags = d.tags ? d.tags.split("|") : [];
 
       if (d.music && d.music.length) {
         entry.music = Object.assign({}, d.music);
@@ -248,7 +248,7 @@ export default class MainContent extends Component {
   data = [];
   imageMap = {};
 
-  year = new Date().getFullYear();
+  year = 2014 || new Date().getFullYear();
 
   notificationSystem = null;
 
