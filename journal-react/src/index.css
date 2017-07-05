@@ -766,7 +766,8 @@ nav.nav {
     height: calc(100% - 80px);
     background: inherit;
     position: relative;
-    left: .5em; }
+    left: .5em;
+    white-space: pre-wrap; }
     .Editor .text-body .highlight {
       font-family: inherit;
       font-weight: lighter; }

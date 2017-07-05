@@ -77,6 +77,10 @@ export default class Chart extends Component {
   dataMonthChart = [];
   dataMonthTable = {};
 
+  processedKeyWords = [];
+
+  version = 0;
+
   /**
    * Records the original keyword on focus
    * @type {string}
@@ -95,8 +99,6 @@ export default class Chart extends Component {
       this.dataMonthChart.push({time: month});
     }
 
-    this.version = props.version;
-
     this.handleStateChange(this.state.keywords);
     this.handleKeywordBlur = this.handleKeywordBlur.bind(this);
     this.handleKeywordRemove = this.handleKeywordRemove.bind(this);
@@ -105,17 +107,27 @@ export default class Chart extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return !nextProps.hidden;
+    return !nextProps.hidden || nextProps.version !== this.version;
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (nextState.newKeyword === this.state.newKeyword) {
-      // Only update when the user is not typing a new keyword
-      this.handleStateChange(nextState.keywords,
-          nextProps.version !== this.version ? nextProps.data : undefined);
+    if (nextProps.version !== this.version) {
+      // A new data, clean up everything
+
+      this.data = [];
+      this.dataMonthChart = R.MONTH.map(month => {
+            return {time: month,};
+          }
+      );
+      this.dataMonthTable = {};
+      this.processedKeyWords = [];
+
+      this.version = nextProps.version;
     }
 
-    this.version = nextProps.version;
+    // Only update when the user is not typing a new keyword
+    this.handleStateChange(nextState.keywords, nextProps.data);
+
   }
 
   getHashedColor(word) {
@@ -220,7 +232,7 @@ export default class Chart extends Component {
 
           for (let k of keywordArray) {
             if ((data.title && data.title.indexOf(k) !== -1) ||
-                data.body.indexOf(k) !== -1) {
+                R.highlightArrayToString(data.body).indexOf(k) !== -1) {
               // This keyword is found
               ++this.dataMonthTable[keyword][month];
               ++this.dataMonthChart[month][keyword];

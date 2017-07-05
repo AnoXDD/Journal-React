@@ -45,8 +45,13 @@ module.exports = {
       body.map ? body.map((d, i) =>
           typeof d === "string" ? d :
               <span key={i} className="highlight">{d.highlight}</span>
-      ) : body
-  ,
+      ) : body,
+
+  highlightArrayToString: body =>
+      typeof body === "string" ? body : body.map(b =>
+          typeof b === "string" ? b : b.highlight
+      ).join(""),
+
 
   notify       : (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({

@@ -318,6 +318,7 @@ export default class MainContent extends Component {
     this.applySettings = this.applySettings.bind(this);
     this.encryptData = this.encryptData.bind(this);
     this.decryptData = this.decryptData.bind(this);
+    this.removeInvalidImageNames = this.removeInvalidImageNames.bind(this);
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
     this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
@@ -712,6 +713,8 @@ export default class MainContent extends Component {
         thumbnail: image.thumbnails,
       };
     }
+
+    this.removeInvalidImageNames(this.data);
   }
 
   /**
@@ -756,7 +759,6 @@ export default class MainContent extends Component {
       this.applySettings(settings);
 
       this.updateTagPrediction(this.data);
-      this.remove
 
       this.setState({
         data: this.data,
@@ -1262,6 +1264,18 @@ export default class MainContent extends Component {
     );
   }
 
+  /**
+   * Removes the photos that are not indexed by imageMap
+   * @param data
+   */
+  removeInvalidImageNames(data) {
+    for (let d of data) {
+      if (d.images && d.images.filter) {
+        d.images = d.images.filter(image => this.imageMap[image]);
+      }
+    }
+  }
+
   sanitizeBulbContent(content) {
     if (content.place) {
       content.place = {
@@ -1547,7 +1561,9 @@ export default class MainContent extends Component {
                 className={`flex-extend-inner-wrapper stats-view ${this.state.isDisplaying === this.TAB.STATS ? "" : "hidden"}`}>
               <Chart
                   hidden={this.state.isDisplaying !== this.TAB.STATS}
-                  data={this.state.data}/>
+                  data={this.state.data}
+                  version={this.state.version}
+              />
             </div>
             <div
                 className={`flex-extend-inner-wrapper options-view ${this.state.isDisplaying === this.TAB.OPTIONS ? "" : "hidden"}`}>
