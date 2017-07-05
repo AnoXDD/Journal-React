@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+
 import {
   SortableContainer,
   SortableElement,
@@ -554,7 +555,19 @@ class Editor extends Component {
           this.hasUnsavedChanges = true;
         } else {
           nextState.title = nextProps.title;
-          nextState.body = nextProps.body;
+          if (typeof nextProps.body === "string") {
+            nextState.body = nextProps.body;
+          } else {
+this.body = nextProps.body;
+            nextState.body = nextProps.body.map(b => {
+              if (typeof b === "string") {
+                return b;
+              }
+
+              return b.highlight;
+            })
+                .join("");
+          }
           nextState.stats = {
             timeCreated: nextProps.time.created,
             timeBegin  : nextProps.time.begin || nextProps.time.created,
@@ -1317,6 +1330,7 @@ class Editor extends Component {
     return (
         <div
             className={`Editor ${this.state.isDarkMode ? "dark" : ""} ${this.state.isFullscreen ? "fullscreen" : ""}`}>
+          <div>{this.body}</div>
           <Prompt className={`${this.state.hasPrompt ? "" : "hidden"}`}
                   title="Content Conflict"
                   message="There appears to be unsaved changes here. If you proceed, they will be lost and overwritten by the new contents. Do you wish to continue?"

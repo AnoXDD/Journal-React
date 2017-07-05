@@ -205,6 +205,7 @@ const DEFAULT_SETTINGS = {
   // passcode: undefined,
 };
 
+
 export default class MainContent extends Component {
 
   SEARCH_BAR_TAGS = ["tags", "months", "attachments"];
@@ -456,7 +457,7 @@ export default class MainContent extends Component {
         // Then insert a highlighted version of keyword between each element
         for (let g of group) {
           realGroup.push(g);
-          realGroup.push(<span className="highlight">{keyword}</span>);
+          realGroup.push({highlight: keyword});
         }
 
         realGroup.pop();
