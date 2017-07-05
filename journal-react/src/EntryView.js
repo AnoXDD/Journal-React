@@ -95,11 +95,7 @@ class ContentArticle extends Component {
             <div className="flex-filler"></div>
             <div className="title">{article.title}</div>
             <div className="time">{time}</div>
-            <div className="details">{article.body.map ? article.body.map((d,
-                                                                           i) =>
-                typeof d === "string" ? d :
-                    <span key={i} className="highlight">{d.highlight}</span>
-            ) : article.body}</div>
+            <div className="details">{R.highlightArrayToJSX(article.body)}</div>
           </div>
           <Button
               className={this.props.className === " no-image" ? "" : "dark"}
@@ -152,10 +148,7 @@ class ContentBulb extends Component {
               <header className="time flex-center">
                 {this.props.time}
               </header>
-              <div className="details">{bulb.body.map ? bulb.body.map((d, i) =>
-                  typeof d === "string" ? d :
-                      <span key={i} className="highlight">{d.highlight}</span>
-              ) : bulb.body}</div>
+              <div className="details">{R.highlightArrayToJSX(bulb.body)}</div>
             </div>
           </div>
           <div className="buttons flex-center">

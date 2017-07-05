@@ -574,6 +574,8 @@ nav.nav {
     -moz-tab-size: 2em;
     -o-tab-size: 2em;
     tab-size: 2em;
+    margin: 0;
+    text-align: left;
     flex: 1 1 auto;
     font-size: 25px;
     font-family: "Noto Sans CJK SC", "Noto Sans SC", sans-serif;
@@ -583,6 +585,11 @@ nav.nav {
     background: inherit;
     position: relative;
     left: .5em;
+
+    .highlight {
+      font-family: inherit;
+      font-weight: lighter;
+    }
   }
 
   .extras {

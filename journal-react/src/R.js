@@ -3,6 +3,8 @@
  * A resource file to hold constant data. The name is inspired by Android
  */
 
+import React from "react";
+
 const MONTH = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const WEEKDAY = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -38,6 +40,12 @@ module.exports = {
 
   // Utility functions to add notifications
   copy: obj => obj ? JSON.parse(JSON.stringify(obj)) : obj,
+
+  highlightArrayToJSX: body =>
+      body.map ? body.map((d, i) =>
+          typeof d === "string" ? d :
+              <span key={i} className="highlight">{d.highlight}</span>
+      ) : body,
 
   notify       : (notificationSystem, message, title, autoDismiss) => {
     return notificationSystem.addNotification({

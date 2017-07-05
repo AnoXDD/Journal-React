@@ -307,6 +307,7 @@ class Editor extends Component {
   DEFAULT_STATE = {
     title           : this.DEFAULT_TITLE,
     body            : "",
+    bodyObject      : "",
     stats           : {
       timeCreated: 0,
       timeBegin  : 0,
@@ -555,10 +556,11 @@ class Editor extends Component {
           this.hasUnsavedChanges = true;
         } else {
           nextState.title = nextProps.title;
+          nextState.bodyObject = R.highlightArrayToJSX(nextProps.body);
+
           if (typeof nextProps.body === "string") {
             nextState.body = nextProps.body;
           } else {
-this.body = nextProps.body;
             nextState.body = nextProps.body.map(b => {
               if (typeof b === "string") {
                 return b;
@@ -568,6 +570,7 @@ this.body = nextProps.body;
             })
                 .join("");
           }
+
           nextState.stats = {
             timeCreated: nextProps.time.created,
             timeBegin  : nextProps.time.begin || nextProps.time.created,
@@ -595,6 +598,9 @@ this.body = nextProps.body;
         }
         this.version = new Date().getTime();
       }
+    } else {
+      // We're modifying current changes
+      nextState.bodyObject = nextState.body;
     }
   }
 
@@ -1330,7 +1336,6 @@ this.body = nextProps.body;
     return (
         <div
             className={`Editor ${this.state.isDarkMode ? "dark" : ""} ${this.state.isFullscreen ? "fullscreen" : ""}`}>
-          <div>{this.body}</div>
           <Prompt className={`${this.state.hasPrompt ? "" : "hidden"}`}
                   title="Content Conflict"
                   message="There appears to be unsaved changes here. If you proceed, they will be lost and overwritten by the new contents. Do you wish to continue?"
@@ -1404,11 +1409,19 @@ this.body = nextProps.body;
             >
               <NoScrollArea
                   backgroundColor={`${this.state.isDarkMode ? "#212121" : "white"}`}>
-                <textarea className="text-body"
-                          value={this.state.body}
-                          onChange={this.onBodyChange}
-                          onKeyDown={this.onBodyKeyDown}
-                          disabled={!this.state.isEditing}/>
+                {this.state.isEditing ?
+                    <textarea className="text-body"
+                              value={this.state.body}
+                              onChange={this.onBodyChange}
+                              onKeyDown={this.onBodyKeyDown}/>
+                    :
+                    <pre className="text-body">{this.state.bodyObject}</pre>
+                }
+                {/*<textarea className="text-body"*/}
+                {/*value={this.state.body}*/}
+                {/*onChange={this.onBodyChange}*/}
+                {/*onKeyDown={this.onBodyKeyDown}*/}
+                {/*disabled={!this.state.isEditing}/>*/}
               </NoScrollArea>
             </div>
           </div>
