@@ -756,6 +756,7 @@ export default class MainContent extends Component {
       this.applySettings(settings);
 
       this.updateTagPrediction(this.data);
+      this.remove
 
       this.setState({
         data: this.data,

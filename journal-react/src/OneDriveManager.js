@@ -258,6 +258,7 @@ export default class OneDriveManager {
         .then(client => client.api(api)
             .query(query)
             .select("id", "name")
+            .query({"expand": "thumbnails"})
             .top(TOP_LIST)
             .get()
         )
