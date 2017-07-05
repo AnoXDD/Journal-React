@@ -248,7 +248,7 @@ export default class MainContent extends Component {
   data = [];
   imageMap = {};
 
-  year = 2014 || new Date().getFullYear();
+  year = new Date().getFullYear();
 
   notificationSystem = null;
 

@@ -1343,8 +1343,6 @@ nav.nav {
       height: 100%;
       position: relative; }
     .EntryView .bulb-list .details {
-      display: flex;
-      justify-content: flex-start;
       padding: 4px 8px;
       width: 100%; }
     .EntryView .bulb-list .image {
