@@ -13,7 +13,7 @@ const MicrosoftGraph = require("@microsoft/microsoft-graph-client");
  * Change the approot to toggle between debug
  * @type {string}
  */
-const APPROOT = "Apps/Trak_debug/",
+const APPROOT = "Apps/Trak/",
     TOP_LIST = 1000;
 
 const client_id = "00000000441D0A11",
@@ -257,7 +257,6 @@ export default class OneDriveManager {
     return this.getClient()
         .then(client => client.api(api)
             .query(query)
-            .select("id", "name")
             .query({"expand": "thumbnails"})
             .top(TOP_LIST)
             .get()
@@ -313,7 +312,6 @@ export default class OneDriveManager {
   static getChildrenByPathWithThumbnails(path) {
     return this.getClient().then(client => {
       return client.api(`me${this.getPathHeader(path)}:/children`)
-          .select("id", "name")
           .query({"expand": "thumbnails"})
           .top(TOP_LIST)
           .get();
