@@ -369,7 +369,6 @@ export default class MainContent extends Component {
           this.setState({
             loadingProgress    : 0,
             loadingPrompt      : "Downloading content ...",
-            isDisplayingMapView: false,
           });
 
           return OneDriveManager.getData(this.year);
