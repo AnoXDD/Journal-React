@@ -1102,7 +1102,8 @@ class Editor extends Component {
         ["Created @ ", "timeCreated"]];
 
       for (let i = 0; i < lines.length; ++i) {
-        let line = lines[i];
+        let line = lines[i],
+            spliced = false;
 
         for (let pair of tags) {
           if (line.startsWith(pair[0])) {
@@ -1112,15 +1113,22 @@ class Editor extends Component {
 
               lines.splice(i--, 1);
 
+              spliced = true;
               break;
             }
           }
         }
 
-        // Add space
-        lines[i] = this.addSpaceBetweenCharacters(line);
+        if (!spliced) {
+          // Add space
+          lines[i] = this.addSpaceBetweenCharacters(line);
+        }
         // Add the difference
         selectionStart += lines[i].length - line.length;
+        // Because we just introduced a new character
+        if (spliced) {
+          --selectionStart;
+        }
       }
 
 

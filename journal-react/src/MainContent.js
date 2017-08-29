@@ -1534,7 +1534,7 @@ export default class MainContent extends Component {
                         data={this.bulbList}
                         contentStyle={this.contentStyle}
                         onBulbClick={this.handleBulbClick}
-                        center={this.state.settings.bulbMapCenter}
+                        center={this.state.bulbMapCenter || this.state.settings.bulbMapCenter}
                         version={this.state.mapVersion}
                         onBoundChange={this.handleBoundChange}
                     />
