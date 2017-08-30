@@ -1111,7 +1111,7 @@ class Editor extends Component {
             if (time && new Date(time).getFullYear() === this.props.year) {
               stats[pair[1]] = time;
 
-              lines.splice(i--, 1);
+              lines.splice(i, 1);
 
               spliced = true;
               break;
@@ -1128,6 +1128,7 @@ class Editor extends Component {
         // Because we just introduced a new character
         if (spliced) {
           --selectionStart;
+          --i;
         }
       }
 
