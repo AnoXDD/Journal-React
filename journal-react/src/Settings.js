@@ -10,18 +10,19 @@ import Button from "./lib/Button";
 import OneDriveManager from "./OneDriveManager";
 import Toggle from "./lib/Toggle";
 import NoScrollArea from "./lib/NoScrollArea";
+import Form from "./lib/Form";
 
 import R from "./R";
-
+import * as FormConstants from "./lib/FormConstants";
 
 class FormContent extends Component {
   render() {
     return (
-        <div className={`form-content ${this.props.className || ""}`}>
-          <div
-              className={`description ${this.props.subTitle ? "sub-title" : ""}`}>{this.props.title}</div>
-          <div className="btns">{this.props.children}</div>
-        </div>
+      <div className={`form-content ${this.props.className || ""}`}>
+        <div
+          className={`description ${this.props.subTitle ? "sub-title" : ""}`}>{this.props.title}</div>
+        <div className="btns">{this.props.children}</div>
+      </div>
     );
   }
 }
@@ -75,10 +76,10 @@ class DigitInput extends Component {
 
   render() {
     return (
-        <input type="text" className={this.props.className || ""}
-               name={this.props.name}
-               value={this.props.value}
-               onChange={this.handleChange}/>
+      <input type="text" className={this.props.className || ""}
+             name={this.props.name}
+             value={this.props.value}
+             onChange={this.handleChange}/>
     )
   }
 }
@@ -129,7 +130,7 @@ export default class Settings extends Component {
     this.handleLocationInputChange = this.handleLocationInputChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSetDefaultLocationClick = this.handleSetDefaultLocationClick.bind(
-        this);
+      this);
     this.handleSave = this.handleSave.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
@@ -168,16 +169,16 @@ export default class Settings extends Component {
     });
 
     this.props.handleMissingImages()
-        .then(() => {
-          this.setState({
-            isLoadingMissingImages: false,
-          });
-        })
-        .catch(() => {
-          this.setState({
-            isLoadingMissingImages: false,
-          });
+      .then(() => {
+        this.setState({
+          isLoadingMissingImages: false,
         });
+      })
+      .catch(() => {
+        this.setState({
+          isLoadingMissingImages: false,
+        });
+      });
   }
 
 
@@ -210,7 +211,7 @@ export default class Settings extends Component {
       console.error(`ERROR(${err.code}): ${err.message}`);
 
       R.notifyError(this.props.notificationSystem,
-          "Unable to get current location. Did you grant access?");
+        "Unable to get current location. Did you grant access?");
     }, {
       enableHighAccuracy: true,
       maximumAge        : 0,
@@ -220,7 +221,7 @@ export default class Settings extends Component {
   validateSettings() {
     if (this.state.password !== this.state.passwordConfirm) {
       R.notifyError(this.props.notificationSystem,
-          "Password does not match. No changes are saved. ");
+        "Password does not match. No changes are saved. ");
       return false;
     }
 
@@ -257,18 +258,18 @@ export default class Settings extends Component {
     let data = this.generateSettingsData();
 
     this.props.onSave(data)
-        .then(() => {
-          this.setState({
-            isSaving: false,
-          });
-        })
-        .catch(err => {
-          console.error(err.stack);
-
-          this.setState({
-            isSaving: false,
-          });
+      .then(() => {
+        this.setState({
+          isSaving: false,
         });
+      })
+      .catch(err => {
+        console.error(err.stack);
+
+        this.setState({
+          isSaving: false,
+        });
+      });
   }
 
   handleToggle(e) {
@@ -285,22 +286,22 @@ export default class Settings extends Component {
     });
 
     OneDriveManager.emptyQueueFolder()
-        .then(() => {
-          R.notify(this.props.notificationSystem, "Images are removed");
+      .then(() => {
+        R.notify(this.props.notificationSystem, "Images are removed");
 
-          this.setState({
-            isEmptyingQueueFolder: false,
-          });
-        })
-        .catch(err => {
-          R.notifyError(this.props.notificationSystem,
-              "There was an error when deleting the image. Try again");
-          console.error(err.stack);
+        this.setState({
+          isEmptyingQueueFolder: false,
+        });
+      })
+      .catch(err => {
+        R.notifyError(this.props.notificationSystem,
+          "There was an error when deleting the image. Try again");
+        console.error(err.stack);
 
-          this.setState({
-            isEmptyingQueueFolder: false,
-          });
-        })
+        this.setState({
+          isEmptyingQueueFolder: false,
+        });
+      })
   }
 
   handleSignOut() {
@@ -319,174 +320,222 @@ export default class Settings extends Component {
   }
 
   render() {
+    let data = [
+      {
+        title: "Content",
+        rows : [
+          /* New row */
+          {
+            title  : "Images",
+            content: [{
+              title   : "Lost some images when you deleted them?",
+              elements: [{
+                type : FormConstants.BUTTON,
+                props: {
+                  text   : "fix",
+                  onClick: this.handleMissingImages,
+                  loading: this.state.isLoadingMissingImages,
+                  icon   : "build",
+                }
+              }],
+            }, {
+              title   : "Remove all the images that don't belong to anything",
+              elements: [{
+                type : FormConstants.BUTTON,
+                props: {
+                  text   : "clean",
+                  onClick: this.emptyQueueFolder,
+                  loading: this.state.isEmptyingQueueFolder,
+                  icon   : "delete",
+                }
+              }]
+            }]
+          },
+          /* New row */
+          {
+            title  : "User",
+            content: [{
+              title   : "",
+              elements: [{
+                type : FormConstants.BUTTON,
+                props: {
+                  text   : "sign out",
+                  onClick: this.handleSignOut,
+                  icon   : "exit_to_app",
+                }
+              }]
+            }]
+          },
+        ]
+      },
+
+      /* New form */
+      {
+        title: "Personalization",
+        rows : [
+          {
+            title  : "Bulb Map",
+            content: [
+              {
+                title   : "Set the default center of the bulb map",
+                elements: [{
+                  type : FormConstants.BUTTON,
+                  props: {
+                    text   : "get location",
+                    onClick: this.handleSetDefaultLocationClick,
+                    tooltip: "Set as current location",
+                    icon   : "my_location",
+                  }
+                }]
+              },
+              {
+                elements: [{
+                  type : FormConstants.DIGIT_INPUT,
+                  props: {
+                    label    : "Latitude",
+                    className: "normal underlined",
+                    name     : "latitude",
+                    value    : this.state.bulbMapCenter.latitude,
+                    min      : -180,
+                    max      : 180,
+                    onChange : this.handleLocationInputChange,
+                  }
+                }, {
+                  type : FormConstants.DIGIT_INPUT,
+                  props: {
+                    label    : "Longitude",
+                    className: "normal underlined",
+                    name     : "longitude",
+                    value    : this.state.bulbMapCenter.longitude,
+                    min      : -90,
+                    max      : 90,
+                    onChange : this.handleLocationInputChange,
+                  }
+                }]
+              }
+            ]
+          },
+          /* New row*/
+          {
+            title  : "Bulb",
+            content: [
+              {
+                title   : "Bulb will include your location by default",
+                elements: [{
+                  type : FormConstants.TOGGLE,
+                  props: {
+                    "data-tag": "bulbAttachLocation",
+                    onClick   : this.handleToggle,
+                    isChanging: this.state.bulbAttachLocation,
+                    firstIcon : "check_box_outline_blank",
+                    secondIcon: "check_box",
+                  },
+                }]
+              }
+            ]
+          }
+        ]
+      },
+
+      /* New form */
+      {
+        title: "Security",
+        rows : [
+          /* New row */
+          {
+            title  : "Data",
+            content: [
+              {
+                title   : "Encrypt your data with password",
+                elements: [{
+                  type : FormConstants.TOGGLE,
+                  props: {
+                    "data-tag": "passwordEnabled",
+                    onClick   : this.handleToggle,
+                    isChanging: this.state.passwordEnabled,
+                    firstIcon : "check_box_outline_blank",
+                    secondIcon: "check_box",
+                  }
+                }]
+              },
+              {
+                title    : "By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. As a result, the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so YOU ARE RESPONSIBLE FOR REMEMBERING THE PASSWORD: IF YOU LOST IT, THERE IS NO WAY TO RETRIEVE IT",
+                subTitle : true,
+                className: this.state.passwordEnabled ? "" : "hidden",
+                elements : [
+                  {type: FormConstants.NONE}
+                ]
+              },
+              {
+                className: this.state.passwordEnabled ? "" : "hidden",
+                elements : [
+                  {
+                    type : FormConstants.INPUT,
+                    props: {
+                      label    : "Password",
+                      className: `normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`,
+                      name     : "password",
+                      type     : "password",
+                      value    : this.state.password,
+                      onChange : this.handleChange,
+                    }
+                  }
+                ]
+              },
+              {
+                className: this.state.passwordEnabled ? "" : "hidden",
+                elements : [
+                  {
+                    type : FormConstants.INPUT,
+                    props: {
+                      label    : "Confirm password",
+                      className: `normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`,
+                      name     : "passwordConfirm",
+                      type     : "password",
+                      value    : this.state.passwordConfirm,
+                      onChange : this.handleChange,
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+
+      /* New form */
+      {
+        rows: [{
+          title  : "Last built",
+          content: [{
+            title   : document.lastModified,
+            elements: [
+              {type: FormConstants.NONE}
+            ]
+          }]
+        }]
+      }
+    ];
+
     return (
-        <div className="flex-center settings bg-grey">
-          <header className="main-header flex-center">
-            <div className="btns">
-              <Button className="dark align-right"
-                      onClick={this.handleSave}
-                      loading={this.state.isSaving}
-                      text="save">save</Button>
+      <div className="flex-center settings bg-grey">
+        <header className="main-header flex-center">
+          <div className="btns">
+            <Button className="dark align-right"
+                    onClick={this.handleSave}
+                    loading={this.state.isSaving}
+                    text="save">save</Button>
+          </div>
+        </header>
+        <NoScrollArea
+          backgroundColor="#eeeced">
+          <div className="content flex-center">
+            <div className="settings-wrapper">
+              <Form className="settings-wrapper" data={data}/>
             </div>
-          </header>
-          <NoScrollArea
-              backgroundColor="#eeeced">
-            <div className="content flex-center">
-              <div className="settings-wrapper">
-                <div className="form shadow">
-                  <div className="form-title">Content</div>
-                  <div className="form-row">
-                    <div className="title-dark flex-center">Images</div>
-                    <div className="form-contents">
-                      <FormContent
-                          title="Lost some images when you deleted them?">
-                        <Button
-                            text="fix"
-                            onClick={this.handleMissingImages}
-                            loading={this.state.isLoadingMissingImages}
-                        >build</Button>
-                      </FormContent>
-                      <FormContent
-                          title="Remove all the images that don't belong to anything">
-                        <Button
-                            text="clean"
-                            onClick={this.emptyQueueFolder}
-                            loading={this.state.isEmptyingQueueFolder}
-                        >delete</Button>
-                      </FormContent>
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="title-dark flex-center">User</div>
-                    <div className="form-contents">
-                      <FormContent title="">
-                        <Button
-                            text="sign out"
-                            onClick={this.handleSignOut}
-                        >exit_to_app</Button>
-                      </FormContent>
-                    </div>
-                  </div>
-                </div>
-                <div className="form shadow">
-                  <div className="form-title">Personalization</div>
-                  <div className="form-row">
-                    <div className="title-dark flex-center">Bulb Map</div>
-                    <div className="form-contents">
-                      <FormContent
-                          title="Set the default center of the bulb map">
-                        <Button
-                            onClick={this.handleSetDefaultLocationClick}
-                            text="get location"
-                            tooltip="Set as current location">
-                          my_location
-                        </Button>
-                      </FormContent>
-                      <FormContent>
-                        <p className="input-label">Latitude</p>
-                        <div className="flex-center">
-                          <DigitInput className="normal underlined"
-                                      name="latitude"
-                                      value={this.state.bulbMapCenter.latitude}
-                                      min={-180}
-                                      max={180}
-                                      onChange={this.handleLocationInputChange}
-                          />
-                        </div>
-                        <p className="input-label">Longitude</p>
-                        <div className="flex-center">
-                          <DigitInput className="normal underlined"
-                                      name="longitude"
-                                      value={this.state.bulbMapCenter.longitude}
-                                      min={-90}
-                                      max={90}
-                                      onChange={this.handleLocationInputChange}
-                          />
-                        </div>
-                      </FormContent>
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="title-dark flex-center">Bulb</div>
-                    <div className="form-contents">
-                      <FormContent
-                          title="Bulb will include your location by default">
-                        <Toggle
-                            data-tag="bulbAttachLocation"
-                            onClick={this.handleToggle}
-                            isChanging={this.state.bulbAttachLocation}
-                            firstIcon="check_box_outline_blank"
-                            secondIcon="check_box"/>
-                      </FormContent>
-                    </div>
-                  </div>
-                </div>
-                <div className="form shadow">
-                  <div className="form-title">Security</div>
-                  <div className="form-row">
-                    <div className="title-dark flex-center">Data</div>
-                    <div className="form-contents">
-                      <FormContent
-                          title="Encrypt your data with password">
-                        <Toggle
-                            data-tag="passwordEnabled"
-                            onClick={this.handleToggle}
-                            isChanging={this.state.passwordEnabled}
-                            firstIcon="check_box_outline_blank"
-                            secondIcon="check_box"/>
-                      </FormContent>
-                      <FormContent
-                          subTitle
-                          className={this.state.passwordEnabled ? "" : "hidden"}
-                          title="By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. As a result, the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so YOU ARE RESPONSIBLE FOR REMEMBERING THE PASSWORD: IF YOU LOST IT, THERE IS NO WAY TO RETRIEVE IT">
-                        <span></span>
-                      </FormContent>
-                      <FormContent
-                          className={this.state.passwordEnabled ? "" : "hidden"}
-                      >
-                        <p className="input-label">Password</p>
-                        <div className="flex-center">
-                          <input
-                              className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
-                              name="password"
-                              type="password"
-                              value={ this.state.password}
-                              onChange={this.handleChange}
-                          />
-                        </div>
-                      </FormContent>
-                      <FormContent
-                          className={(this.state.passwordEnabled) ? "" : "hidden"}
-                      >
-                        <p className="input-label">Confirm password</p>
-                        <div className="flex-center">
-                          <input
-                              className={`normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`}
-                              name="passwordConfirm"
-                              type="password"
-                              value={this.state.passwordConfirm}
-                              onChange={this.handleChange}
-                          />
-                        </div>
-                      </FormContent>
-                    </div>
-                  </div>
-                </div>
-                <div className="form shadow">
-                  <div className="form-row">
-                    <div className="title-dark flex-center">Last built</div>
-                    <div className="form-contents">
-                      <FormContent
-                          title={document.lastModified}>
-                        <span></span>
-                      </FormContent>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </NoScrollArea>
-        </div>
+          </div>
+        </NoScrollArea>
+      </div>
     );
   }
 }

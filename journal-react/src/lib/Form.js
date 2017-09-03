@@ -7,6 +7,7 @@
 import React, {Component} from 'react';
 import Button from "./Button";
 import Toggle from "./Toggle";
+import FormConstants from "./FormConstants";
 
 class FormContent extends Component {
   render() {
@@ -77,73 +78,76 @@ class DigitInput extends Component {
   }
 }
 
-module.exports = {
-  type: {
-    NONE       : 1,
-    PLAIN_TEXT : 2,
-    TOGGLE     : 3,
-    BUTTON     : 4,
-    INPUT      : 5,
-    DIGIT_INPUT: 6,
-  }
-};
-
 export default class Form extends Component {
-
   render() {
     return (
       <div className={`form ${this.props.className || ""}`}>
-        {this.props.data.map(form =>
-          <div className="form shadow">
-            <div className="form-title">{form.content}</div>
-            {!form.row.map ? form.row : form.row.map(row =>
-              <div className="form-row">
+        {this.props.data.map((form, formIndex) =>
+          <div key={formIndex} className="form shadow">
+            {form.title ? <div className="form-title">{form.title}</div> : null}
+            {!form.rows.map ? form.rows : form.rows.map((row, rowIndex) =>
+              <div key={`${formIndex}-${rowIndex}`} className="form-row">
                 <div className="title-dark flex-center">{row.title}</div>
                 <div className="form-contents">
-                  {!row.content.map ? row.content : row.content.map(content =>
-                    <FormContent
-                      className={content.className}
-                      title={content.title} {content.subTitle}>
-                      {!content.elements.map ? content.elements
-                        : content.elements.map(
-                          elem => {
-                            switch (elem.type) {
-                              case Form.type.NONE:
-                                return (<span></span>);
+                  {!row.content.map ? row.content
+                    : row.content.map((content, contentIndex) =>
+                      <FormContent
+                        key={`${formIndex}-${rowIndex}-${contentIndex}`}
+                        className={content.className}
+                        title={content.title}
+                        subTitle={!!content.subTitle}
+                      >
+                        {!content.elements.map ? content.elements
+                          : content.elements.map(
+                            (elem, elemIndex) => {
+                              let label = "",
+                                props = {};
 
-                              case Form.type.PLAIN_TEXT:
-                                return (
-                                  <p className="plain-text">elem.props</p>
-                                );
+                              switch (elem.type) {
+                                case FormConstants.NONE:
+                                  return (<span key={elemIndex}></span>);
 
-                              case Form.type.TOGGLE:
-                                return (<Toggle {...elem.props}/>);
+                                case FormConstants.PLAIN_TEXT:
+                                  return (
+                                    <p key={elemIndex} className="plain-text">
+                                      elem.props
+                                    </p>
+                                  );
 
-                              case Form.type.BUTTON:
-                                return (<Button {...elem.props}/>);
+                                case FormConstants.TOGGLE:
+                                  return (
+                                    <Toggle key={elemIndex} {...elem.props}/>);
 
-                              case Form.type.INPUT:
-                                ({label, props} = elem.props);
-                                return ([
-                                  <p className="input-label">{label}</p>,
-                                  <div className="flex-center">
-                                    <input {...props}/>
-                                  </div>
-                                ]);
+                                case FormConstants.BUTTON:
+                                  return (
+                                    <Button key={elemIndex} {...elem.props}/>
+                                  );
 
-                              case Form.type.DIGIT_INPUT:
-                                ({label, props} = elem.props);
-                                return ([
-                                  <p className="input-label">{label}</p>,
-                                  <div className="flex-center">
-                                    <DigitInput {...props}/>
-                                  </div>
-                                ]);
+                                case FormConstants.INPUT:
+                                  ({label, ...props} = elem.props);
+                                  return ([
+                                    <p key={`${elemIndex}-p`} className="input-label">{label}</p>,
+                                    <div key={`${elemIndex}-div`} className="flex-center">
+                                      <input {...props}/>
+                                    </div>
+                                  ]);
+
+                                case FormConstants.DIGIT_INPUT:
+                                  ({label, ...props} = elem.props);
+                                  return ([
+                                    <p key={`${elemIndex}-p`} className="input-label">{label}</p>,
+                                    <div key={`${elemIndex}-div`} className="flex-center">
+                                      <DigitInput {...props}/>
+                                    </div>
+                                  ]);
+
+                                default:
+                                  return null;
+                              }
                             }
-                          }
-                        )}
-                    </FormContent>
-                  )}
+                          )}
+                      </FormContent>
+                    )}
                 </div>
               </div>
             )}
