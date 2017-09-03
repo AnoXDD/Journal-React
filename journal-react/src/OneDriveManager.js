@@ -13,7 +13,7 @@ const MicrosoftGraph = require("@microsoft/microsoft-graph-client");
  * Change the approot to toggle between debug
  * @type {string}
  */
-const APPROOT = "Apps/Trak_debug/",
+const APPROOT = window.location.hostname === "localhost" ? "Apps/Trak_debug/" : "Apps/Trak/",
     TOP_LIST = 1000;
 
 const client_id = "00000000441D0A11",
