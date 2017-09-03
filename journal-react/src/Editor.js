@@ -7,13 +7,13 @@ import {
 } from 'react-sortable-hoc';
 import AutosizeInput from "react-input-autosize";
 
-import NoScrollArea from "./NoScrollArea";
-import Toggle from "./Toggle";
+import NoScrollArea from "./lib/NoScrollArea";
+import Toggle from "./lib/Toggle";
 import PredictionInputs from "./PredictionInputs";
-import Button from "./Button";
-import NumberCard from "./NumberCard";
-import Prompt from "./Prompt";
-import Image from "./Image";
+import Button from "./lib/Button";
+import NumberCard from "./lib/NumberCard";
+import Prompt from "./lib/Prompt";
+import Image from "./lib/Image";
 import ImagePicker from "./ImagePicker";
 import OneDriveManager from "./OneDriveManager";
 

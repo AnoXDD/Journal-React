@@ -6,12 +6,12 @@
 import React, {Component} from "react";
 import NotificationSystem from "react-notification-system";
 
-import Button from "./Button";
+import Button from "./lib/Button";
 
 import Editor from './Editor';
 import Calendar from "./Calendar";
 import EntryView from "./EntryView";
-import SearchBar from "./SearchBar";
+import SearchBar from "./lib/SearchBar";
 import BulbMap from "./BulbMap";
 import Chart from "./Chart";
 import BulbEditor from "./BulbEditor";

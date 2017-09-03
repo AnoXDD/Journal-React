@@ -5,8 +5,8 @@
  */
 
 import React, {Component} from "react";
-import NoScrollArea from "./NoScrollArea";
-import PredictionInput from "./PredictionInput";
+import NoScrollArea from "./lib/NoScrollArea";
+import PredictionInput from "./lib/PredictionInput";
 
 export default class PredictionInputs extends Component {
 

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 
-import NoScrollArea from "./NoScrollArea";
-import Button from "./Button";
-import Toggle from "./Toggle";
-import Prompt from "./Prompt";
-import Image from "./Image";
+import NoScrollArea from "./lib/NoScrollArea";
+import Button from "./lib/Button";
+import Toggle from "./lib/Toggle";
+import Prompt from "./lib/Prompt";
+import Image from "./lib/Image";
 import ImagePicker from "./ImagePicker";
 import OneDriveManager from "./OneDriveManager";
 

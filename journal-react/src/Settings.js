@@ -6,10 +6,10 @@
 
 import React, {Component} from "react";
 
-import Button from "./Button";
+import Button from "./lib/Button";
 import OneDriveManager from "./OneDriveManager";
-import Toggle from "./Toggle";
-import NoScrollArea from "./NoScrollArea";
+import Toggle from "./lib/Toggle";
+import NoScrollArea from "./lib/NoScrollArea";
 
 import R from "./R";
 

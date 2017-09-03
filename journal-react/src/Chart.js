@@ -15,9 +15,9 @@ import {
   ResponsiveContainer
 } from "recharts";
 
-import NoScrollArea from "./NoScrollArea";
-import Button from "./Button";
-import Toggle from "./Toggle";
+import NoScrollArea from "./lib/NoScrollArea";
+import Button from "./lib/Button";
+import Toggle from "./lib/Toggle";
 import R from "./R";
 
 const KEYWORD_DELIMITOR = ",";

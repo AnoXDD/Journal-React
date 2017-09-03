@@ -6,9 +6,9 @@
 import React, {Component} from "react";
 import Button from "./Button";
 import Toggle from "./Toggle";
-import PredictionInputs from "./PredictionInputs";
+import PredictionInputs from "../PredictionInputs";
 import Prompt from "./Prompt";
-import R from "./R";
+import R from "../R";
 
 import Ink from "react-ink";
 

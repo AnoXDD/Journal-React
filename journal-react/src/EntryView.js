@@ -4,9 +4,9 @@
  */
 
 import React, {Component} from "react";
-import NoScrollArea from "./NoScrollArea";
-import Button from "./Button";
-import Image from "./Image";
+import NoScrollArea from "./lib/NoScrollArea";
+import Button from "./lib/Button";
+import Image from "./lib/Image";
 import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
