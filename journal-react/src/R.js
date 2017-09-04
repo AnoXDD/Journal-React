@@ -41,7 +41,21 @@ module.exports = {
   // Utility functions to add notifications
   copy: obj => obj ? JSON.parse(JSON.stringify(obj)) : obj,
 
+  /**
+   * Counts the length of the character (for asian characters)
+   * @param str
+   */
   count: str => (str.match(/[\u00ff-\uffff]|\S+/g) || []).length,
+
+  /**
+   * Converts the timestamp to a human readable time
+   * @param date {Number}
+   */
+  dateToString: date => {
+    let d = new Date(date);
+    return `${MONTH[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
+  },
+
 
   highlightArrayToJSX: body =>
     body.map ? body.map((d, i) =>

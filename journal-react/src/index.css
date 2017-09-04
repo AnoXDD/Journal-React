@@ -1631,45 +1631,49 @@ nav.nav {
       margin: 0;
       padding: 10px 40px 40px; }
 
-.settings {
+.settings, .stats {
   height: 100%;
   flex-direction: column;
   overflow: hidden; }
-  .settings .settings-wrapper {
+  .settings .settings-wrapper, .stats .settings-wrapper {
     height: 100%;
     width: 800px;
     background: transparent; }
-  .settings .title-dark {
+  .settings .title-dark, .stats .title-dark {
     width: 100px;
     flex: 0 0 100px;
     margin-right: 20px; }
-  .settings .form {
+  .settings .form, .stats .form {
     margin-bottom: 20px; }
-  .settings .form-row.button {
+  .settings .form-row.button, .stats .form-row.button {
     margin-top: 20px; }
-  .settings .form-contents {
+  .settings .form-contents, .stats .form-contents {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     margin-right: -20px; }
-    .settings .form-contents .form-content {
+    .settings .form-contents .form-content, .stats .form-contents .form-content {
       display: flex;
       align-items: center;
       justify-content: flex-start;
       min-height: 50px;
       height: auto; }
-    .settings .form-contents .description {
+    .settings .form-contents .description, .stats .form-contents .description {
       flex: 1 1 auto; }
-    .settings .form-contents .sub-title {
+    .settings .form-contents .sub-title, .stats .form-contents .sub-title {
       color: grey;
       font-size: 11px;
       margin-bottom: 10px; }
-  .settings .input-label {
+  .settings .input-label, .stats .input-label {
     padding: 0 10px; }
-  .settings .normal.underlined {
+  .settings .normal.underlined, .stats .normal.underlined {
     width: 90px; }
-    .settings .normal.underlined.password {
+    .settings .normal.underlined.password, .stats .normal.underlined.password {
       width: 200px; }
+
+.stats .form-contents .form-content {
+  min-height: 30px;
+  height: 30px; }
 
 .label-btn {
   position: relative; }

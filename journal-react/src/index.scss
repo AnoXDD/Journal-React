@@ -1901,7 +1901,7 @@ nav.nav {
   }
 }
 
-.settings {
+.settings, .stats {
   height: 100%;
   flex-direction: column;
   overflow: hidden;
@@ -1961,6 +1961,13 @@ nav.nav {
     &.password {
       width: 200px;
     }
+  }
+}
+
+.stats {
+  .form-contents .form-content {
+    min-height: 30px;
+    height: 30px;
   }
 }
 

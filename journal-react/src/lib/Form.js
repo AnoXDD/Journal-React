@@ -110,7 +110,7 @@ export default class Form extends Component {
                                 case FormConstants.PLAIN_TEXT:
                                   return (
                                     <p key={elemIndex} className="plain-text">
-                                      elem.props
+                                      {elem.props}
                                     </p>
                                   );
 

@@ -6,12 +6,15 @@
 
 import React, {Component} from "react";
 import Form from "./lib/Form";
+import NoScrollArea from "./lib/NoScrollArea";
+
 import * as R from "./R";
+import * as FormConstants from "./lib/FormConstants";
 
 export default class Stats extends Component {
 
   version = 0;
-  data = {};
+  data = [];
 
   shouldComponentUpdate(nextProps) {
     return !nextProps.hidden || nextProps.version !== this.version;
@@ -85,9 +88,7 @@ export default class Stats extends Component {
    */
   processData() {
     this.processCharData();
-
     this.processAverageData();
-
     this.processStreakData();
   }
 
@@ -105,7 +106,7 @@ export default class Stats extends Component {
       this.processEntryTimeData(entry, char);
 
       // Images
-      let imageNumber = entry.images ? 0 : entry.images.length;
+      let imageNumber = entry.images ? entry.images.length : 0;
       this.totalEntryImages += imageNumber;
 
       if (entry.type === R.TYPE_ARTICLE) {
@@ -161,13 +162,13 @@ export default class Stats extends Component {
   }
 
   processAverageData() {
-    this.averageEntryChar = this.totalEntryChar / this.totalEntries;
-    this.averageArticleChar = this.totalArticleChar / this.totalArticles;
-    this.averageBulbChar = this.totalBulbChar / this.totalBulbs;
-    this.averageTimeSpent = this.totalTimeSpent / this.totalEntriesWithTime;
-    this.averageCharPerMinute = this.totalEntryCharWithTime / this.totalTimeSpent * 60000;
-    this.averageArticleImages = this.totalArticleImages / this.totalArticles;
-    this.averageBulbImages = this.totalBulbImages / this.totalBulbs;
+    this.averageEntryChar = this.totalEntries ? this.totalEntryChar / this.totalEntries : 0;
+    this.averageArticleChar = this.totalArticles ? this.totalArticleChar / this.totalArticles : 0;
+    this.averageBulbChar = this.totalBulbs ? this.totalBulbChar / this.totalBulbs : 0;
+    this.averageTimeSpent = this.totalEntriesWithTime ? this.totalTimeSpent / this.totalEntriesWithTime : 0;
+    this.averageCharPerMinute = this.totalTimeSpent ? this.totalEntryCharWithTime / this.totalTimeSpent * 60000 : 0;
+    this.averageArticleImages = this.totalArticles ? this.totalArticleImages / this.totalArticles : 0;
+    this.averageBulbImages = this.totalBulbs ? this.totalBulbImages / this.totalBulbs : 0;
   }
 
   processStreakData() {
@@ -192,37 +193,33 @@ export default class Stats extends Component {
       currentArticleStreak = 0,
       currentBulbStreak = 0;
 
-    for (let dayOfYear = 0; dayOfYear < totalDay; ++dayOfYear) {
+    for (let dayOfYear = 1; dayOfYear <= totalDay; ++dayOfYear) {
       let date = new Date(currentYear, 0, dayOfYear),
         month = date.getMonth(),
         day = date.getDate();
 
-      let nextDate = new Date(currentYear, 0, dayOfYear + 1),
-        nextMonth = nextDate.getMonth(),
-        nextDay = nextDate.getDate();
-
-      if (!bulbs[nextMonth][nextDay]) {
+      if (!bulbs[month][day]) {
         // Reset current streak
         if (currentBulbStreak > this.longestBulbStreak) {
           this.longestBulbStreak = currentBulbStreak;
-          this.longestBulbStreakTo = nextDate.getTime();
+          this.longestBulbStreakTo = date.getTime();
         }
 
         currentBulbStreak = 0;
       } else {
-        if (bulbs[nextMonth][nextDay] > this.mostBulbsInOneDay) {
-          this.mostBulbsInOneDay = bulb[nextMonth][nextDay];
-          this.mostBulbsInOneDayOn = nextDate;
+        if (bulbs[month][day] > this.mostBulbsInOneDay) {
+          this.mostBulbsInOneDay = bulbs[month][day];
+          this.mostBulbsInOneDayOn = date;
         }
 
         ++currentBulbStreak;
       }
 
-      if (!articles[nextMonth][nextDay]) {
+      if (!articles[month][day]) {
         // Reset current streak
         if (currentArticleStreak > this.longestArticleStreak) {
           this.longestArticleStreak = currentArticleStreak;
-          this.longestArticleStreakTo = nextDate.getTime();
+          this.longestArticleStreakTo = date.getTime();
         }
 
         currentArticleStreak = 0;
@@ -230,7 +227,7 @@ export default class Stats extends Component {
         ++currentArticleStreak;
       }
 
-      if (currentBulbStreak != 0 && currentArticleStreak != 0) {
+      if (currentBulbStreak && currentArticleStreak) {
         // If both streaks are not reset to 0, that means we still have either
         // going on
         ++currentEntryStreak;
@@ -238,7 +235,7 @@ export default class Stats extends Component {
         // Reset current streak
         if (currentEntryStreak > this.longestEntryStreak) {
           this.longestEntryStreak = currentEntryStreak;
-          this.longestArticleStreakTo = nextDate.getTime();
+          this.longestArticleStreakTo = date.getTime();
         }
 
         currentEntryStreak = 0;
@@ -264,7 +261,151 @@ export default class Stats extends Component {
    * Compile the current data to `this.data` to display it
    */
   writeData() {
+    this.data = [];
 
+    let template = this.generateFormTemplate();
+    for (let form of template) {
+      let formData = {title: form[0]},
+        rowsData = [];
+
+      for (let row of form[1]) {
+        if (!row) {
+          continue;
+        }
+
+        let rowData = {title: row[0]},
+          contentData = [];
+
+        for (let content of row[1]) {
+          if (!content) {
+            continue;
+          }
+
+          contentData.push({
+            title   : content[0],
+            elements: [{
+              type : FormConstants.PLAIN_TEXT,
+              props: content[1],
+            }]
+          });
+        }
+
+        rowData.content = contentData;
+        rowsData.push(rowData);
+      }
+
+      formData.rows = rowsData;
+      this.data.push(formData);
+    }
+  }
+
+  generateFormTemplate() {
+    return [
+      ["Summary",
+        [
+          ["All",
+            [
+              ["Total", this.totalEntries],
+              ["Total characters", this.totalEntryChar],
+              ["Average character", this.averageEntryChar.toFixed(3)],
+              ["Lowest character", this.minEntryChar],
+              ["Highest character", this.maxEntryChar],
+            ]
+          ],
+          ["Articles",
+            [
+              ["Total", this.totalArticles],
+              ["Total characters", this.totalArticleChar],
+              ["Average character", this.averageArticleChar.toFixed(3)],
+              ["Lowest character", this.minArticleChar],
+              ["Lowest character on", R.dateToString(this.minArticleCharOn)],
+              ["Lowest character title", this.minArticleCharTitle],
+              ["Highest character", this.maxArticleChar],
+              ["Highest character on", R.dateToString(this.maxArticleCharOn)],
+              ["Highest character title", this.maxArticleCharTitle],
+            ]
+          ],
+          ["Bulbs",
+            [
+              ["Total", this.totalBulbs],
+              ["Total characters", this.totalBulbChar],
+              ["Average character", this.averageBulbChar.toFixed(3)],
+              ["Lowest character", this.minBulbChar],
+              ["Lowest character on", R.dateToString(this.minBulbCharOn)],
+              ["Highest character", this.maxBulbChar],
+              ["Highest character on", R.dateToString(this.maxBulbCharOn)],
+            ]
+          ]
+        ]
+      ],
+      ["Devotion",
+        [
+          ["Time spent",
+            [
+              ["Total time spent", this.totalTimeSpent],
+              ["Average time spent", this.averageTimeSpent.toFixed(3)],
+              ["Lowest time spent", this.minTimeSpent],
+              ["Highest time spent", this.maxTimeSpent],
+              ["Average character per minute", this.averageCharPerMinute.toFixed(
+                3)],
+            ]
+          ]
+        ]
+      ],
+      ["Attachments",
+        [
+          ["Images",
+            [
+              ["Total images", this.totalEntryImages],
+              ["Total article images", this.totalArticleImages],
+              ["Average article images", this.averageArticleImages.toFixed(3)],
+              ["Highest article images", this.maxArticleImages],
+              ["Total bulb images", this.totalBulbImages],
+              ["Average bulb images", this.averageBulbImages.toFixed(3)],
+            ]
+          ],
+          ["Location",
+            [["Total bulb locations", this.totalBulbLocations]],
+          ],
+        ]
+      ],
+      ["Engagement",
+        [
+          ["Streak",
+            [
+              ["Longest streak", Stats.appendDays(this.longestEntryStreak)],
+              ["Longest article streak", Stats.appendDays(this.longestArticleStreak)],
+              this.longestArticleStreak ?
+                ["Longest article streak from", R.dateToString(this.longestArticleStreakFrom)] : null,
+              this.longestArticleStreak ?
+                ["Longest article streak to", R.dateToString(this.longestArticleStreakTo)] : null,
+              ["Longest bulb streak", Stats.appendDays(this.longestBulbStreak)],
+              this.longestBulbStreak ?
+                ["Longest bulb streak from", R.dateToString(this.longestBulbStreakFrom)] : null,
+              this.longestBulbStreak ?
+                ["Longest bulb streak to", R.dateToString(this.longestBulbStreakTo)] : null,
+            ]
+          ],
+          ["Bulb",
+            [
+              ["Most bulbs in a day", this.mostBulbsInOneDay],
+              ["Most bulbs on", R.dateToString(this.mostBulbsInOneDayOn)],
+            ]
+          ]
+        ]
+      ]
+    ];
+  }
+
+  /**
+   * Append "days" or "day" to the end of the number
+   */
+  static appendDays(number) {
+    if (!number) {
+      return "-";
+    }
+
+    return number === 1 ? `${number} day` : `${number} days`;
   }
 
   /**

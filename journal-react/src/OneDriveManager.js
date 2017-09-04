@@ -14,20 +14,20 @@ const MicrosoftGraph = require("@microsoft/microsoft-graph-client");
  * @type {string}
  */
 const APPROOT = window.location.hostname === "localhost" ? "Apps/Trak_debug/" : "Apps/Trak/",
-    TOP_LIST = 1000;
+  TOP_LIST = 1000;
 
 const client_id = "00000000441D0A11",
-    scope = encodeURIComponent("files.readwrite"),
-    redirect_uri = encodeURIComponent(
-        "https://trak.anoxic.me/callback.html");
+  scope = encodeURIComponent("files.readwrite"),
+  redirect_uri = encodeURIComponent(
+    "https://trak.anoxic.me/callback.html");
 
 function popup(url) {
   var width = 525,
-      height = 525,
-      screenX = window.screenX,
-      screenY = window.screenY,
-      outerWidth = window.outerWidth,
-      outerHeight = window.outerHeight;
+    height = 525,
+    screenX = window.screenX,
+    screenY = window.screenY,
+    outerWidth = window.outerWidth,
+    outerHeight = window.outerHeight;
 
   var left = screenX + Math.max(outerWidth - width, 0) / 2;
   var top = screenY + Math.max(outerHeight - height, 0) / 2;
@@ -73,7 +73,7 @@ export default class OneDriveManager {
   static getCookie(name) {
     name += "=";
     var cookies = document.cookie,
-        start = cookies.indexOf(name);
+      start = cookies.indexOf(name);
     if (start >= 0) {
       start += name.length;
       var end = cookies.indexOf(";", start);
@@ -116,7 +116,7 @@ export default class OneDriveManager {
           } else if (p.closed) {
             clearInterval(id);
             reject(
-                "Someone has closed the window before authentication completes");
+              "Someone has closed the window before authentication completes");
           }
         }, 1000);
       }
@@ -129,24 +129,24 @@ export default class OneDriveManager {
 
   static getClient() {
     return this.getCurrentToken()
-        .then(token => {
-          if (token === this.token) {
-            return this.client;
-          }
+      .then(token => {
+        if (token === this.token) {
+          return this.client;
+        }
 
-          this.token = token;
-          return (this.client = MicrosoftGraph.Client.init({
-            authProvider: (done) => {
-              done(null, token);
-            }
-          }));
-        });
+        this.token = token;
+        return (this.client = MicrosoftGraph.Client.init({
+          authProvider: (done) => {
+            done(null, token);
+          }
+        }));
+      });
   }
 
   static getRootId() {
     return this.getClient().then(client => {
       return client.api(`me/drive/root/`)
-          .get();
+        .get();
     }).then(res => res.id);
   }
 
@@ -216,8 +216,8 @@ export default class OneDriveManager {
 
   static getItemUrlById(id) {
     return this.getClient()
-        .then(client => client.api(`me/drive/items/${id}`).get())
-        .then(res => res["@microsoft.graph.downloadUrl"]);
+      .then(client => client.api(`me/drive/items/${id}`).get())
+      .then(res => res["@microsoft.graph.downloadUrl"]);
   }
 
   /**
@@ -226,14 +226,14 @@ export default class OneDriveManager {
    */
   static getItemContentById(id) {
     return this.getItemUrlById(id)
-        .then(url => this.getItemContentByUrl(url));
+      .then(url => this.getItemContentByUrl(url));
   }
 
   static getItemContentByPath(path) {
     return this.getClient()
-        .then(client => client.api(`me${this.getPathHeader(path)}`).get())
-        .then(res => res["@microsoft.graph.downloadUrl"])
-        .then(url => this.getItemContentByUrl(url));
+      .then(client => client.api(`me${this.getPathHeader(path)}`).get())
+      .then(res => res["@microsoft.graph.downloadUrl"])
+      .then(url => this.getItemContentByUrl(url));
   }
 
   /**
@@ -247,26 +247,26 @@ export default class OneDriveManager {
 
     // Extract the skipToken
     let nextLink = response["@odata.nextLink"],
-        query = nextLink.match(/\$skiptoken=[^&]*/)[0],
-        api = nextLink.match(/me[^?]*/)[0];
+      query = nextLink.match(/\$skiptoken=[^&]*/)[0],
+      api = nextLink.match(/me[^?]*/)[0];
 
     if (!query || !api) {
       return new Promise(resolve => resolve(response));
     }
 
     return this.getClient()
-        .then(client => client.api(api)
-            .query(query)
-            .query({"expand": "thumbnails"})
-            .top(TOP_LIST)
-            .get()
-        )
-        .then(res => {
-          // Merge with previous response
-          res.value = [...response.value, ...res.value];
+      .then(client => client.api(api)
+        .query(query)
+        .query({"expand": "thumbnails"})
+        .top(TOP_LIST)
+        .get()
+      )
+      .then(res => {
+        // Merge with previous response
+        res.value = [...response.value, ...res.value];
 
-          return this.getFullList(res);
-        });
+        return this.getFullList(res);
+      });
   }
 
   /**
@@ -278,12 +278,12 @@ export default class OneDriveManager {
   static getChildrenByPath(path) {
     return this.getClient().then(client => {
       return client.api(`me${this.getPathHeader(path)}:/children`)
-          .select("id", "name")
-          .top(TOP_LIST)
-          .get();
+        .select("id", "name")
+        .top(TOP_LIST)
+        .get();
     })
-        .then(res => this.getFullList(res))
-        .then(res => res.value);
+      .then(res => this.getFullList(res))
+      .then(res => res.value);
   }
 
   /**
@@ -295,12 +295,12 @@ export default class OneDriveManager {
   static getChildrenById(id) {
     return this.getClient().then(client => {
       return client.api(`me/drive/items/${id}/children`)
-          .select("id", "name", "folder")
-          .top(TOP_LIST)
-          .get();
+        .select("id", "name", "folder")
+        .top(TOP_LIST)
+        .get();
     })
-        .then(res => this.getFullList(res))
-        .then(res => res.value);
+      .then(res => this.getFullList(res))
+      .then(res => res.value);
   }
 
   /**
@@ -312,21 +312,21 @@ export default class OneDriveManager {
   static getChildrenByPathWithThumbnails(path) {
     return this.getClient().then(client => {
       return client.api(`me${this.getPathHeader(path)}:/children`)
-          .query({"expand": "thumbnails"})
-          .top(TOP_LIST)
-          .get();
+        .query({"expand": "thumbnails"})
+        .top(TOP_LIST)
+        .get();
     })
-        .then(res => this.getFullList(res))
-        .then(res => res.value.map(val => {
-          if (val.thumbnails && val.thumbnails[0] && val.thumbnails[0].large) {
-            val.thumbnails = val.thumbnails[0].large.url;
-          } else {
-            delete val.thumbnails;
-          }
+      .then(res => this.getFullList(res))
+      .then(res => res.value.map(val => {
+        if (val.thumbnails && val.thumbnails[0] && val.thumbnails[0].large) {
+          val.thumbnails = val.thumbnails[0].large.url;
+        } else {
+          delete val.thumbnails;
+        }
 
-          return val;
-        }))
-        .then(res => res.filter(res => res.thumbnails));
+        return val;
+      }))
+      .then(res => res.filter(res => res.thumbnails));
   }
 
   static getIdByPath(path) {
@@ -347,8 +347,8 @@ export default class OneDriveManager {
     }
 
     return this.getClient()
-        .then(client => client.api(`me/drive/items/${id}/copy`)
-            .post(DATA));
+      .then(client => client.api(`me/drive/items/${id}/copy`)
+        .post(DATA));
   }
 
   /**
@@ -360,36 +360,36 @@ export default class OneDriveManager {
    */
   static uploadItemByPath(path, content, contentType) {
     return this.getClient()
-        .then(client =>
-            client.api(`me${this.getPathHeader(path)}:/content`)
-                .header("Content-Type", contentType || "text/plain")
-                .put(content)
-        );
+      .then(client =>
+        client.api(`me${this.getPathHeader(path)}:/content`)
+          .header("Content-Type", contentType || "text/plain")
+          .put(content)
+      );
   }
 
   static removeItemById(id) {
     return this.getClient()
-        .then(client =>
-            client.api(`me/drive/items/${id}`)
-                .delete()
-        );
+      .then(client =>
+        client.api(`me/drive/items/${id}`)
+          .delete()
+      );
   }
 
   static moveItemByPath(src, dest, newName) {
     return this.getClient()
-        .then(client =>
-            client.api(`me${this.getPathHeader(src)}`)
-                .patch(newName ? {
-                  name           : newName,
-                  parentReference: {
-                    path: `/drive/root:/${APPROOT}${dest}`,
-                  },
-                } : {
-                  parentReference: {
-                    path: `/drive/root:/${APPROOT}${dest}`,
-                  },
-                })
-        );
+      .then(client =>
+        client.api(`me${this.getPathHeader(src)}`)
+          .patch(newName ? {
+            name           : newName,
+            parentReference: {
+              path: `/drive/root:/${APPROOT}${dest}`,
+            },
+          } : {
+            parentReference: {
+              path: `/drive/root:/${APPROOT}${dest}`,
+            },
+          })
+      );
   }
 
   /**
@@ -401,19 +401,19 @@ export default class OneDriveManager {
    */
   static moveItemById(id, dest, newName) {
     return this.getClient()
-        .then(client =>
-            client.api(`me/drive/items/${id}`)
-                .patch(newName ? {
-                  name           : newName,
-                  parentReference: {
-                    path: `/drive/root:/${APPROOT}${dest}`,
-                  },
-                } : {
-                  parentReference: {
-                    path: `/drive/root:/${APPROOT}${dest}`,
-                  },
-                })
-        );
+      .then(client =>
+        client.api(`me/drive/items/${id}`)
+          .patch(newName ? {
+            name           : newName,
+            parentReference: {
+              path: `/drive/root:/${APPROOT}${dest}`,
+            },
+          } : {
+            parentReference: {
+              path: `/drive/root:/${APPROOT}${dest}`,
+            },
+          })
+      );
   }
 
   /**
@@ -429,13 +429,13 @@ export default class OneDriveManager {
    */
   static createFolderByIdWithConflict(id, folderName) {
     return this.getClient()
-        .then(client =>
-            client.api(`me/drive/items/${id}/children`)
-                .post({
-                  name  : "" + folderName,
-                  folder: {}
-                })
-        );
+      .then(client =>
+        client.api(`me/drive/items/${id}/children`)
+          .post({
+            name  : "" + folderName,
+            folder: {}
+          })
+      );
   }
 
   /**
@@ -465,21 +465,21 @@ export default class OneDriveManager {
   static createEmptyData(year) {
     // First, try to see if the file already exists
     return this.getChildrenByPath(`core/${year}`)
-        .then(stuffs => {
-          if (!stuffs || stuffs.length === 0) {
-            return this.upload(year, "3[]");
-          }
-        });
+      .then(stuffs => {
+        if (!stuffs || stuffs.length === 0) {
+          return this.upload(year, "3[]");
+        }
+      });
   }
 
   static getThumbNail(id) {
     const size = "c800x800_Crop";
 
     return this.getClient()
-        .then(client =>
-            client.api(`me/drive/items/${id}/thumbnails`)
-                .select(size)
-        ).then(res => res.value[0][size].url);
+      .then(client =>
+        client.api(`me/drive/items/${id}/thumbnails`)
+          .select(size)
+      ).then(res => res.value[0][size].url);
   }
 
   // endregion
@@ -515,77 +515,78 @@ export default class OneDriveManager {
     const STEP = 7;
     let rootId = "";
     return this.getRootId()
-        .then(id => {
-          onChange(1 / STEP);
-          return this.createFolderById(id, "Apps");
-        })
-        .then(id => {
-          onChange(2 / STEP);
-          return this.createFolderById(id.id, "Trak")
-        })
-        .then(appsId => {
-          onChange(3 / STEP);
-          return this.getChildrenById(rootId = appsId.id);
-        })
-        .then(folders => {
-          onChange(4 / STEP);
+      .then(id => {
+        onChange(1 / STEP);
+        return this.createFolderById(id, "Apps");
+      })
+      .then(id => {
+        onChange(2 / STEP);
+        return this.createFolderById(id.id,
+          window.location.hostname === "localhost" ? "Trak_debug" : "Trak");
+      })
+      .then(appsId => {
+        onChange(3 / STEP);
+        return this.getChildrenById(rootId = appsId.id);
+      })
+      .then(folders => {
+        onChange(4 / STEP);
 
-          for (let folder of folders) {
-            if (folder.name === "bulb") {
-              this.bulbFolderId = folder.id;
-            } else if (folder.name === "core") {
-              this.coreFolderId = folder.id;
-            } else if (folder.name === "queue") {
-              this.queueFolderId = folder.id;
-            } else if (folder.name === "resource") {
-              this.resourceFolderId = folder.id;
-            }
+        for (let folder of folders) {
+          if (folder.name === "bulb") {
+            this.bulbFolderId = folder.id;
+          } else if (folder.name === "core") {
+            this.coreFolderId = folder.id;
+          } else if (folder.name === "queue") {
+            this.queueFolderId = folder.id;
+          } else if (folder.name === "resource") {
+            this.resourceFolderId = folder.id;
           }
+        }
 
+        return Promise.all([
+          this.bulbFolderId || this.createFolderById(rootId, "bulb"),
+          this.coreFolderId || this.createFolderById(rootId, "core"),
+          this.queueFolderId || this.createFolderById(rootId, "queue"),
+          this.resourceFolderId || this.createFolderById(rootId, "resource"),
+        ]);
+      })
+      .catch(err => {
+        throw new Error(`Unable to verify the integrity of file structure. (err: ${err})`);
+      })
+      .then(ids => {
+        onChange(5 / STEP);
+
+        this.bulbFolderId = ids[0].id || ids[0];
+        this.coreFolderId = ids[1].id || ids[1];
+        this.queueFolderId = ids[2].id || ids[2];
+        this.resourceFolderId = ids[3].id || ids[3];
+
+        // Create year folder for `core` and `resource`
+        return Promise.all([
+          this.createFolderById(this.coreFolderId, year),
+          this.createFolderById(this.resourceFolderId, year)
+        ])
+      })
+      .then(() => {
+        onChange(6 / STEP);
+
+        // Create empty data file if it is empty
+        return this.createEmptyData(year);
+      })
+      .then(() => {
+        onChange(7 / STEP);
+
+        // Lastly, if this is the end of the year, try to create folders and
+        // empty data for the next year
+
+        let now = new Date();
+        if (now.getMonth() === 11 && now.getDate() === 31) {
           return Promise.all([
-            this.bulbFolderId || this.createFolderById(rootId, "bulb"),
-            this.coreFolderId || this.createFolderById(rootId, "core"),
-            this.queueFolderId || this.createFolderById(rootId, "queue"),
-            this.resourceFolderId || this.createFolderById(rootId, "resource"),
+            this.createFolderById(this.coreFolderId, year + 1),
+            this.createFolderById(this.resourceFolderId, year + 1)
           ]);
-        })
-        .catch(err => {
-          throw new Error(`Unable to verify the integrity of file structure. (err: ${err})`);
-        })
-        .then(ids => {
-          onChange(5 / STEP);
-
-          this.bulbFolderId = ids[0].id || ids[0];
-          this.coreFolderId = ids[1].id || ids[1];
-          this.queueFolderId = ids[2].id || ids[2];
-          this.resourceFolderId = ids[3].id || ids[3];
-
-          // Create year folder for `core` and `resource`
-          return Promise.all([
-            this.createFolderById(this.coreFolderId, year),
-            this.createFolderById(this.resourceFolderId, year)
-          ])
-        })
-        .then(() => {
-          onChange(6 / STEP);
-
-          // Create empty data file if it is empty
-          return this.createEmptyData(year);
-        })
-        .then(() => {
-          onChange(7 / STEP);
-
-          // Lastly, if this is the end of the year, try to create folders and
-          // empty data for the next year
-
-          let now = new Date();
-          if (now.getMonth() === 11 && now.getDate() === 31) {
-            return Promise.all([
-              this.createFolderById(this.coreFolderId, year + 1),
-              this.createFolderById(this.resourceFolderId, year + 1)
-            ]);
-          }
-        });
+        }
+      });
   }
 
   /**
@@ -598,54 +599,54 @@ export default class OneDriveManager {
     const TEXT_BULB_NAME_LENGTH = 13;
 
     return this.getChildrenById(this.bulbFolderId)
-        .then(bulbs => bulbs.length ? new Promise(resolve => {
-          // Separate text and images
-          let textBulbs = [], images = [];
+      .then(bulbs => bulbs.length ? new Promise(resolve => {
+        // Separate text and images
+        let textBulbs = [], images = [];
 
-          for (let bulb of bulbs) {
-            if (bulb.name.length === TEXT_BULB_NAME_LENGTH) {
-              textBulbs.push(bulb);
-            } else {
-              images.push(bulb);
-            }
+        for (let bulb of bulbs) {
+          if (bulb.name.length === TEXT_BULB_NAME_LENGTH) {
+            textBulbs.push(bulb);
+          } else {
+            images.push(bulb);
+          }
+        }
+
+        let counter = 0,
+          getContent = bulb => {
+            this.getItemContentById(bulb.id)
+              .catch(() => {
+                // Do nothing
+              })
+              .then(content => {
+                if (content) {
+                  bulb.content = content;
+                }
+
+                if (typeof onChange === "function") {
+                  onChange((1 + counter) / textBulbs.length);
+                }
+
+                // Test if all the contents have been fetched
+                if (++counter === textBulbs.length) {
+                  // Merge image id with text bulbs
+                  for (let bulb of textBulbs) {
+                    let image = images.find(
+                      image => image.name.startsWith(bulb.name));
+
+                    if (image) {
+                      bulb.imageId = image.id;
+                    }
+                  }
+
+                  resolve(textBulbs);
+                }
+              });
           }
 
-          let counter = 0,
-              getContent = bulb => {
-                this.getItemContentById(bulb.id)
-                    .catch(() => {
-                      // Do nothing
-                    })
-                    .then(content => {
-                      if (content) {
-                        bulb.content = content;
-                      }
-
-                      if (typeof onChange === "function") {
-                        onChange((1 + counter) / textBulbs.length);
-                      }
-
-                      // Test if all the contents have been fetched
-                      if (++counter === textBulbs.length) {
-                        // Merge image id with text bulbs
-                        for (let bulb of textBulbs) {
-                          let image = images.find(
-                              image => image.name.startsWith(bulb.name));
-
-                          if (image) {
-                            bulb.imageId = image.id;
-                          }
-                        }
-
-                        resolve(textBulbs);
-                      }
-                    });
-              }
-
-          for (let bulb of textBulbs) {
-            getContent(bulb);
-          }
-        }) : []);
+        for (let bulb of textBulbs) {
+          getContent(bulb);
+        }
+      }) : []);
   }
 
   static getImagesInQueue() {
@@ -664,15 +665,15 @@ export default class OneDriveManager {
       }
 
       let counter = 0,
-          f = () => {
-            if (++counter === ids.length) {
-              resolve();
-            }
+        f = () => {
+          if (++counter === ids.length) {
+            resolve();
           }
+        }
 
       for (let bulb of ids) {
         this.removeItemById(bulb)
-            .then(() => f());
+          .then(() => f());
       }
     });
   }
@@ -683,8 +684,8 @@ export default class OneDriveManager {
 
   static backupJournalByYear(year, newName) {
     return this.moveItemByPath(`core/${year}/${DATA_NAME}`,
-        `core/${year}`,
-        newName);
+      `core/${year}`,
+      newName);
   }
 
   static uploadJournalByYear(year, content) {
@@ -713,9 +714,9 @@ export default class OneDriveManager {
 
   static getAvailableYears() {
     return this.getChildrenByPath("core")
-        .then(res => res.map(v => parseInt(v.name, 10))
-            .filter(year => year)
-            .sort());
+      .then(res => res.map(v => parseInt(v.name, 10))
+        .filter(year => year)
+        .sort());
   }
 
   /**
@@ -731,67 +732,67 @@ export default class OneDriveManager {
     if (Array.isArray(data)) {
       return new Promise(resolve => {
         let counter = 0,
-            f = () => {
-              onChange((counter + 1) / data.length);
+          f = () => {
+            onChange((counter + 1) / data.length);
 
-              if (++counter === data.length) {
-                resolve();
-              }
-            };
+            if (++counter === data.length) {
+              resolve();
+            }
+          };
 
         for (let i = 0; i < data.length; ++i) {
           let c = data[i];
 
           this.uploadItemByPath(`queue/${this.generateNewImageName(c.name, i)}`,
-              c.content, c.contentType)
-              .then(() => f());
+            c.content, c.contentType)
+            .then(() => f());
         }
       });
     }
 
     return this.uploadItemByPath(`queue/${this.generateNewImageName(data.name,
-        0)}`, data.content, data.contentType)
-        .then(res => {
-          onChange(1);
+      0)}`, data.content, data.contentType)
+      .then(res => {
+        onChange(1);
 
-          return res;
-        });
+        return res;
+      });
   }
 
   static emptyQueueFolder() {
     return this.getImagesInQueue()
-        .then(items => items.map(item => item.id))
-        .then(ids => this.removeItemsById(ids));
+      .then(items => items.map(item => item.id))
+      .then(ids => this.removeItemsById(ids));
   }
 
   static getLatestBackupData(year) {
     return new Promise(resolve => {
       this.getClient().then(client => {
         return client.api(`me${this.getPathHeader(`core/${year}`)}:/children`)
-            .select("id", "name")
-            .orderby("lastModifiedDateTime")
-            .top(2)
-            .get();
+          .select("id", "name")
+          .orderby("lastModifiedDateTime")
+          .top(2)
+          .get();
       })
-          .then(res => res.value)
-          .then(res => {
-            if (res.length < 2) {
-              // No backup data or no data
-              resolve(null);
-            }
-
-            // One of them is ${DATA_NAME}
-            let backup = res.find(item => item.name !== DATA_NAME);
-
-            if (backup) {
-              this.getItemContentById(backup.id)
-                  .then(content => {
-                    resolve(content);
-                  });
-            }
-
+        .then(res => res.value)
+        .then(res => {
+          if (res.length < 2) {
+            // No backup data or no data
             resolve(null);
-          });
+          }
+
+          // One of them is ${DATA_NAME}
+          let backup = res.find(item => item.name !== DATA_NAME);
+
+          if (backup) {
+            this.getItemContentById(backup.id)
+              .then(content => {
+                resolve(content);
+              });
+          }
+
+          resolve(null);
+        });
     });
   }
 
@@ -808,10 +809,10 @@ export default class OneDriveManager {
     }
 
     return this.getItemUrlById(elem.id)
-        .then(url => {
-          elem.url = url;
-          return elem;
-        });
+      .then(url => {
+        elem.url = url;
+        return elem;
+      });
   }
 
   // region alias
@@ -828,7 +829,7 @@ export default class OneDriveManager {
    */
   static getImages(year) {
     return Promise.all([this.getJournalImagesByYear(year), this.getImagesInQueue()])
-        .then(lists => [...lists[0], ...lists[1]]);
+      .then(lists => [...lists[0], ...lists[1]]);
   }
 
   static upload(year, content) {
@@ -839,151 +840,151 @@ export default class OneDriveManager {
 
   static test() {
     let year = 2017,
-        content = "DSFAS2cdsafds",
-        imageIds = [];
+      content = "DSFAS2cdsafds",
+      imageIds = [];
 
     console.warn("This test assumes no content is under /Apps/Trak/");
 
     this.verifyFileStructure(year)
-        .then(() => {
-          console.log("Uploading stuffs");
-          return this.upload(year, content);
-        })
-        .then(() => {
-          console.log("Get what just being uploaeded");
-          return this.getData(year);
-        })
-        .then(c => {
-          console.log(c === content ? "Matched" : "NOTTTT matched");
-          console.log("Backing up");
-          return this.backupJournalByYear(year, "data_backup.js");
-        })
-        .catch(err => {
-          console.log(`You shouldn't get any error here: ${JSON.stringify(err)}`);
-        })
-        .then(() => {
-          console.log("Then try to grab the moved file");
-          return this.getData(year);
-        })
-        .then(() => {
-          console.error("You shouldn't get here");
-        })
-        .catch(err => {
-          console.log(`Expected not found (404) with error "[${err.statusCode}] ${err.code}"`);
-          console.log("Try to cause some conflict when moving files");
-          return this.upload(year, content);
-        })
-        .then(() => {
-          return this.backupJournalByYear(year, "data_backup.js");
-        })
-        .then(() => {
-          console.error("Nothing happens, which is wrong");
-        })
-        .catch(err => {
-          console.log(`Expected conflict (409) with error "[${err.statusCode}] ${err.code}"`);
-          console.log("Then we try to do something with bulbs");
+      .then(() => {
+        console.log("Uploading stuffs");
+        return this.upload(year, content);
+      })
+      .then(() => {
+        console.log("Get what just being uploaeded");
+        return this.getData(year);
+      })
+      .then(c => {
+        console.log(c === content ? "Matched" : "NOTTTT matched");
+        console.log("Backing up");
+        return this.backupJournalByYear(year, "data_backup.js");
+      })
+      .catch(err => {
+        console.log(`You shouldn't get any error here: ${JSON.stringify(err)}`);
+      })
+      .then(() => {
+        console.log("Then try to grab the moved file");
+        return this.getData(year);
+      })
+      .then(() => {
+        console.error("You shouldn't get here");
+      })
+      .catch(err => {
+        console.log(`Expected not found (404) with error "[${err.statusCode}] ${err.code}"`);
+        console.log("Try to cause some conflict when moving files");
+        return this.upload(year, content);
+      })
+      .then(() => {
+        return this.backupJournalByYear(year, "data_backup.js");
+      })
+      .then(() => {
+        console.error("Nothing happens, which is wrong");
+      })
+      .catch(err => {
+        console.log(`Expected conflict (409) with error "[${err.statusCode}] ${err.code}"`);
+        console.log("Then we try to do something with bulbs");
 
-          return Promise.all([
-            this.uploadItemByPath("bulb/1.txt", "1"),
-            this.uploadItemByPath("bulb/2.txt", "2"),
-            this.uploadItemByPath("bulb/3.txt", "3"),
-            this.uploadItemByPath("bulb/4.txt", "4"),
-          ]);
-        })
-        .then(() => {
-          console.log("Fetching the content of bulbs");
-          return this.getBulbs();
-        })
-        .then(bulbs => {
-          console.log(`Got a total of ${bulbs.length}, and expect 4`);
-          console.log(`And the contents are: ${bulbs.map(bulb => bulb.content)
-              .join(" ")}, and expect "1 2 3 4" or something like that`);
-          console.log("Then we try to remove them");
-          return this.removeItemsById(bulbs.map(bulb => bulb.id));
-        })
-        .then(() => {
-          console.log("Let's see if everything is removed");
-          return this.getBulbs();
-        })
-        .then(bulbs => {
-          if (bulbs.length) {
-            console.error("Hmmm, bulb list should be empty");
+        return Promise.all([
+          this.uploadItemByPath("bulb/1.txt", "1"),
+          this.uploadItemByPath("bulb/2.txt", "2"),
+          this.uploadItemByPath("bulb/3.txt", "3"),
+          this.uploadItemByPath("bulb/4.txt", "4"),
+        ]);
+      })
+      .then(() => {
+        console.log("Fetching the content of bulbs");
+        return this.getBulbs();
+      })
+      .then(bulbs => {
+        console.log(`Got a total of ${bulbs.length}, and expect 4`);
+        console.log(`And the contents are: ${bulbs.map(bulb => bulb.content)
+          .join(" ")}, and expect "1 2 3 4" or something like that`);
+        console.log("Then we try to remove them");
+        return this.removeItemsById(bulbs.map(bulb => bulb.id));
+      })
+      .then(() => {
+        console.log("Let's see if everything is removed");
+        return this.getBulbs();
+      })
+      .then(bulbs => {
+        if (bulbs.length) {
+          console.error("Hmmm, bulb list should be empty");
+        } else {
+          console.log("Yes, nothing in the bulb folder");
+        }
+
+        console.log(
+          "Now set breakpoint here and upload some fake images (texts) to the queue folder");
+      })
+      .then(ids => {
+        console.log(
+          "Before we get started, try to fetch the image list first");
+
+        return this.getImages(year);
+      })
+      .then(images => {
+        console.log("The thumbnails will be open in other pages");
+
+        for (let image of images) {
+          if (image.thumbnails) {
+            window.open(image.thumbnails);
           } else {
-            console.log("Yes, nothing in the bulb folder");
+            console.error(`${image.name} does not have a thumbnail`);
           }
+        }
 
-          console.log(
-              "Now set breakpoint here and upload some fake images (texts) to the queue folder");
-        })
-        .then(ids => {
-          console.log(
-              "Before we get started, try to fetch the image list first");
+        imageIds = images;
 
-          return this.getImages(year);
-        })
-        .then(images => {
-          console.log("The thumbnails will be open in other pages");
+        console.log(`The names of them are ${images.map(image => image.name)
+          .join(" ")}, expect 1.jpg 2.jpg 3.jpg 4.jpg 5.jpg or something like that`);
+        console.log("Now we are moving them to some other locations");
 
-          for (let image of images) {
-            if (image.thumbnails) {
-              window.open(image.thumbnails);
-            } else {
-              console.error(`${image.name} does not have a thumbnail`);
-            }
+        return Promise.all([
+          this.addImageById(images[0].id, year, "renamed.jpg"),
+          this.addImageById(images[1].id, year),
+        ]);
+      })
+      .then(() => {
+        console.log("Removing one of the image");
+
+        return this.removeImageById(imageIds[1].id);
+      })
+      .then(() => {
+        console.log("Move another image into the resource");
+
+        return this.addImageById(imageIds[2].id, year);
+      })
+      .then(() => {
+        console.log(
+          "Now we are trying to get every image again to see if it changes");
+
+        return this.getImages(year);
+      })
+      .then(images => {
+        console.log("And let's take a look at who they are");
+
+        for (let image of images) {
+          if (image.thumbnails) {
+            window.open(image.thumbnails);
+          } else {
+            console.error(`${image.name} does not have a thumbnail`);
           }
+        }
 
-          imageIds = images;
+        imageIds = images;
 
-          console.log(`The names of them are ${images.map(image => image.name)
-              .join(" ")}, expect 1.jpg 2.jpg 3.jpg 4.jpg 5.jpg or something like that`);
-          console.log("Now we are moving them to some other locations");
+        console.log(`The names of them are ${images.map(image => image.name)
+          .join(" ")}, expect renamed.jpg 2.jpg 3.jpg 4.jpg 5.jpg or something like that`);
+      })
+      .then(() => {
+        console.log("Finally, let's see what is left in queue");
 
-          return Promise.all([
-            this.addImageById(images[0].id, year, "renamed.jpg"),
-            this.addImageById(images[1].id, year),
-          ]);
-        })
-        .then(() => {
-          console.log("Removing one of the image");
+        return this.getImagesInQueue();
+      })
+      .then(images => {
+        console.log(`There should be 3 images in the queue, got ${images.length}`);
 
-          return this.removeImageById(imageIds[1].id);
-        })
-        .then(() => {
-          console.log("Move another image into the resource");
-
-          return this.addImageById(imageIds[2].id, year);
-        })
-        .then(() => {
-          console.log(
-              "Now we are trying to get every image again to see if it changes");
-
-          return this.getImages(year);
-        })
-        .then(images => {
-          console.log("And let's take a look at who they are");
-
-          for (let image of images) {
-            if (image.thumbnails) {
-              window.open(image.thumbnails);
-            } else {
-              console.error(`${image.name} does not have a thumbnail`);
-            }
-          }
-
-          imageIds = images;
-
-          console.log(`The names of them are ${images.map(image => image.name)
-              .join(" ")}, expect renamed.jpg 2.jpg 3.jpg 4.jpg 5.jpg or something like that`);
-        })
-        .then(() => {
-          console.log("Finally, let's see what is left in queue");
-
-          return this.getImagesInQueue();
-        })
-        .then(images => {
-          console.log(`There should be 3 images in the queue, got ${images.length}`);
-
-          console.log("..... And finally we are done here ..... ");
-        })
+        console.log("..... And finally we are done here ..... ");
+      })
   }
 }
