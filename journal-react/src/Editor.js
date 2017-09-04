@@ -1286,10 +1286,6 @@ class Editor extends Component {
         .replace(/([A-Za-z0-9])([\u00ff-\uffff])/g, "$1 $2");
   }
 
-  countChars(str) {
-    return (str.match(/[\u00ff-\uffff]|\S+/g) || []).length;
-  }
-
   convertToDateTime(seconds) {
     const c = (i) => {
       return ("0" + i % 60).slice(-2);
@@ -1377,7 +1373,7 @@ class Editor extends Component {
             />
             <div className="stats">
               <div className="stat chars">
-                <NumberCard value={this.countChars(this.state.body)}/>
+                <NumberCard value={R.count(this.state.body)}/>
               </div>
               <div className="stat times">
                 <div className="time created">

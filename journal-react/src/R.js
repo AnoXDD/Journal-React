@@ -41,16 +41,18 @@ module.exports = {
   // Utility functions to add notifications
   copy: obj => obj ? JSON.parse(JSON.stringify(obj)) : obj,
 
+  count: str => (str.match(/[\u00ff-\uffff]|\S+/g) || []).length,
+
   highlightArrayToJSX: body =>
-      body.map ? body.map((d, i) =>
-          typeof d === "string" ? d :
-              <span key={i} className="highlight">{d.highlight}</span>
-      ) : body,
+    body.map ? body.map((d, i) =>
+      typeof d === "string" ? d :
+        <span key={i} className="highlight">{d.highlight}</span>
+    ) : body,
 
   highlightArrayToString: body =>
-      typeof body === "string" ? body : body.map(b =>
-          typeof b === "string" ? b : b.highlight
-      ).join(""),
+    typeof body === "string" ? body : body.map(b =>
+      typeof b === "string" ? b : b.highlight
+    ).join(""),
 
 
   notify       : (notificationSystem, message, title, autoDismiss) => {

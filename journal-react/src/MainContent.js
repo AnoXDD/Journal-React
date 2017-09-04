@@ -17,6 +17,7 @@ import Chart from "./Chart";
 import BulbEditor from "./BulbEditor";
 import LoadingScreen from "./LoadingScreen";
 import Settings from "./Settings";
+import Stats from "./Stats";
 
 import OneDriveManager from "./OneDriveManager";
 
@@ -26,13 +27,13 @@ import R from "./R";
 const CryptoJS = require("crypto-js");
 
 const BULB_WEB_URL_PATTERN = /(.+)@(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*))(.*)/,
-    BULB_LOCATION_PATTERN = /(.+)#\[(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/,
-    BULB_LOCATION_PATTERN_WITH_NAME = /(.+)#\[(.+),(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/;
+  BULB_LOCATION_PATTERN = /(.+)#\[(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/,
+  BULB_LOCATION_PATTERN_WITH_NAME = /(.+)#\[(.+),(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/;
 
 
 function upgradeDataFromVersion2To3(oldData) {
   let data = [],
-      list = ["video", "voice", "place", "book"];
+    list = ["video", "voice", "place", "book"];
 
   for (let d of oldData) {
     let entry = {};
@@ -96,105 +97,105 @@ function upgradeDataFromVersion2To3(oldData) {
 }
 
 const defaultColors = {
+    success: {
+      rgb: '94, 164, 0',
+      hex: '#5ea400'
+    },
+    error  : {
+      rgb: '236, 61, 61',
+      hex: '#ec3d3d'
+    },
+    warning: {
+      rgb: '235, 173, 23',
+      hex: '#ebad1a'
+    },
+    info   : {
+      rgb: '54, 156, 199',
+      hex: '#369cc7'
+    }
+  },
+  notificationBoxShadow = "3px 2px 9px #333",
+  notificationStyle = {
+    Title: {
+      DefaultStyle: {
+        fontSize  : '15px',
+        margin    : '0 0 5px 0',
+        padding   : 0,
+        fontWeight: 'bold'
+      },
+
       success: {
-        rgb: '94, 164, 0',
-        hex: '#5ea400'
+        color: defaultColors.success.hex
       },
-      error  : {
-        rgb: '236, 61, 61',
-        hex: '#ec3d3d'
+
+      error: {
+        color: defaultColors.error.hex
       },
+
       warning: {
-        rgb: '235, 173, 23',
-        hex: '#ebad1a'
+        color: defaultColors.warning.hex
       },
-      info   : {
-        rgb: '54, 156, 199',
-        hex: '#369cc7'
+
+      info: {
+        color: "#448AFF",
+      }
+
+    },
+
+    NotificationItem: {
+      DefaultStyle: {
+        position       : 'relative',
+        width          : '230px',
+        cursor         : 'pointer',
+        fontSize       : 'inherit',
+        margin         : '10px 0 0',
+        padding        : '20px 30px',
+        display        : 'block',
+        WebkitBoxSizing: 'border-box',
+        MozBoxSizing   : 'border-box',
+        boxSizing      : 'border-box',
+        opacity        : 0,
+        transition     : '.4s ease',
+        willChange     : 'transform, opacity',
+
+        isHidden: {
+          opacity: 0
+        },
+
+        isVisible: {
+          opacity: 1
+        }
+      },
+
+      success: {
+        borderTop      : "none",
+        backgroundColor: '#009688',
+        color          : 'black',
+        boxShadow      : notificationBoxShadow,
+      },
+
+      error: {
+        borderTop      : "none",
+        backgroundColor: '#FF8A80',
+        color          : 'black',
+        boxShadow      : notificationBoxShadow,
+      },
+
+      warning: {
+        borderTop      : "none",
+        backgroundColor: '#FFFF8D',
+        color          : "black",
+        boxShadow      : notificationBoxShadow,
+      },
+
+      info: {
+        borderTop      : "none",
+        backgroundColor: 'white',
+        color          : 'black',
+        boxShadow      : notificationBoxShadow,
       }
     },
-    notificationBoxShadow = "3px 2px 9px #333",
-    notificationStyle = {
-      Title: {
-        DefaultStyle: {
-          fontSize  : '15px',
-          margin    : '0 0 5px 0',
-          padding   : 0,
-          fontWeight: 'bold'
-        },
-
-        success: {
-          color: defaultColors.success.hex
-        },
-
-        error: {
-          color: defaultColors.error.hex
-        },
-
-        warning: {
-          color: defaultColors.warning.hex
-        },
-
-        info: {
-          color: "#448AFF",
-        }
-
-      },
-
-      NotificationItem: {
-        DefaultStyle: {
-          position       : 'relative',
-          width          : '230px',
-          cursor         : 'pointer',
-          fontSize       : 'inherit',
-          margin         : '10px 0 0',
-          padding        : '20px 30px',
-          display        : 'block',
-          WebkitBoxSizing: 'border-box',
-          MozBoxSizing   : 'border-box',
-          boxSizing      : 'border-box',
-          opacity        : 0,
-          transition     : '.4s ease',
-          willChange     : 'transform, opacity',
-
-          isHidden: {
-            opacity: 0
-          },
-
-          isVisible: {
-            opacity: 1
-          }
-        },
-
-        success: {
-          borderTop      : "none",
-          backgroundColor: '#009688',
-          color          : 'black',
-          boxShadow      : notificationBoxShadow,
-        },
-
-        error: {
-          borderTop      : "none",
-          backgroundColor: '#FF8A80',
-          color          : 'black',
-          boxShadow      : notificationBoxShadow,
-        },
-
-        warning: {
-          borderTop      : "none",
-          backgroundColor: '#FFFF8D',
-          color          : "black",
-          boxShadow      : notificationBoxShadow,
-        },
-
-        info: {
-          borderTop      : "none",
-          backgroundColor: 'white',
-          color          : 'black',
-          boxShadow      : notificationBoxShadow,
-        }
-      },
-    };
+  };
 
 const DEFAULT_SETTINGS = {
   bulbMapCenter     : {
@@ -214,8 +215,9 @@ export default class MainContent extends Component {
     LIST     : 1 << 1,
     EDITOR   : 1 << 2,
     HISTORY  : 1 << 3,
-    STATS    : 1 << 4,
-    OPTIONS  : 1 << 5,
+    INSIGHT  : 1 << 4,
+    STATS    : 1 << 5,
+    OPTIONS  : 1 << 6,
   };
   /* The interval between each backup should occur, in miliseconds */
   BACKUP_INTERVAL = 3600000;
@@ -229,7 +231,7 @@ export default class MainContent extends Component {
     isDisplayingMapView : true,
 
     // Use | to connect them later
-    enabledTabs: this.TAB.LIST | this.TAB.STATS | this.TAB.OPTIONS,
+    enabledTabs: this.TAB.LIST | this.TAB.STATS | this.TAB.OPTIONS | this.TAB.INSIGHT,
 
     editArticleIndex: undefined,
 
@@ -322,9 +324,9 @@ export default class MainContent extends Component {
     this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
     this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
     this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
-        this);
+      this);
     this.findDataIndexByBulbIndex = this.findDataIndexByBulbIndex.bind(
-        this);
+      this);
     this.backupAndUploadData = this.backupAndUploadData.bind(this);
     this.backupData = this.backupData.bind(this);
     this.uploadData = this.uploadData.bind(this);
@@ -340,7 +342,7 @@ export default class MainContent extends Component {
     // Update `editArticleIndex`
     if (this.editedEntryTimestamp) {
       let editArticleIndex = this.articleList.findIndex(
-          article => article.time.created === this.editedEntryTimestamp);
+        article => article.time.created === this.editedEntryTimestamp);
       nextState.editArticleIndex = editArticleIndex;
 
       this.editedEntryTimestamp = 0;
@@ -364,79 +366,79 @@ export default class MainContent extends Component {
   loadData() {
     // Fetch data from server
     return OneDriveManager.verifyFileStructure(this.year,
-        val => this.setState({loadingProgress: val}))
-        .then(() => {
-          this.setState({
-            loadingProgress    : 0,
-            loadingPrompt      : "Downloading content ...",
-          });
-
-          return OneDriveManager.getData(this.year);
-        })
-        .then(content => {
-          // Now, we try to decrypt it
-          return new Promise(res => {
-            if (this.handleNewContent(content)) {
-              res();
-            }
-
-            // Set the way to use the password
-            this.redeemPassword = password => {
-              this.password = password;
-
-              if (this.handleNewContent(content)) {
-                // Matches!
-                res();
-              } else {
-                this.setState({
-                  loadingPrompt: "Password does not work",
-                });
-              }
-            }
-
-            // Prompt the user for a password
-            this.setState({
-              loadingPrompt                 : "",
-              loadingPromptRequiringPassword: true,
-            });
-
-          })
-        })
-        .then(() => {
-          // The data was successfully decrypted (or is not encrypted)
-          this.setState({
-            loadingPromptRequiringPassword: false,
-            loadingPrompt                 : "Merging bulbs ..."
-          });
-
-          return OneDriveManager.getBulbs(
-              val => this.setState({loadingProgress: val}))
-              .then(bulbs => this.handleNewRawBulbs(bulbs));
-        })
-        .catch(err => {
-          this.setState({
-            loadingPrompt: "Looks like there is an error fetching you data. Refresh the website and try again."
-          });
-          console.error(err.stack);
-
-          throw new Error(JSON.stringify(err));
-        })
-        .then(() => {
-          this.setState({
-            loadingProgress: 0,
-            loadingPrompt  : "Downloading images ..."
-          });
-
-          return OneDriveManager.getImages(this.year);
-        })
-        .then(images => {
-          this.handleNewImageMap(images);
-
-          this.setState({
-            loadingPrompt: "",
-            version      : new Date().getTime(),
-          });
+      val => this.setState({loadingProgress: val}))
+      .then(() => {
+        this.setState({
+          loadingProgress: 0,
+          loadingPrompt  : "Downloading content ...",
         });
+
+        return OneDriveManager.getData(this.year);
+      })
+      .then(content => {
+        // Now, we try to decrypt it
+        return new Promise(res => {
+          if (this.handleNewContent(content)) {
+            res();
+          }
+
+          // Set the way to use the password
+          this.redeemPassword = password => {
+            this.password = password;
+
+            if (this.handleNewContent(content)) {
+              // Matches!
+              res();
+            } else {
+              this.setState({
+                loadingPrompt: "Password does not work",
+              });
+            }
+          }
+
+          // Prompt the user for a password
+          this.setState({
+            loadingPrompt                 : "",
+            loadingPromptRequiringPassword: true,
+          });
+
+        })
+      })
+      .then(() => {
+        // The data was successfully decrypted (or is not encrypted)
+        this.setState({
+          loadingPromptRequiringPassword: false,
+          loadingPrompt                 : "Merging bulbs ..."
+        });
+
+        return OneDriveManager.getBulbs(
+          val => this.setState({loadingProgress: val}))
+          .then(bulbs => this.handleNewRawBulbs(bulbs));
+      })
+      .catch(err => {
+        this.setState({
+          loadingPrompt: "Looks like there is an error fetching you data. Refresh the website and try again."
+        });
+        console.error(err.stack);
+
+        throw new Error(JSON.stringify(err));
+      })
+      .then(() => {
+        this.setState({
+          loadingProgress: 0,
+          loadingPrompt  : "Downloading images ..."
+        });
+
+        return OneDriveManager.getImages(this.year);
+      })
+      .then(images => {
+        this.handleNewImageMap(images);
+
+        this.setState({
+          loadingPrompt: "",
+          version      : new Date().getTime(),
+        });
+      });
   }
 
   // region Utility functions
@@ -452,7 +454,7 @@ export default class MainContent extends Component {
       if (typeof dataArray[i] === "string") {
         // For each string, break them into different groups
         let group = dataArray[i].split(keyword),
-            realGroup = [];
+          realGroup = [];
 
         // Then insert a highlighted version of keyword between each element
         for (let g of group) {
@@ -570,7 +572,7 @@ export default class MainContent extends Component {
     if (image) {
       bulb.imageId = image.id;
       return OneDriveManager.addImageById(bulb.imageId, this.year)
-          .then(() => this.handleNewProcessedBulbs([bulb], [image]));
+        .then(() => this.handleNewProcessedBulbs([bulb], [image]));
     }
 
     return this.handleNewProcessedBulbs([bulb], []);
@@ -593,7 +595,7 @@ export default class MainContent extends Component {
       const onBulbFinish = () => {
         if (--this.unprocessedBulbs === 0) {
           this.handleNewProcessedBulbs(bulbObject, uploadedImages)
-              .then(res => resolve(res));
+            .then(res => resolve(res));
         }
       };
 
@@ -608,7 +610,7 @@ export default class MainContent extends Component {
       for (let bulb of bulbObject) {
         // Check if the bulb has not been merged
         let merged = false,
-            time = this.convertBulbTime(bulb.name);
+          time = this.convertBulbTime(bulb.name);
         for (let entry of this.data) {
           if (entry.type === R.TYPE_BULB) {
             if (entry.time.created <= time) {
@@ -629,12 +631,12 @@ export default class MainContent extends Component {
         // Transfer the image (if any)
         if (bulb.imageId) {
           OneDriveManager.addImageById(bulb.imageId, this.year)
-              .then(image => {
-                uploadedImages.push({id: image.id, name: image.name});
-                onBulbFinish();
-              }, () => {
-                onBulbFinish();
-              })
+            .then(image => {
+              uploadedImages.push({id: image.id, name: image.name});
+              onBulbFinish();
+            }, () => {
+              onBulbFinish();
+            })
         } else {
           onBulbFinish();
         }
@@ -649,7 +651,7 @@ export default class MainContent extends Component {
    */
   handleNewProcessedBulbs(bulbObjects, uploadedImages) {
     let processedBulbs = [],
-        processedBulbIds = [];
+      processedBulbIds = [];
 
     for (let bulb of bulbObjects) {
       // First see if this bulb has been merged already
@@ -668,7 +670,7 @@ export default class MainContent extends Component {
       // Add image to the bulb if applicable
       if (bulb.imageId) {
         let image = uploadedImages.find(
-            image => image.id === bulb.imageId);
+          image => image.id === bulb.imageId);
 
         if (image) {
           // Uploaded successfully!
@@ -693,12 +695,12 @@ export default class MainContent extends Component {
 
     if (processedBulbs.length) {
       return this.uploadUnprocessedData([...this.data, ...processedBulbs])
-          .then(() => {
-                if (processedBulbIds.length) {
-                  return OneDriveManager.removeItemsById(processedBulbIds);
-                }
-              }
-          );
+        .then(() => {
+            if (processedBulbIds.length) {
+              return OneDriveManager.removeItemsById(processedBulbIds);
+            }
+          }
+        );
     }
 
     return OneDriveManager.removeItemsById(processedBulbIds);
@@ -751,8 +753,8 @@ export default class MainContent extends Component {
         }
 
         settings = Object.assign(settings,
-            parsedData.settings,
-            {password: this.password});
+          parsedData.settings,
+          {password: this.password});
       }
 
       this.applySettings(settings);
@@ -799,8 +801,8 @@ export default class MainContent extends Component {
           let {latitude, longitude} = entry.place;
 
           return latitude >= south && latitude <= north &&
-              (west < east ? (longitude >= west && longitude <= east) :
-                  (longitude >= west || longitude <= east));
+            (west < east ? (longitude >= west && longitude <= east) :
+              (longitude >= west || longitude <= east));
         }
 
         return false;
@@ -817,39 +819,39 @@ export default class MainContent extends Component {
       let newData = data.filter(d => {
         // First, type
         if (!c.simple && ((!c.hasArticle && d.type === R.TYPE_ARTICLE) ||
-            (!c.hasBulb && d.type === R.TYPE_BULB))) {
+          (!c.hasBulb && d.type === R.TYPE_BULB))) {
           return false;
         }
 
         // Second, keywords
         if (c.keywords && c.keywords.length && c.keywords.findIndex(k => {
-              return (d.title && d.title.indexOf(k) !== -1) ||
-                  d.body.indexOf(k) !== -1;
-            }) === -1) {
+            return (d.title && d.title.indexOf(k) !== -1) ||
+              d.body.indexOf(k) !== -1;
+          }) === -1) {
           return false;
         }
 
         // Time
         if (c.months && c.months.length && c.months.findIndex(m => {
-              return new Date(d.time.created).getMonth() === m;
-            }) === -1) {
+            return new Date(d.time.created).getMonth() === m;
+          }) === -1) {
           return false;
         }
 
         // Tag
         if (c.tags && c.tags.length && d.tags) {
           if (c.tags.findIndex(t => {
-                return d.tags.indexOf(t) !== -1;
-              }) === -1) {
+              return d.tags.indexOf(t) !== -1;
+            }) === -1) {
             return false;
           }
         }
 
         // Attachments
         if (c.attachments && c.attachments.length && c.attachments.findIndex(
-                a => {
-                  return typeof d[a] !== "undefined";
-                }) === -1) {
+            a => {
+              return typeof d[a] !== "undefined";
+            }) === -1) {
           return false;
         }
 
@@ -924,17 +926,17 @@ export default class MainContent extends Component {
 
   handleBulbEditorSend(bulbContent, imageId) {
     return this.handleNewRawBulb(bulbContent, imageId)
-        .then(() => {
-          this.setState({
-            isShowingBulbEditor: false,
-          })
+      .then(() => {
+        this.setState({
+          isShowingBulbEditor: false,
         })
-        .catch(err => {
-          console.error(err.stack);
+      })
+      .catch(err => {
+        console.error(err.stack);
 
-          R.notifyError(this.notificationSystem,
-              "There is an error when publishing the bulb. Try again");
-        });
+        R.notifyError(this.notificationSystem,
+          "There is an error when publishing the bulb. Try again");
+      });
   }
 
   handleBulbEditorEdit(bulbContent) {
@@ -947,7 +949,7 @@ export default class MainContent extends Component {
 
     if (this.articleList[this.state.editArticleIndex]) {
       let index = this.findDataIndexByArticleIndex(this.state.editArticleIndex),
-          dataCopy = [...this.data];
+        dataCopy = [...this.data];
 
       if (index !== -1) {
         dataCopy[index] = newEntry;
@@ -955,7 +957,7 @@ export default class MainContent extends Component {
       } else {
         // Technically this shouldn't happen
         R.notifyError(this.notificationSystem,
-            "Unable to upload the data. Try exit the editor and upload again");
+          "Unable to upload the data. Try exit the editor and upload again");
         return new Promise((res, rej) => rej());
       }
     }
@@ -1002,24 +1004,24 @@ export default class MainContent extends Component {
     } else {
       // Technically this shouldn't happen
       R.notifyError(this.notificationSystem,
-          "Unable to upload the data: illegal index. Try refreshing the website");
+        "Unable to upload the data: illegal index. Try refreshing the website");
       return new Promise((res, rej) => rej());
     }
   }
 
   handleEditorRefreshQueue() {
     return OneDriveManager.getImages(this.year)
-        .then(imageMap => {
-          this.handleNewImageMap(imageMap);
-          this.forceUpdate();
+      .then(imageMap => {
+        this.handleNewImageMap(imageMap);
+        this.forceUpdate();
 
-          return OneDriveManager.getImagesInQueue();
-        })
-        .catch(err => {
-          console.error(err.stack);
-          R.notifyError(this.notificationSystem,
-              "There was an error when fetching the queue. Try again");
-        });
+        return OneDriveManager.getImagesInQueue();
+      })
+      .catch(err => {
+        console.error(err.stack);
+        R.notifyError(this.notificationSystem,
+          "There was an error when fetching the queue. Try again");
+      });
   }
 
   /**
@@ -1038,31 +1040,31 @@ export default class MainContent extends Component {
 
     // Then get a list of all the images in the folder
     return OneDriveManager.getJournalImagesByYear(this.year)
-        .then(journalImages => {
-          let missingImages = journalImages.filter(
-              journalImage => images.indexOf(journalImage.name) === -1);
+      .then(journalImages => {
+        let missingImages = journalImages.filter(
+          journalImage => images.indexOf(journalImage.name) === -1);
 
-          return new Promise(res => {
-            if (missingImages.length === 0) {
-              R.notify(this.notificationSystem, "No missing images found");
-              res();
-            }
+        return new Promise(res => {
+          if (missingImages.length === 0) {
+            R.notify(this.notificationSystem, "No missing images found");
+            res();
+          }
 
-            let unprocessed = missingImages.length,
-                onFinished = () => {
-                  if (--unprocessed === 0) {
-                    R.notify(this.notificationSystem,
-                        `Fixed ${missingImages.length} missing images`);
-                    res();
-                  }
-                };
+          let unprocessed = missingImages.length,
+            onFinished = () => {
+              if (--unprocessed === 0) {
+                R.notify(this.notificationSystem,
+                  `Fixed ${missingImages.length} missing images`);
+                res();
+              }
+            };
 
-            for (let image of missingImages) {
-              OneDriveManager.removeImageById(image.id)
-                  .then(() => onFinished());
-            }
-          });
+          for (let image of missingImages) {
+            OneDriveManager.removeImageById(image.id)
+              .then(() => onFinished());
+          }
         });
+      });
 
   }
 
@@ -1073,9 +1075,9 @@ export default class MainContent extends Component {
         settings: R.copy(settings),
       }, () => {
         this.backupAndUploadData()
-            .then(() => {
-              res();
-            });
+          .then(() => {
+            res();
+          });
       });
 
       // R.notify(this.notificationSystem, "Saved");
@@ -1107,7 +1109,7 @@ export default class MainContent extends Component {
   encryptData(data) {
     if (this.password) {
       return CryptoJS.AES.encrypt(JSON.stringify(data),
-          this.password).toString();
+        this.password).toString();
     }
 
     return JSON.stringify(data);
@@ -1153,7 +1155,7 @@ export default class MainContent extends Component {
    */
   uploadUnprocessedData(data) {
     return this.backupAndUploadData(
-        data.sort((lhs, rhs) => rhs.time.created - lhs.time.created)
+      data.sort((lhs, rhs) => rhs.time.created - lhs.time.created)
     );
   }
 
@@ -1167,17 +1169,17 @@ export default class MainContent extends Component {
     let dataString = this.convertDataToString(data);
 
     return this.backupData(dataString)
-        .then(() => this.uploadData(dataString))
-        .then(() => OneDriveManager.getImages(this.year))
-        .then(images => {
-          this.handleNewImageMap(images);
-          this.handleNewContent(dataString);
+      .then(() => this.uploadData(dataString))
+      .then(() => OneDriveManager.getImages(this.year))
+      .then(images => {
+        this.handleNewImageMap(images);
+        this.handleNewContent(dataString);
 
-          this.setState({
-            data   : data,
-            version: new Date().getTime()
-          });
+        this.setState({
+          data   : data,
+          version: new Date().getTime()
         });
+      });
   }
 
 
@@ -1187,14 +1189,14 @@ export default class MainContent extends Component {
    */
   uploadData(dataString) {
     return OneDriveManager.upload(this.year, dataString)
-        .then(() => {
-          R.notify(this.notificationSystem, "Uploaded");
-        }, err => {
-          console.error(err.stack);
+      .then(() => {
+        R.notify(this.notificationSystem, "Uploaded");
+      }, err => {
+        console.error(err.stack);
 
-          R.notifyError(this.notificationSystem,
-              "Unable to upload the data. Try again!");
-        })
+        R.notifyError(this.notificationSystem,
+          "Unable to upload the data. Try again!");
+      })
   }
 
   /**
@@ -1204,16 +1206,16 @@ export default class MainContent extends Component {
   backupData(currentDataString) {
     if (new Date().getTime() - this.lastBackup >= this.BACKUP_INTERVAL) {
       return OneDriveManager.getLatestBackupData(this.year)
-          .then(backupData => {
-            if (backupData === null || backupData !== currentDataString) {
-              return OneDriveManager.backupJournalByYear(this.year,
-                  this.generateBackupFileName());
-            }
-          })
-          .then(() => {
-            // Either the backup is needed or not, update lastBackup time
-            this.lastBackup = new Date().getTime();
-          });
+        .then(backupData => {
+          if (backupData === null || backupData !== currentDataString) {
+            return OneDriveManager.backupJournalByYear(this.year,
+              this.generateBackupFileName());
+          }
+        })
+        .then(() => {
+          // Either the backup is needed or not, update lastBackup time
+          this.lastBackup = new Date().getTime();
+        });
     }
 
     return new Promise(res => {
@@ -1244,7 +1246,7 @@ export default class MainContent extends Component {
     let timestamp = this.articleList[articleIndex].time.created;
 
     return this.data.findIndex(
-        entry => (entry.type === R.TYPE_ARTICLE && entry.time.created === timestamp)
+      entry => (entry.type === R.TYPE_ARTICLE && entry.time.created === timestamp)
     );
   }
 
@@ -1259,7 +1261,7 @@ export default class MainContent extends Component {
     let timestamp = this.bulbList[bulbIndex].time.created;
 
     return this.data.findIndex(
-        entry => (entry.type === R.TYPE_BULB && entry.time.created === timestamp)
+      entry => (entry.type === R.TYPE_BULB && entry.time.created === timestamp)
     );
   }
 
@@ -1307,8 +1309,8 @@ export default class MainContent extends Component {
     }
 
     this.tagPrediction = Object.keys(map)
-        .sort((a, b) => map[b] - map[a])
-        .join(" ");
+      .sort((a, b) => map[b] - map[a])
+      .join(" ");
   }
 
   /**
@@ -1320,7 +1322,7 @@ export default class MainContent extends Component {
     this.articleList = [];
 
     let articleHeight = 0,
-        bulbHeight = 0;
+      bulbHeight = 0;
 
     for (let content of data) {
       if (content.type === R.TYPE_BULB) {
@@ -1330,7 +1332,7 @@ export default class MainContent extends Component {
 
         // Calculate the height
         let top = Math.max(articleHeight - R.BULB_HEIGHT_ORIGINAL,
-            bulbHeight);
+          bulbHeight);
         this.contentStyle[content.time.created] = top;
 
         bulbHeight = top + R.BULB_HEIGHT;
@@ -1339,8 +1341,8 @@ export default class MainContent extends Component {
         this.articleList.push(content);
 
         let currentHeight = content.images ? R.ARTICLE_IMAGE_HEIGHT : R.ARTICLE_NO_IMAGE_HEIGHT,
-            top = Math.max(bulbHeight - (currentHeight - R.ARTICLE_MARGIN),
-                articleHeight);
+          top = Math.max(bulbHeight - (currentHeight - R.ARTICLE_MARGIN),
+            articleHeight);
         this.contentStyle[content.time.created] = top;
 
         articleHeight = top + currentHeight;
@@ -1356,25 +1358,25 @@ export default class MainContent extends Component {
     });
 
     return OneDriveManager.getAvailableYears()
-        .then(years => {
-          let i = years.findIndex(year => year === this.year);
+      .then(years => {
+        let i = years.findIndex(year => year === this.year);
 
-          if (i !== 0) {
-            this.year = years[i - 1];
-            this.loadData()
-                .then(() => {
-                  this.setState({
-                    isLoadingPreviousYear: false,
-                  });
-                }, () => {
-                  this.year = years[i];
-                  this.forceUpdate();
-                });
-          } else {
-            R.notify(this.notificationSystem,
-                "You've reached the earliest days of your journal");
-          }
-        });
+        if (i !== 0) {
+          this.year = years[i - 1];
+          this.loadData()
+            .then(() => {
+              this.setState({
+                isLoadingPreviousYear: false,
+              });
+            }, () => {
+              this.year = years[i];
+              this.forceUpdate();
+            });
+        } else {
+          R.notify(this.notificationSystem,
+            "You've reached the earliest days of your journal");
+        }
+      });
   }
 
   toNextYear() {
@@ -1383,24 +1385,24 @@ export default class MainContent extends Component {
     });
 
     return OneDriveManager.getAvailableYears()
-        .then(years => {
-          let i = years.findIndex(year => year === this.year);
+      .then(years => {
+        let i = years.findIndex(year => year === this.year);
 
-          if (i !== years.length - 1) {
-            this.year = years[i + 1];
-            this.loadData()
-                .then(() => {
-                  this.setState({
-                    isLoadingNextYear: false,
-                  });
-                }, () => {
-                  this.year = years[i];
-                  this.forceUpdate();
-                });
-          } else {
-            R.notify(this.notificationSystem, "You can't travel to the future");
-          }
-        });
+        if (i !== years.length - 1) {
+          this.year = years[i + 1];
+          this.loadData()
+            .then(() => {
+              this.setState({
+                isLoadingNextYear: false,
+              });
+            }, () => {
+              this.year = years[i];
+              this.forceUpdate();
+            });
+        } else {
+          R.notify(this.notificationSystem, "You can't travel to the future");
+        }
+      });
   }
 
   render() {
@@ -1427,6 +1429,9 @@ export default class MainContent extends Component {
       //   text: "HISTORY",
       //   icon: "restore"
     }, {
+      text: "INSIGHT",
+      icon: "lightbulb_outline",
+    }, {
       text: "STATS",
       icon: "show_chart"
     }, {
@@ -1438,148 +1443,156 @@ export default class MainContent extends Component {
     // <Button onClick={() => OneDriveManager.test()}>code</Button>
 
     return (
-        <div className="MainContent">
-          <NotificationSystem ref="notificationSystem"
-                              style={notificationStyle}/>
-          <BulbEditor
-              notificationSystem={this.notificationSystem}
-              bulbAttachLocation={this.state.settings.bulbAttachLocation}
-              hidden={!this.state.isShowingBulbEditor}
-              onClose={() => this.setState({isShowingBulbEditor: false})}
-              onEdit={this.handleBulbEditorEdit}
-              onSend={this.handleBulbEditorSend}
-          />
-          <aside className="sidebar">
-            <div className="create-btn">
-              <Button className="accent" text="create"
-                      onClick={() => {
-                        this.setState({isShowingBulbEditor: true})
-                      }}>add</Button>
-            </div>
-            <div className="other-btn">
-              {BUTTONS.map(b =>
-                  <Button key={b.text}
-                          className={`${(this.state.enabledTabs & this.TAB[b.text]) || b.indent ? "" : "disabled" } ${b.className || `dark ${this.state.isDisplaying === this.TAB[b.text] ? "active" : ""}`} ${b.indent || ""}`}
-                          text={b.text}
-                          onClick={b.onClick || (() => this.handleViewChange(
-                              this.TAB[b.text]))}
-                  >{b.icon}</Button>
-              )}
-            </div>
-          </aside>
-          <main>
-            <div
-                className={`flex-extend-inner-wrapper inner-main ${this.state.isDisplaying === this.TAB.LIST ? "" : "hidden"}`}>
-              <header className="main-header flex-center">
-                <SearchBar tagPrediction={this.tagPrediction}
-                           onChange={this.handleChangeCriteria}
-                           mapBound={this.mapBound}
-                           isBoundSearch={this.state.isDisplayingMapView}
-                />
-                <Button className="dark"
-                        tooltip="Re-download data"
-                        loading={this.state.loadingPrompt}
-                        onClick={this.loadData}>
-                  refresh
-                </Button>
-                <Button className="dark"
-                        onClick={this.toPreviousYear}
-                        disabled={this.state.isLoadingNextYear}
-                        loading={this.state.isLoadingPreviousYear}
-                >navigate_before</Button>
-                <span className="year">{this.year}</span>
-                <Button
-                    className="dark"
-                    onClick={this.toNextYear}
-                    loading={this.state.isLoadingNextYear}
-                    disabled={this.year === new Date().getFullYear() || this.state.isLoadingPreviousYear}>
-                  navigate_next
-                </Button>
-              </header>
-              <div className="content">
+      <div className="MainContent">
+        <NotificationSystem ref="notificationSystem"
+                            style={notificationStyle}/>
+        <BulbEditor
+          notificationSystem={this.notificationSystem}
+          bulbAttachLocation={this.state.settings.bulbAttachLocation}
+          hidden={!this.state.isShowingBulbEditor}
+          onClose={() => this.setState({isShowingBulbEditor: false})}
+          onEdit={this.handleBulbEditorEdit}
+          onSend={this.handleBulbEditorSend}
+        />
+        <aside className="sidebar">
+          <div className="create-btn">
+            <Button className="accent" text="create"
+                    onClick={() => {
+                      this.setState({isShowingBulbEditor: true})
+                    }}>add</Button>
+          </div>
+          <div className="other-btn">
+            {BUTTONS.map(b =>
+              <Button key={b.text}
+                      className={`${(this.state.enabledTabs & this.TAB[b.text]) || b.indent ? "" : "disabled" } ${b.className || `dark ${this.state.isDisplaying === this.TAB[b.text] ? "active" : ""}`} ${b.indent || ""}`}
+                      text={b.text}
+                      onClick={b.onClick || (() => this.handleViewChange(
+                        this.TAB[b.text]))}
+              >{b.icon}</Button>
+            )}
+          </div>
+        </aside>
+        <main>
+          <div
+            className={`flex-extend-inner-wrapper inner-main ${this.state.isDisplaying === this.TAB.LIST ? "" : "hidden"}`}>
+            <header className="main-header flex-center">
+              <SearchBar tagPrediction={this.tagPrediction}
+                         onChange={this.handleChangeCriteria}
+                         mapBound={this.mapBound}
+                         isBoundSearch={this.state.isDisplayingMapView}
+              />
+              <Button className="dark"
+                      tooltip="Re-download data"
+                      loading={this.state.loadingPrompt}
+                      onClick={this.loadData}>
+                refresh
+              </Button>
+              <Button className="dark"
+                      onClick={this.toPreviousYear}
+                      disabled={this.state.isLoadingNextYear}
+                      loading={this.state.isLoadingPreviousYear}
+              >navigate_before</Button>
+              <span className="year">{this.year}</span>
+              <Button
+                className="dark"
+                onClick={this.toNextYear}
+                loading={this.state.isLoadingNextYear}
+                disabled={this.year === new Date().getFullYear() || this.state.isLoadingPreviousYear}>
+                navigate_next
+              </Button>
+            </header>
+            <div className="content">
+              <div
+                className="flex-extend-inner-wrapper inner-content list-view">
                 <div
-                    className="flex-extend-inner-wrapper inner-content list-view">
-                  <div
-                      className={`calendar-view ${this.state.isDisplayingCalendar ? "" : "hidden"}`}
-                  >
-                    <div className="calendar-padding"></div>
-                    <div className="calendar-parent">
-                      <div className="flex-extend-inner-wrapper">
-                        <Calendar
-                            version={this.state.version}
-                            contentStyle={this.contentStyle}
-                            onBlockClick={this.handleCalendarClick}
-                            data={this.state.data}/>
-                      </div>
+                  className={`calendar-view ${this.state.isDisplayingCalendar ? "" : "hidden"}`}
+                >
+                  <div className="calendar-padding"></div>
+                  <div className="calendar-parent">
+                    <div className="flex-extend-inner-wrapper">
+                      <Calendar
+                        version={this.state.version}
+                        contentStyle={this.contentStyle}
+                        onBlockClick={this.handleCalendarClick}
+                        data={this.state.data}/>
                     </div>
                   </div>
-                  <EntryView
-                      version={this.state.version}
-                      data={this.state.data}
-                      imageMap={this.imageMap}
-                      contentStyle={this.contentStyle}
-                      scrollTop={this.scrollTop}
-                      articles={this.articleList}
-                      bulbs={this.bulbList}
-                      highlightBulbIndex={this.highlightBulbIndex}
-                      onArticleClick={this.handleArticleClick}
-                      onArticleRemove={this.handleArticleRemove}
-                      onBulbRemove={this.handleBulbRemove}
-                      onLocationClick={this.handleBulbLocationClick}
+                </div>
+                <EntryView
+                  version={this.state.version}
+                  data={this.state.data}
+                  imageMap={this.imageMap}
+                  contentStyle={this.contentStyle}
+                  scrollTop={this.scrollTop}
+                  articles={this.articleList}
+                  bulbs={this.bulbList}
+                  highlightBulbIndex={this.highlightBulbIndex}
+                  onArticleClick={this.handleArticleClick}
+                  onArticleRemove={this.handleArticleRemove}
+                  onBulbRemove={this.handleBulbRemove}
+                  onLocationClick={this.handleBulbLocationClick}
+                />
+                <div
+                  className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>
+                  <BulbMap
+                    hidden={!this.state.isDisplayingMapView}
+                    data={this.bulbList}
+                    contentStyle={this.contentStyle}
+                    onBulbClick={this.handleBulbClick}
+                    center={this.state.bulbMapCenter || this.state.settings.bulbMapCenter}
+                    version={this.state.mapVersion}
+                    onBoundChange={this.handleBoundChange}
                   />
-                  <div
-                      className={`bulb-map-view ${this.state.isDisplayingMapView ? "" : "hidden"}`}>
-                    <BulbMap
-                        hidden={!this.state.isDisplayingMapView}
-                        data={this.bulbList}
-                        contentStyle={this.contentStyle}
-                        onBulbClick={this.handleBulbClick}
-                        center={this.state.bulbMapCenter || this.state.settings.bulbMapCenter}
-                        version={this.state.mapVersion}
-                        onBoundChange={this.handleBoundChange}
-                    />
-                  </div>
                 </div>
               </div>
             </div>
-            <div
-                className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
-              <Editor {...(R.copy(this.articleList[this.state.editArticleIndex]) || {newData: this.bulbEditorContent})}
-                      hidden={this.state.isDisplaying !== this.TAB.EDITOR}
-                      onPromptCancel={this.handlePromptCancel}
-                      imageMap={this.imageMap}
-                      version={this.editorVersion}
-                      tagPrediction={this.tagPrediction}
-                      onChange={this.handleArticleChange}
-                      onRefreshQueue={this.handleEditorRefreshQueue}
-                      year={this.year}
-                      oneDriveManager={OneDriveManager}
-              />
-            </div>
-            <div
-                className={`flex-extend-inner-wrapper stats-view ${this.state.isDisplaying === this.TAB.STATS ? "" : "hidden"}`}>
-              <Chart
-                  hidden={this.state.isDisplaying !== this.TAB.STATS}
-                  data={this.state.data}
-                  version={this.state.version}
-              />
-            </div>
-            <div
-                className={`flex-extend-inner-wrapper options-view ${this.state.isDisplaying === this.TAB.OPTIONS ? "" : "hidden"}`}>
-              <Settings hidden={this.state.isDisplaying !== this.TAB.OPTIONS}
-                        notificationSystem={this.notificationSystem}
-                        handleMissingImages={this.handleMissingImages}
-                        data={this.state.settings || DEFAULT_SETTINGS}
-                        onSave={this.handleSettingsSave}
-                        version={this.state.settingsVersion}
-              />
-            </div>
-          </main>
-          <LoadingScreen title={this.state.loadingPrompt}
-                         requirePassword={this.state.loadingPromptRequiringPassword}
-                         handlePassword={this.redeemPassword}
-                         progress={this.state.loadingProgress}/>
-        </div>
+          </div>
+          <div
+            className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying === this.TAB.EDITOR ? "" : "hidden"}`}>
+            <Editor {...(R.copy(this.articleList[this.state.editArticleIndex]) || {newData: this.bulbEditorContent})}
+                    hidden={this.state.isDisplaying !== this.TAB.EDITOR}
+                    onPromptCancel={this.handlePromptCancel}
+                    imageMap={this.imageMap}
+                    version={this.editorVersion}
+                    tagPrediction={this.tagPrediction}
+                    onChange={this.handleArticleChange}
+                    onRefreshQueue={this.handleEditorRefreshQueue}
+                    year={this.year}
+                    oneDriveManager={OneDriveManager}
+            />
+          </div>
+          <div
+            className={`flex-extend-inner-wrapper insight-view ${this.state.isDisplaying === this.TAB.INSIGHT ? "" : "hidden"}`}>
+            <Stats
+              hidden={this.state.isDisplaying !== this.TAB.INSIGHT}
+              data={this.state.data}
+              version={this.state.version}
+            />
+          </div>
+          <div
+            className={`flex-extend-inner-wrapper stats-view ${this.state.isDisplaying === this.TAB.STATS ? "" : "hidden"}`}>
+            <Chart
+              hidden={this.state.isDisplaying !== this.TAB.STATS}
+              data={this.state.data}
+              version={this.state.version}
+            />
+          </div>
+          <div
+            className={`flex-extend-inner-wrapper options-view ${this.state.isDisplaying === this.TAB.OPTIONS ? "" : "hidden"}`}>
+            <Settings hidden={this.state.isDisplaying !== this.TAB.OPTIONS}
+                      notificationSystem={this.notificationSystem}
+                      handleMissingImages={this.handleMissingImages}
+                      data={this.state.settings || DEFAULT_SETTINGS}
+                      onSave={this.handleSettingsSave}
+                      version={this.state.settingsVersion}
+            />
+          </div>
+        </main>
+        <LoadingScreen title={this.state.loadingPrompt}
+                       requirePassword={this.state.loadingPromptRequiringPassword}
+                       handlePassword={this.redeemPassword}
+                       progress={this.state.loadingProgress}/>
+      </div>
     );
   }
 }
