@@ -70,6 +70,7 @@ export default class Stats extends Component {
     this.averageBulbImages = 0;
 
     this.totalBulbLocations = 0;
+    this.averageBulbLocations = 0;
 
     this.longestEntryStreak = 0;
     this.longestBulbStreak = 0;
@@ -143,8 +144,6 @@ export default class Stats extends Component {
         }
       }
     }
-
-    this.totalTimeSpent /= 1000;
   }
 
   processEntryTimeData(entry, char) {
@@ -169,6 +168,7 @@ export default class Stats extends Component {
     this.averageCharPerMinute = this.totalTimeSpent ? this.totalEntryCharWithTime / this.totalTimeSpent * 60000 : 0;
     this.averageArticleImages = this.totalArticles ? this.totalArticleImages / this.totalArticles : 0;
     this.averageBulbImages = this.totalBulbs ? this.totalBulbImages / this.totalBulbs : 0;
+    this.averageBulbLocations = this.totalBulbs ? this.totalBulbLocations / this.totalBulbs : 0;
   }
 
   processStreakData() {
@@ -265,6 +265,10 @@ export default class Stats extends Component {
 
     let template = this.generateFormTemplate();
     for (let form of template) {
+      if (!form) {
+        continue;
+      }
+
       let formData = {title: form[0]},
         rowsData = [];
 
@@ -307,7 +311,7 @@ export default class Stats extends Component {
             [
               ["Total", this.totalEntries],
               ["Total characters", this.totalEntryChar],
-              ["Average character", this.averageEntryChar.toFixed(3)],
+              ["Average character per entry", this.averageEntryChar.toFixed(3)],
               ["Lowest character", this.minEntryChar],
               ["Highest character", this.maxEntryChar],
             ]
@@ -316,24 +320,25 @@ export default class Stats extends Component {
             [
               ["Total", this.totalArticles],
               ["Total characters", this.totalArticleChar],
-              ["Average character", this.averageArticleChar.toFixed(3)],
-              ["Lowest character", this.minArticleChar],
-              ["Lowest character on", R.dateToString(this.minArticleCharOn)],
-              ["Lowest character title", this.minArticleCharTitle],
+              ["Average character per article", this.averageArticleChar.toFixed(
+                3)],
+              ["Lowest character ", this.minArticleChar],
+              ["... which happened on", R.dateToString(this.minArticleCharOn)],
+              ["... whose title is", this.minArticleCharTitle],
               ["Highest character", this.maxArticleChar],
-              ["Highest character on", R.dateToString(this.maxArticleCharOn)],
-              ["Highest character title", this.maxArticleCharTitle],
+              ["... which happened on", R.dateToString(this.maxArticleCharOn)],
+              ["... whose title is", this.maxArticleCharTitle],
             ]
           ],
           ["Bulbs",
             [
               ["Total", this.totalBulbs],
               ["Total characters", this.totalBulbChar],
-              ["Average character", this.averageBulbChar.toFixed(3)],
+              ["Average character per bulb", this.averageBulbChar.toFixed(3)],
               ["Lowest character", this.minBulbChar],
-              ["Lowest character on", R.dateToString(this.minBulbCharOn)],
+              ["... which happened on", R.dateToString(this.minBulbCharOn)],
               ["Highest character", this.maxBulbChar],
-              ["Highest character on", R.dateToString(this.maxBulbCharOn)],
+              ["... which happened on", R.dateToString(this.maxBulbCharOn)],
             ]
           ]
         ]
@@ -342,12 +347,11 @@ export default class Stats extends Component {
         [
           ["Time spent",
             [
-              ["Total time spent", this.totalTimeSpent],
-              ["Average time spent", this.averageTimeSpent.toFixed(3)],
-              ["Lowest time spent", this.minTimeSpent],
-              ["Highest time spent", this.maxTimeSpent],
-              ["Average character per minute", this.averageCharPerMinute.toFixed(
-                3)],
+              ["Total time spent", R.millisecondsToReadable(this.totalTimeSpent)],
+              ["Average time spent", R.millisecondsToReadable(this.averageTimeSpent)],
+              ["Shortest time spent", R.millisecondsToReadable(this.minTimeSpent)],
+              ["Longest time spent", R.millisecondsToReadable(this.maxTimeSpent)],
+              ["Average character per minute", R.millisecondsToReadable(this.averageCharPerMinute)],
             ]
           ]
         ]
@@ -359,13 +363,16 @@ export default class Stats extends Component {
               ["Total images", this.totalEntryImages],
               ["Total article images", this.totalArticleImages],
               ["Average article images", this.averageArticleImages.toFixed(3)],
-              ["Highest article images", this.maxArticleImages],
+              ["Most article images", this.maxArticleImages],
               ["Total bulb images", this.totalBulbImages],
-              ["Average bulb images", this.averageBulbImages.toFixed(3)],
+              ["Bulb image percent", R.numToPercentage(this.averageBulbImages.toFixed(3))],
             ]
           ],
           ["Location",
-            [["Total bulb locations", this.totalBulbLocations]],
+            [
+              ["Total bulb locations", this.totalBulbLocations]
+              ["Bulb location percent", R.numToPercentage(this.averageBulbLocations.toFixed(3))]
+            ],
           ],
         ]
       ],
@@ -386,12 +393,13 @@ export default class Stats extends Component {
                 ["Longest bulb streak to", R.dateToString(this.longestBulbStreakTo)] : null,
             ]
           ],
-          ["Bulb",
-            [
-              ["Most bulbs in a day", this.mostBulbsInOneDay],
-              ["Most bulbs on", R.dateToString(this.mostBulbsInOneDayOn)],
-            ]
-          ]
+          this.mostBulbsInOneDay ?
+            ["Bulb",
+              [
+                ["Most bulbs in a day", this.mostBulbsInOneDay],
+                ["Most bulbs on", R.dateToString(this.mostBulbsInOneDayOn)],
+              ]
+            ] : null
         ]
       ]
     ];
