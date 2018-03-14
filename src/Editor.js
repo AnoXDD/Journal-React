@@ -257,13 +257,10 @@ const SortableList = SortableContainer(
      items,
      isEditing,
      isSelected,
-     handleClick,
-     photosInTransfer,
-     onMouseEnter
+     handleClick
    }) =>
     <NoScrollArea padding="10px">
       <div className="more-info-wrapper"
-           onMouseEnter={onMouseEnter}
       >
         <div
           className={`photos ${isEditing ? "show-all" : ""}`}>
@@ -939,7 +936,6 @@ class Editor extends Component {
                         isSelected={
                           status => status === this.PHOTO_STATUS.SELECTED}
                         photosInTransfer={this.state.photosInTransfer}
-                        onMouseEnter={this.showPhotoPreview}
                         distance={5}
                         handleClick={(i) => {
                           this.togglePhotoStatus(i)

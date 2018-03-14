@@ -1,10 +1,12 @@
 /**
  * Created by Anoxic on 5/27/2017.
  *
- * A OneDrive manager to manage all the network stuffs. Promises are used here
+ * A OneDrive manager to manage all the network stuffs. Promises are
+ * used here
  *
  * The path referred below is from approot, i.e.
- * https://api.onedrive.com/v1.0/drive/root:/Apps/Trek/{the path starts here}
+ * https://api.onedrive.com/v1.0/drive/root:/Apps/Trek/{the path
+ * starts here}
  */
 
 const MicrosoftGraph = require("@microsoft/microsoft-graph-client");
@@ -105,8 +107,9 @@ export default class OneDriveManager {
       } else {
         let p = popup(`https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=${client_id}&scope=${scope}&response_type=token&redirect_uri=${redirect_uri}`);
 
-        // The pop should take care of setting the access token, so we just
-        // check if the authentication has completed every second
+        // The pop should take care of setting the access token, so
+        // we just check if the authentication has completed every
+        // second
         let id = setInterval(() => {
           let cookie = this.getTokenFromCookie();
 
@@ -155,7 +158,8 @@ export default class OneDriveManager {
       return new Promise(resolve => resolve(this.bulbFolderId));
     }
 
-    return this.getIdByPath("bulb").then(id => this.bulbFolderId = id);
+    return this.getIdByPath("bulb")
+      .then(id => this.bulbFolderId = id);
   }
 
   static getCoreFolderId() {
@@ -163,7 +167,8 @@ export default class OneDriveManager {
       return new Promise(resolve => resolve(this.coreFolderId));
     }
 
-    return this.getIdByPath("core").then(id => this.coreFolderId = id);
+    return this.getIdByPath("core")
+      .then(id => this.coreFolderId = id);
   }
 
   static getDataFolderId() {
@@ -171,7 +176,8 @@ export default class OneDriveManager {
       return new Promise(resolve => resolve(this.dataFolderId));
     }
 
-    return this.getIdByPath("data").then(id => this.dataFolderId = id);
+    return this.getIdByPath("data")
+      .then(id => this.dataFolderId = id);
   }
 
   static getQueueFolderId() {
@@ -179,7 +185,8 @@ export default class OneDriveManager {
       return new Promise(resolve => resolve(this.queueFolderId));
     }
 
-    return this.getIdByPath("queue").then(id => this.queueFolderId = id);
+    return this.getIdByPath("queue")
+      .then(id => this.queueFolderId = id);
   }
 
   static getResourceFolderId() {
@@ -187,7 +194,8 @@ export default class OneDriveManager {
       return new Promise(resolve => resolve(this.resourceFolderId));
     }
 
-    return this.getIdByPath("resource").then(id => this.resourceFolderId = id);
+    return this.getIdByPath("resource")
+      .then(id => this.resourceFolderId = id);
   }
 
   static getItemContentByUrl(url) {
@@ -231,7 +239,8 @@ export default class OneDriveManager {
 
   static getItemContentByPath(path) {
     return this.getClient()
-      .then(client => client.api(`me${this.getPathHeader(path)}`).get())
+      .then(
+        client => client.api(`me${this.getPathHeader(path)}`).get())
       .then(res => res["@microsoft.graph.downloadUrl"])
       .then(url => this.getItemContentByUrl(url));
   }
@@ -272,7 +281,8 @@ export default class OneDriveManager {
   /**
    *
    * @param path
-   * @returns {Promise.<*>} - each element of promise result is composed of
+   * @returns {Promise.<*>} - each element of promise result is
+   *   composed of
    *  {id: xxx, name: xxx}
    */
   static getChildrenByPath(path) {
@@ -289,7 +299,8 @@ export default class OneDriveManager {
   /**
    *
    * @param path
-   * @returns {Promise.<*>} - each element of promise result is composed of
+   * @returns {Promise.<*>} - each element of promise result is
+   *   composed of
    *  {id: xxx, name: xxx}
    */
   static getChildrenById(id) {
@@ -306,7 +317,8 @@ export default class OneDriveManager {
   /**
    *
    * @param path
-   * @returns {Promise.<*>} - each element of promise result is composed of
+   * @returns {Promise.<*>} - each element of promise result is
+   *   composed of
    *  {id: xxx, name: xxx, thumbnails: xxx}
    */
   static getChildrenByPathWithThumbnails(path) {
@@ -355,7 +367,8 @@ export default class OneDriveManager {
    * @param path - the path, including the filename
    * @param content
    * @param contentType
-   * @returns {Promise.<*>} - a promise with following: { id: xxx, name: xxx ,
+   * @returns {Promise.<*>} - a promise with following: { id: xxx,
+   *   name: xxx ,
    *     ... }
    */
   static uploadItemByPath(path, content, contentType) {
@@ -439,8 +452,8 @@ export default class OneDriveManager {
   }
 
   /**
-   * Tries to create a folder under certain directory. If the folder already
-   * exists, return that folder
+   * Tries to create a folder under certain directory. If the folder
+   * already exists, return that folder
    * @param id
    * @param folderName
    */
@@ -508,8 +521,8 @@ export default class OneDriveManager {
    *    | data
    *    | queue
    *    | resource
-   * @params onChange - callback function to update for changes (takes a param
-   *     of percentage finished)
+   * @params onChange - callback function to update for changes
+   *   (takes a param of percentage finished)
    */
   static verifyFileStructure(year, onChange) {
     const STEP = 7;
@@ -546,11 +559,17 @@ export default class OneDriveManager {
         return Promise.all([
           this.bulbFolderId || this.createFolderById(rootId, "bulb"),
           this.coreFolderId || this.createFolderById(rootId, "core"),
-          this.queueFolderId || this.createFolderById(rootId, "queue"),
-          this.resourceFolderId || this.createFolderById(rootId, "resource"),
+          this.queueFolderId || this.createFolderById(rootId,
+            "queue"),
+          this.resourceFolderId || this.createFolderById(rootId,
+            "resource"),
         ]);
       })
       .catch(err => {
+        if (typeof err === "object") {
+          err = JSON.stringify(err);
+        }
+
         throw new Error(`Unable to verify the integrity of file structure. (err: ${err})`);
       })
       .then(ids => {
@@ -576,8 +595,8 @@ export default class OneDriveManager {
       .then(() => {
         onChange(7 / STEP);
 
-        // Lastly, if this is the end of the year, try to create folders and
-        // empty data for the next year
+        // Lastly, if this is the end of the year, try to create
+        // folders and empty data for the next year
 
         let now = new Date();
         if (now.getMonth() === 11 && now.getDate() === 31) {
@@ -590,10 +609,11 @@ export default class OneDriveManager {
   }
 
   /**
-   * Returns a promise with a list of elements, each element being represented
-   * as { id: xxx, name: {filename}, content: xxx, [imageId: xxx] }
-   * @params onChange - on callback function to update how many bulbs are
-   *     fetched
+   * Returns a promise with a list of elements, each element being
+   * represented as { id: xxx, name: {filename}, content: xxx,
+   * [imageId: xxx] }
+   * @params onChange - on callback function to update how many bulbs
+   *   are fetched
    */
   static getBulbs(onChange) {
     const TEXT_BULB_NAME_LENGTH = 13;
@@ -654,8 +674,8 @@ export default class OneDriveManager {
   }
 
   /**
-   * Removes the items with these ids. Does not care about if the removal is
-   * successful
+   * Removes the items with these ids. Does not care about if the
+   * removal is successful
    * @param ids
    */
   static removeItemsById(ids) {
@@ -689,7 +709,8 @@ export default class OneDriveManager {
   }
 
   static uploadJournalByYear(year, content) {
-    return this.uploadItemByPath(`core/${year}/${DATA_NAME}`, content);
+    return this.uploadItemByPath(`core/${year}/${DATA_NAME}`,
+      content);
   }
 
   static getJournalImagesByYear(year) {
@@ -721,14 +742,15 @@ export default class OneDriveManager {
 
   /**
    * Uploads the image(s) to the queue folder
-   * @param data - an object of a list of objects of {name: xxx, contentType:
-   *     xxx, content: xxx}
+   * @param data - an object of a list of objects of {name: xxx,
+   *   contentType: xxx, content: xxx}
    * @returns {Promise.<*>}
    */
   static uploadToQueue(data, onChange) {
     onChange = onChange || (() => void(0));
 
-    // Treat it differently based on if it is an array of just one object
+    // Treat it differently based on if it is an array of just one
+    // object
     if (Array.isArray(data)) {
       return new Promise(resolve => {
         let counter = 0,
@@ -743,14 +765,16 @@ export default class OneDriveManager {
         for (let i = 0; i < data.length; ++i) {
           let c = data[i];
 
-          this.uploadItemByPath(`queue/${this.generateNewImageName(c.name, i)}`,
+          this.uploadItemByPath(`queue/${this.generateNewImageName(c.name,
+            i)}`,
             c.content, c.contentType)
             .then(() => f());
         }
       });
     }
 
-    return this.uploadItemByPath(`queue/${this.generateNewImageName(data.name,
+    return this.uploadItemByPath(`queue/${this.generateNewImageName(
+      data.name,
       0)}`, data.content, data.contentType)
       .then(res => {
         onChange(1);
@@ -797,8 +821,9 @@ export default class OneDriveManager {
   }
 
   /**
-   * Given an element of imageMap, fetch the original file url from the server.
-   * Since each element is an object, this elem is passed as a reference
+   * Given an element of imageMap, fetch the original file url from
+   * the server. Since each element is an object, this elem is passed
+   * as a reference
    * @param elem
    * @return a promise with newElem as parameter
    */
@@ -822,8 +847,8 @@ export default class OneDriveManager {
   }
 
   /**
-   * Returns a promise with a list of all the images that are attached to this
-   * year and from queue, with each element as
+   * Returns a promise with a list of all the images that are
+   * attached to this year and from queue, with each element as
    * { id: xxx, name: xxx, thumbnail: xxx, url: xxx, }
    * @param year
    */
@@ -860,7 +885,8 @@ export default class OneDriveManager {
         return this.backupJournalByYear(year, "data_backup.js");
       })
       .catch(err => {
-        console.log(`You shouldn't get any error here: ${JSON.stringify(err)}`);
+        console.log(`You shouldn't get any error here: ${JSON.stringify(
+          err)}`);
       })
       .then(() => {
         console.log("Then try to grab the moved file");
@@ -897,7 +923,8 @@ export default class OneDriveManager {
       })
       .then(bulbs => {
         console.log(`Got a total of ${bulbs.length}, and expect 4`);
-        console.log(`And the contents are: ${bulbs.map(bulb => bulb.content)
+        console.log(`And the contents are: ${bulbs.map(
+          bulb => bulb.content)
           .join(" ")}, and expect "1 2 3 4" or something like that`);
         console.log("Then we try to remove them");
         return this.removeItemsById(bulbs.map(bulb => bulb.id));
@@ -935,7 +962,8 @@ export default class OneDriveManager {
 
         imageIds = images;
 
-        console.log(`The names of them are ${images.map(image => image.name)
+        console.log(`The names of them are ${images.map(
+          image => image.name)
           .join(" ")}, expect 1.jpg 2.jpg 3.jpg 4.jpg 5.jpg or something like that`);
         console.log("Now we are moving them to some other locations");
 
@@ -973,7 +1001,8 @@ export default class OneDriveManager {
 
         imageIds = images;
 
-        console.log(`The names of them are ${images.map(image => image.name)
+        console.log(`The names of them are ${images.map(
+          image => image.name)
           .join(" ")}, expect renamed.jpg 2.jpg 3.jpg 4.jpg 5.jpg or something like that`);
       })
       .then(() => {

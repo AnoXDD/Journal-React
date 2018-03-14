@@ -685,6 +685,8 @@ nav.nav {
     position: fixed;
     top: 0;
     left: 0;
+    width: 100vw;
+    height: 100vh;
     background: white; }
   .Editor.dark {
     background: #212121; }
@@ -832,7 +834,8 @@ nav.nav {
           right: 0;
           background: white;
           box-sizing: content-box;
-          padding: 10px; }
+          padding: 10px;
+          z-index: 100; }
           .Editor .extras .more-info .photo-preview .photo-wrapper .center {
             cursor: pointer; }
         .Editor .extras .more-info .photo-preview .photo-no-scroll {
@@ -1019,7 +1022,11 @@ nav.nav {
     position: fixed;
     top: 0;
     left: 0;
+    width: 100vw;
+    height: 100vh;
     background: #212121; }
+    .Image.fullscreen .image {
+      z-index: 999999999; }
   .Image .image:first-child {
     opacity: 0;
     animation: fade-out .4s linear; }
