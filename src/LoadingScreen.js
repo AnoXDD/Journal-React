@@ -5,9 +5,9 @@
 
 import React, {Component} from "react";
 
-import Button from "./Button";
+import Button from "./lib/Button";
 import ProgressBar from "./ProgressBar";
-import Prompt from "./Prompt";
+import Prompt from "./lib/Prompt";
 
 export default class LoadingScreen extends Component {
 

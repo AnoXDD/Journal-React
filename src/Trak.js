@@ -6,7 +6,7 @@
 
 import React, {Component} from "react";
 import Background from "./Background";
-import Button from "./Button";
+import Button from "./lib/Button";
 import MainContent from "./MainContent";
 import OneDriveManager from "./OneDriveManager";
 

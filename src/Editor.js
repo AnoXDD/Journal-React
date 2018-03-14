@@ -7,17 +7,17 @@ import {
 } from 'react-sortable-hoc';
 import AutosizeInput from "react-input-autosize";
 
-import NoScrollArea from "./NoScrollArea";
-import Toggle from "./Toggle";
+import NoScrollArea from "./lib/NoScrollArea";
+import Toggle from "./lib/Toggle";
 import PredictionInputs from "./PredictionInputs";
-import Button from "./Button";
-import Prompt from "./Prompt";
-import Image from "./Image";
+import Button from "./lib/Button";
+import Prompt from "./lib/Prompt";
+import Image from "./lib/Image";
 import ImagePicker from "./ImagePicker";
 import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
-import AnimatedNumber from "./AnimatedNumber";
+import AnimatedNumber from "./lib/AnimatedNumber";
 
 /**
  * This editor is only appropriate to edit an article, NOT for a bulb
@@ -1102,7 +1102,8 @@ class Editor extends Component {
         ["Created @ ", "timeCreated"]];
 
       for (let i = 0; i < lines.length; ++i) {
-        let line = lines[i];
+        let line = lines[i],
+            spliced = false;
 
         for (let pair of tags) {
           if (line.startsWith(pair[0])) {
@@ -1110,17 +1111,25 @@ class Editor extends Component {
             if (time && new Date(time).getFullYear() === this.props.year) {
               stats[pair[1]] = time;
 
-              lines.splice(i--, 1);
+              lines.splice(i, 1);
 
+              spliced = true;
               break;
             }
           }
         }
 
-        // Add space
-        lines[i] = this.addSpaceBetweenCharacters(line);
+        if (!spliced) {
+          // Add space
+          lines[i] = this.addSpaceBetweenCharacters(line);
+        }
         // Add the difference
         selectionStart += lines[i].length - line.length;
+        // Because we just introduced a new character
+        if (spliced) {
+          --selectionStart;
+          --i;
+        }
       }
 
 
@@ -1277,10 +1286,6 @@ class Editor extends Component {
         .replace(/([A-Za-z0-9])([\u00ff-\uffff])/g, "$1 $2");
   }
 
-  countChars(str) {
-    return (str.match(/[\u00ff-\uffff]|\S+/g) || []).length;
-  }
-
   convertToDateTime(seconds) {
     const c = (i) => {
       return ("0" + i % 60).slice(-2);
@@ -1368,7 +1373,7 @@ class Editor extends Component {
             />
             <div className="stats">
               <div className="stat chars">
-                <AnimatedNumber value={this.countChars(this.state.body)}/>
+                <AnimatedNumber value={R.count(this.state.body)}/>
               </div>
               <div className="stat times">
                 <div className="time created">

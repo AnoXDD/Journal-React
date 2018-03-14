@@ -22,7 +22,7 @@ export default class Button extends Component {
           <div
               className={`flex-center icon-wrapper ${!this.props.loading ? "" : "transparent"}`}>
             <i className="material-icons">
-              {this.props.children}
+              {this.props.children || this.props.icon}
             </i>
           </div>
           { this.props.tooltip ? (
