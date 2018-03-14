@@ -37,38 +37,38 @@ class ExtraAttachmentsAddProp extends Component {
     };
 
     return (
-        <div className={`other-prop add ${isEditing ? "" : "hidden"} `}>
-          <div className="other-prop-wrapper">
-            <AutosizeInput
-                type="text"
-                className={`new-key normal underlined ${isEditing ? "" : "disabled"}`}
-                value={this.state.key}
-                onChange={(e) => {
-                  this.setState({key: e.target.value});
-                }}
-                disabled={!isEditing}
-            />
-            <span className="text">:</span>
-            <input
-                type="text"
-                className={`normal underlined ${isEditing ? "" : "disabled"}`}
-                value={this.state.value}
-                onChange={(e) => {
-                  this.setState({value: e.target.value});
-                }}
-                disabled={!isEditing}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    onClickAdd();
-                  }
-                }}
-            />
-            <Button className={isEditing ? "" : "transparent"}
-                    onClick={onClickAdd}>
-              add_circle_outline
-            </Button>
-          </div>
+      <div className={`other-prop add ${isEditing ? "" : "hidden"} `}>
+        <div className="other-prop-wrapper">
+          <AutosizeInput
+            type="text"
+            className={`new-key normal underlined ${isEditing ? "" : "disabled"}`}
+            value={this.state.key}
+            onChange={(e) => {
+              this.setState({key: e.target.value});
+            }}
+            disabled={!isEditing}
+          />
+          <span className="text">:</span>
+          <input
+            type="text"
+            className={`normal underlined ${isEditing ? "" : "disabled"}`}
+            value={this.state.value}
+            onChange={(e) => {
+              this.setState({value: e.target.value});
+            }}
+            disabled={!isEditing}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                onClickAdd();
+              }
+            }}
+          />
+          <Button className={isEditing ? "" : "transparent"}
+                  onClick={onClickAdd}>
+            add_circle_outline
+          </Button>
         </div>
+      </div>
     );
   }
 }
@@ -85,77 +85,77 @@ class ExtraAttachments extends Component {
 
   render() {
     const OtherProps = (({props, obj, index, removePanel, addPanel}) =>
-            <div className="other-props">
-              { props.map((prop) => {
-                if (prop !== "type") {
-                  return (
-                      <div key={`other-${index}-${prop}`}
-                           className="other-prop">
-                        <div className="other-prop-wrapper">
-                          <span className="text">{prop}:</span>
-                          <input
-                              type="text"
-                              className={`normal underlined ${this.props.isEditing ? "" : "disabled"}`}
-                              onBlur={(e) => {
-                                this.props.onChange(index,
-                                    prop,
-                                    e.target.value);
-                              }}
-                              disabled={!this.props.isEditing}
-                              defaultValue={this.state.others[index][prop] || ""}/>
-                          { removePanel(index, prop) }
-                        </div>
-                      </div>
-                  );
-                }
+        <div className="other-props">
+          {props.map((prop) => {
+            if (prop !== "type") {
+              return (
+                <div key={`other-${index}-${prop}`}
+                     className="other-prop">
+                  <div className="other-prop-wrapper">
+                    <span className="text">{prop}:</span>
+                    <input
+                      type="text"
+                      className={`normal underlined ${this.props.isEditing ? "" : "disabled"}`}
+                      onBlur={(e) => {
+                        this.props.onChange(index,
+                          prop,
+                          e.target.value);
+                      }}
+                      disabled={!this.props.isEditing}
+                      defaultValue={this.state.others[index][prop] || ""}/>
+                    {removePanel(index, prop)}
+                  </div>
+                </div>
+              );
+            }
 
-                return "";
-              })}
-              { addPanel(index) }
-            </div>
+            return "";
+          })}
+          {addPanel(index)}
+        </div>
     );
 
     return (
-        <NoScrollArea padding="10px">
-          <div className="others more-info-wrapper">
-            { this.state.others.map((other, index) => {
-              return (
-                  <div key={`other-${index}`}
-                       className="other-wrapper shadow">
-                    <div className="other flex-center">
-                      <div className="type-wrapper flex-center">
-                        <input
-                            type="text"
-                            className={`type normal ${this.props.isEditing ? "" : "disabled"}`}
-                            value={other.type}
-                            onChange={(e) => {
-                              this.props.onChange(index,
-                                  "type",
-                                  e.target.value);
-                            }}
-                            disabled={!this.props.isEditing}
-                        />
-                        { this.props.removePanel(index) }
-                      </div>
-
-                      <OtherProps props={Object.keys(other)}
-                                  obj={other}
-                                  index={index}
-                                  removePanel={this.props.removePanel}
-                                  addPanel={this.props.addPanel}
-                      /></div>
+      <NoScrollArea padding="10px">
+        <div className="others more-info-wrapper">
+          {this.state.others.map((other, index) => {
+            return (
+              <div key={`other-${index}`}
+                   className="other-wrapper shadow">
+                <div className="other flex-center">
+                  <div className="type-wrapper flex-center">
+                    <input
+                      type="text"
+                      className={`type normal ${this.props.isEditing ? "" : "disabled"}`}
+                      value={other.type}
+                      onChange={(e) => {
+                        this.props.onChange(index,
+                          "type",
+                          e.target.value);
+                      }}
+                      disabled={!this.props.isEditing}
+                    />
+                    {this.props.removePanel(index)}
                   </div>
-              );
-            }) }
 
-            <div
-                className={` ${this.props.isEditing ? "" : "hidden"} other-wrapper`}>
-              <div className="type-wrapper add">
-                {this.props.addPanel()}
+                  <OtherProps props={Object.keys(other)}
+                              obj={other}
+                              index={index}
+                              removePanel={this.props.removePanel}
+                              addPanel={this.props.addPanel}
+                  /></div>
               </div>
+            );
+          })}
+
+          <div
+            className={` ${this.props.isEditing ? "" : "hidden"} other-wrapper`}>
+            <div className="type-wrapper add">
+              {this.props.addPanel()}
             </div>
           </div>
-        </NoScrollArea>
+        </div>
+      </NoScrollArea>
     );
   }
 }
@@ -186,18 +186,18 @@ class PhotoPreview extends Component {
         this.setState({src: mapElem.thumbnail});
 
         OneDriveManager.updateImageMapElement(mapElem)
-            .then(newElem => {
-              if (this.currentImage === imageName) {
-                // Update the viewer with new image
-                let image = new window.Image();
-                image.onload = () => {
-                  if (this.currentImage === imageName) {
-                    this.setState({src: mapElem.url});
-                  }
-                };
-                image.src = mapElem.url;
-              }
-            });
+          .then(newElem => {
+            if (this.currentImage === imageName) {
+              // Update the viewer with new image
+              let image = new window.Image();
+              image.onload = () => {
+                if (this.currentImage === imageName) {
+                  this.setState({src: mapElem.url});
+                }
+              };
+              image.src = mapElem.url;
+            }
+          });
       }
     }
   }
@@ -210,73 +210,80 @@ class PhotoPreview extends Component {
     let {photos, isSelected, isEditing} = this.props;
 
     return (
-        <div className="photo-preview">
-          <div className=" flex column">
-            <div
-                className="photo-wrapper">
-              <Image className="center"
-                     contain={true}
-                     onClick={true}
-                     src={this.state.src} alt=""/>
-            </div>
-          </div>
-          <div className="photo-no-scroll">
-            <NoScrollArea padding="10px">
-              <div className={`photos ${isEditing ? "show-all" : ""} `}>
-                {photos.map(photo =>
-                    <div key={`photo-preview-${photo.id}`}
-                         className={`photo ${isSelected(photo.status) ? "selected" : ""} `}
-                         onMouseOver={() => this.handleMouseOver(photo.name)}
-                    >
-                      <img src={photo.src} alt="" height="90px"/>
-                    </div>
-                )}
-              </div>
-            </NoScrollArea>
+      <div className="photo-preview">
+        <div className=" flex column">
+          <div
+            className="photo-wrapper">
+            <Image className="center"
+                   contain={true}
+                   onClick={true}
+                   src={this.state.src} alt=""/>
           </div>
         </div>
+        <div className="photo-no-scroll">
+          <NoScrollArea padding="10px">
+            <div className={`photos ${isEditing ? "show-all" : ""} `}>
+              {photos.map(photo =>
+                <div key={`photo-preview-${photo.id}`}
+                     className={`photo ${isSelected(photo.status) ? "selected" : ""} `}
+                     onMouseOver={() => this.handleMouseOver(photo.name)}
+                >
+                  <img src={photo.src} alt="" height="90px"/>
+                </div>
+              )}
+            </div>
+          </NoScrollArea>
+        </div>
+      </div>
     );
   }
 }
 
 const SortableItem = SortableElement(({item, status, i, isSelected, handleClick, loading}) =>
-    <div
-        className={`photo ${isSelected(status) ? "selected" : ""} ${loading ? "loading" : ""}`}
-        onClick={() => {
-          handleClick(i);
-        }}
-    >
-      <img src={item.src}
-           alt=""
-           height="90px"/>
-    </div>
+  <div
+    className={`photo ${isSelected(status) ? "selected" : ""} ${loading ? "loading" : ""}`}
+    onClick={() => {
+      handleClick(i);
+    }}
+  >
+    <img src={item.src}
+         alt=""
+         height="90px"/>
+  </div>
 );
 
-const SortableList = SortableContainer(({items, isEditing, isSelected, handleClick, photosInTransfer}) => {
-  return (
-      <NoScrollArea padding="10px">
-        <div className="more-info-wrapper">
-          <div
-              className={`photos ${isEditing ? "show-all" : ""}`}>
-            {items.map((item, index) => {
-
-              return (
-                  <SortableItem key={`photo-${item.id}`}
-                                status={item.status}
-                                isSelected={isSelected}
-                                loading={photosInTransfer.indexOf(item.id) !== -1}
-                                index={index}
-                                i={index}
-                                handleClick={handleClick}
-                                disabled={!isEditing && photosInTransfer !== 0}
-                                item={item}/>
-              );
-            })}
-          </div>
+const SortableList = SortableContainer(
+  ({
+     items,
+     isEditing,
+     isSelected,
+     handleClick,
+     photosInTransfer,
+     onMouseEnter
+   }) =>
+    <NoScrollArea padding="10px">
+      <div className="more-info-wrapper"
+           onMouseEnter={onMouseEnter}
+      >
+        <div
+          className={`photos ${isEditing ? "show-all" : ""}`}>
+          {items.map((item, index) =>
+            <SortableItem
+              key={`photo-${item.id}`}
+              status={item.status}
+              isSelected={isSelected}
+              loading={photosInTransfer.indexOf(item.id) !== -1}
+              index={index}
+              i={index}
+              handleClick={handleClick}
+              disabled={!isEditing && photosInTransfer !== 0}
+              item={item}
+            />
+          )}
         </div>
-      </NoScrollArea>
-  );
-});
+      </div>
+    </NoScrollArea>
+);
 
 class Editor extends Component {
   DISPLAYING = {
@@ -290,10 +297,10 @@ class Editor extends Component {
   };
 
   /**
-   * The specific number is designed such that each toggle just need to flip
-   * the last two bits
-   * @type {{NOT_SELECTED: number, ADD: number, REMOVE: number, SELECTED:
-     *     number}}
+   * The specific number is designed such that each toggle just need
+   * to flip the last two bits
+   * @type {{NOT_SELECTED: number, ADD: number, REMOVE: number,
+   *   SELECTED: number}}
    */
   PHOTO_STATUS = {  //      | Originally | Now |
     NOT_SELECTED: 0b10, //  |   no       | no  |
@@ -339,7 +346,7 @@ class Editor extends Component {
     super(props);
 
     this.state = Object.assign({bodyWidth: this.props.bodyWidth || 80},
-        this.DEFAULT_STATE);
+      this.DEFAULT_STATE);
 
     this.version = new Date().getTime();
 
@@ -499,12 +506,16 @@ class Editor extends Component {
     this.setOthersProperty = this.setOthersProperty.bind(this);
     this.generateMoreInfo = this.generateMoreInfo.bind(this);
     this.generateAddPanelFor = this.generateAddPanelFor.bind(this);
-    this.generateAddPanelForOthers = this.generateAddPanelForOthers.bind(this);
-    this.generateRemovePanelFor = this.generateRemovePanelFor.bind(this);
+    this.generateAddPanelForOthers = this.generateAddPanelForOthers.bind(
+      this);
+    this.generateRemovePanelFor = this.generateRemovePanelFor.bind(
+      this);
     this.generateRemovePanelForOthers = this.generateRemovePanelForOthers.bind(
-        this);
-    this.onIncreasingTextBodyWidth = this.onIncreasingTextBodyWidth.bind(this);
-    this.onDecreasingTextBodyWidth = this.onDecreasingTextBodyWidth.bind(this);
+      this);
+    this.onIncreasingTextBodyWidth = this.onIncreasingTextBodyWidth.bind(
+      this);
+    this.onDecreasingTextBodyWidth = this.onDecreasingTextBodyWidth.bind(
+      this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onBodyChange = this.onBodyChange.bind(this);
     this.onBodyKeyDown = this.onBodyKeyDown.bind(this);
@@ -518,6 +529,7 @@ class Editor extends Component {
     this.onPromptNo = this.onPromptNo.bind(this);
     this.onPromptCancel = this.onPromptCancel.bind(this);
     this.toggleEditMode = this.toggleEditMode.bind(this);
+    this.showPhotoPreview = this.showPhotoPreview.bind(this);
     this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
     this.toggleFullscreen = this.toggleFullscreen.bind(this);
     this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -526,7 +538,8 @@ class Editor extends Component {
     this.extractUploadableData = this.extractUploadableData.bind(this);
     this.restorePreviousBody = this.restorePreviousBody.bind(this);
     this.addToPhotosInTransfer = this.addToPhotosInTransfer.bind(this);
-    this.removeFromPhotosInTransfer = this.removeFromPhotosInTransfer.bind(this);
+    this.removeFromPhotosInTransfer = this.removeFromPhotosInTransfer.bind(
+      this);
     this.saveEdit = this.saveEdit.bind(this);
   }
 
@@ -543,15 +556,15 @@ class Editor extends Component {
         if (typeof nextProps.newData !== "undefined") {
           // This is to create a new entry
           nextState = Object.assign(nextState,
-              this.DEFAULT_STATE,
-              {
-                isEditing: true,
-                stats    : {
-                  timeCreated: new Date().getTime(),
-                  timeBegin  : new Date().getTime(),
-                },
-                body     : nextProps.newData || "",
-              })
+            this.DEFAULT_STATE,
+            {
+              isEditing: true,
+              stats    : {
+                timeCreated: new Date().getTime(),
+                timeBegin  : new Date().getTime(),
+              },
+              body     : nextProps.newData || "",
+            })
           ;
           this.hasUnsavedChanges = true;
         } else {
@@ -573,7 +586,7 @@ class Editor extends Component {
 
           if (nextProps[R.PROP_PHOTO]) {
             nextState.photos = this.convertPhotoNames([...nextProps[R.PROP_PHOTO]],
-                this.PHOTO_STATUS.SELECTED);
+              this.PHOTO_STATUS.SELECTED);
           }
 
           nextState.musics = [...(nextProps[R.PROP_MUSIC] || [])];
@@ -593,8 +606,8 @@ class Editor extends Component {
   }
 
   /**
-   * Converts a list of photo names from OneDrive or from OneDriveManager to
-   * something this class can understand
+   * Converts a list of photo names from OneDrive or from
+   * OneDriveManager to something this class can understand
    * @param photoNames
    * @param status - the status of these photos
    */
@@ -648,11 +661,11 @@ class Editor extends Component {
     }
 
     const STATE_LIST = ["musics", "movies", "links", "others"],
-        MAPPED_LIST = [R.PROP_MUSIC, R.PROP_MOVIE, R.PROP_LINK, R.PROP_OTHER];
+      MAPPED_LIST = [R.PROP_MUSIC, R.PROP_MOVIE, R.PROP_LINK, R.PROP_OTHER];
 
     for (let i = 0; i < STATE_LIST.length; ++i) {
       let stateList = STATE_LIST[i],
-          mappedList = MAPPED_LIST[i];
+        mappedList = MAPPED_LIST[i];
       if (this.state[stateList] && this.state[stateList].length) {
         data[mappedList] = this.state[stateList];
       }
@@ -661,14 +674,20 @@ class Editor extends Component {
     return data;
   }
 
+  showPhotoPreview() {
+    this.setState({
+      isDisplayingMore: this.DISPLAYING.PHOTOS_PREVIEW,
+    });
+  }
+
   /**
-   * Toggles the photo preview - whether the user is presented with a larger
-   * preview of the photo
+   * Toggles the photo preview - whether the user is presented with a
+   * larger preview of the photo
    */
   togglePhotoPreview() {
     let state = this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ?
-        this.DISPLAYING.PHOTOS :
-        this.DISPLAYING.PHOTOS_PREVIEW;
+      this.DISPLAYING.PHOTOS :
+      this.DISPLAYING.PHOTOS_PREVIEW;
 
     this.setState({
       isDisplayingMore: state,
@@ -693,7 +712,8 @@ class Editor extends Component {
   }
 
   /**
-   * Toggles the photo status - whether it's going to be added or removed
+   * Toggles the photo status - whether it's going to be added or
+   * removed
    */
   togglePhotoStatus(i) {
     if (!this.state.isEditing) {
@@ -701,30 +721,30 @@ class Editor extends Component {
     }
 
     let id = this.state.photos[i].id,
-        name = this.state.photos[i].name;
+      name = this.state.photos[i].name;
 
     name = this.generateNewImageName(name, i);
 
     this.addToPhotosInTransfer(id);
 
     (this.state.photos[i].status === this.PHOTO_STATUS.NOT_SELECTED ?
-            this.props.oneDriveManager
-                .addImageById(id, this.props.year, name) :
-            this.props.oneDriveManager
-                .removeImageById(id)
+        this.props.oneDriveManager
+          .addImageById(id, this.props.year, name) :
+        this.props.oneDriveManager
+          .removeImageById(id)
     )
-        .then(() => {
-          let photos = this.state.photos;
-          photos[i].status = ~photos[i].status & 0b11;
-          photos[i].name = name;
-          this.setState({
-            photos: photos
-          });
-
-          this.removeFromPhotosInTransfer(id);
-        }, err => {
-          this.removeFromPhotosInTransfer(id);
+      .then(() => {
+        let photos = this.state.photos;
+        photos[i].status = ~photos[i].status & 0b11;
+        photos[i].name = name;
+        this.setState({
+          photos: photos
         });
+
+        this.removeFromPhotosInTransfer(id);
+      }, err => {
+        this.removeFromPhotosInTransfer(id);
+      });
   }
 
   toggleEditMode() {
@@ -744,18 +764,18 @@ class Editor extends Component {
     let extracted = this.extractUploadableData();
 
     this.props.onChange(extracted)
-        .then(() => {
-          this.hasUnsavedChanges = false;
+      .then(() => {
+        this.hasUnsavedChanges = false;
 
-          this.setState({
-            isEditing       : false,
-            isEditingLoading: false,
-          });
-        }, () => {
-          this.setState({
-            isEditingLoading: false,
-          });
+        this.setState({
+          isEditing       : false,
+          isEditingLoading: false,
         });
+      }, () => {
+        this.setState({
+          isEditingLoading: false,
+        });
+      });
   }
 
   saveEdit() {
@@ -766,29 +786,29 @@ class Editor extends Component {
     let extracted = this.extractUploadableData();
 
     this.props.onChange(extracted)
-        .then(() => {
-          this.hasUnsavedChanges = false;
+      .then(() => {
+        this.hasUnsavedChanges = false;
 
-          this.setState({
-            isSaving: false,
-          });
-        }, () => {
-          this.setState({
-            isSaving: false,
-          });
+        this.setState({
+          isSaving: false,
         });
+      }, () => {
+        this.setState({
+          isSaving: false,
+        });
+      });
   }
 
   generateAddPanelFor(tag, state) {
     return (
-        <div className="more-info-wrapper">
-          <Button className="icon-wrapper"
-                  onClick={() => {
-                    this.setState(state);
-                  }}>
-            add_circle_outline
-          </Button>
-        </div>
+      <div className="more-info-wrapper">
+        <Button className="icon-wrapper"
+                onClick={() => {
+                  this.setState(state);
+                }}>
+          add_circle_outline
+        </Button>
+      </div>
     )
   }
 
@@ -805,14 +825,15 @@ class Editor extends Component {
     }
 
     return (
-        <Button className={this.state.isEditing ? "" : "transparent"}
-                onClick={handleClick}>remove_circle_outline
-        </Button>
+      <Button className={this.state.isEditing ? "" : "transparent"}
+              onClick={handleClick}>remove_circle_outline
+      </Button>
     );
   }
 
   /**
-   * Generates the remove panel for others. Used to pass in to generate in
+   * Generates the remove panel for others. Used to pass in to
+   * generate in
    * `ExtraAttachments`
    * @param otherIndex - the index of the attachment to be removed
    * @param propKey - (Optional) the key to be removed
@@ -829,9 +850,9 @@ class Editor extends Component {
       };
 
       return (
-          <Button className={this.state.isEditing ? "" : "transparent"}
-                  onClick={handleClick}>remove_circle_outline
-          </Button>
+        <Button className={this.state.isEditing ? "" : "transparent"}
+                onClick={handleClick}>remove_circle_outline
+        </Button>
       );
     } else {
       // Remove the entire entry
@@ -847,9 +868,9 @@ class Editor extends Component {
       };
 
       return (
-          <Button className={this.state.isEditing ? "" : "hidden"}
-                  onClick={handleClick}>remove_circle
-          </Button>
+        <Button className={this.state.isEditing ? "" : "hidden"}
+                onClick={handleClick}>remove_circle
+        </Button>
       );
     }
 
@@ -873,11 +894,11 @@ class Editor extends Component {
       };
 
       return (
-          <Button
-              className={this.state.isEditing ? "" : "transparent"}
-              onClick={handleClick}>
-            add_circle
-          </Button>
+        <Button
+          className={this.state.isEditing ? "" : "transparent"}
+          onClick={handleClick}>
+          add_circle
+        </Button>
       );
     } else {
       // Generate a new property
@@ -891,10 +912,10 @@ class Editor extends Component {
       };
 
       return (
-          <ExtraAttachmentsAddProp
-              onClick={handleClick}
-              isEditing={this.state.isEditing}
-          />
+        <ExtraAttachmentsAddProp
+          onClick={handleClick}
+          isEditing={this.state.isEditing}
+        />
       );
     }
   }
@@ -904,36 +925,38 @@ class Editor extends Component {
       case this.DISPLAYING.PHOTOS:
         if (this.state.photos.length === 0) {
           return (
-              <div className="empty">
-                <p className="flex-center">Looks like this entry doesn't
-                  have any photos for now</p>
-              </div>
+            <div className="empty">
+              <p className="flex-center">Looks like this entry doesn't
+                have any photos for now</p>
+            </div>
 
           )
         }
 
         return (
-            <SortableList items={this.state.photos}
-                          isEditing={this.state.isEditing}
-                          isSelected={
-                            status => status === this.PHOTO_STATUS.SELECTED}
-                          photosInTransfer={this.state.photosInTransfer}
-                          distance={5}
-                          handleClick={(i) => {
-                            this.togglePhotoStatus(i)
-                          }}
-                          axis="xy"
-                          onSortEnd={this.onPhotoSortEnd}/>
+          <SortableList items={this.state.photos}
+                        isEditing={this.state.isEditing}
+                        isSelected={
+                          status => status === this.PHOTO_STATUS.SELECTED}
+                        photosInTransfer={this.state.photosInTransfer}
+                        onMouseEnter={this.showPhotoPreview}
+                        distance={5}
+                        handleClick={(i) => {
+                          this.togglePhotoStatus(i)
+                        }}
+                        axis="xy"
+                        onSortEnd={this.onPhotoSortEnd}/>
         );
 
       case this.DISPLAYING.PHOTOS_PREVIEW:
         return (
-            <PhotoPreview
-                photos={this.state.photos}
-                imageMap={this.props.imageMap}
-                isSelected={status => status === this.PHOTO_STATUS.SELECTED}
-                isEditing={this.state.isEditing}
-            ></PhotoPreview>
+          <PhotoPreview
+            photos={this.state.photos}
+            imageMap={this.props.imageMap}
+            isSelected={
+              status => status === this.PHOTO_STATUS.SELECTED}
+            isEditing={this.state.isEditing}
+          ></PhotoPreview>
         );
 
       case this.DISPLAYING.MUSICS:
@@ -942,21 +965,21 @@ class Editor extends Component {
           this.state.musics = [{title: "", by: ""}];
         }
         return (
-            <div className="music more-info-wrapper">
-              <AutosizeInput
-                  className={`title normal underlined ${this.state.isEditing ? "" : "disabled"}`}
-                  onChange={this.onMusicTitleChange}
-                  disabled={!this.state.isEditing}
-                  value={this.state.musics[0].title || ""}/>
-              <span className="text">By</span>
-              <AutosizeInput
-                  type="text"
-                  className={`by normal underlined ${this.state.isEditing ? "" : "disabled"}`}
-                  onChange={this.onMusicByChange}
-                  disabled={!this.state.isEditing}
-                  value={this.state.musics[0].by || ""}/>
-              {this.generateRemovePanelFor("musics")}
-            </div>
+          <div className="music more-info-wrapper">
+            <AutosizeInput
+              className={`title normal underlined ${this.state.isEditing ? "" : "disabled"}`}
+              onChange={this.onMusicTitleChange}
+              disabled={!this.state.isEditing}
+              value={this.state.musics[0].title || ""}/>
+            <span className="text">By</span>
+            <AutosizeInput
+              type="text"
+              className={`by normal underlined ${this.state.isEditing ? "" : "disabled"}`}
+              onChange={this.onMusicByChange}
+              disabled={!this.state.isEditing}
+              value={this.state.musics[0].by || ""}/>
+            {this.generateRemovePanelFor("musics")}
+          </div>
         );
 
       case this.DISPLAYING.MOVIES:
@@ -965,15 +988,15 @@ class Editor extends Component {
           this.state.movies = [{title: ""}];
         }
         return (
-            <div className="movie more-info-wrapper">
-              <AutosizeInput
-                  className={`title normal underlined ${this.state.isEditing ? "" : "disabled"}`}
-                  onChange={this.onMovieTitleChange}
-                  disabled={!this.state.isEditing}
-                  value={this.state.movies[0].title || ""}
-              />
-              { this.generateRemovePanelFor("movies") }
-            </div>
+          <div className="movie more-info-wrapper">
+            <AutosizeInput
+              className={`title normal underlined ${this.state.isEditing ? "" : "disabled"}`}
+              onChange={this.onMovieTitleChange}
+              disabled={!this.state.isEditing}
+              value={this.state.movies[0].title || ""}
+            />
+            {this.generateRemovePanelFor("movies")}
+          </div>
         );
 
       case this.DISPLAYING.LINKS:
@@ -982,21 +1005,21 @@ class Editor extends Component {
           this.state.links = [{title: "", url: ""}];
         }
         return (
-            <div className="link more-info-wrapper">
-              <AutosizeInput
-                  className={`title normal underlined ${this.state.isEditing ? "" : "disabled"}`}
-                  onChange={this.onLinkTitleChange}
-                  disabled={!this.state.isEditing}
-                  value={this.state.links[0].title || ""}/>
-              <span className="text"> - ://</span>
-              <AutosizeInput
-                  type="text"
-                  className={`url normal underlined ${this.state.isEditing ? "" : "disabled"}`}
-                  onChange={this.onLinkUrlChange}
-                  disabled={!this.state.isEditing}
-                  value={this.state.links[0].url || ""}/>
-              { this.generateRemovePanelFor("links") }
-            </div>
+          <div className="link more-info-wrapper">
+            <AutosizeInput
+              className={`title normal underlined ${this.state.isEditing ? "" : "disabled"}`}
+              onChange={this.onLinkTitleChange}
+              disabled={!this.state.isEditing}
+              value={this.state.links[0].title || ""}/>
+            <span className="text"> - ://</span>
+            <AutosizeInput
+              type="text"
+              className={`url normal underlined ${this.state.isEditing ? "" : "disabled"}`}
+              onChange={this.onLinkUrlChange}
+              disabled={!this.state.isEditing}
+              value={this.state.links[0].url || ""}/>
+            {this.generateRemovePanelFor("links")}
+          </div>
         );
 
       case this.DISPLAYING.OTHERS:
@@ -1005,15 +1028,15 @@ class Editor extends Component {
         }
 
         return (
-            <ExtraAttachments others={this.state.others}
-                              isEditing={this.state.isEditing}
-                              onChange={this.setOthersProperty}
-                              removePanel={this.generateRemovePanelForOthers}
-                              addPanel={this.generateAddPanelForOthers}
-            >{this.state.isEditing}</ExtraAttachments>
+          <ExtraAttachments others={this.state.others}
+                            isEditing={this.state.isEditing}
+                            onChange={this.setOthersProperty}
+                            removePanel={this.generateRemovePanelForOthers}
+                            addPanel={this.generateAddPanelForOthers}
+          >{this.state.isEditing}</ExtraAttachments>
         )
       default:
-        // Not doing anything else since nothing is to be shown
+      // Not doing anything else since nothing is to be shown
     }
   }
 
@@ -1077,11 +1100,13 @@ class Editor extends Component {
       e.preventDefault();
 
       let t = e.target,
-          start = t.selectionStart,
-          end = t.selectionEnd;
+        start = t.selectionStart,
+        end = t.selectionEnd;
 
-      // Set textarea value to text before caret + tab + text after caret
-      t.value = t.value.substring(0, start) + "\t" + t.value.substring(end);
+      // Set textarea value to text before caret + tab + text after
+      // caret
+      t.value = t.value.substring(0,
+        start) + "\t" + t.value.substring(end);
 
       // Put caret at right position again
       t.selectionStart = (t.selectionEnd) = start + 1;
@@ -1089,8 +1114,8 @@ class Editor extends Component {
 
       // Process the body
       let t = e.target,
-          lines = t.value.split(/\r*\n/),
-          {stats} = this.state;
+        lines = t.value.split(/\r*\n/),
+        {stats} = this.state;
 
       // Store this body
       localStorage.previousBody = t.value;
@@ -1103,7 +1128,7 @@ class Editor extends Component {
 
       for (let i = 0; i < lines.length; ++i) {
         let line = lines[i],
-            spliced = false;
+          spliced = false;
 
         for (let pair of tags) {
           if (line.startsWith(pair[0])) {
@@ -1152,8 +1177,8 @@ class Editor extends Component {
   onPhotoSortEnd(obj) {
     this.setState({
       photos: arrayMove([...this.state.photos],
-          obj.oldIndex,
-          obj.newIndex),
+        obj.oldIndex,
+        obj.newIndex),
     });
   }
 
@@ -1219,32 +1244,32 @@ class Editor extends Component {
     });
 
     return this.props.onRefreshQueue()
-        .then(list => list ? list.map(photo => photo.name) : undefined)
-        .then(names => {
-          if (typeof names === "undefined") {
-            this.setState({
-              isLoadingImages: false,
-            });
-            return;
-          }
-
-          // Combining current photo list with new ones
-          let currentNames = this.state.photos.map(photo => photo.name),
-              newNames = [];
-
-          for (let name of names) {
-            if (currentNames.indexOf(name) === -1) {
-              newNames.push(name);
-            }
-          }
-
+      .then(list => list ? list.map(photo => photo.name) : undefined)
+      .then(names => {
+        if (typeof names === "undefined") {
           this.setState({
             isLoadingImages: false,
-            photos         : [...this.state.photos, ...this.convertPhotoNames(
-                newNames,
-                this.PHOTO_STATUS.NOT_SELECTED)]
           });
+          return;
+        }
+
+        // Combining current photo list with new ones
+        let currentNames = this.state.photos.map(photo => photo.name),
+          newNames = [];
+
+        for (let name of names) {
+          if (currentNames.indexOf(name) === -1) {
+            newNames.push(name);
+          }
+        }
+
+        this.setState({
+          isLoadingImages: false,
+          photos         : [...this.state.photos, ...this.convertPhotoNames(
+            newNames,
+            this.PHOTO_STATUS.NOT_SELECTED)]
         });
+      });
   }
 
   addAllPhotos() {
@@ -1277,13 +1302,13 @@ class Editor extends Component {
   // region Utility functions
 
   /**
-   * Adds a space between English and Chinese, for example, 一a一 will become 一 a
-   * 一
+   * Adds a space between English and Chinese, for example, 一a一 will
+   * become 一 a 一
    * @param str
    */
   addSpaceBetweenCharacters(str) {
     return str.replace(/([\u00ff-\uffff])([A-Za-z0-9])/g, "$1 $2")
-        .replace(/([A-Za-z0-9])([\u00ff-\uffff])/g, "$1 $2");
+      .replace(/([A-Za-z0-9])([\u00ff-\uffff])/g, "$1 $2");
   }
 
   convertToDateTime(seconds) {
@@ -1294,15 +1319,15 @@ class Editor extends Component {
     let date = new Date(seconds);
 
     return c(date.getMonth() + 1) + c(date.getDate()) + (date.getFullYear() % 100) + " "
-        + c(date.getHours()) + c(date.getMinutes());
+      + c(date.getHours()) + c(date.getMinutes());
   }
 
   convertFromDateTime(time) {
     var month = parseInt(time.substring(0, 2), 10),
-        day = parseInt(time.substring(2, 4), 10),
-        year = parseInt(time.substring(4, 6), 10),
-        hour = 0,
-        minute = 0;
+      day = parseInt(time.substring(2, 4), 10),
+      year = parseInt(time.substring(4, 6), 10),
+      hour = 0,
+      minute = 0;
     if (time.length > 6) {
       hour = parseInt(time.substring(7, 9), 10);
       minute = parseInt(time.substring(9, 11), 10);
@@ -1313,7 +1338,8 @@ class Editor extends Component {
   }
 
   convertToElapsed(seconds) {
-    return `${parseInt(seconds / 60, 10)}:${("0" + seconds % 60).slice(-2)}`;
+    return `${parseInt(seconds / 60, 10)}:${("0" + seconds % 60).slice(
+      -2)}`;
   }
 
   generateNewImageName(name, i) {
@@ -1327,184 +1353,186 @@ class Editor extends Component {
 
   render() {
     return (
-        <div
-            className={`Editor ${this.state.isDarkMode ? "dark" : ""} ${this.state.isFullscreen ? "fullscreen" : ""}`}>
-          <Prompt className={`${this.state.hasPrompt ? "" : "hidden"}`}
-                  title="Content Conflict"
-                  message="There appears to be unsaved changes here. If you proceed, they will be lost and overwritten by the new contents. Do you wish to continue?"
-                  yes="discard"
-                  onYes={this.onPromptYes}
-                  no="edit draft"
-                  onNo={this.onPromptNo}
-                  cancel="keep & return"
-                  onCancel={this.onPromptCancel}
+      <div
+        className={`Editor ${this.state.isDarkMode ? "dark" : ""} ${this.state.isFullscreen ? "fullscreen" : ""}`}>
+        <Prompt className={`${this.state.hasPrompt ? "" : "hidden"}`}
+                title="Content Conflict"
+                message="There appears to be unsaved changes here. If you proceed, they will be lost and overwritten by the new contents. Do you wish to continue?"
+                yes="discard"
+                onYes={this.onPromptYes}
+                no="edit draft"
+                onNo={this.onPromptNo}
+                cancel="keep & return"
+                onCancel={this.onPromptCancel}
+        />
+        <nav className="nav has-hint">
+          <Button
+            tooltip="Restore draft"
+            className={(this.state.isEditing && localStorage.previousBody) ? "" : "hidden"}
+            onClick={this.restorePreviousBody}>restore</Button>
+          <Button
+            tooltip="Toggle dark mode"
+            className={`${this.state.isFullscreen ? "" : "hidden"}`}
+            onClick={this.toggleDarkMode}>highlight</Button>
+          <Button tooltip="Narrower editor"
+                  onClick={this.onDecreasingTextBodyWidth}>format_indent_increase</Button>
+          <Button tooltip="Wider editor"
+                  onClick={this.onIncreasingTextBodyWidth}>format_indent_decrease</Button>
+          <Toggle
+            className="btn fullscreen"
+            isChanging={this.state.isFullscreen}
+            onClick={this.toggleFullscreen}
+            firstIcon="fullscreen"
+            secondIcon="fullscreen_exit"
+            tooltip="Fullscreen"
           />
-          <nav className="nav has-hint">
-            <Button
-                tooltip="Restore draft"
-                className={(this.state.isEditing && localStorage.previousBody) ? "" : "hidden"}
-                onClick={this.restorePreviousBody}>restore</Button>
-            <Button
-                tooltip="Toggle dark mode"
-                className={`${this.state.isFullscreen ? "" : "hidden"}`}
-                onClick={this.toggleDarkMode}>highlight</Button>
-            <Button tooltip="Narrower editor"
-                    onClick={this.onDecreasingTextBodyWidth}>format_indent_increase</Button>
-            <Button tooltip="Wider editor"
-                    onClick={this.onIncreasingTextBodyWidth}>format_indent_decrease</Button>
-            <Toggle
-                className="btn fullscreen"
-                isChanging={this.state.isFullscreen}
-                onClick={this.toggleFullscreen}
-                firstIcon="fullscreen"
-                secondIcon="fullscreen_exit"
-                tooltip="Fullscreen"
-            />
-            <Button className="hint">more_vert</Button>
-          </nav>
+          <Button className="hint">more_vert</Button>
+        </nav>
 
-          <header>
-            <input
-                type="text"
-                className={`title normal underlined ${this.state.isFullscreen ? "hidden" : ""}`}
-                value={this.state.title}
-                onChange={this.onTitleChange}
-                disabled={!this.state.isEditing}
-            />
-            <div className="stats">
-              <div className="stat chars">
-                <AnimatedNumber value={R.count(this.state.body)}/>
+        <header>
+          <input
+            type="text"
+            className={`title normal underlined ${this.state.isFullscreen ? "hidden" : ""}`}
+            value={this.state.title}
+            onChange={this.onTitleChange}
+            disabled={!this.state.isEditing}
+          />
+          <div className="stats">
+            <div className="stat chars">
+              <AnimatedNumber value={R.count(this.state.body)}/>
+            </div>
+            <div className="stat times">
+              <div className="time created">
+                {this.convertToDateTime(this.state.stats.timeCreated)}
               </div>
-              <div className="stat times">
-                <div className="time created">
-                  {this.convertToDateTime(this.state.stats.timeCreated)}
-                </div>
-                <div className="time begin">
-                  {this.convertToDateTime(this.state.stats.timeBegin)}
-                </div>
-                <div className="time end">
-                  {this.convertToDateTime(this.state.stats.timeEnd)}
-                </div>
+              <div className="time begin">
+                {this.convertToDateTime(this.state.stats.timeBegin)}
               </div>
-              <div className="stat elapsed">
-                {this.convertToElapsed(this.state.timeElapsed)}
+              <div className="time end">
+                {this.convertToDateTime(this.state.stats.timeEnd)}
               </div>
             </div>
-          </header>
-
-          <div
-              className={`text-body-wrapper ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "transparent" : ""}`}>
-            <div className="text-body-wrapper-2"
-                 style={{
-                   padding: `0 ${50 - this.state.bodyWidth / 2}%`,
-                   width  : `${this.state.bodyWidth}%`
-                 }}
-            >
-              <NoScrollArea
-                  backgroundColor={`${this.state.isDarkMode ? "#212121" : "white"}`}>
-                {this.state.isEditing ?
-                    <textarea className="text-body"
-                              value={this.state.body}
-                              onChange={this.onBodyChange}
-                              onKeyDown={this.onBodyKeyDown}/>
-                    :
-                    <pre className="text-body">{this.state.bodyObject}</pre>
-                }
-                {/*<textarea className="text-body"*/}
-                {/*value={this.state.body}*/}
-                {/*onChange={this.onBodyChange}*/}
-                {/*onKeyDown={this.onBodyKeyDown}*/}
-                {/*disabled={!this.state.isEditing}/>*/}
-              </NoScrollArea>
+            <div className="stat elapsed">
+              {this.convertToElapsed(this.state.timeElapsed)}
             </div>
           </div>
-          <div
-              className={`shadow up ${this.state.isFullscreen ? "hidden" : ""}`}></div>
-          <div
-              className={`extras ${this.state.isFullscreen ? "hidden" : ""} `}>
-            <div className="buttons">
-              <Button className="tags">label_outline</Button>
-              <div className="current-tags-wrapper">
-                <PredictionInputs
-                    className={`tag white-background new-tag-wrapper ${!this.state.isEditing ? "hidden" : ""}`}
-                    tagPrediction={this.props.tagPrediction}
-                    tags={this.state.tags}
-                    onChange={tags => this.setState({tags: tags})}
-                    disabled={!this.state.isEditing}
-                />
-              </div>
-              <div className="flex-last-item"></div>
-              <span
-                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
-              <Toggle
-                  className="btn"
-                  isHidden={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.photos.length}
-                  isChanging={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW}
-                  onClick={this.togglePhotoPreview}
-                  firstIcon="zoom_in"
-                  secondIcon="zoom_out"
-                  tooltip="Preview images"
-              ></Toggle>
-              <Button
-                  className={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.isEditing ? "hidden" : ""}
-                  onClick={this.refreshPhoto}
-                  loading={this.state.isLoadingImages}
-                  tooltip="Refresh available images"
-              >refresh</Button>
-              <Button
-                  className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.photos.length && this.state.isEditing ? "" : "hidden"}
-                  onClick={this.addAllPhotos}
-                  loading={this.state.photosInTransfer.length}
-                  tooltip="Add all"
-              >library_add</Button>
-              <ImagePicker
-                  className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.isEditing ? "" : "hidden"}
-                  onFinish={this.refreshPhoto} multiple
-              />
-              <span
-                  className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
-              { [["photos", "photo_library"],
-                ["musics", "library_music"],
-                ["movies", "movie"],
-                ["links", "link"],
-                ["others", "more_horiz"]].map(
-                  tag => {
-                    return (
-                        <Toggle
-                            key={tag[0]}
-                            className={`${tag[0]} btn ${this.props.className || ""} ${this.state[tag[0]].length ? "underlined" : ""} ${this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
-                            onClick={() => {
-                              this.setIsDisplaying(this.DISPLAYING[tag[0].toUpperCase()])
-                            }}
-                            firstIcon={tag[1]}
-                            secondIcon="add_circle_outline"
-                            isChangingOnHover={true}
-                            isChanging={!this.state[tag[0]].length}
-                            disabled={this.state[tag[0]].length === 0 && !this.state.isEditing}
-                        />
-                    );
-                  }) }
-              <span className="btn-breaker"></span>
-              <Button className={`${this.state.isEditing ? "" : "hidden"}`}
-                      loading={this.state.isSaving}
-                      tooltip="Save"
-                      onClick={this.saveEdit}>save</Button>
-              <Toggle
-                  className="btn send-edit accent"
-                  loading={this.state.isEditingLoading}
-                  isChanging={!this.state.isEditing}
-                  firstIcon="send"
-                  secondIcon="mode_edit"
-                  tooltip="Save and quit editing"
-                  onClick={this.toggleEditMode}
-              />
-            </div>
-            <div
-                className={`more-info ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>
-              {this.generateMoreInfo()}
-            </div>
+        </header>
+
+        <div
+          className={`text-body-wrapper ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "transparent" : ""}`}>
+          <div className="text-body-wrapper-2"
+               style={{
+                 padding: `0 ${50 - this.state.bodyWidth / 2}%`,
+                 width  : `${this.state.bodyWidth}%`
+               }}
+          >
+            <NoScrollArea
+              backgroundColor={`${this.state.isDarkMode ? "#212121" : "white"}`}>
+              {this.state.isEditing ?
+                <textarea className="text-body"
+                          value={this.state.body}
+                          onChange={this.onBodyChange}
+                          onKeyDown={this.onBodyKeyDown}/>
+                :
+                <pre
+                  className="text-body">{this.state.bodyObject}</pre>
+              }
+              {/*<textarea className="text-body"*/}
+              {/*value={this.state.body}*/}
+              {/*onChange={this.onBodyChange}*/}
+              {/*onKeyDown={this.onBodyKeyDown}*/}
+              {/*disabled={!this.state.isEditing}/>*/}
+            </NoScrollArea>
           </div>
         </div>
+        <div
+          className={`shadow up ${this.state.isFullscreen ? "hidden" : ""}`}></div>
+        <div
+          className={`extras ${this.state.isFullscreen ? "hidden" : ""} `}>
+          <div className="buttons">
+            <Button className="tags">label_outline</Button>
+            <div className="current-tags-wrapper">
+              <PredictionInputs
+                className={`tag white-background new-tag-wrapper ${!this.state.isEditing ? "hidden" : ""}`}
+                tagPrediction={this.props.tagPrediction}
+                tags={this.state.tags}
+                onChange={tags => this.setState({tags: tags})}
+                disabled={!this.state.isEditing}
+              />
+            </div>
+            <div className="flex-last-item"></div>
+            <span
+              className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
+            <Toggle
+              className="btn"
+              isHidden={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.photos.length}
+              isChanging={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW}
+              onClick={this.togglePhotoPreview}
+              firstIcon="zoom_in"
+              secondIcon="zoom_out"
+              tooltip="Preview images"
+            ></Toggle>
+            <Button
+              className={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.isEditing ? "hidden" : ""}
+              onClick={this.refreshPhoto}
+              loading={this.state.isLoadingImages}
+              tooltip="Refresh available images"
+            >refresh</Button>
+            <Button
+              className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.photos.length && this.state.isEditing ? "" : "hidden"}
+              onClick={this.addAllPhotos}
+              loading={this.state.photosInTransfer.length}
+              tooltip="Add all"
+            >library_add</Button>
+            <ImagePicker
+              className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.isEditing ? "" : "hidden"}
+              onFinish={this.refreshPhoto} multiple
+            />
+            <span
+              className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
+            {[["photos", "photo_library"],
+              ["musics", "library_music"],
+              ["movies", "movie"],
+              ["links", "link"],
+              ["others", "more_horiz"]].map(
+              tag => {
+                return (
+                  <Toggle
+                    key={tag[0]}
+                    className={`${tag[0]} btn ${this.props.className || ""} ${this.state[tag[0]].length ? "underlined" : ""} ${this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
+                    onClick={() => {
+                      this.setIsDisplaying(this.DISPLAYING[tag[0].toUpperCase()])
+                    }}
+                    firstIcon={tag[1]}
+                    secondIcon="add_circle_outline"
+                    isChangingOnHover={true}
+                    isChanging={!this.state[tag[0]].length}
+                    disabled={this.state[tag[0]].length === 0 && !this.state.isEditing}
+                  />
+                );
+              })}
+            <span className="btn-breaker"></span>
+            <Button
+              className={`${this.state.isEditing ? "" : "hidden"}`}
+              loading={this.state.isSaving}
+              tooltip="Save"
+              onClick={this.saveEdit}>save</Button>
+            <Toggle
+              className="btn send-edit accent"
+              loading={this.state.isEditingLoading}
+              isChanging={!this.state.isEditing}
+              firstIcon="send"
+              secondIcon="mode_edit"
+              tooltip="Save and quit editing"
+              onClick={this.toggleEditMode}
+            />
+          </div>
+          <div
+            className={`more-info ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>
+            {this.generateMoreInfo()}
+          </div>
+        </div>
+      </div>
     );
   }
 }

@@ -370,7 +370,7 @@ export default class Stats extends Component {
           ],
           ["Location",
             [
-              ["Total bulb locations", this.totalBulbLocations]
+              ["Total bulb locations", this.totalBulbLocations],
               ["Bulb location percent", R.numToPercentage(this.averageBulbLocations.toFixed(3))]
             ],
           ],

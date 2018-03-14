@@ -37,4 +37,4 @@ function onAuthenticated() {
   // do nothing here
 }
 
-console.info("Use `setCookie(token) to log in manually");
+console.info("Tip: use `setCookie(token) to log in manually");
