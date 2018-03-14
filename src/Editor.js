@@ -11,13 +11,13 @@ import NoScrollArea from "./NoScrollArea";
 import Toggle from "./Toggle";
 import PredictionInputs from "./PredictionInputs";
 import Button from "./Button";
-import NumberCard from "./NumberCard";
 import Prompt from "./Prompt";
 import Image from "./Image";
 import ImagePicker from "./ImagePicker";
 import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
+import AnimatedNumber from "./AnimatedNumber";
 
 /**
  * This editor is only appropriate to edit an article, NOT for a bulb
@@ -1368,7 +1368,7 @@ class Editor extends Component {
             />
             <div className="stats">
               <div className="stat chars">
-                <NumberCard value={this.countChars(this.state.body)}/>
+                <AnimatedNumber value={this.countChars(this.state.body)}/>
               </div>
               <div className="stat times">
                 <div className="time created">

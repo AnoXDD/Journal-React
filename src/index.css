@@ -712,12 +712,12 @@ nav.nav {
       font-size: 30px;
       padding: 20px; }
     .Editor header .stats {
-      padding: 15px 20px;
+      padding: 17px 20px;
       display: inline-block;
       float: right;
       color: grey;
-      font-size: 18px;
-      height: 20px; }
+      font-size: 16px;
+      height: 16px; }
       .Editor header .stats .stat {
         display: inline-block;
         margin-left: 20px;
@@ -726,7 +726,8 @@ nav.nav {
         overflow: hidden;
         text-align: right;
         transition: .4s ease;
-        white-space: nowrap; }
+        white-space: nowrap;
+        line-height: 1; }
       .Editor header .stats .chars {
         width: 5ch;
         margin-left: 20px; }

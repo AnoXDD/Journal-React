@@ -508,12 +508,12 @@ nav.nav {
     }
 
     .stats {
-      $stats-height: 20px;
+      $stats-height: 16px;
       padding: ($title-height - $stats-height)/2 20px;
       display: inline-block;
       float: right;
       color: grey;
-      font-size: 18px;
+      font-size: $stats-height;
       height: $stats-height;
 
       .stat {
@@ -525,6 +525,7 @@ nav.nav {
         text-align: right;
         transition: .4s ease;
         white-space: nowrap;
+        line-height: 1;
       }
 
       .chars {

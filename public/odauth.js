@@ -36,3 +36,5 @@ function setCookie(token, expiresInSeconds) {
 function onAuthenticated() {
   // do nothing here
 }
+
+console.debug("Use `setCookie(token) to log in manually");
