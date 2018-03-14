@@ -14,8 +14,7 @@
     "react-notification-system": "^0.2.17",
     "react-ripple-effect": "^1.0.4",
     "react-sortable-hoc": "^0.6.8",
-    "recharts": "^0.22.5",
-    "screenfull": "^3.3.2"
+    "recharts": "^0.22.5"
   },
   "devDependencies": {
     "react-scripts": "0.9.5"
@@ -25,6 +24,6 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "aws s3 cp build s3://trak.anoxic.me --recursive"
+    "deploy": "react-scripts build && aws s3 cp build s3://trak.anoxic.me --recursive"
   }
 }

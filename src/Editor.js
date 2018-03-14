@@ -257,7 +257,8 @@ const SortableList = SortableContainer(
      items,
      isEditing,
      isSelected,
-     handleClick
+     handleClick,
+     photosInTransfer
    }) =>
     <NoScrollArea padding="10px">
       <div className="more-info-wrapper"
