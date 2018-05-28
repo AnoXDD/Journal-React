@@ -4,6 +4,9 @@
  * A OneDrive manager to manage all the network stuffs. Promises are
  * used here
  *
+ * To log in, get the token from the url, and execute `setCookie()` in the
+ * console
+ *
  * The path referred below is from approot, i.e.
  * https://api.onedrive.com/v1.0/drive/root:/Apps/Trek/{the path
  * starts here}

@@ -687,7 +687,8 @@ nav.nav {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: white; }
+    background: white;
+    box-sizing: border-box; }
   .Editor.dark {
     background: #212121; }
     .Editor.dark input, .Editor.dark textarea {
