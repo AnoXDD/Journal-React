@@ -9,3 +9,7 @@
 [options]
 
 [strict]
+nonstrict-import
+unclear-type
+unsafe-getters-setters
+sketchy-null

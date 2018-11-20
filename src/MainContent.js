@@ -559,7 +559,11 @@ export default class MainContent extends Component {
    * @param bulbContent - a string of the content of bulb
    * @param image - an object an image { id : xxx , name : xxx }
    */
-  handleNewRawBulb(bulbContent, image) {
+  handleNewRawBulb(bulbContent: string,
+                   image: ?{|
+                     +id: string,
+                     +name: string
+                   |}): Promise<void> {
     this.unprocessedBulbs = 1;
 
     let bulb = {

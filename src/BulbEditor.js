@@ -1,4 +1,8 @@
-import React, {Component} from 'react';
+// @flow strict-local
+
+import type NotificationSystem from "react-notification-system";
+
+import * as React from "react";
 
 import NoScrollArea from "./lib/NoScrollArea";
 import Button from "./lib/Button";
@@ -15,45 +19,56 @@ import R from "./R";
  * it's basically a prompt
  */
 
-export default class BulbEditor extends Component {
+type Props = {|
+  +bulbAttachLocation: boolean,
+  +hidden: boolean,
+  +notificationSystem: React.ElementRef<Class<NotificationSystem>>,
+  +onClose: () => void,
+  +onEdit: (bulbContent: string) => void,
+  +onSend: (bulbContent: string, imageId: ?{|
+    +id: string,
+    +name: string,
+  |}) => Promise<void>,
+|};
+
+type State = {|
+  value: string,
+  location: string,
+
+  sending: boolean,
+  loadingLocation: boolean,
+  src: ?string,
+
+  clipboardImage: mixed,
+  clipboardImageVersion: number,
+|};
+
+export default class BulbEditor extends React.Component<Props, State> {
 
   /* The last imageId associated with this bulb */
-  id = "";
-  name = "";
+  _id: string = "";
+  _name: string = "";
+  state: State = {
+    value   : "",
+    location: "",
 
-  constructor(props) {
-    super(props);
+    sending        : false,
+    loadingLocation: false,
+    src            : null,
 
-    this.state = {
-      value   : "",
-      location: "",
+    clipboardImage       : null,
+    clipboardImageVersion: 0,
+  };
 
-      sending        : false,
-      loadingLocation: false,
-      src            : null,
-
-      clipboardImage       : null,
-      clipboardImageVersion: 0,
-    };
-
-    this.handleFinish = this.handleFinish.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handlePaste = this.handlePaste.bind(this);
-    this.handleEditClick = this.handleEditClick.bind(this);
-    this.toggleCurrentLocation = this.toggleCurrentLocation.bind(this);
-    this.getCurrentLocation = this.getCurrentLocation.bind(this);
-    this.removeAttachedImage = this.removeAttachedImage.bind(this);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     return !this.props.hidden || !nextProps.hidden;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props): void {
     // Do something when it got popped up
     if (prevProps.hidden && !this.props.hidden) {
       // Ask for focus when it popped up
-      this.input.focus();
+      this._input && this._input.focus();
 
       // Get current location if settings say so
       if (this.props.bulbAttachLocation && !this.state.location) {
@@ -62,7 +77,7 @@ export default class BulbEditor extends Component {
     }
   }
 
-  toggleCurrentLocation() {
+  toggleCurrentLocation = (): void => {
     if (!this.state.location) {
       this.getCurrentLocation();
     } else {
@@ -70,15 +85,15 @@ export default class BulbEditor extends Component {
         location: "",
       });
     }
-  }
+  };
 
-  getCurrentLocation() {
+  getCurrentLocation = (): void => {
     this.setState({
       loadingLocation: true,
     });
 
     navigator.geolocation.getCurrentPosition(pos => {
-      var crd = pos.coords;
+      const crd = pos.coords;
 
       this.setState({
         location       : ` #[${crd.latitude},${crd.longitude}]`,
@@ -88,7 +103,7 @@ export default class BulbEditor extends Component {
       console.error(`ERROR(${err.code}): ${err.message}`);
 
       R.notifyError(this.props.notificationSystem,
-          "Unable to get current location. Did you grant access?");
+        "Unable to get current location. Did you grant access?");
 
       this.setState({
         loadingLocation: false,
@@ -96,19 +111,20 @@ export default class BulbEditor extends Component {
     }, {
       enableHighAccuracy: true,
       maximumAge        : 0,
+      timeout           : Infinity,
     });
-  }
+  };
 
-  removeAttachedImage() {
-    this.id = "";
-    this.name = "";
+  removeAttachedImage = (): void => {
+    this._id = "";
+    this._name = "";
 
     this.setState({
       src: null,
     });
-  }
+  };
 
-  handleEditClick() {
+  handleEditClick = (): void => {
     let {value} = this.state;
 
     this.setState({
@@ -116,46 +132,44 @@ export default class BulbEditor extends Component {
     });
 
     this.props.onEdit(value);
-  }
+  };
 
-  handleKeyDown(e) {
+  handleKeyDown = (e: SyntheticKeyboardEvent<*>): void => {
     if (e.key === "Enter") {
       // Send the bulb
       this.send();
 
       e.preventDefault();
     }
-  }
+  };
 
-  handleFinish(image) {
-    let {id, name} = image,
-        src = image["@microsoft.graph.downloadUrl"],
-        onFinish = () => {
-          this.id = id;
-          this.name = name;
-          this.setState({
-            src: src,
-          });
-        }
-
-    if (this.id) {
+  handleFinish = (image: OnedriveResponse): Promise<*> => {
+    if (this._id) {
       // There is a previous image uploaded, and we want to remove it
-      return OneDriveManager.removeItemById(this.id)
-          .catch(err => {
-            console.error(err.stack);
-          })
-          .then(() => {
-            onFinish();
-          });
+      return OneDriveManager.removeItemById(this._id)
+        .catch(err => {
+          console.error(err.stack);
+        })
+        .then(() => {
+          this._handleFinishPromise(image);
+        });
     }
 
     return new Promise(res => {
-      onFinish();
+      this._handleFinishPromise(image);
       res();
     });
-  }
+  };
 
-  handlePaste(e) {
+  _handleFinishPromise = (response: OnedriveResponse): void => {
+    this._id = response.id;
+    this._name = response.name;
+    this.setState({
+      src: response["@microsoft.graph.downloadUrl"],
+    });
+  };
+
+  handlePaste = (e: SyntheticClipboardEvent<*>): void => {
     if (e.clipboardData.items && e.clipboardData.items.length) {
       let item = e.clipboardData.items[0];
 
@@ -169,98 +183,103 @@ export default class BulbEditor extends Component {
         });
       }
     }
-  }
+  };
 
-  send() {
+  send(): void {
     this.setState({
       sending: true,
     });
 
     this.props.onSend(this.state.value + this.state.location,
-        this.id && this.name ? {id: this.id, name: this.name} : undefined)
-        .then(() => {
-          this.setState({
-            value  : "",
-            sending: false,
-            src    : "",
-          });
-        }, () => {
-          this.setState({sending: false});
-        })
-        .then(() => {
-          this.id = "";
-          this.name = "";
+      this._id && this._name ? {id: this._id, name: this._name} : undefined)
+      .then(() => {
+        this.setState({
+          value  : "",
+          sending: false,
+          src    : "",
         });
+      }, () => {
+        this.setState({sending: false});
+      })
+      .then(() => {
+        this._id = "";
+        this._name = "";
+      });
+  }
+
+  _input: ?React.ElementRef<"textarea"> = null;
+  _assignInputRef = (ref: ?React.ElementRef<"textarea">): void => {
+    this._input = ref;
   }
 
   render() {
     return (
-        <Prompt
-            className={`dim-bg flex-center bulb-prompt ${this.props.hidden ? "hidden" : ""}`}
-            onClose={this.props.onClose}>
-          <div className="prompt-box shadow">
-            <div className="dialog">
-              <div className="title">Write Something New</div>
-              <div
-                  className="message">
-                <div className="Editor bulb-editor">
-                  <div
-                      className="text-body-wrapper">
-                    <div className="text-body-wrapper-2">
-                      <NoScrollArea backgroundColor="#fafafa"
-                                    padding="10px"
-                      >
+      <Prompt
+        className={`dim-bg flex-center bulb-prompt ${this.props.hidden ? "hidden" : ""}`}
+        onClose={this.props.onClose}>
+        <div className="prompt-box shadow">
+          <div className="dialog">
+            <div className="title">Write Something New</div>
+            <div
+              className="message">
+              <div className="Editor bulb-editor">
+                <div
+                  className="text-body-wrapper">
+                  <div className="text-body-wrapper-2">
+                    <NoScrollArea backgroundColor="#fafafa"
+                                  padding="10px"
+                    >
                         <textarea className="text-body"
                                   onPaste={this.handlePaste}
                                   onKeyDown={this.handleKeyDown}
                                   onChange={
                                     e => this.setState({value: e.target.value})}
                                   placeholder="Write something here ..."
-                                  ref={input => this.input = input}
+                                  ref={this._assignInputRef}
                                   value={this.state.value}/>
-                      </NoScrollArea>
-                    </div>
+                    </NoScrollArea>
                   </div>
                 </div>
-                <div
-                    className={`image-wrapper shadow-light ${this.state.src ? "" : "hidden"}`}>
-                  <Button className="clear-image dark"
-                          onClick={this.removeAttachedImage}>clear</Button>
-                  <Image contain src={this.state.src}/>
-                </div>
               </div>
-              <div className="btns">
-                <Button
-                    onClick={this.props.onClose}
-                    text="cancel">clear</Button>
-                <span className="btn-breaker"/>
-                <ImagePicker
-                    cooldown={1}
-                    version={this.state.clipboardImageVersion}
-                    file={this.state.clipboardImage}
-                    onFinish={this.handleFinish}/>
-                <Toggle firstIcon="location_on"
-                        secondIcon="location_off"
-                        isChanging={this.state.location}
-                        onClick={this.toggleCurrentLocation}
-                        tooltip="Attach current location to the bulb"
-                />
-                <Button
-                    className={`no ${this.state.sending ? "disabled" : ""}`}
-                    onClick={this.handleEditClick}
-                    tooltip="Write in a more advanced editor"
-                >edit</Button>
-                <span className="btn-breaker"/>
-                <Button
-                    className={`yes ${this.state.value.length === 0 ? "disabled" : ""}`}
-                    onClick={this.send.bind(this)}
-                    loading={this.state.sending}
-                    text="send">send</Button>
+              <div
+                className={`image-wrapper shadow-light ${this.state.src != null ? "" : "hidden"}`}>
+                <Button className="clear-image dark"
+                        onClick={this.removeAttachedImage}>clear</Button>
+                <Image contain src={this.state.src}/>
               </div>
             </div>
+            <div className="btns">
+              <Button
+                onClick={this.props.onClose}
+                text="cancel">clear</Button>
+              <span className="btn-breaker"/>
+              <ImagePicker
+                cooldown={1}
+                version={this.state.clipboardImageVersion}
+                file={this.state.clipboardImage}
+                onFinish={this.handleFinish}/>
+              <Toggle firstIcon="location_on"
+                      secondIcon="location_off"
+                      isChanging={this.state.location}
+                      onClick={this.toggleCurrentLocation}
+                      tooltip="Attach current location to the bulb"
+              />
+              <Button
+                className={`no ${this.state.sending ? "disabled" : ""}`}
+                onClick={this.handleEditClick}
+                tooltip="Write in a more advanced editor"
+              >edit</Button>
+              <span className="btn-breaker"/>
+              <Button
+                className={`yes ${this.state.value === "" ? "disabled" : ""}`}
+                onClick={this.send.bind(this)}
+                loading={this.state.sending}
+                text="send">send</Button>
+            </div>
           </div>
+        </div>
 
-        </Prompt>
+      </Prompt>
     );
   }
 }
