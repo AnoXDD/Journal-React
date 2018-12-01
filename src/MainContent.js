@@ -995,6 +995,7 @@ export default class MainContent extends Component {
   }
 
   handleBoundChange(bound) {
+    console.log(bound);
     this.mapBound = bound;
   }
 

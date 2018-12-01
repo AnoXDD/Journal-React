@@ -210,9 +210,9 @@ export default class BulbEditor extends React.Component<Props, State> {
   _input: ?React.ElementRef<"textarea"> = null;
   _assignInputRef = (ref: ?React.ElementRef<"textarea">): void => {
     this._input = ref;
-  }
+  };
 
-  render() {
+  render(): React.Node {
     return (
       <Prompt
         className={`dim-bg flex-center bulb-prompt ${this.props.hidden ? "hidden" : ""}`}

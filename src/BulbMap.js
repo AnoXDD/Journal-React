@@ -1,26 +1,29 @@
+// @flow strict-local
+
 /**
  * Created by Anoxic on 050417.
  * A map to represent bulbs
  */
 
-import React, {Component} from "react";
-
 import {
-    withGoogleMap,
-    GoogleMap,
-    Marker,
+  withGoogleMap,
+  GoogleMap,
+  Marker,
 } from "react-google-maps";
 import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer';
 
+import * as React from "react";
+
+
 var getGoogleClusterInlineSvg = function(color) {
   let encoded = window.btoa(
-      '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-100 -100 200 200"><defs><g id="a" transform="rotate(45)"><path d="M0 47A47 47 0 0 0 47 0L62 0A62 62 0 0 1 0 62Z" fill-opacity="0.7"/></g></defs><g fill="' + color + '"><circle r="42"/><use xlink:href="#a"/><g transform="rotate(120)"><use xlink:href="#a"/></g><g transform="rotate(240)"><use xlink:href="#a"/></g></g></svg>');
+    '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-100 -100 200 200"><defs><g id="a" transform="rotate(45)"><path d="M0 47A47 47 0 0 0 47 0L62 0A62 62 0 0 1 0 62Z" fill-opacity="0.7"/></g></defs><g fill="' + color + '"><circle r="42"/><use xlink:href="#a"/><g transform="rotate(120)"><use xlink:href="#a"/></g><g transform="rotate(240)"><use xlink:href="#a"/></g></g></svg>');
 
   return ('data:image/svg+xml;base64,' + encoded);
 };
 
 const mapMarkerIcon = `data:image/svg+xml;base64,${window.btoa(
-    '<svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"><g><ellipse ry="5" rx="5" cy="5" cx="5" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#212121"/></g></svg>')}`;
+  '<svg width="10" height="10" xmlns="http://www.w3.org/2000/svg"><g><ellipse ry="5" rx="5" cy="5" cx="5" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#212121"/></g></svg>')}`;
 
 const clusterStyles = [
   {
@@ -66,34 +69,37 @@ const clusterStyles = [
 ];
 
 const BulbGoogleMap = withGoogleMap(props => (
-    <GoogleMap
-        ref={props.onMapLoad}
-        defaultZoom={3}
-        defaultCenter={{ lat: 32.8689785, lng: -117.2382162 }}
-        onBoundsChanged={props.onBoundChange}
-    >
-      <MarkerClusterer
-          averageCenter={ true }
-          enableRetinaIcons={ true }
-          styles={clusterStyles}
-          gridSize={ 60 }>
-        {props.bulbList.map((bulb, index) => {
-          if (bulb.place) {
-            return (
-                <Marker
-                    key={bulb.time.created}
-                    position={{lat:parseFloat(bulb.place.latitude,10),
-                               lng:parseFloat(bulb.place.longitude,10)}}
-                    icon={mapMarkerIcon}
-                    onClick={() => props.onBulbClick(props.contentStyle[bulb.time.created], index)}
-                />
-            );
-          } else {
-            return null;
-          }
-        })}
-      </MarkerClusterer>
-    </GoogleMap>
+  <GoogleMap
+    ref={props.onMapLoad}
+    defaultZoom={3}
+    defaultCenter={{lat: 32.8689785, lng: -117.2382162}}
+    onBoundsChanged={props.onBoundChange}
+  >
+    <MarkerClusterer
+      averageCenter={ true }
+      enableRetinaIcons={ true }
+      styles={clusterStyles}
+      gridSize={ 60 }>
+      {props.bulbList.map((bulb, index) => {
+        if (bulb.place) {
+          return (
+            <Marker
+              key={bulb.time.created}
+              position={{
+                lat: parseFloat(bulb.place.latitude),
+                lng: parseFloat(bulb.place.longitude)
+              }}
+              icon={mapMarkerIcon}
+              onClick={() => props.onBulbClick(props.contentStyle[bulb.time.created],
+                index)}
+            />
+          );
+        } else {
+          return null;
+        }
+      })}
+    </MarkerClusterer>
+  </GoogleMap>
 ));
 
 /**
@@ -109,90 +115,95 @@ const PAN_BOUND_SIZE = .005;
  */
 const BOUND_CHANGE_COOLDOWN = 500;
 
-export default class BulbMap extends Component {
 
-  map = null;
-  version = 0;
+type Props = {|
+  +center: GeoCoordinate,
+  +contentStyle: ContentType,
+  +data: Data,
+  +hidden: boolean,
+  +onBoundChange: (bound: MapBound) => void,
+  +onBulbClick: (top: number, index: number) => void,
+  +version: number,
+|}
 
-  lastTimeout = -1;
+export default class BulbMap extends React.Component<Props> {
 
-  constructor(props) {
-    super(props);
+  _map: ?GoogleMapRef = null;
+  _version: number = 0;
 
-    this.handleMapLoad = this.handleMapLoad.bind(this);
-    this.handleBoundChange = this.handleBoundChange.bind(this);
-    this.notifyHandleChange = this.notifyHandleChange.bind(this);
-  }
+  _lastTimeout: ?TimeoutID = null;
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     return !nextProps.hidden;
   }
 
-  componentWillUpdate(nextProps) {
-    if (nextProps.version > this.version && nextProps.center) {
+  componentWillUpdate(nextProps: Props): void {
+    if (nextProps.version > this._version && nextProps.center) {
       let {latitude, longitude} = nextProps.center,
-          center = {
-            lat: latitude,
-            lng: longitude,
-          },
-          bound = {
-            west : longitude - PAN_BOUND_SIZE,
-            east : longitude + PAN_BOUND_SIZE,
-            south: latitude + PAN_BOUND_SIZE,
-            north: latitude - PAN_BOUND_SIZE,
-          };
+        center = {
+          lat: latitude,
+          lng: longitude,
+        },
+        bound = {
+          west : longitude - PAN_BOUND_SIZE,
+          east : longitude + PAN_BOUND_SIZE,
+          south: latitude + PAN_BOUND_SIZE,
+          north: latitude - PAN_BOUND_SIZE,
+        };
 
-      this.map.panTo(center);
-      this.map.fitBounds(bound);
+      // Flow is stupid that I can't put them in a single if block
+      this._map && this._map.panTo(center);
+      this._map && this._map.fitBounds(bound);
 
-      this.version = nextProps.version;
+      this._version = nextProps.version;
     }
   }
 
-  handleBoundChange() {
-    clearTimeout(this.lastTimeout);
-    this.lastTimeout = setTimeout(this.notifyHandleChange,
-        BOUND_CHANGE_COOLDOWN);
-  }
+  handleBoundChange = (): void => {
+    if (this._lastTimeout != null) {
+      clearTimeout(this._lastTimeout);
+    }
+    this._lastTimeout = setTimeout(this.notifyHandleChange,
+      BOUND_CHANGE_COOLDOWN);
+  };
 
-  notifyHandleChange() {
-    this.isBoundChanging = false;
+  notifyHandleChange = (): void => {
+    if (this._map == null) {
+      return;
+    }
 
-    let bound = this.map.getBounds();
+    const bound = this._map.getBounds();
 
     // todo for some reason this part is obfuscated
     this.props.onBoundChange({
-      south: bound.f.b,
-      north: bound.f.f,
-      west : bound.b.b,
-      east : bound.b.f,
+      south: bound.l.j,
+      north: bound.l.l,
+      west : bound.j.j,
+      east : bound.j.l,
     });
-  }
+  };
 
-  handleMapLoad(map) {
-    this.map = map;
-    if (map) {
-      console.log(map.getZoom());
-    }
-  }
+  handleMapLoad = (map: GoogleMapRef): void => {
+    this._map = map;
+  };
 
-  render() {
+  render(): React.Node {
     return (
-        <div className="BulbMap" style={{height: `100%`}}>
-          <BulbGoogleMap
-              containerElement={
-            <div style={{ height: `100%` }} />
+      <div className="BulbMap" style={{height: `100%`}}>
+        <BulbGoogleMap
+          containerElement={
+            <div style={{height: `100%`}}/>
           }
-              mapElement={
-            <div style={{ height: `100%` }} />
+          mapElement={
+            <div style={{height: `100%`}}/>
           }
-              onMapLoad={this.handleMapLoad}
-              bulbList={this.props.data}
-              contentStyle={this.props.contentStyle}
-              onBulbClick={this.props.onBulbClick}
-              onBoundChange={this.handleBoundChange}
-          />
-        </div>
+          onMapLoad={this.handleMapLoad}
+          bulbList={this.props.data}
+          contentStyle={this.props.contentStyle}
+          onBulbClick={this.props.onBulbClick}
+          onBoundChange={this.handleBoundChange}
+        />
+      </div>
     );
   }
 }
