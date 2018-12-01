@@ -706,7 +706,8 @@ nav.nav {
   .Editor header {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
-    width: 100%; }
+    width: 100%;
+    position: relative; }
     .Editor header .title {
       padding-top: 0;
       display: inline-block;
@@ -715,36 +716,35 @@ nav.nav {
       font-size: 30px;
       padding: 20px; }
     .Editor header .stats {
-      padding: 17px 20px;
-      display: inline-block;
-      float: right;
+      padding: 25px 0 0 0;
+      position: absolute;
       color: grey;
-      font-size: 16px;
-      height: 16px; }
+      font-size: 12px;
+      height: 12px;
+      top: 0;
+      right: 0;
+      display: flex;
+      align-items: flex-end;
+      transition: .2s linear height;
+      z-index: 1; }
       .Editor header .stats .stat {
-        display: inline-block;
-        margin-left: 20px;
-        height: 100%;
+        flex: 12px 0 0;
+        height: 12px;
         vertical-align: top;
-        overflow: hidden;
         text-align: right;
         transition: .4s ease;
-        white-space: nowrap;
-        line-height: 1; }
-      .Editor header .stats .chars {
-        width: 5ch;
-        margin-left: 20px; }
-      .Editor header .stats .elapsed, .Editor header .stats .times {
-        width: 0;
-        margin-left: 0; }
-      .Editor header .stats .times.time {
-        width: 100%; }
-      .Editor header .stats:hover .elapsed {
-        width: 6ch;
-        margin-left: 20px; }
-      .Editor header .stats:hover .times {
-        width: 12ch;
-        margin-left: 20px; }
+        line-height: 1;
+        padding-bottom: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center; }
+        .Editor header .stats .stat.primary {
+          height: 16px;
+          font-size: 16px; }
+        .Editor header .stats .stat .material-icons {
+          font-size: 12px; }
+      .Editor header .stats:hover {
+        height: 100px; }
   .Editor .text-body-wrapper {
     width: 100%;
     flex: 1 1 auto;
@@ -905,6 +905,8 @@ nav.nav {
       .Editor .extras .other-wrapper .other {
         display: flex;
         flex-direction: column; }
+        .Editor .extras .other-wrapper .other .btn, .Editor .extras .other-wrapper .other .Options .option, .Options .Editor .extras .other-wrapper .other .option {
+          background: transparent; }
       .Editor .extras .other-wrapper .type-wrapper {
         flex: 0 0 40px;
         height: 40px;

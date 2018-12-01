@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+// @flow strict-local
 
 import {
   SortableContainer,
@@ -19,22 +19,35 @@ import OneDriveManager from "./OneDriveManager";
 import R from "./R";
 import AnimatedNumber from "./lib/AnimatedNumber";
 
+import * as React from "react";
+
 /**
  * This editor is only appropriate to edit an article, NOT for a bulb
  */
 
-class ExtraAttachmentsAddProp extends Component {
+type ExtraAttachmentsAddPropProps = {|
+  +onClick: (key: string, value: string) => void,
+  +isEditing: boolean,
+|};
 
-  state = {
+type ExtraAttachmentsAddPropState = {|
+  key: string,
+  value: string,
+|};
+
+class ExtraAttachmentsAddProp extends React.Component<ExtraAttachmentsAddPropProps, ExtraAttachmentsAddPropState> {
+
+  state: ExtraAttachmentsAddPropState = {
     key  : "",
     value: ""
   };
 
-  render() {
-    let {onClick, isEditing} = this.props;
-    const onClickAdd = () => {
-      onClick(this.state.key, this.state.value);
-    };
+  _onClick = (): void => {
+    this.props.onClick(this.state.key, this.state.value);
+  };
+
+  render(): React.Node {
+    let {isEditing} = this.props;
 
     return (
       <div className={`other-prop add ${isEditing ? "" : "hidden"} `}>
@@ -59,12 +72,12 @@ class ExtraAttachmentsAddProp extends Component {
             disabled={!isEditing}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                onClickAdd();
+                this._onClick();
               }
             }}
           />
           <Button className={isEditing ? "" : "transparent"}
-                  onClick={onClickAdd}>
+                  onClick={this._onClick}>
             add_circle_outline
           </Button>
         </div>
@@ -73,8 +86,20 @@ class ExtraAttachmentsAddProp extends Component {
   }
 }
 
-class ExtraAttachments extends Component {
-  constructor(props) {
+type ExtraAttachmentsProps = {|
+  +addPanel: (index?: number) => React.Node,
+  +isEditing: boolean,
+  +others: Array<OtherAttachment>,
+  +onChange: (index: number, propKey: string, value: string) => void,
+  +removePanel: (index: number, propKey?: string) => React.Node,
+|};
+
+type ExtraAttachmentsState = {|
+  others: Array<OtherAttachment>,
+|};
+
+class ExtraAttachments extends React.Component<ExtraAttachmentsProps, ExtraAttachmentsState> {
+  constructor(props: ExtraAttachmentsProps) {
     super(props);
     let {others} = props;
 
@@ -83,7 +108,7 @@ class ExtraAttachments extends Component {
     };
   }
 
-  render() {
+  render(): React.Node {
     const OtherProps = (({props, obj, index, removePanel, addPanel}) =>
         <div className="other-props">
           {props.map((prop) => {
@@ -160,21 +185,48 @@ class ExtraAttachments extends Component {
   }
 }
 
-class PhotoPreview extends Component {
 
+/**
+ * The specific number is designed such that each toggle just need
+ * to flip the last two bits
+ * @type {{NOT_SELECTED: number, ADD: number, REMOVE: number,
+   *   SELECTED: number}}
+ */
+const PHOTO_STATUS = {  //      | Originally | Now |
+  NOT_SELECTED      : 0b10, //  |   no       | no  |
+  ADD__DEPRECATED   : 0b01, //  |   no       | yes | depre.
+  REMOVE__DEPRECATED: 0b00, //  |   yes      | no  | depre.
+  SELECTED          : 0b01, //  |   yes      | yes |
+};
+
+type PhotoStatusType = $Values<typeof PHOTO_STATUS>;
+
+type Photo = {|
+  id: string,
+  name: string,
+  src: string,
+  status: PhotoStatusType,
+|};
+
+type PhotoPreviewProps = {|
+  imageMap: ImageMap,
+  isEditing: boolean,
+  isSelected: (status: PhotoStatusType) => boolean,
+  photos: Array<Photo>,
+|}
+
+type PhotoPreviewState = {|
+  src: string,
+|};
+
+class PhotoPreview extends React.Component<PhotoPreviewProps, PhotoPreviewState> {
   currentImage = "";
 
-  state = {
+  state: PhotoPreviewState = {
     src: "",
   };
 
-  constructor(props) {
-    super(props);
-
-    this.handleMouseOver = this.handleMouseOver.bind(this);
-  }
-
-  handleMouseOver(imageName) {
+  handleMouseOver = (imageName: string): void => {
     this.currentImage = imageName;
 
     let mapElem = this.props.imageMap[imageName];
@@ -200,11 +252,11 @@ class PhotoPreview extends Component {
           });
       }
     }
-  }
+  };
 
-  render() {
+  render(): React.Node {
     if (this.props.photos.length === 0) {
-      return;
+      return null;
     }
 
     let {photos, isSelected, isEditing} = this.props;
@@ -283,33 +335,71 @@ const SortableList = SortableContainer(
     </NoScrollArea>
 );
 
-class Editor extends Component {
-  DISPLAYING = {
-    NONE          : -1,
-    PHOTOS        : 1,
-    MUSICS        : 2,
-    MOVIES        : 3,
-    LINKS         : 4,
-    OTHERS        : 10,
-    PHOTOS_PREVIEW: 15,
-  };
+const DISPLAYING = {
+  NONE          : -1,
+  PHOTOS        : 1,
+  MUSICS        : 2,
+  MOVIES        : 3,
+  LINKS         : 4,
+  OTHERS        : 10,
+  PHOTOS_PREVIEW: 15,
+};
 
-  /**
-   * The specific number is designed such that each toggle just need
-   * to flip the last two bits
-   * @type {{NOT_SELECTED: number, ADD: number, REMOVE: number,
-   *   SELECTED: number}}
-   */
-  PHOTO_STATUS = {  //      | Originally | Now |
-    NOT_SELECTED: 0b10, //  |   no       | no  |
-    // ADD         : 0b01, //  |   no       | yes | depre.
-    // REMOVE      : 0b00, //  |   yes      | no  | depre.
-    SELECTED    : 0b01, //  |   yes      | yes |
-  };
+type DisplayingType = $Values<typeof DISPLAYING>;
 
-  DEFAULT_TITLE = this.convertToDateTime(new Date()).substr(0, 7);
+type Props = ArticleEntry & {|
+  +bodyWidth?: number,
+  +className?: string,
+  +debug?: boolean,
+  +hidden: boolean,
+  +imageMap: ImageMap,
+  +newData?: string, // updating the body of the editor
+  +onChange: (entry: ArticleEntry) => Promise<void>,
+  +onPromptCancel: () => void,
+  +onRefreshQueue: () => Promise<Array<OneDriveImageItem>>,
+  +oneDriveManager: OneDriveManager,
+  +tagPrediction: Array<string>,
+  +version: number,
+  +year: number,
+|};
 
-  DEFAULT_STATE = {
+type State = {|
+  title: string,
+  body: string,
+  bodyObject: React.Node,
+  stats: {|
+    timeCreated: number,
+    timeBegin: number,
+    timeEnd?: number,
+  |},
+  timeElapsed: number,
+  tags: Array<string>,
+  isDisplayingMore: DisplayingType,
+  photos: Array<Photo>,
+  musics: Array<MusicAttachment>,
+  movies: Array<MovieAttachment>,
+  links: Array<LinkAttachment>,
+  others: Array<OtherAttachment>,
+  isEditing: boolean,
+  isEditingLoading: boolean,
+  isFullscreen: boolean,
+  hasPrompt: boolean,
+
+  isLoadingImages: boolean,
+  photosInTransfer: Array<string>,
+
+  isSaving: boolean,
+
+  bodyWidth: number,
+  isDarkMode: boolean,
+|};
+
+class Editor extends React.Component<Props, State> {
+  // Go back three hours for midnight sesh
+  DEFAULT_TITLE: string = this.convertToDateTime(new Date() - 3 * 60 * 60 * 1000)
+    .substr(0, 7);
+
+  DEFAULT_STATE: $Shape<State> = {
     title           : this.DEFAULT_TITLE,
     body            : "",
     bodyObject      : "",
@@ -327,6 +417,7 @@ class Editor extends Component {
     links           : [],
     others          : [],
     isEditing       : false,
+    isEditingLoading: false,
     isFullscreen    : false,
     hasPrompt       : false,
 
@@ -334,22 +425,29 @@ class Editor extends Component {
     photosInTransfer: [],
 
     isSaving: false,
-  }
 
-  version = 0;
-  hasUnsavedChanges = false;
-  previousBody = "";
+    isDarkMode: false,
+  };
 
-  constructor(props) {
+  version: number = 0;
+  hasUnsavedChanges: boolean = false;
+  previousBody: string = "";
+
+  _timeElapsedUpdateInterval: ?IntervalID = null;
+
+  constructor(props: Props) {
     super(props);
 
-    this.state = Object.assign({bodyWidth: this.props.bodyWidth || 80},
-      this.DEFAULT_STATE);
+    this.state = {
+      ...this.DEFAULT_STATE,
+      bodyWidth: this.props.bodyWidth != null ? this.props.bodyWidth : 80,
+    };
 
     this.version = new Date().getTime();
 
-    if (this.props.debug) {
+    if (this.props.debug === true) {
       this.state = {
+        ...this.DEFAULT_STATE,
         title           : "This is title 题目",
         body            : "This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文",
         stats           : {
@@ -359,104 +457,112 @@ class Editor extends Component {
         },
         timeElapsed     : 0,
         tags            : ["tag1", "tag2", "tag3"],
-        isDisplayingMore: this.DISPLAYING.NONE,
+        isDisplayingMore: DISPLAYING.NONE,
         photos          : [{
-          id    : 1,
+          id    : "1",
           src   : "http://placehold.it/120x150",
-          status: this.PHOTO_STATUS.ADD,
+          status: PHOTO_STATUS.ADD__DEPRECATED,
+          name  : "",
         }, {
-          id    : 2,
+          id    : "2",
           src   : "http://placehold.it/150x150",
-          status: this.PHOTO_STATUS.NOT_SELECTED,
+          status: PHOTO_STATUS.NOT_SELECTED,
+          name  : "",
         }, {
-          id    : 3,
+          id    : "3",
           src   : "http://placehold.it/130x150",
-          status: this.PHOTO_STATUS.SELECTED,
+          status: PHOTO_STATUS.SELECTED,
+          name  : "",
         }, {
-          id    : 4,
+          id    : "4",
           src   : "http://placehold.it/150x120",
-          status: this.PHOTO_STATUS.REMOVE,
+          status: PHOTO_STATUS.REMOVE__DEPRECATED,
+          name  : "",
         }, {
-          id    : 5,
+          id    : "5",
           src   : "http://placehold.it/130x150",
-          status: this.PHOTO_STATUS.ADD,
+          status: PHOTO_STATUS.ADD__DEPRECATED,
+          name  : "",
         }, {
-          id    : 6,
+          id    : "6",
           src   : "http://placehold.it/150x150",
-          status: this.PHOTO_STATUS.NOT_SELECTED,
+          status: PHOTO_STATUS.NOT_SELECTED,
+          name  : "",
         }, {
-          id    : 7,
+          id    : "7",
           src   : "http://placehold.it/150x150",
-          status: this.PHOTO_STATUS.SELECTED,
+          status: PHOTO_STATUS.SELECTED,
+          name  : "",
         }, {
-          id    : 8,
+          id    : "8",
           src   : "http://placehold.it/120x150",
-          status: this.PHOTO_STATUS.REMOVE,
+          status: PHOTO_STATUS.REMOVE__DEPRECATED,
+          name  : "",
         }
           // , {
           //   id    : 11,
           //   src   : "http://placehold.it/320x150",
-          //   status: this.PHOTO_STATUS.ADD,
+          //   status: PHOTO_STATUS.ADD__DEPRECATED,
           // }, {
           //   id    : 21,
           //   src   : "http://placehold.it/350x150",
-          //   status: this.PHOTO_STATUS.NOT_SELECTED,
+          //   status: PHOTO_STATUS.NOT_SELECTED,
           // }, {
           //   id    : 31,
           //   src   : "http://placehold.it/330x150",
-          //   status: this.PHOTO_STATUS.SELECTED,
+          //   status: PHOTO_STATUS.SELECTED,
           // }, {
           //   id    : 41,
           //   src   : "http://placehold.it/350x120",
-          //   status: this.PHOTO_STATUS.REMOVE,
+          //   status: PHOTO_STATUS.REMOVE__DEPRECATED,
           // }, {
           //   id    : 51,
           //   src   : "http://placehold.it/30x150",
-          //   status: this.PHOTO_STATUS.ADD,
+          //   status: PHOTO_STATUS.ADD__DEPRECATED,
           // }, {
           //   id    : 61,
           //   src   : "http://placehold.it/150x150",
-          //   status: this.PHOTO_STATUS.NOT_SELECTED,
+          //   status: PHOTO_STATUS.NOT_SELECTED,
           // }, {
           //   id    : 71,
           //   src   : "http://placehold.it/350x150",
-          //   status: this.PHOTO_STATUS.SELECTED,
+          //   status: PHOTO_STATUS.SELECTED,
           // }, {
           //   id    : 81,
           //   src   : "http://placehold.it/350x150",
-          //   status: this.PHOTO_STATUS.REMOVE,
+          //   status: PHOTO_STATUS.REMOVE__DEPRECATED,
           // }, {
           //   id    : 12,
           //   src   : "http://placehold.it/320x150",
-          //   status: this.PHOTO_STATUS.ADD,
+          //   status: PHOTO_STATUS.ADD__DEPRECATED,
           // }, {
           //   id    : 22,
           //   src   : "http://placehold.it/350x150",
-          //   status: this.PHOTO_STATUS.NOT_SELECTED,
+          //   status: PHOTO_STATUS.NOT_SELECTED,
           // }, {
           //   id    : 32,
           //   src   : "http://placehold.it/330x150",
-          //   status: this.PHOTO_STATUS.SELECTED,
+          //   status: PHOTO_STATUS.SELECTED,
           // }, {
           //   id    : 42,
           //   src   : "http://placehold.it/350x120",
-          //   status: this.PHOTO_STATUS.REMOVE,
+          //   status: PHOTO_STATUS.REMOVE__DEPRECATED,
           // }, {
           //   id    : 52,
           //   src   : "http://placehold.it/2048x1980",
-          //   status: this.PHOTO_STATUS.ADD,
+          //   status: PHOTO_STATUS.ADD__DEPRECATED,
           // }, {
           //   id    : 62,
           //   src   : "http://placehold.it/1500x3500",
-          //   status: this.PHOTO_STATUS.NOT_SELECTED,
+          //   status: PHOTO_STATUS.NOT_SELECTED,
           // }, {
           //   id    : 72,
           //   src   : "http://placehold.it/3500x1500",
-          //   status: this.PHOTO_STATUS.SELECTED,
+          //   status: PHOTO_STATUS.SELECTED,
           // }, {
           //   id    : 82,
           //   src   : "http://placehold.it/3500x2350",
-          //   status: this.PHOTO_STATUS.REMOVE,
+          //   status: PHOTO_STATUS.REMOVE__DEPRECATED,
           // }
         ],
         musics          : [{
@@ -494,58 +600,24 @@ class Editor extends Component {
       };
     }
 
-    setInterval(() => {
+    this._timeElapsedUpdateInterval = setInterval(() => {
       // On purpose: to avoid laggy update
       // eslint-disable-next-line
       this.state.timeElapsed = this.state.isEditing ? (this.state.timeElapsed + 1) : 0;
     }, 1000);
-
-    this.setIsDisplaying = this.setIsDisplaying.bind(this);
-    this.setOthersProperty = this.setOthersProperty.bind(this);
-    this.generateMoreInfo = this.generateMoreInfo.bind(this);
-    this.generateAddPanelFor = this.generateAddPanelFor.bind(this);
-    this.generateAddPanelForOthers = this.generateAddPanelForOthers.bind(
-      this);
-    this.generateRemovePanelFor = this.generateRemovePanelFor.bind(
-      this);
-    this.generateRemovePanelForOthers = this.generateRemovePanelForOthers.bind(
-      this);
-    this.onIncreasingTextBodyWidth = this.onIncreasingTextBodyWidth.bind(
-      this);
-    this.onDecreasingTextBodyWidth = this.onDecreasingTextBodyWidth.bind(
-      this);
-    this.onTitleChange = this.onTitleChange.bind(this);
-    this.onBodyChange = this.onBodyChange.bind(this);
-    this.onBodyKeyDown = this.onBodyKeyDown.bind(this);
-    this.onPhotoSortEnd = this.onPhotoSortEnd.bind(this);
-    this.onMusicByChange = this.onMusicByChange.bind(this);
-    this.onMusicTitleChange = this.onMusicTitleChange.bind(this);
-    this.onMovieTitleChange = this.onMovieTitleChange.bind(this);
-    this.onLinkTitleChange = this.onLinkTitleChange.bind(this);
-    this.onLinkUrlChange = this.onLinkUrlChange.bind(this);
-    this.onPromptYes = this.onPromptYes.bind(this);
-    this.onPromptNo = this.onPromptNo.bind(this);
-    this.onPromptCancel = this.onPromptCancel.bind(this);
-    this.toggleEditMode = this.toggleEditMode.bind(this);
-    this.showPhotoPreview = this.showPhotoPreview.bind(this);
-    this.togglePhotoPreview = this.togglePhotoPreview.bind(this);
-    this.toggleFullscreen = this.toggleFullscreen.bind(this);
-    this.toggleDarkMode = this.toggleDarkMode.bind(this);
-    this.refreshPhoto = this.refreshPhoto.bind(this);
-    this.addAllPhotos = this.addAllPhotos.bind(this);
-    this.extractUploadableData = this.extractUploadableData.bind(this);
-    this.restorePreviousBody = this.restorePreviousBody.bind(this);
-    this.addToPhotosInTransfer = this.addToPhotosInTransfer.bind(this);
-    this.removeFromPhotosInTransfer = this.removeFromPhotosInTransfer.bind(
-      this);
-    this.saveEdit = this.saveEdit.bind(this);
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     return !nextProps.hidden;
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUnmount(): void {
+    if (this._timeElapsedUpdateInterval) {
+      clearInterval(this._timeElapsedUpdateInterval);
+    }
+  }
+
+  componentWillUpdate(nextProps: Props, nextState: State): void {
     if (nextProps.version > this.version) {
       if (this.hasUnsavedChanges) {
         nextState.hasPrompt = true;
@@ -553,6 +625,7 @@ class Editor extends Component {
         // Override current data with new data
         if (typeof nextProps.newData !== "undefined") {
           // This is to create a new entry
+          // $FlowFixMe this works for componentWillUpdate
           nextState = Object.assign(nextState,
             this.DEFAULT_STATE,
             {
@@ -584,7 +657,7 @@ class Editor extends Component {
 
           if (nextProps[R.PROP_PHOTO]) {
             nextState.photos = this.convertPhotoNames([...nextProps[R.PROP_PHOTO]],
-              this.PHOTO_STATUS.SELECTED);
+              PHOTO_STATUS.SELECTED);
           }
 
           nextState.musics = [...(nextProps[R.PROP_MUSIC] || [])];
@@ -609,13 +682,14 @@ class Editor extends Component {
    * @param photoNames
    * @param status - the status of these photos
    */
-  convertPhotoNames(photoNames, status) {
+  convertPhotoNames(photoNames: Array<string>,
+                    status: PhotoStatusType): Array<Photo> {
     let result = [];
 
     for (let photo of photoNames) {
       result.push({
-        name  : photo,
         id    : this.props.imageMap[photo].id,
+        name  : photo,
         src   : this.props.imageMap[photo].thumbnail,
         status: status,
       });
@@ -628,13 +702,13 @@ class Editor extends Component {
    * Extracts the data that should be uploaded to the server
    * This function assumes that no images are still being transferred
    */
-  extractUploadableData() {
-    let data = {
+  extractUploadableData = (): ArticleEntry => {
+    let data: ArticleEntry = {
       type : R.TYPE_ARTICLE,
       time : {
         created: this.state.stats.timeCreated,
         begin  : this.state.stats.timeBegin || this.state.stats.timeCreated,
-        end    : this.state.stats.timeEnd || new Date().getTime(),
+        end    : this.state.stats.timeEnd == null ? new Date().getTime() : this.state.stats.timeEnd,
       },
       title: this.state.title,
       body : this.state.body,
@@ -643,7 +717,7 @@ class Editor extends Component {
     if (this.state.photos) {
       let images = [];
       for (let image of this.state.photos) {
-        if (image.status === this.PHOTO_STATUS.SELECTED) {
+        if (image.status === PHOTO_STATUS.SELECTED) {
           images.push(image.name);
         }
       }
@@ -670,52 +744,52 @@ class Editor extends Component {
     }
 
     return data;
-  }
+  };
 
-  showPhotoPreview() {
+  showPhotoPreview = (): void => {
     this.setState({
-      isDisplayingMore: this.DISPLAYING.PHOTOS_PREVIEW,
+      isDisplayingMore: DISPLAYING.PHOTOS_PREVIEW,
     });
-  }
+  };
 
   /**
    * Toggles the photo preview - whether the user is presented with a
    * larger preview of the photo
    */
-  togglePhotoPreview() {
-    let state = this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ?
-      this.DISPLAYING.PHOTOS :
-      this.DISPLAYING.PHOTOS_PREVIEW;
+  togglePhotoPreview = (): void => {
+    let state = this.state.isDisplayingMore === DISPLAYING.PHOTOS_PREVIEW ?
+      DISPLAYING.PHOTOS :
+      DISPLAYING.PHOTOS_PREVIEW;
 
     this.setState({
       isDisplayingMore: state,
     });
-  }
+  };
 
-  toggleFullscreen() {
-    let state = this.state.isFullscreen;
+  toggleFullscreen = (): void => {
+    const state = this.state.isFullscreen;
 
     this.setState({
       isFullscreen: !state,
       isDarkMode  : false,
     });
-  }
+  };
 
-  toggleDarkMode() {
-    let state = this.state.isDarkMode;
+  toggleDarkMode = (): void => {
+    const state = this.state.isDarkMode;
 
     this.setState({
       isDarkMode: !state,
     });
-  }
+  };
 
   /**
    * Toggles the photo status - whether it's going to be added or
    * removed
    */
-  togglePhotoStatus(i) {
+  togglePhotoStatus = (i: number): void => {
     if (!this.state.isEditing) {
-      return false;
+      return;
     }
 
     let id = this.state.photos[i].id,
@@ -725,7 +799,7 @@ class Editor extends Component {
 
     this.addToPhotosInTransfer(id);
 
-    (this.state.photos[i].status === this.PHOTO_STATUS.NOT_SELECTED ?
+    (this.state.photos[i].status === PHOTO_STATUS.NOT_SELECTED ?
         this.props.oneDriveManager
           .addImageById(id, this.props.year, name) :
         this.props.oneDriveManager
@@ -743,9 +817,9 @@ class Editor extends Component {
       }, err => {
         this.removeFromPhotosInTransfer(id);
       });
-  }
+  };
 
-  toggleEditMode() {
+  toggleEditMode = (): void => {
     if (!this.state.isEditing) {
       // It's going to get modified
       this.hasUnsavedChanges = true;
@@ -758,7 +832,7 @@ class Editor extends Component {
     // Trying to save this entry
     this.setState({
       isEditingLoading: true,
-    })
+    });
     let extracted = this.extractUploadableData();
 
     this.props.onChange(extracted)
@@ -774,14 +848,14 @@ class Editor extends Component {
           isEditingLoading: false,
         });
       });
-  }
+  };
 
-  saveEdit() {
+  saveEdit = (): void => {
     this.setState({
       isSaving: true,
     });
 
-    let extracted = this.extractUploadableData();
+    const extracted = this.extractUploadableData();
 
     this.props.onChange(extracted)
       .then(() => {
@@ -795,36 +869,24 @@ class Editor extends Component {
           isSaving: false,
         });
       });
-  }
+  };
 
-  generateAddPanelFor(tag, state) {
-    return (
-      <div className="more-info-wrapper">
-        <Button className="icon-wrapper"
-                onClick={() => {
-                  this.setState(state);
-                }}>
-          add_circle_outline
-        </Button>
-      </div>
-    )
-  }
-
-  generateRemovePanelFor(tag, handleClick) {
-    if (typeof handleClick !== "function") {
-      handleClick = () => {
+  generateRemovePanelFor(tag: string, handleClick?: () => void): React.Node {
+    let onClick = handleClick;
+    if (typeof onClick !== "function") {
+      onClick = () => {
         let state = {};
         state[tag] = [];
 
         // eslint-disable-next-line
-        this.state.isDisplayingMore = this.DISPLAYING.NONE;
+        this.state.isDisplayingMore = DISPLAYING.NONE;
         this.setState(state);
       };
     }
 
     return (
       <Button className={this.state.isEditing ? "" : "transparent"}
-              onClick={handleClick}>remove_circle_outline
+              onClick={onClick}>remove_circle_outline
       </Button>
     );
   }
@@ -837,8 +899,9 @@ class Editor extends Component {
    * @param propKey - (Optional) the key to be removed
    * @returns {*}
    */
-  generateRemovePanelForOthers(otherIndex, propKey) {
-    if (typeof propKey !== "undefined") {
+  generateRemovePanelForOthers = (otherIndex: number,
+                                  propKey?: string): React.Node => {
+    if (propKey !== undefined) {
       // Remove a specific property
       let handleClick = () => {
         let others = this.state.others;
@@ -860,7 +923,7 @@ class Editor extends Component {
 
         if (others.length === 0) {
           // eslint-disable-next-line
-          this.state.isDisplayingMore = this.DISPLAYING.NONE;
+          this.state.isDisplayingMore = DISPLAYING.NONE;
         }
         this.setState({others: others});
       };
@@ -871,16 +934,14 @@ class Editor extends Component {
         </Button>
       );
     }
-
-  }
+  };
 
   /**
    * Generates an icon to add a property or a new "other" attachment
    * @param otherIndex - the index of the attachment
-   * @param propKey - the name of the key to be added
    */
-  generateAddPanelForOthers(otherIndex, propKey) {
-    if (typeof otherIndex === "undefined") {
+  generateAddPanelForOthers = (otherIndex?: number): React.Node => {
+    if (otherIndex === undefined) {
       // Generate a new entry
       let handleClick = () => {
         // Just generate a new one
@@ -916,11 +977,11 @@ class Editor extends Component {
         />
       );
     }
-  }
+  };
 
-  generateMoreInfo() {
+  generateMoreInfo(): React.Node {
     switch (this.state.isDisplayingMore) {
-      case this.DISPLAYING.PHOTOS:
+      case DISPLAYING.PHOTOS:
         if (this.state.photos.length === 0) {
           return (
             <div className="empty">
@@ -935,7 +996,7 @@ class Editor extends Component {
           <SortableList items={this.state.photos}
                         isEditing={this.state.isEditing}
                         isSelected={
-                          status => status === this.PHOTO_STATUS.SELECTED}
+                          status => status === PHOTO_STATUS.SELECTED}
                         photosInTransfer={this.state.photosInTransfer}
                         distance={5}
                         handleClick={(i) => {
@@ -945,18 +1006,18 @@ class Editor extends Component {
                         onSortEnd={this.onPhotoSortEnd}/>
         );
 
-      case this.DISPLAYING.PHOTOS_PREVIEW:
+      case DISPLAYING.PHOTOS_PREVIEW:
         return (
           <PhotoPreview
             photos={this.state.photos}
             imageMap={this.props.imageMap}
             isSelected={
-              status => status === this.PHOTO_STATUS.SELECTED}
+              status => status === PHOTO_STATUS.SELECTED}
             isEditing={this.state.isEditing}
           ></PhotoPreview>
         );
 
-      case this.DISPLAYING.MUSICS:
+      case DISPLAYING.MUSICS:
         if (this.state.musics.length === 0) {
           // eslint-disable-next-line
           this.state.musics = [{title: "", by: ""}];
@@ -979,7 +1040,7 @@ class Editor extends Component {
           </div>
         );
 
-      case this.DISPLAYING.MOVIES:
+      case DISPLAYING.MOVIES:
         if (this.state.movies.length === 0) {
           // eslint-disable-next-line
           this.state.movies = [{title: ""}];
@@ -996,7 +1057,7 @@ class Editor extends Component {
           </div>
         );
 
-      case this.DISPLAYING.LINKS:
+      case DISPLAYING.LINKS:
         if (this.state.links.length === 0) {
           // eslint-disable-next-line
           this.state.links = [{title: "", url: ""}];
@@ -1019,7 +1080,7 @@ class Editor extends Component {
           </div>
         );
 
-      case this.DISPLAYING.OTHERS:
+      case DISPLAYING.OTHERS:
         if (this.state.links.length === 0) {
 
         }
@@ -1030,92 +1091,96 @@ class Editor extends Component {
                             onChange={this.setOthersProperty}
                             removePanel={this.generateRemovePanelForOthers}
                             addPanel={this.generateAddPanelForOthers}
-          >{this.state.isEditing}</ExtraAttachments>
-        )
+          ></ExtraAttachments>
+        );
       default:
-      // Not doing anything else since nothing is to be shown
+        // Not doing anything else since nothing is to be shown
+        return null;
     }
   }
 
-  setIsDisplaying(isDisplaying) {
+  setIsDisplaying = (isDisplaying: DisplayingType): void => {
     if (this.state.isDisplayingMore === isDisplaying) {
       this.setState({
-        isDisplayingMore: this.DISPLAYING.NONE
+        isDisplayingMore: DISPLAYING.NONE
       });
     } else {
       this.setState({
         isDisplayingMore: isDisplaying
       });
     }
-  }
+  };
 
-  setOthersProperty(index, prop, value) {
-    let {others} = this.state;
+  setOthersProperty = (index: number, prop: string, value: string): void => {
+    const {others} = this.state;
     others[index][prop] = value;
 
     this.setState({
       others: others
     });
-  }
+  };
 
-  restorePreviousBody() {
-    let currentBody = this.state.body;
+  restorePreviousBody = (): void => {
+    const currentBody = this.state.body;
     this.setState({
-      body: localStorage.previousBody
+      body: localStorage.getItem('previousBody') || "",
     });
-    localStorage.previousBody = currentBody;
-  }
+    localStorage.setItem('previousBody', currentBody);
+  };
 
   // region Listeners (on...Change)
 
-  onDecreasingTextBodyWidth() {
+  onDecreasingTextBodyWidth = (): void => {
     this.setState({
       bodyWidth: Math.max(this.state.bodyWidth - 5, 10)
     });
-  }
+  };
 
-  onIncreasingTextBodyWidth() {
+  onIncreasingTextBodyWidth = (): void => {
     this.setState({
       bodyWidth: Math.min(this.state.bodyWidth + 5, 100)
     });
-  }
+  };
 
-  onTitleChange(event) {
+  onTitleChange = (event: SyntheticInputEvent<>): void => {
     this.setState({
       title: event.target.value
     });
-  }
+  };
 
-  onBodyChange(event) {
+  onBodyChange = (event: SyntheticInputEvent<>): void => {
     this.setState({
       body: event.target.value
     });
-  }
+  };
 
-  onBodyKeyDown(e) {
+  onBodyKeyDown = (e: SyntheticKeyboardEvent<>): void => {
+    const t = e.target;
+    if (!(t instanceof HTMLInputElement)) {
+      return;
+    }
+
     if (e.key === "Tab") {
       e.preventDefault();
 
-      let t = e.target,
-        start = t.selectionStart,
+      const start = t.selectionStart,
         end = t.selectionEnd;
 
       // Set textarea value to text before caret + tab + text after
       // caret
       t.value = t.value.substring(0,
-        start) + "\t" + t.value.substring(end);
+          start) + "\t" + t.value.substring(end);
 
       // Put caret at right position again
       t.selectionStart = (t.selectionEnd) = start + 1;
     } else if (e.key === "Enter") {
 
       // Process the body
-      let t = e.target,
-        lines = t.value.split(/\r*\n/),
+      const lines = t.value.split(/\r*\n/),
         {stats} = this.state;
 
       // Store this body
-      localStorage.previousBody = t.value;
+      localStorage.setItem('previousBody', t.value);
 
       let selectionStart = t.selectionStart;
 
@@ -1164,78 +1229,80 @@ class Editor extends Component {
     } else {
 
       // Scroll to the bottom if applicable
-      let t = e.target;
       if (t.selectionEnd === t.value.length) {
         t.scrollTop = t.scrollHeight;
       }
     }
-  }
+  };
 
-  onPhotoSortEnd(obj) {
+  onPhotoSortEnd = (obj: {
+    oldIndex: number,
+    newIndex: number
+  }): void => {
     this.setState({
       photos: arrayMove([...this.state.photos],
         obj.oldIndex,
         obj.newIndex),
     });
-  }
+  };
 
-  onMusicTitleChange(e) {
-    var music = this.state.musics[0];
+  onMusicTitleChange = (e: SyntheticInputEvent<>): void => {
+    const music = this.state.musics[0];
     music.title = e.target.value;
     this.setState({
       musics: [music]
     });
-  }
+  };
 
-  onMusicByChange(e) {
-    var music = this.state.musics[0];
+  onMusicByChange = (e: SyntheticInputEvent<>): void => {
+    const music = this.state.musics[0];
     music.by = e.target.value;
     this.setState({
       musics: [music]
     });
-  }
+  };
 
-  onMovieTitleChange(e) {
-    var movie = this.state.movies[0];
+  onMovieTitleChange = (e: SyntheticInputEvent<>): void => {
+    const movie = this.state.movies[0];
     movie.title = e.target.value;
     this.setState({
       movies: [movie]
     });
-  }
+  };
 
-  onLinkTitleChange(e) {
-    var link = this.state.links[0];
+  onLinkTitleChange = (e: SyntheticInputEvent<>): void => {
+    const link = this.state.links[0];
     link.title = e.target.value;
     this.setState({
       links: [link]
     });
-  }
+  };
 
-  onLinkUrlChange(e) {
-    var link = this.state.links[0];
+  onLinkUrlChange = (e: SyntheticInputEvent<>): void => {
+    const link = this.state.links[0];
     link.url = e.target.value;
     this.setState({
       links: [link]
     });
-  }
+  };
 
-  onPromptYes(e) {
+  onPromptYes = (): void => {
     this.hasUnsavedChanges = false;
     this.setState({hasPrompt: false});
-  }
+  };
 
-  onPromptNo(e) {
+  onPromptNo = (): void => {
     // So that the editor won't take a look at that new thing
     this.version = this.props.version;
     this.setState({hasPrompt: false});
-  }
+  };
 
-  onPromptCancel(e) {
+  onPromptCancel = (): void => {
     this.props.onPromptCancel();
     this.setState({hasPrompt: false});
-  }
+  };
 
-  refreshPhoto() {
+  refreshPhoto = (): Promise<void> => {
     this.setState({
       isLoadingImages: true,
     });
@@ -1264,35 +1331,35 @@ class Editor extends Component {
           isLoadingImages: false,
           photos         : [...this.state.photos, ...this.convertPhotoNames(
             newNames,
-            this.PHOTO_STATUS.NOT_SELECTED)]
+            PHOTO_STATUS.NOT_SELECTED)]
         });
       });
-  }
+  };
 
-  addAllPhotos() {
+  addAllPhotos = (): void => {
     for (let i = 0; i < this.state.photos.length; ++i) {
-      if (this.state.photos[i].status !== this.PHOTO_STATUS.SELECTED) {
+      if (this.state.photos[i].status !== PHOTO_STATUS.SELECTED) {
         this.togglePhotoStatus(i);
       }
     }
-  }
+  };
 
-  addToPhotosInTransfer(id) {
+  addToPhotosInTransfer = (id: string): void => {
     if (this.state.photosInTransfer.indexOf(id) === -1) {
       this.setState({
         photosInTransfer: [...this.state.photosInTransfer, id],
       });
     }
-  }
+  };
 
-  removeFromPhotosInTransfer(id) {
+  removeFromPhotosInTransfer = (id: string): void => {
     let index = this.state.photosInTransfer.indexOf(id);
 
     if (index !== -1) {
       this.state.photosInTransfer.splice(index, 1);
       this.forceUpdate();
     }
-  }
+  };
 
   // endregion listeners
 
@@ -1303,12 +1370,16 @@ class Editor extends Component {
    * become 一 a 一
    * @param str
    */
-  addSpaceBetweenCharacters(str) {
+  addSpaceBetweenCharacters(str: string): string {
     return str.replace(/([\u00ff-\uffff])([A-Za-z0-9])/g, "$1 $2")
       .replace(/([A-Za-z0-9])([\u00ff-\uffff])/g, "$1 $2");
   }
 
-  convertToDateTime(seconds) {
+  convertToDateTime(seconds: ?number): string {
+    if (seconds == null) {
+      return "N/A";
+    }
+
     const c = (i) => {
       return ("0" + i % 60).slice(-2);
     };
@@ -1319,7 +1390,7 @@ class Editor extends Component {
       + c(date.getHours()) + c(date.getMinutes());
   }
 
-  convertFromDateTime(time) {
+  convertFromDateTime(time: string): number {
     var month = parseInt(time.substring(0, 2), 10),
       day = parseInt(time.substring(2, 4), 10),
       year = parseInt(time.substring(4, 6), 10),
@@ -1334,12 +1405,12 @@ class Editor extends Component {
     return date.getTime();
   }
 
-  convertToElapsed(seconds) {
+  convertToElapsed(seconds: number): string {
     return `${parseInt(seconds / 60, 10)}:${("0" + seconds % 60).slice(
       -2)}`;
   }
 
-  generateNewImageName(name, i) {
+  generateNewImageName(name: string, i: number): string {
     let suffix = name.lastIndexOf(".");
     suffix = name.substr(suffix);
 
@@ -1348,7 +1419,7 @@ class Editor extends Component {
 
   // endregion
 
-  render() {
+  render(): React.Node {
     return (
       <div
         className={`Editor ${this.state.isDarkMode ? "dark" : ""} ${this.state.isFullscreen ? "fullscreen" : ""}`}>
@@ -1365,7 +1436,8 @@ class Editor extends Component {
         <nav className="nav has-hint">
           <Button
             tooltip="Restore draft"
-            className={(this.state.isEditing && localStorage.previousBody) ? "" : "hidden"}
+            className={(this.state.isEditing && localStorage.getItem(
+              'previousBody')) ? "" : "hidden"}
             onClick={this.restorePreviousBody}>restore</Button>
           <Button
             tooltip="Toggle dark mode"
@@ -1395,28 +1467,38 @@ class Editor extends Component {
             disabled={!this.state.isEditing}
           />
           <div className="stats">
-            <div className="stat chars">
+            <div className="stat primary">
               <AnimatedNumber value={R.count(this.state.body)}/>
             </div>
             <div className="stat times">
-              <div className="time created">
+              <i className="material-icons">insert_drive_file</i>
+              <div>
                 {this.convertToDateTime(this.state.stats.timeCreated)}
               </div>
-              <div className="time begin">
+            </div>
+            <div className="stat times">
+              <i className="material-icons">play_arrow</i>
+              <div>
                 {this.convertToDateTime(this.state.stats.timeBegin)}
               </div>
-              <div className="time end">
+            </div>
+            <div className="stat times">
+              <i className="material-icons">stop</i>
+              <div>
                 {this.convertToDateTime(this.state.stats.timeEnd)}
               </div>
             </div>
-            <div className="stat elapsed">
-              {this.convertToElapsed(this.state.timeElapsed)}
+            <div className="stat">
+              <i className="material-icons">timer</i>
+              <div>
+                {this.convertToElapsed(this.state.timeElapsed)}
+              </div>
             </div>
           </div>
         </header>
 
         <div
-          className={`text-body-wrapper ${this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW ? "transparent" : ""}`}>
+          className={`text-body-wrapper ${this.state.isDisplayingMore === DISPLAYING.PHOTOS_PREVIEW ? "transparent" : ""}`}>
           <div className="text-body-wrapper-2"
                style={{
                  padding: `0 ${50 - this.state.bodyWidth / 2}%`,
@@ -1459,34 +1541,34 @@ class Editor extends Component {
             </div>
             <div className="flex-last-item"></div>
             <span
-              className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
+              className={`${this.state.isDisplayingMore !== DISPLAYING.PHOTOS && this.state.isDisplayingMore !== DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
             <Toggle
               className="btn"
-              isHidden={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.photos.length}
-              isChanging={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS_PREVIEW}
+              isHidden={(this.state.isDisplayingMore !== DISPLAYING.PHOTOS && this.state.isDisplayingMore !== DISPLAYING.PHOTOS_PREVIEW) || !this.state.photos.length}
+              isChanging={this.state.isDisplayingMore === DISPLAYING.PHOTOS_PREVIEW}
               onClick={this.togglePhotoPreview}
               firstIcon="zoom_in"
               secondIcon="zoom_out"
               tooltip="Preview images"
             ></Toggle>
             <Button
-              className={(this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW) || !this.state.isEditing ? "hidden" : ""}
+              className={(this.state.isDisplayingMore !== DISPLAYING.PHOTOS && this.state.isDisplayingMore !== DISPLAYING.PHOTOS_PREVIEW) || !this.state.isEditing ? "hidden" : ""}
               onClick={this.refreshPhoto}
               loading={this.state.isLoadingImages}
               tooltip="Refresh available images"
             >refresh</Button>
             <Button
-              className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.photos.length && this.state.isEditing ? "" : "hidden"}
+              className={this.state.isDisplayingMore === DISPLAYING.PHOTOS && this.state.photos.length && this.state.isEditing ? "" : "hidden"}
               onClick={this.addAllPhotos}
               loading={this.state.photosInTransfer.length}
               tooltip="Add all"
             >library_add</Button>
             <ImagePicker
-              className={this.state.isDisplayingMore === this.DISPLAYING.PHOTOS && this.state.isEditing ? "" : "hidden"}
+              className={this.state.isDisplayingMore === DISPLAYING.PHOTOS && this.state.isEditing ? "" : "hidden"}
               onFinish={this.refreshPhoto} multiple
             />
             <span
-              className={`${this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS && this.state.isDisplayingMore !== this.DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
+              className={`${this.state.isDisplayingMore !== DISPLAYING.PHOTOS && this.state.isDisplayingMore !== DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
             {[["photos", "photo_library"],
               ["musics", "library_music"],
               ["movies", "movie"],
@@ -1496,9 +1578,9 @@ class Editor extends Component {
                 return (
                   <Toggle
                     key={tag[0]}
-                    className={`${tag[0]} btn ${this.props.className || ""} ${this.state[tag[0]].length ? "underlined" : ""} ${this.state.isDisplayingMore === this.DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
+                    className={`${tag[0]} btn ${this.props.className || ""} ${this.state[tag[0]].length ? "underlined" : ""} ${this.state.isDisplayingMore === DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
                     onClick={() => {
-                      this.setIsDisplaying(this.DISPLAYING[tag[0].toUpperCase()])
+                      this.setIsDisplaying(DISPLAYING[tag[0].toUpperCase()])
                     }}
                     firstIcon={tag[1]}
                     secondIcon="add_circle_outline"
@@ -1525,7 +1607,7 @@ class Editor extends Component {
             />
           </div>
           <div
-            className={`more-info ${this.state.isDisplayingMore === this.DISPLAYING.NONE ? "hidden" : ""}`}>
+            className={`more-info ${this.state.isDisplayingMore === DISPLAYING.NONE ? "hidden" : ""}`}>
             {this.generateMoreInfo()}
           </div>
         </div>

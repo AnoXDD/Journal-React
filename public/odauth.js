@@ -21,6 +21,18 @@ function getAppInfo() {
 }
 
 function setCookie(token, expiresInSeconds) {
+  // Maybe token is just a url
+  const [_, hash] = token.split("#");
+  if (hash != null) {
+    const token = hash.split("&")
+      .map(param => param.split("="))
+      .find(params => params[0] === "access_token")[1];
+    if (token != null) {
+      setCookie(token, expiresInSeconds);
+      return;
+    }
+  }
+
   var expiration = new Date();
   // Expiration set up back 5 minutes
   expiration.setTime(expiration.getTime() + (expiresInSeconds || 3600) * 1000 - 300000);

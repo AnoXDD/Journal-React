@@ -952,7 +952,7 @@ export default class MainContent extends Component {
     this.handleCreateArticle();
   }
 
-  handleArticleChange(newEntry) {
+  handleArticleChange(newEntry: ArticleEntry): Promise<void> {
     this.editedEntryTimestamp = newEntry.time.created;
 
     if (this.articleList[this.state.editArticleIndex]) {
@@ -1017,7 +1017,7 @@ export default class MainContent extends Component {
     }
   }
 
-  handleEditorRefreshQueue() {
+  handleEditorRefreshQueue(): Promise<Array<OneDriveImageItem>> {
     return OneDriveManager.getImages(this.year)
       .then(imageMap => {
         this.handleNewImageMap(imageMap);
@@ -1161,7 +1161,7 @@ export default class MainContent extends Component {
    * processed and then uploaded
    * @param data
    */
-  uploadUnprocessedData(data) {
+  uploadUnprocessedData(data): Promise<void> {
     return this.backupAndUploadData(
       data.sort((lhs, rhs) => rhs.time.created - lhs.time.created)
     );
@@ -1171,7 +1171,7 @@ export default class MainContent extends Component {
    * Backs up and uploads the data, assuming that the data is sorted
    * @param data
    */
-  backupAndUploadData(data) {
+  backupAndUploadData(data): Promise<void> {
     data = data || this.data;
 
     let dataString = this.convertDataToString(data);

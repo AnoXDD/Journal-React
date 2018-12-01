@@ -324,7 +324,7 @@ export default class OneDriveManager {
    *   composed of
    *  {id: xxx, name: xxx, thumbnails: xxx}
    */
-  static getChildrenByPathWithThumbnails(path) {
+  static getChildrenByPathWithThumbnails(path): Promise<Array<OneDriveImageItem>> {
     return this.getClient().then(client => {
       return client.api(`me${this.getPathHeader(path)}:/children`)
         .query({"expand": "thumbnails"})
@@ -672,7 +672,7 @@ export default class OneDriveManager {
       }) : []);
   }
 
-  static getImagesInQueue() {
+  static getImagesInQueue(): Promise<Array<OneDriveImageItem>> {
     return this.getChildrenByPathWithThumbnails("queue");
   }
 
@@ -855,7 +855,7 @@ export default class OneDriveManager {
    * { id: xxx, name: xxx, thumbnail: xxx, url: xxx, }
    * @param year
    */
-  static getImages(year) {
+  static getImages(year: number): Promise<Array<OneDriveImageItem>> {
     return Promise.all([this.getJournalImagesByYear(year), this.getImagesInQueue()])
       .then(lists => [...lists[0], ...lists[1]]);
   }

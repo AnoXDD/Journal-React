@@ -143,7 +143,7 @@ export default class BulbEditor extends React.Component<Props, State> {
     }
   };
 
-  handleFinish = (image: OnedriveResponse): Promise<*> => {
+  handleFinish = (image: OneDriveItem): Promise<*> => {
     if (this._id) {
       // There is a previous image uploaded, and we want to remove it
       return OneDriveManager.removeItemById(this._id)
@@ -161,7 +161,7 @@ export default class BulbEditor extends React.Component<Props, State> {
     });
   };
 
-  _handleFinishPromise = (response: OnedriveResponse): void => {
+  _handleFinishPromise = (response: OneDriveItem): void => {
     this._id = response.id;
     this._name = response.name;
     this.setState({

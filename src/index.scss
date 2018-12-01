@@ -500,6 +500,7 @@ nav.nav {
     flex: 0 1 auto;
     margin: 0px 0px 10px;
     width: $full-width;
+    position: relative;
 
     .title {
       padding-top: 0;
@@ -511,50 +512,43 @@ nav.nav {
     }
 
     .stats {
-      $stats-height: 16px;
-      padding: ($title-height - $stats-height)/2 20px;
-      display: inline-block;
-      float: right;
+      $stats-height: 12px;
+      padding: $title-height / 2 0 0 0;
+      position: absolute;
       color: grey;
       font-size: $stats-height;
       height: $stats-height;
+      top: 0;
+      right: 0;
+      display: flex;
+      align-items: flex-end;
+      transition: .2s linear height;
+      z-index: 1;
 
       .stat {
-        display: inline-block;
-        margin-left: 20px;
-        height: 100%;
+        flex: $stats-height 0 0;
+        height: $stats-height;
         vertical-align: top;
-        overflow: hidden;
         text-align: right;
         transition: .4s ease;
-        white-space: nowrap;
         line-height: 1;
-      }
+        padding-bottom: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-      .chars {
-        width: 5ch;
-        margin-left: 20px;
-      }
+        &.primary {
+          height: 16px;
+          font-size: 16px;
+        }
 
-      .elapsed, .times {
-        width: 0;
-        margin-left: 0;
-      }
-
-      .times.time {
-        width: 100%;
+        .material-icons {
+          font-size: 12px;
+        }
       }
 
       &:hover {
-        .elapsed {
-          width: 6ch;
-          margin-left: 20px;
-        }
-
-        .times {
-          width: 12ch;
-          margin-left: 20px;
-        }
+        height: 100px;
       }
     }
   }
@@ -809,6 +803,10 @@ nav.nav {
       .other {
         display: flex;
         flex-direction: column;
+
+        .btn {
+          background: transparent;
+        }
       }
 
       .type-wrapper {
