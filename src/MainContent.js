@@ -787,7 +787,11 @@ export default class MainContent extends Component {
     this.escapeToReturn = this.TAB.NO_CHANGE;
   }
 
-  handleCalendarClick(top) {
+  handleCalendarClick(top: ?number) {
+    if (top == null) {
+      return;
+    }
+
     this.scrollTop = top;
 
     this.setState({
@@ -995,7 +999,6 @@ export default class MainContent extends Component {
   }
 
   handleBoundChange(bound) {
-    console.log(bound);
     this.mapBound = bound;
   }
 
@@ -1516,10 +1519,12 @@ export default class MainContent extends Component {
                   <div className="calendar-parent">
                     <div className="flex-extend-inner-wrapper">
                       <Calendar
-                        version={this.state.version}
                         contentStyle={this.contentStyle}
+                        data={this.state.data}
                         onBlockClick={this.handleCalendarClick}
-                        data={this.state.data}/>
+                        version={this.state.version}
+                        year={this.year}
+                      />
                     </div>
                   </div>
                 </div>

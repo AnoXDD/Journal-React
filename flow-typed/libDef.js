@@ -17,7 +17,11 @@ declare type MapBound = {|
 |}
 
 
+declare type BulbList = any;
 declare type Data = any;
-declare type ContentType = any;
+declare type ContentStyle = {|
+  +[createdTime: string]: number, // scrollTop, how many px from the top of
+                                  // scroll area
+|};
 
 declare type GoogleMapRef = any;
