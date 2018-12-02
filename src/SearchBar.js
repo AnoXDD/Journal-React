@@ -1,30 +1,30 @@
+// @flow strict-local
+
 /**
  * Created by Anoxic on 042917.
  * A search bar to be used on the top
  */
 
-import React, {Component} from "react";
-import Button from "./Button";
-import Toggle from "./Toggle";
+import Button from "./lib/Button";
+import Toggle from "./lib/Toggle";
 import PredictionInputs from "./PredictionInputs";
-import Prompt from "./Prompt";
+import Prompt from "./lib/Prompt";
 import R from "./R";
+
+import * as React from "react";
 
 import Ink from "react-ink";
 
-class Options extends Component {
+type OptionsProps = {|
+  +icons?: Array<string>, // space separated
+  +options: Array<string>, // space separated
+  +value: Array<string>,
+  +onChange: (value: Array<string>) => void,
+|};
 
-  constructor(props) {
-    super(props);
+class Options extends React.PureComponent<OptionsProps> {
 
-    let {icons, options} = this.props;
-    this.options = options.split(" ");
-    this.icons = icons ? icons.split(" ") : [];
-
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(option) {
+  handleClick(option: string): void {
     let index = this.props.value.indexOf(option);
     if (index === -1) {
       // Does not exist
@@ -36,38 +36,45 @@ class Options extends Component {
     }
   }
 
-  render() {
+  render(): React.Node {
+    const {icons = []} = this.props;
+
     return (
-        <div className={`Options ${this.icons.length ? "" : "text"}`}>
-          { this.options.map((option, index) =>
-              <a
-                  key={`option-${option}`}
-                  className={`option ${this.props.value.indexOf(option) !== -1 ? "selected" : ""}`}
-                  onClick={() => this.handleClick(option)}>
-                <Ink/>
-                <div className="vertical-align icon-wrapper">
-                  <i className="material-icons vertical-align-wrapper">
-                    {this.icons[index] || ""}
-                  </i>
-                </div>
-                <div className="vertical-align text-wrapper">
+      <div className={`Options ${icons.length ? "" : "text"}`}>
+        {this.props.options.map((option, index) =>
+          <a
+            key={`option-${option}`}
+            className={`option ${this.props.value.indexOf(option) !==
+            -1 ? "selected" : ""}`}
+            onClick={() => this.handleClick(option)}>
+            <Ink/>
+            <div className="vertical-align icon-wrapper">
+              <i className="material-icons vertical-align-wrapper">
+                {icons[index] || ""}
+              </i>
+            </div>
+            <div className="vertical-align text-wrapper">
                   <span className="vertical-align-wrapper btn-text">
                             {option}
                   </span>
-                </div>
-              </a>
-          ) }
-        </div>
+            </div>
+          </a>,
+        )}
+      </div>
     );
   }
 }
 
-class SearchBarTitle extends Component {
-  render() {
+type SearchBarTitleProps = {|
+  +children: React.Node
+|};
+
+class SearchBarTitle extends React.PureComponent<SearchBarTitleProps> {
+  render(): React.Node {
     return (
-        <div className="vertical-align title-dark">
-          <div className="vertical-align-wrapper">{this.props.children}</div>
-        </div>
+      <div className="vertical-align title-dark">
+        <div className="vertical-align-wrapper">{this.props.children}</div>
+      </div>
     );
   }
 }
@@ -76,50 +83,65 @@ const DEFAULT_MONTH = R.month;
 const DEFAULT_TYPES = [R.TYPE_ARTICLE, R.TYPE_BULB];
 const DEFAULT_ATTACHMENTS = [];
 
-export default class SearchBar extends Component {
+type Props = {|
+  +isBoundSearch: boolean,
+  +mapBound: MapBound,
+  +onChange: (c: SearchCriteria) => void;
+  +tagPrediction: string,
+|}
 
-  ATTACHMENTS = `${R.PROP_PHOTO} ${R.PROP_MUSIC} ${R.PROP_MOVIE} ${R.PROP_LINK} ${R.PROP_OTHER}`;
+type State = {|
+  advancedSearchValue: string,
+  attachments: Array<string>,
+  inputValue: string,
+  isAdvancedSearch: boolean,
+  keywords: Array<string>,
+  months: Array<string>,
+  tags: Array<string>,
+  types: Array<string>,
+|};
 
-  state = {
-    tags       : [],
-    keywords   : [],
-    months     : DEFAULT_MONTH,
-    types      : DEFAULT_TYPES,
+export default class SearchBar extends React.Component<Props, State> {
+
+  ATTACHMENTS: Array<string> = [
+    R.PROP_PHOTO,
+    R.PROP_MUSIC,
+    R.PROP_MOVIE,
+    R.PROP_LINK,
+    R.PROP_OTHER,
+  ];
+
+  state: State = {
+    tags: [],
+    keywords: [],
+    months: DEFAULT_MONTH,
+    types: DEFAULT_TYPES,
     attachments: DEFAULT_ATTACHMENTS,
-    inputValue : "",
+    inputValue: "",
 
-    isAdvancedSearch   : false,
+    isAdvancedSearch: false,
     advancedSearchValue: "",
   };
 
-  constructor(props) {
-    super(props);
-
-    this.toggleIsAdvancedSearch = this.toggleIsAdvancedSearch.bind(this);
-    this.clearSearch = this.clearSearch.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleInputKeyDown = this.handleInputKeyDown.bind(this);
-    this.handlePromptClose = this.handlePromptClose.bind(this);
-  }
-
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps: Props, nextState: State): void {
     if (this.state.isAdvancedSearch) {
       // Calculate the new input value
-      nextState.advancedSearchValue = `${nextState.keywords.join(" ")}${nextState.tags.length ? (" #" + nextState.tags.join(
-          " #")) : ""}${nextState.months.length ? ` @[${nextState.months.join(
-          ",")}]` : ""}${nextState.types.length ? ` isType:[${nextState.types.join(
-          ",")}]` : ""}${nextState.attachments.length ? ` hasAttachments:[${nextState.attachments.join(
-          ",")}]` : ""}`;
+      nextState.advancedSearchValue = `${nextState.keywords.join(" ")}${nextState.tags.length ? (
+        " #" + nextState.tags.join(
+          " #")
+      ) : ""}${nextState.months.length ? ` @[${nextState.months.join(
+        ",")}]` : ""}${nextState.types.length ? ` isType:[${nextState.types.join(
+        ",")}]` : ""}${nextState.attachments.length ? ` hasAttachments:[${nextState.attachments.join(
+        ",")}]` : ""}`;
 
       // `keyword` dominates
       let keywords = [...nextState.keywords];
       keywords.forEach((keyword, i, keywords) => {
         // Escape it
-        keyword = keyword.replace(/"/g, '\\"');
-        if (keyword.indexOf(" ") !== -1) {
+        const processedKeyword = keyword.replace(/"/g, '\\"');
+        if (processedKeyword.indexOf(" ") !== -1) {
           // It has space
-          keywords[i] = `"${keyword}"`;
+          keywords[i] = `"${processedKeyword}"`;
         }
       });
 
@@ -131,11 +153,11 @@ export default class SearchBar extends Component {
     }
   }
 
-  convertInputValueToKeyWords(inputValue) {
+  convertInputValueToKeyWords(inputValue: string): Array<string> {
     let keywords = [],
-        word = "",
-        skipQuote = false,
-        skipSpace = false;
+      word = "",
+      skipQuote = false,
+      skipSpace = false;
 
     for (let i = 0, len = inputValue.length; i < len; ++i) {
       let c = inputValue[i];
@@ -171,38 +193,43 @@ export default class SearchBar extends Component {
     return keywords;
   };
 
-  toggleIsAdvancedSearch() {
+  toggleIsAdvancedSearch = (): void => {
     this.setState({
       isAdvancedSearch: !this.state.isAdvancedSearch,
     });
-  }
+  };
 
-  clearSearch() {
+  clearSearch = (): void => {
     this.setState({
-      inputValue : "",
-      tags       : [],
-      keywords   : [],
-      months     : DEFAULT_MONTH,
-      types      : DEFAULT_TYPES,
+      inputValue: "",
+      tags: [],
+      keywords: [],
+      months: DEFAULT_MONTH,
+      types: DEFAULT_TYPES,
       attachments: DEFAULT_ATTACHMENTS,
     }, () => this.handleSubmit(true));
-  }
+  };
 
-  handleInputChange(e) {
-    if (!this.state.isAdvancedSearch) {
-      this.setState({inputValue: e.target.value});
+  handleInputChange = (e: SyntheticInputEvent<>): void => {
+    const {target} = e;
+    if (!(
+      target instanceof HTMLInputElement
+    )) {
+      return;
     }
-  }
 
-  handleInputKeyDown(e) {
+    if (!this.state.isAdvancedSearch) {
+      this.setState({inputValue: target.value});
+    }
+  };
+
+  handleInputKeyDown = (e: SyntheticKeyboardEvent<>): void => {
     if (e.key === "Enter") {
       this.handleSubmit();
     }
-  }
+  };
 
-  handleSubmit(isClear) {
-    isClear = isClear === true;
-    
+  handleSubmit = (isClear?: boolean = true): void => {
     if (this.state.isAdvancedSearch) {
       for (let d of this.state.types) {
         if (d === R.TYPE_ARTICLE) {
@@ -223,110 +250,129 @@ export default class SearchBar extends Component {
       }
 
       this.props.onChange({
-        hasArticle : !!hasArticle,
-        hasBulb    : !!hasBulb,
+        hasArticle: !!hasArticle,
+        hasBulb: !!hasBulb,
         attachments: this.state.attachments,
-        months     : months,
-        keywords   : this.state.keywords,
-        tags       : this.state.tags,
-        simple     : false,
-        clear      : isClear,
+        months: months,
+        keywords: this.state.keywords,
+        tags: this.state.tags,
+        simple: false,
+        clear: isClear,
       });
     } else {
       let value = this.state.inputValue.trim();
 
       this.props.onChange({
         keywords: value.length ? value.split(" ") : [],
-        simple  : true,
-        clear   : isClear,
+        simple: true,
+        clear: isClear,
       });
     }
-  }
+  };
 
-  handlePromptClose() {
+  handlePromptClose = (): void => {
     this.handleSubmit();
     this.setState({isAdvancedSearch: false});
-  }
+  };
 
-  render() {
+  render(): React.Node {
     return (
-        <div className="SearchBar">
-          <Prompt
-              className={`advanced-search ${this.state.isAdvancedSearch ? "": "hidden"}`}
-              onClose={this.handlePromptClose}
-          >
-            <div
-                className={`form prompt-child shadow`}>
-              <div className="form-row">
-                <SearchBarTitle>Keyword</SearchBarTitle>
-                <PredictionInputs
-                    className={`tag white-background new-tag-wrapper`}
-                    tagPrediction={""}
-                    tags={this.state.keywords}
-                    onChange={keywords => this.setState({keywords: keywords})}
-                />
-              </div>
-              <div className="form-row">
-                <SearchBarTitle>Tags</SearchBarTitle>
-                <PredictionInputs
-                    className={`tag white-background new-tag-wrapper`}
-                    tagPrediction={this.props.tagPrediction}
-                    tags={this.state.tags}
-                    onChange={tags => this.setState({tags: tags})}
-                />
-              </div>
-              <div className="form-row">
-                <SearchBarTitle>Time</SearchBarTitle>
-                <Options
-                    options="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec"
-                    value={this.state.months}
-                    onChange={months => this.setState({months: months})}/>
-              </div>
-              <div className="form-row">
-                <SearchBarTitle>Type</SearchBarTitle>
-                <Options options={`${R.TYPE_ARTICLE} ${R.TYPE_BULB}`}
-                         icons="description lightbulb_outline"
-                         value={this.state.types}
-                         onChange={types => this.setState({types: types})}/>
-              </div>
-              <div className="form-row">
-                <SearchBarTitle>Attachments</SearchBarTitle>
-                <Options options={this.ATTACHMENTS}
-                         icons="photo_library library_music movie link more_horiz"
-                         value={this.state.attachments}
-                         onChange={data => this.setState({attachments: data})}/>
-              </div>
-            </div>
-          </Prompt>
+      <div className="SearchBar">
+        <Prompt
+          className={`advanced-search ${this.state.isAdvancedSearch ? "" : "hidden"}`}
+          onClose={this.handlePromptClose}
+        >
           <div
-              className={`flex-center search-bar-wrapper ${this.state.isAdvancedSearch ? "max-z-index" : ""}`}>
-            <input
-                type="text"
-                className={`keyword normal underlined ${this.state.isAdvancedSearch ? "max-z-index" : ""}`}
-                value={this.state.inputValue}
-                onChange={this.handleInputChange}
-                onKeyDown={this.handleInputKeyDown}
-                disabled={this.state.isAdvancedSearch}
-            />
-            <div className="btns">
-              <Button className="dark z-index-inherit"
-                      tooltip="Clear keyword"
-                      onClick={this.clearSearch}
-              >clear</Button>
-              <Toggle firstIcon="expand_more" secondIcon="expand_less"
-                      className="dark z-index-inherit"
-                      tooltip="More options"
-                      onClick={this.toggleIsAdvancedSearch}
-                      isChanging={this.state.isAdvancedSearch}
+            className={`form prompt-child shadow`}>
+            <div className="form-row">
+              <SearchBarTitle>Keyword</SearchBarTitle>
+              <PredictionInputs
+                className={`tag white-background new-tag-wrapper`}
+                tagPrediction={[]}
+                tags={this.state.keywords}
+                onChange={keywords => this.setState({keywords: keywords})}
               />
-              <Button className="dark z-index-inherit"
-                      text={`search${this.props.isBoundSearch ? " in this area" : ""}`}
-                      onClick={this.handleSubmit}
-                      tooltip="Toggle map view to limit search in an area"
-              >search</Button>
+            </div>
+            <div className="form-row">
+              <SearchBarTitle>Tags</SearchBarTitle>
+              <PredictionInputs
+                className={`tag white-background new-tag-wrapper`}
+                tagPrediction={this.props.tagPrediction.split(" ")}
+                tags={this.state.tags}
+                onChange={tags => this.setState({tags: tags})}
+              />
+            </div>
+            <div className="form-row">
+              <SearchBarTitle>Time</SearchBarTitle>
+              <Options
+                options={[
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "May",
+                  "Jun",
+                  "Jul",
+                  "Aug",
+                  "Sep",
+                  "Oct",
+                  "Nov",
+                  "Dec",
+                ]}
+                value={this.state.months}
+                onChange={months => this.setState({months: months})}/>
+            </div>
+            <div className="form-row">
+              <SearchBarTitle>Type</SearchBarTitle>
+              <Options options={[R.TYPE_ARTICLE, R.TYPE_BULB]}
+                       icons={["description", "lightbulb_outline"]}
+                       value={this.state.types}
+                       onChange={types => this.setState({types: types})}/>
+            </div>
+            <div className="form-row">
+              <SearchBarTitle>Attachments</SearchBarTitle>
+              <Options options={this.ATTACHMENTS}
+                       icons={[
+                         "photo_library",
+                         "library_music",
+                         "movie",
+                         "link",
+                         "more_horiz",
+                       ]}
+                       value={this.state.attachments}
+                       onChange={data => this.setState({attachments: data})}/>
             </div>
           </div>
+        </Prompt>
+        <div
+          className={`flex-center search-bar-wrapper ${this.state.isAdvancedSearch ? "max-z-index" : ""}`}>
+          <input
+            type="text"
+            className={`keyword normal underlined ${this.state.isAdvancedSearch ? "max-z-index" : ""}`}
+            value={this.state.inputValue}
+            onChange={this.handleInputChange}
+            onKeyDown={this.handleInputKeyDown}
+            disabled={this.state.isAdvancedSearch}
+          />
+          <div className="btns">
+            <Button className="dark z-index-inherit"
+                    tooltip="Clear keyword"
+                    onClick={this.clearSearch}
+            >clear</Button>
+            <Toggle firstIcon="expand_more" secondIcon="expand_less"
+                    className="dark z-index-inherit"
+                    tooltip="More options"
+                    onClick={this.toggleIsAdvancedSearch}
+                    isChanging={this.state.isAdvancedSearch}
+            />
+            <Button className="dark z-index-inherit"
+                    text={`search${this.props.isBoundSearch ? " in this area" : ""}`}
+                    onClick={this.handleSubmit}
+                    tooltip="Toggle map view to limit search in an area"
+            >search</Button>
+          </div>
         </div>
+      </div>
     );
   }
 }

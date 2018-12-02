@@ -1,3 +1,5 @@
+// region OneDrive
+
 declare type OneDriveItem = {
   +"@microsoft.graph.downloadUrl": string,
   +id: string,
@@ -13,6 +15,10 @@ declare type OneDriveQueuedItem = {|
   contentType: string,
 |};
 
+// endregion
+
+// region Map
+
 declare type GeoCoordinate = {|
   latitude: number,
   longitude: number
@@ -23,6 +29,23 @@ declare type MapBound = {|
   north: number,
   south: number,
   west: number
+|};
+
+// endregion
+
+declare type SearchCriteria = {|
+  attachments: Array<string>,
+  clear: boolean,
+  hasArticle: boolean,
+  hasBulb: boolean,
+  keywords: Array<string>,
+  months: Array<string>,
+  simple: false,
+  tags: Array<string>,
+|} | {|
+  clear: boolean,
+  keywords: Array<string>,
+  simple: true,
 |};
 
 declare type ImageData = {|

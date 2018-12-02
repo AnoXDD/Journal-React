@@ -83,8 +83,6 @@ export default class ImagePicker extends React.Component<Props, State> {
       let fileObjects = [],
         unprocessed = files.length,
         onFinish = e => {
-          const target: FileReader = e.target;
-
           fileObjects.push({
             name       : e.target.fileName,
             content    : e.target.result,
