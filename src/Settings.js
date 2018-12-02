@@ -1,10 +1,12 @@
+// @flow strict-local
+
 /**
  * Created by Anoxic on 6/5/2017.
  *
  * A view for the settings
  */
 
-import React, {Component} from "react";
+import type NotificationSystem from "react-notification-system";
 
 import Button from "./lib/Button";
 import OneDriveManager from "./OneDriveManager";
@@ -13,6 +15,7 @@ import Form from "./lib/Form";
 
 import R from "./R";
 import * as FormConstants from "./lib/FormConstants";
+import * as React from "react";
 
 /**
  * To add a new setting to be uploaded:
@@ -31,45 +34,50 @@ import * as FormConstants from "./lib/FormConstants";
  */
 
 const DEFAULT_SETTINGS_STATE = {
-  password       : "",
+  password: "",
   passwordConfirm: "",
   passwordEnabled: false,
 
   bulbMapCenter: {
-    latitude : 0,
+    latitude: 0,
     longitude: 0,
   },
 
   bulbAttachLocation: false,
 };
 
-export default class Settings extends Component {
+type Props = {|
+  +data: Data,
+  +handleMissingImages: () => Promise<void>,
+  +hidden: boolean,
+  +notificationSystem: NotificationSystem,
+  +onSave: (data: Data) => Promise<void>,
+  +version: number,
+|};
 
-  version = 0;
+type State = {|
+  bulbAttachLocation: boolean,
+  bulbMapCenter: GeoCoordinate,
+  isEmptyingQueueFolder: boolean,
+  isLoadingMissingImages: boolean,
+  isSaving: boolean,
+  password: string,
+  passwordConfirm: string,
+  passwordEnabled: boolean,
+|};
 
-  constructor(props) {
-    super(props);
+export default class Settings extends React.Component<Props, State> {
 
-    this.state = Object.assign({
-      isLoadingMissingImages: false,
-      isEmptyingQueueFolder : false,
-      isSaving              : false,
-    }, R.copy(DEFAULT_SETTINGS_STATE));
+  version: number = 0;
 
-    this.handleMissingImages = this.handleMissingImages.bind(this);
-    this.handleLocationInputChange = this.handleLocationInputChange.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSetDefaultLocationClick = this.handleSetDefaultLocationClick.bind(
-      this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleSignOut = this.handleSignOut.bind(this);
-    this.handleToggle = this.handleToggle.bind(this);
-    this.validateSettings = this.validateSettings.bind(this);
-    this.generateSettingsData = this.generateSettingsData.bind(this);
-    this.emptyQueueFolder = this.emptyQueueFolder.bind(this);
-  }
+  state: State = {
+    ...R.copy(DEFAULT_SETTINGS_STATE),
+    isLoadingMissingImages: false,
+    isEmptyingQueueFolder: false,
+    isSaving: false,
+  };
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps: Props, nextState: State): void {
     if (!nextState.passwordEnabled) {
       nextState.password = "";
       nextState.passwordConfirm = "";
@@ -93,7 +101,7 @@ export default class Settings extends Component {
     }
   }
 
-  handleMissingImages() {
+  handleMissingImages = (): void => {
     this.setState({
       isLoadingMissingImages: true,
     });
@@ -109,49 +117,67 @@ export default class Settings extends Component {
           isLoadingMissingImages: false,
         });
       });
-  }
+  };
 
+  handleLocationInputChange = (e: SyntheticInputEvent<>): void => {
+    const {target} = e;
+    if (!(
+      target instanceof HTMLInputElement
+    )) {
+      return;
+    }
 
-  handleLocationInputChange(e) {
     let center = this.state.bulbMapCenter;
-    center[e.target.name] = parseFloat(e.target.value, 10);
+    center[target.name] = parseFloat(target.value);
 
     this.setState({
       bulbMapCenter: center,
     });
-  }
+  };
 
-  handleChange(e) {
+  handleChange = (e: SyntheticInputEvent<>): void => {
+    const {target} = e;
+    if (!(
+      target instanceof HTMLInputElement
+    )) {
+      return;
+    }
+
     this.setState({
-      [e.target.name]: e.target.value,
+      [target.name]: target.value,
     });
-  }
+  };
 
-  handleSetDefaultLocationClick() {
+  handleSetDefaultLocationClick = (): void => {
     navigator.geolocation.getCurrentPosition(pos => {
       let crd = pos.coords;
 
       this.setState({
         bulbMapCenter: {
-          latitude : crd.latitude,
+          latitude: crd.latitude,
           longitude: crd.longitude,
-        }
+        },
       });
     }, err => {
       console.error(`ERROR(${err.code}): ${err.message}`);
 
-      R.notifyError(this.props.notificationSystem,
-        "Unable to get current location. Did you grant access?");
+      R.notifyError(
+        this.props.notificationSystem,
+        "Unable to get current location. Did you grant access?",
+      );
     }, {
       enableHighAccuracy: true,
-      maximumAge        : 0,
+      maximumAge: 0,
+      timeout: Infinity,
     });
-  }
+  };
 
   validateSettings() {
     if (this.state.password !== this.state.passwordConfirm) {
-      R.notifyError(this.props.notificationSystem,
-        "Password does not match. No changes are saved. ");
+      R.notifyError(
+        this.props.notificationSystem,
+        "Password does not match. No changes are saved. ",
+      );
       return false;
     }
 
@@ -173,7 +199,7 @@ export default class Settings extends Component {
     return settings;
   }
 
-  handleSave() {
+  handleSave = (): void => {
     this.setState({
       isSaving: true,
     });
@@ -200,17 +226,23 @@ export default class Settings extends Component {
           isSaving: false,
         });
       });
-  }
+  };
 
-  handleToggle(e) {
-    let {tag} = e.target.dataset;
+  handleToggle = (e: SyntheticMouseEvent<>): void => {
+    const {target} = e;
+    if (!(
+      target instanceof HTMLElement
+    )) {
+      return;
+    }
+    let {tag} = target.dataset;
 
     this.setState({
       [tag]: !this.state[tag],
     });
-  }
+  };
 
-  emptyQueueFolder() {
+  emptyQueueFolder = (): void => {
     this.setState({
       isEmptyingQueueFolder: true,
     });
@@ -224,17 +256,19 @@ export default class Settings extends Component {
         });
       })
       .catch(err => {
-        R.notifyError(this.props.notificationSystem,
-          "There was an error when deleting the image. Try again");
+        R.notifyError(
+          this.props.notificationSystem,
+          "There was an error when deleting the image. Try again",
+        );
         console.error(err.stack);
 
         this.setState({
           isEmptyingQueueFolder: false,
         });
-      })
-  }
+      });
+  };
 
-  handleSignOut() {
+  handleSignOut(): void {
     // Clear all the cache
     var cookies = document.cookie.split(";");
 
@@ -249,202 +283,226 @@ export default class Settings extends Component {
     window.location.reload(true);
   }
 
-  render() {
+  render(): React.Node {
     let data = [
       {
         title: "Content",
-        rows : [
+        rows: [
           /* New row */
           {
-            title  : "Images",
-            content: [{
-              title   : "Lost some images when you deleted them?",
-              elements: [{
-                type : FormConstants.BUTTON,
-                props: {
-                  text   : "fix",
-                  onClick: this.handleMissingImages,
-                  loading: this.state.isLoadingMissingImages,
-                  icon   : "build",
-                }
-              }],
-            }, {
-              title   : "Remove all the images that don't belong to anything",
-              elements: [{
-                type : FormConstants.BUTTON,
-                props: {
-                  text   : "clean",
-                  onClick: this.emptyQueueFolder,
-                  loading: this.state.isEmptyingQueueFolder,
-                  icon   : "delete",
-                }
-              }]
-            }]
+            title: "Images",
+            content: [
+              {
+                title: "Lost some images when you deleted them?",
+                elements: [
+                  {
+                    type: FormConstants.BUTTON,
+                    props: {
+                      text: "fix",
+                      onClick: this.handleMissingImages,
+                      loading: this.state.isLoadingMissingImages,
+                      icon: "build",
+                    },
+                  },
+                ],
+              }, {
+                title: "Remove all the images that don't belong to anything",
+                elements: [
+                  {
+                    type: FormConstants.BUTTON,
+                    props: {
+                      text: "clean",
+                      onClick: this.emptyQueueFolder,
+                      loading: this.state.isEmptyingQueueFolder,
+                      icon: "delete",
+                    },
+                  },
+                ],
+              },
+            ],
           },
           /* New row */
           {
-            title  : "User",
-            content: [{
-              title   : "",
-              elements: [{
-                type : FormConstants.BUTTON,
-                props: {
-                  text   : "sign out",
-                  onClick: this.handleSignOut,
-                  icon   : "exit_to_app",
-                }
-              }]
-            }]
+            title: "User",
+            content: [
+              {
+                title: "",
+                elements: [
+                  {
+                    type: FormConstants.BUTTON,
+                    props: {
+                      text: "sign out",
+                      onClick: this.handleSignOut,
+                      icon: "exit_to_app",
+                    },
+                  },
+                ],
+              },
+            ],
           },
-        ]
+        ],
       },
 
       /* New form */
       {
         title: "Personalization",
-        rows : [
+        rows: [
           {
-            title  : "Bulb Map",
+            title: "Bulb Map",
             content: [
               {
-                title   : "Set the default center of the bulb map",
-                elements: [{
-                  type : FormConstants.BUTTON,
-                  props: {
-                    text   : "get location",
-                    onClick: this.handleSetDefaultLocationClick,
-                    tooltip: "Set as current location",
-                    icon   : "my_location",
-                  }
-                }]
+                title: "Set the default center of the bulb map",
+                elements: [
+                  {
+                    type: FormConstants.BUTTON,
+                    props: {
+                      text: "get location",
+                      onClick: this.handleSetDefaultLocationClick,
+                      tooltip: "Set as current location",
+                      icon: "my_location",
+                    },
+                  },
+                ],
               },
               {
-                elements: [{
-                  type : FormConstants.DIGIT_INPUT,
-                  props: {
-                    label    : "Latitude",
-                    className: "normal underlined",
-                    name     : "latitude",
-                    value    : this.state.bulbMapCenter.latitude,
-                    min      : -180,
-                    max      : 180,
-                    onChange : this.handleLocationInputChange,
-                  }
-                }, {
-                  type : FormConstants.DIGIT_INPUT,
-                  props: {
-                    label    : "Longitude",
-                    className: "normal underlined",
-                    name     : "longitude",
-                    value    : this.state.bulbMapCenter.longitude,
-                    min      : -90,
-                    max      : 90,
-                    onChange : this.handleLocationInputChange,
-                  }
-                }]
-              }
-            ]
+                elements: [
+                  {
+                    type: FormConstants.DIGIT_INPUT,
+                    props: {
+                      label: "Latitude",
+                      className: "normal underlined",
+                      name: "latitude",
+                      value: this.state.bulbMapCenter.latitude,
+                      min: -180,
+                      max: 180,
+                      onChange: this.handleLocationInputChange,
+                    },
+                  }, {
+                    type: FormConstants.DIGIT_INPUT,
+                    props: {
+                      label: "Longitude",
+                      className: "normal underlined",
+                      name: "longitude",
+                      value: this.state.bulbMapCenter.longitude,
+                      min: -90,
+                      max: 90,
+                      onChange: this.handleLocationInputChange,
+                    },
+                  },
+                ],
+              },
+            ],
           },
           /* New row*/
           {
-            title  : "Bulb",
+            title: "Bulb",
             content: [
               {
-                title   : "Bulb will include your location by default",
-                elements: [{
-                  type : FormConstants.TOGGLE,
-                  props: {
-                    "data-tag": "bulbAttachLocation",
-                    onClick   : this.handleToggle,
-                    isChanging: this.state.bulbAttachLocation,
-                    firstIcon : "check_box_outline_blank",
-                    secondIcon: "check_box",
+                title: "Bulb will include your location by default",
+                elements: [
+                  {
+                    type: FormConstants.TOGGLE,
+                    props: {
+                      "data-tag": "bulbAttachLocation",
+                      onClick: this.handleToggle,
+                      isChanging: this.state.bulbAttachLocation,
+                      firstIcon: "check_box_outline_blank",
+                      secondIcon: "check_box",
+                    },
                   },
-                }]
-              }
-            ]
-          }
-        ]
+                ],
+              },
+            ],
+          },
+        ],
       },
 
       /* New form */
       {
         title: "Security",
-        rows : [
+        rows: [
           /* New row */
           {
-            title  : "Data",
+            title: "Data",
             content: [
               {
-                title   : "Encrypt your data with password",
-                elements: [{
-                  type : FormConstants.TOGGLE,
-                  props: {
-                    "data-tag": "passwordEnabled",
-                    onClick   : this.handleToggle,
-                    isChanging: this.state.passwordEnabled,
-                    firstIcon : "check_box_outline_blank",
-                    secondIcon: "check_box",
-                  }
-                }]
-              },
-              {
-                title    : "By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. As a result, the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so YOU ARE RESPONSIBLE FOR REMEMBERING THE PASSWORD: IF YOU LOST IT, THERE IS NO WAY TO RETRIEVE IT",
-                subTitle : true,
-                className: this.state.passwordEnabled ? "" : "hidden",
-                elements : [
-                  {type: FormConstants.NONE}
-                ]
-              },
-              {
-                className: this.state.passwordEnabled ? "" : "hidden",
-                elements : [
+                title: "Encrypt your data with password",
+                elements: [
                   {
-                    type : FormConstants.INPUT,
+                    type: FormConstants.TOGGLE,
                     props: {
-                      label    : "Password",
-                      className: `normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`,
-                      name     : "password",
-                      type     : "password",
-                      value    : this.state.password,
-                      onChange : this.handleChange,
-                    }
-                  }
-                ]
+                      "data-tag": "passwordEnabled",
+                      onClick: this.handleToggle,
+                      isChanging: this.state.passwordEnabled,
+                      firstIcon: "check_box_outline_blank",
+                      secondIcon: "check_box",
+                    },
+                  },
+                ],
+              },
+              {
+                title: "By default, your journal content is not encrypted on your OneDrive account. This means that anyone that may access your OneDrive can also easily find and read what you write. By enabling password protection, Trak will encrypt your data using AES with the password you provide before uploading to your OneDrive. As a result, the next time you sign in, you will need to use the same password to decrypt it. Please note that Trak does not have its own server, so YOU ARE RESPONSIBLE FOR REMEMBERING THE PASSWORD: IF YOU LOST IT, THERE IS NO WAY TO RETRIEVE IT",
+                subTitle: true,
+                className: this.state.passwordEnabled ? "" : "hidden",
+                elements: [
+                  {type: FormConstants.NONE},
+                ],
               },
               {
                 className: this.state.passwordEnabled ? "" : "hidden",
-                elements : [
+                elements: [
                   {
-                    type : FormConstants.INPUT,
+                    type: FormConstants.INPUT,
                     props: {
-                      label    : "Confirm password",
-                      className: `normal underlined password ${this.state.password === this.state.passwordConfirm ? "" : "red"}`,
-                      name     : "passwordConfirm",
-                      type     : "password",
-                      value    : this.state.passwordConfirm,
-                      onChange : this.handleChange,
-                    }
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+                      label: "Password",
+                      className: `normal underlined password ${this.state.password ===
+                      this.state.passwordConfirm ? "" : "red"}`,
+                      name: "password",
+                      type: "password",
+                      value: this.state.password,
+                      onChange: this.handleChange,
+                    },
+                  },
+                ],
+              },
+              {
+                className: this.state.passwordEnabled ? "" : "hidden",
+                elements: [
+                  {
+                    type: FormConstants.INPUT,
+                    props: {
+                      label: "Confirm password",
+                      className: `normal underlined password ${this.state.password ===
+                      this.state.passwordConfirm ? "" : "red"}`,
+                      name: "passwordConfirm",
+                      type: "password",
+                      value: this.state.passwordConfirm,
+                      onChange: this.handleChange,
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
 
       /* New form */
       {
-        rows: [{
-          title  : "Last built",
-          content: [{
-            title   : document.lastModified,
-            elements: [
-              {type: FormConstants.NONE}
-            ]
-          }]
-        }]
-      }
+        rows: [
+          {
+            title: "Last built",
+            content: [
+              {
+                title: document.lastModified,
+                elements: [
+                  {type: FormConstants.NONE},
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ];
 
     return (

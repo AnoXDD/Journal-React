@@ -1,26 +1,103 @@
+// @flow strict-local
+
 /**
  * Created by Anoxic on 9/3/2017.
  *
  * The page for displaying nerdy stats regarding the data
  */
 
-import React, {Component} from "react";
 import Form from "./lib/Form";
 import NoScrollArea from "./lib/NoScrollArea";
 
 import * as R from "./R";
 import * as FormConstants from "./lib/FormConstants";
 
-export default class Stats extends Component {
+import * as React from "react";
 
-  version = 0;
-  data = [];
+type Props = {|
+  +data: Data,
+  +hidden: boolean,
+  +version: number,
+  +year: number,
+|}
 
-  shouldComponentUpdate(nextProps) {
+export default class Stats extends React.Component<Props> {
+
+  version: number = 0;
+  data: Array<{|
+    +title: string,
+    +rows: Array<{|
+      +title: string,
+      +content: Array<{|
+        +title: string,
+        +elements: [
+          {|
+            +type: $Values<FormConstants>,
+            props: string | number,
+          |}
+          ]
+      |}>
+    |}>
+  |}> = [];
+
+  totalEntries: number = 0;
+  totalEntryChar: number = 0;
+  averageEntryChar: number = 0;
+  minEntryChar: number = Number.MAX_SAFE_INTEGER;
+  maxEntryChar: number = 0;
+
+  totalArticles: number = 0;
+  totalArticleChar: number = 0;
+  averageArticleChar: number = 0;
+  minArticleChar: number = Number.MAX_SAFE_INTEGER;
+  minArticleCharOn: number = 0;
+  minArticleCharTitle: string = "";
+  maxArticleChar: number = 0;
+  maxArticleCharOn: number = 0;
+  maxArticleCharTitle: string = "";
+
+  totalBulbs: number = 0;
+  totalBulbChar: number = 0;
+  averageBulbChar: number = 0;
+  minBulbChar: number = Number.MAX_SAFE_INTEGER;
+  minBulbCharOn: number = 0;
+  maxBulbChar: number = 0;
+  maxBulbCharOn: number = 0;
+
+  totalEntriesWithTime: number = 0;
+  totalEntryCharWithTime: number = 0;
+  totalTimeSpent: number = 0;
+  minTimeSpent: number = Number.MAX_SAFE_INTEGER;
+  maxTimeSpent: number = 0;
+  averageTimeSpent: number = 0;
+  averageCharPerMinute: number = 0;
+
+  totalEntryImages: number = 0;
+  totalArticleImages: number = 0;
+  averageArticleImages: number = 0;
+  maxArticleImages: number = 0;
+  totalBulbImages: number = 0;
+  averageBulbImages: number = 0;
+
+  totalBulbLocations: number = 0;
+  averageBulbLocations: number = 0;
+
+  longestEntryStreak: number = 0;
+  longestBulbStreak: number = 0;
+  longestBulbStreakFrom: number = 0;
+  longestBulbStreakTo: number = 0;
+  longestArticleStreak: number = 0;
+  longestArticleStreakFrom: number = 0;
+  longestArticleStreakTo: number = 0;
+
+  mostBulbsInOneDay: number = 0;
+  mostBulbsInOneDayOn: number = 0;
+
+  shouldComponentUpdate(nextProps: Props): boolean {
     return !nextProps.hidden || nextProps.version !== this.version;
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps: Props): void {
     if (nextProps.version <= this.version) {
       return;
     }
@@ -29,7 +106,7 @@ export default class Stats extends Component {
     this.updateData();
   }
 
-  resetData() {
+  resetData(): void {
     this.totalEntries = 0;
     this.totalEntryChar = 0;
     this.averageEntryChar = 0;
@@ -87,13 +164,13 @@ export default class Stats extends Component {
   /**
    * Processes the data from `this.props.data`
    */
-  processData() {
+  processData(): void {
     this.processCharData();
     this.processAverageData();
     this.processStreakData();
   }
 
-  processCharData() {
+  processCharData(): void {
     for (let entry of this.props.data) {
       ++this.totalEntries;
 
@@ -146,8 +223,11 @@ export default class Stats extends Component {
     }
   }
 
-  processEntryTimeData(entry, char) {
-    if (entry.time.begin && entry.time.end) {
+  processEntryTimeData(
+    entry: ArticleEntry | BulbEntry,
+    char: number,
+  ): void {
+    if (entry.time.begin != null && entry.time.end != null) {
       let duration = entry.time.end - entry.time.begin;
       if (duration > 0) {
         ++this.totalEntriesWithTime;
@@ -160,18 +240,27 @@ export default class Stats extends Component {
     }
   }
 
-  processAverageData() {
-    this.averageEntryChar = this.totalEntries ? this.totalEntryChar / this.totalEntries : 0;
-    this.averageArticleChar = this.totalArticles ? this.totalArticleChar / this.totalArticles : 0;
-    this.averageBulbChar = this.totalBulbs ? this.totalBulbChar / this.totalBulbs : 0;
-    this.averageTimeSpent = this.totalEntriesWithTime ? this.totalTimeSpent / this.totalEntriesWithTime : 0;
-    this.averageCharPerMinute = this.totalTimeSpent ? this.totalEntryCharWithTime / this.totalTimeSpent * 60000 : 0;
-    this.averageArticleImages = this.totalArticles ? this.totalArticleImages / this.totalArticles : 0;
-    this.averageBulbImages = this.totalBulbs ? this.totalBulbImages / this.totalBulbs : 0;
-    this.averageBulbLocations = this.totalBulbs ? this.totalBulbLocations / this.totalBulbs : 0;
+  processAverageData(): void {
+    this.averageEntryChar = this.totalEntries ? this.totalEntryChar /
+      this.totalEntries : 0;
+    this.averageArticleChar = this.totalArticles ? this.totalArticleChar /
+      this.totalArticles : 0;
+    this.averageBulbChar = this.totalBulbs ? this.totalBulbChar /
+      this.totalBulbs : 0;
+    this.averageTimeSpent = this.totalEntriesWithTime ? this.totalTimeSpent /
+      this.totalEntriesWithTime : 0;
+    this.averageCharPerMinute = this.totalTimeSpent ? this.totalEntryCharWithTime /
+      this.totalTimeSpent *
+      60000 : 0;
+    this.averageArticleImages = this.totalArticles ? this.totalArticleImages /
+      this.totalArticles : 0;
+    this.averageBulbImages = this.totalBulbs ? this.totalBulbImages /
+      this.totalBulbs : 0;
+    this.averageBulbLocations = this.totalBulbs ? this.totalBulbLocations /
+      this.totalBulbs : 0;
   }
 
-  processStreakData() {
+  processStreakData(): void {
     let bulbs = [[], [], [], [], [], [], [], [], [], [], [], []],
       articles = [[], [], [], [], [], [], [], [], [], [], [], []];
 
@@ -181,13 +270,27 @@ export default class Stats extends Component {
         day = time.getDate() - 1;
 
       if (entry.type !== R.TYPE_ARTICLE) {
-        articles[month][day] = (articles[month][day] + 1) || 1;
+        articles[month][day] = (
+          articles[month][day] + 1
+        ) || 1;
       } else if (entry.type === R.TYPE_BULB) {
-        bulbs[month][day] = (bulbs[month][day] + 1) || 1;
+        bulbs[month][day] = (
+          bulbs[month][day] + 1
+        ) || 1;
       }
     }
 
-    let totalDay = (this.props.year % 4) || ((this.props.year % 100 === 0) && (this.props.year % 400)) ? 365 : 366,
+    let totalDay = (
+        this.props.year % 4
+      ) ||
+      (
+        (
+          this.props.year % 100 === 0
+        ) &&
+        (
+          this.props.year % 400
+        )
+      ) ? 365 : 366,
       currentYear = new Date().getFullYear(),
       currentEntryStreak = 0,
       currentArticleStreak = 0,
@@ -243,14 +346,18 @@ export default class Stats extends Component {
     }
 
     if (this.longestBulbStreak > 1) {
-      this.longestBulbStreakFrom = this.longestBulbStreakTo - this.longestBulbStreak * 86400000;
+      this.longestBulbStreakFrom = this.longestBulbStreakTo -
+        this.longestBulbStreak *
+        86400000;
       ++this.longestBulbStreak;
     } else {
       this.longestBulbStreak = 0;
     }
 
     if (this.longestArticleStreak > 1) {
-      this.longestArticleStreakFrom = this.longestArticleStreakTo - this.longestArticleStreak * 86400000;
+      this.longestArticleStreakFrom = this.longestArticleStreakTo -
+        this.longestArticleStreak *
+        86400000;
       ++this.longestArticleStreak;
     } else {
       this.longestArticleStreak = 0;
@@ -260,37 +367,45 @@ export default class Stats extends Component {
   /**
    * Compile the current data to `this.data` to display it
    */
-  writeData() {
+  writeData(): void {
     this.data = [];
 
     let template = this.generateFormTemplate();
-    for (let form of template) {
-      if (!form) {
+    for (const form of template) {
+      if (form == null) {
         continue;
       }
 
-      let formData = {title: form[0]},
+      let formData = {
+          title: form[0],
+          rows: [],
+        },
         rowsData = [];
 
       for (let row of form[1]) {
-        if (!row) {
+        if (row == null) {
           continue;
         }
 
-        let rowData = {title: row[0]},
+        let rowData = {
+            title: row[0],
+            content: [],
+          },
           contentData = [];
 
         for (let content of row[1]) {
-          if (!content) {
+          if (content == null) {
             continue;
           }
 
           contentData.push({
-            title   : content[0],
-            elements: [{
-              type : FormConstants.PLAIN_TEXT,
-              props: content[1],
-            }]
+            title: content[0],
+            elements: [
+              {
+                type: FormConstants.PLAIN_TEXT,
+                props: content[1],
+              },
+            ],
           });
         }
 
@@ -303,34 +418,41 @@ export default class Stats extends Component {
     }
   }
 
-  generateFormTemplate() {
+  generateFormTemplate(): Array<[string, Array<[string, Array<[string, string | number]>]>]> {
     return [
-      ["Summary",
+      [
+        "Summary",
         [
-          ["All",
+          [
+            "All",
             [
               ["Total", this.totalEntries],
               ["Total characters", this.totalEntryChar],
               ["Average character per entry", this.averageEntryChar.toFixed(3)],
               ["Lowest character", this.minEntryChar],
               ["Highest character", this.maxEntryChar],
-            ]
+            ],
           ],
-          ["Articles",
+          [
+            "Articles",
             [
               ["Total", this.totalArticles],
               ["Total characters", this.totalArticleChar],
-              ["Average character per article", this.averageArticleChar.toFixed(
-                3)],
+              [
+                "Average character per article",
+                this.averageArticleChar.toFixed(
+                  3),
+              ],
               ["Lowest character ", this.minArticleChar],
               ["... which happened on", R.dateToString(this.minArticleCharOn)],
               ["... whose title is", this.minArticleCharTitle],
               ["Highest character", this.maxArticleChar],
               ["... which happened on", R.dateToString(this.maxArticleCharOn)],
               ["... whose title is", this.maxArticleCharTitle],
-            ]
+            ],
           ],
-          ["Bulbs",
+          [
+            "Bulbs",
             [
               ["Total", this.totalBulbs],
               ["Total characters", this.totalBulbChar],
@@ -339,76 +461,120 @@ export default class Stats extends Component {
               ["... which happened on", R.dateToString(this.minBulbCharOn)],
               ["Highest character", this.maxBulbChar],
               ["... which happened on", R.dateToString(this.maxBulbCharOn)],
-            ]
-          ]
-        ]
+            ],
+          ],
+        ],
       ],
-      ["Devotion",
+      [
+        "Devotion",
         [
-          ["Time spent",
+          [
+            "Time spent",
             [
-              ["Total time spent", R.millisecondsToReadable(this.totalTimeSpent)],
-              ["Average time spent", R.millisecondsToReadable(this.averageTimeSpent)],
-              ["Shortest time spent", R.millisecondsToReadable(this.minTimeSpent)],
-              ["Longest time spent", R.millisecondsToReadable(this.maxTimeSpent)],
-              ["Average character per minute", R.millisecondsToReadable(this.averageCharPerMinute)],
-            ]
-          ]
-        ]
+              [
+                "Total time spent",
+                R.millisecondsToReadable(this.totalTimeSpent),
+              ],
+              [
+                "Average time spent",
+                R.millisecondsToReadable(this.averageTimeSpent),
+              ],
+              [
+                "Shortest time spent",
+                R.millisecondsToReadable(this.minTimeSpent),
+              ],
+              [
+                "Longest time spent",
+                R.millisecondsToReadable(this.maxTimeSpent),
+              ],
+              [
+                "Average character per minute",
+                R.millisecondsToReadable(this.averageCharPerMinute),
+              ],
+            ],
+          ],
+        ],
       ],
-      ["Attachments",
+      [
+        "Attachments",
         [
-          ["Images",
+          [
+            "Images",
             [
               ["Total images", this.totalEntryImages],
               ["Total article images", this.totalArticleImages],
               ["Average article images", this.averageArticleImages.toFixed(3)],
               ["Most article images", this.maxArticleImages],
               ["Total bulb images", this.totalBulbImages],
-              ["Bulb image percent", R.numToPercentage(this.averageBulbImages.toFixed(3))],
-            ]
-          ],
-          ["Location",
-            [
-              ["Total bulb locations", this.totalBulbLocations],
-              ["Bulb location percent", R.numToPercentage(this.averageBulbLocations.toFixed(3))]
+              [
+                "Bulb image percent",
+                R.numToPercentage(this.averageBulbImages.toFixed(3)),
+              ],
             ],
           ],
-        ]
-      ],
-      ["Engagement",
-        [
-          ["Streak",
+          [
+            "Location",
             [
+              ["Total bulb locations", this.totalBulbLocations],
+              [
+                "Bulb location percent",
+                R.numToPercentage(this.averageBulbLocations.toFixed(3)),
+              ],
+            ],
+          ],
+        ],
+      ],
+      [
+        "Engagement",
+        R.filterNulls([
+          [
+            "Streak",
+            R.filterNulls([
               ["Longest streak", Stats.appendDays(this.longestEntryStreak)],
-              ["Longest article streak", Stats.appendDays(this.longestArticleStreak)],
+              [
+                "Longest article streak",
+                Stats.appendDays(this.longestArticleStreak),
+              ],
               this.longestArticleStreak ?
-                ["Longest article streak from", R.dateToString(this.longestArticleStreakFrom)] : null,
+                [
+                  "Longest article streak from",
+                  R.dateToString(this.longestArticleStreakFrom),
+                ] : null,
               this.longestArticleStreak ?
-                ["Longest article streak to", R.dateToString(this.longestArticleStreakTo)] : null,
+                [
+                  "Longest article streak to",
+                  R.dateToString(this.longestArticleStreakTo),
+                ] : null,
               ["Longest bulb streak", Stats.appendDays(this.longestBulbStreak)],
               this.longestBulbStreak ?
-                ["Longest bulb streak from", R.dateToString(this.longestBulbStreakFrom)] : null,
+                [
+                  "Longest bulb streak from",
+                  R.dateToString(this.longestBulbStreakFrom),
+                ] : null,
               this.longestBulbStreak ?
-                ["Longest bulb streak to", R.dateToString(this.longestBulbStreakTo)] : null,
-            ]
+                [
+                  "Longest bulb streak to",
+                  R.dateToString(this.longestBulbStreakTo),
+                ] : null,
+            ]),
           ],
           this.mostBulbsInOneDay ?
-            ["Bulb",
+            [
+              "Bulb",
               [
                 ["Most bulbs in a day", this.mostBulbsInOneDay],
                 ["Most bulbs on", R.dateToString(this.mostBulbsInOneDayOn)],
-              ]
-            ] : null
-        ]
-      ]
+              ],
+            ] : null,
+        ]),
+      ],
     ];
   }
 
   /**
    * Append "days" or "day" to the end of the number
    */
-  static appendDays(number) {
+  static appendDays(number: number): string {
     if (!number) {
       return "-";
     }
@@ -419,13 +585,13 @@ export default class Stats extends Component {
   /**
    * The master function to update all the data
    */
-  updateData() {
+  updateData(): void {
     this.resetData();
     this.processData();
     this.writeData();
   }
 
-  render() {
+  render(): React.Node {
     return (
       <div className="flex-center stats bg-grey">
         <NoScrollArea
