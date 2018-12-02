@@ -1,32 +1,46 @@
+// @flow strict-local
+
 /**
  * Created by Anoxic on 043017.
  * A prediction input that will generate a series of divs that can be edited
  * later. Looks like the recipient area of gmail
  */
 
-import React, {Component} from "react";
 import NoScrollArea from "./lib/NoScrollArea";
 import PredictionInput from "./lib/PredictionInput";
 
-export default class PredictionInputs extends Component {
+import * as React from "react";
 
-  constructor(props) {
-    super(props);
+type Props = {|
+  +className: string,
+  +disabled?: boolean,
+  +onChange: (tags: Array<string>) => void,
+  +tagPrediction: Array<string>,
+  +tags: Array<string>,
+|}
 
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-  }
+type State = {|
+  tagPrediction: string,
+|};
 
-  removeTagAtIndex(index) {
-    var tags = this.props.tags;
+export default class PredictionInputs extends React.Component<Props, State> {
+  removeTagAtIndex(index: number): void {
+    const tags = this.props.tags;
     tags.splice(index, 1);
 
     this.props.onChange(tags);
   }
 
-  handleKeyDown(event: SyntheticKeyboardEvent<>, prediction: string): void {
-    if (!this.props.disabled) {
-      const onEnter = (event) => {
-        let newTag = event.target.value.trim();
+  handleKeyDown = (event: SyntheticKeyboardEvent<>,
+                   prediction: string): void => {
+    const {target} = event;
+    if (!(target instanceof HTMLInputElement)) {
+      return;
+    }
+
+    if (this.props.disabled !== true) {
+      const onEnter = (target: HTMLInputElement) => {
+        let newTag = target.value.trim();
 
         // Only add it when not found
         if (newTag.length && this.props.tags.indexOf(newTag) === -1) {
@@ -38,34 +52,34 @@ export default class PredictionInputs extends Component {
           this.props.onChange([...this.props.tags, newTag]);
         }
 
-        event.target.value = "";
-      }
+        target.value = "";
+      };
 
       if (event.key === "Tab") {
 
         event.preventDefault();
-        if (event.target.value === prediction) {
-          onEnter(event);
+        if (target.value === prediction) {
+          onEnter(target);
         } else {
-          event.target.value = prediction;
+          target.value = prediction;
         }
 
       } else if (event.key === "Enter") {
-        onEnter(event);
+        onEnter(target);
 
       } else if (event.key === "Backspace") {
 
-        if (!event.target.value && this.props.tags.length) {
+        if (!target.value && this.props.tags.length) {
           let newTags = [...this.props.tags];
-          event.target.value = (newTags.pop() || "") + " ";
+          target.value = (newTags.pop() || "") + " ";
 
           this.props.onChange(newTags);
         }
       }
     }
-  }
+  };
 
-  render() {
+  render(): React.Node {
     const tagItems = this.props.tags.map((tag, index) => {
       return (
         <span
