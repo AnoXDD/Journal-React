@@ -1,38 +1,49 @@
+// @flow strict-local
+
 /**
  * Created by Anoxic on 042017.
  */
 
-import React, {Component} from 'react';
 
-export default class PredictionInput extends Component {
+import * as React from "react";
 
-  state = {
-    tagPrediction: ""
+type Props = {|
+  +blacklist: Array<string>,
+  +candidates: string,
+  +className: string,
+  +inputClassName: string,
+  +onKeyDown: (e: SyntheticKeyboardEvent<>, prediction: string) => void,
+|};
+
+type State = {|
+  tagPrediction: string,
+|};
+
+export default class PredictionInput extends React.Component<Props, State> {
+
+  state: State = {
+    tagPrediction: "",
   };
 
-  candidates = this.props.candidates.split(" ");
+  candidates: Array<string> = this.props.candidates.split(" ");
 
-  constructor(props) {
-    super(props);
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.getPrediction = this.getPrediction.bind(this);
-  }
-
-  componentWillUpdate(nextProps) {
+  componentWillUpdate(nextProps: Props): void {
     if (nextProps.candidates !== this.props.candidates) {
       this.candidates = nextProps.candidates.split(" ");
     }
   }
 
-  handleChange(event) {
-    this.setState({
-      tagPrediction: this.getPrediction(event.target.value),
-    });
-  }
+  handleChange = (event: SyntheticKeyboardEvent<>): void => {
+    const {target} = event;
 
-  getPrediction(value) {
+    if (target instanceof HTMLInputElement) {
+      this.setState({
+        tagPrediction: this.getPrediction(target.value),
+      });
+    }
+  };
+
+  getPrediction(value: string): string {
     if (value) {
       for (let prediction of this.candidates) {
         if (prediction.startsWith(value)) {
@@ -46,22 +57,22 @@ export default class PredictionInput extends Component {
     return value;
   }
 
-  handleKeyDown(e) {
+  handleKeyDown = (e: SyntheticKeyboardEvent<>): void => {
     this.props.onKeyDown(e, this.state.tagPrediction);
     this.handleChange(e);
-  }
+  };
 
   render() {
     let {className, inputClassName} = this.props;
 
     return (
-        <span className={`${className || ""} PredictionInput`}>
+      <span className={`${className || ""} PredictionInput`}>
           <span className="prediction">{this.state.tagPrediction}</span>
           <input
-              type="text"
-              className={`input ${inputClassName || ""}`}
-              onKeyDown={this.handleKeyDown}
-              onChange={this.handleChange}/>
+            type="text"
+            className={`input ${inputClassName || ""}`}
+            onKeyDown={this.handleKeyDown}
+            onChange={this.handleChange}/>
         </span>
     );
   }

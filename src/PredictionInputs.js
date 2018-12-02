@@ -23,7 +23,7 @@ export default class PredictionInputs extends Component {
     this.props.onChange(tags);
   }
 
-  handleKeyDown(event, prediction) {
+  handleKeyDown(event: SyntheticKeyboardEvent<>, prediction: string): void {
     if (!this.props.disabled) {
       const onEnter = (event) => {
         let newTag = event.target.value.trim();
@@ -68,31 +68,31 @@ export default class PredictionInputs extends Component {
   render() {
     const tagItems = this.props.tags.map((tag, index) => {
       return (
-          <span
-              key={`tag-${tag}`}
-              className="tag"
-              onClick={(event) => {
-                this.removeTagAtIndex(index);
-              }}
-          >{tag}</span>
+        <span
+          key={`tag-${tag}`}
+          className="tag"
+          onClick={(event) => {
+            this.removeTagAtIndex(index);
+          }}
+        >{tag}</span>
       );
     });
 
     return (
-        <NoScrollArea className="PredictionInputs" padding="10px">
-          <div className="tags-wrapper">
-            <div className="tags">
-              { tagItems }
-              <PredictionInput
-                  className={this.props.className}
-                  inputClassName="normal underlined"
-                  onKeyDown={this.handleKeyDown}
-                  candidates={this.props.tagPrediction}
-                  blacklist={this.props.tags}
-              />
-            </div>
+      <NoScrollArea className="PredictionInputs" padding="10px">
+        <div className="tags-wrapper">
+          <div className="tags">
+            { tagItems }
+            <PredictionInput
+              className={this.props.className}
+              inputClassName="normal underlined"
+              onKeyDown={this.handleKeyDown}
+              candidates={this.props.tagPrediction}
+              blacklist={this.props.tags}
+            />
           </div>
-        </NoScrollArea>
+        </div>
+      </NoScrollArea>
     );
   }
 }
