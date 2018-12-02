@@ -978,19 +978,19 @@ export default class MainContent extends Component {
    * Prompts the user and ask them if they really want it removed
    * @param articleIndex
    */
-  handleArticleRemove(articleIndex) {
+  handleArticleRemove(articleIndex: number): void {
     let index = this.findDataIndexByArticleIndex(articleIndex);
 
     return this.handleDataRemoveByIndex(index);
   }
 
-  handleBulbRemove(bulbIndex) {
+  handleBulbRemove(bulbIndex: number): void {
     let index = this.findDataIndexByBulbIndex(bulbIndex);
 
     return this.handleDataRemoveByIndex(index);
   }
 
-  handleBulbLocationClick(place) {
+  handleBulbLocationClick(place): void {
     this.setState({
       bulbMapCenter      : place,
       mapVersion         : new Date().getTime(),

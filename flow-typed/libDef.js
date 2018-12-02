@@ -43,9 +43,8 @@ declare type OtherAttachment = {
   [key: string]: string,
 };
 
-declare type BulbList = any;
 declare type Data = any;
-declare type EntryTime = {|
+declare type ArticleEntryTime = {|
   created: number,
   begin: number,
   end: number,
@@ -58,13 +57,29 @@ declare type ArticleEntry = {|
   music?: Array<MusicAttachment>,
   others?: Array<OtherAttachment>,
   tags?: Array<string>,
-  time: EntryTime,
+  time: ArticleEntryTime,
   title: string,
   type: "article",
+|};
+
+declare type BulbEntryTime = {|
+  created: number,
+|}
+declare type BulbEntry = {|
+  body: string,
+  images?: Array<string>, // array of filenames
+  place: GeoCoordinate,
+  time: BulbEntryTime,
+  type: "bulb",
 |};
 declare type ContentStyle = {|
   +[createdTime: string]: number, // scrollTop, how many px from the top of
                                   // scroll area
+  +height: number,
 |};
+
+declare type Style = {
+  [string]: mixed
+};
 
 declare type GoogleMapRef = any;

@@ -119,7 +119,7 @@ const BOUND_CHANGE_COOLDOWN = 500;
 type Props = {|
   +center: GeoCoordinate,
   +contentStyle: ContentStyle,
-  +data: BulbList,
+  +data: Array<BulbEntry>,
   +hidden: boolean,
   +onBoundChange: (bound: MapBound) => void,
   +onBulbClick: (top: number, index: number) => void,
