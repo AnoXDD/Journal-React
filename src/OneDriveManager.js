@@ -749,7 +749,8 @@ export default class OneDriveManager {
    *   contentType: xxx, content: xxx}
    * @returns {Promise.<*>}
    */
-  static uploadToQueue(data, onChange) {
+  static uploadToQueue(data: Array<OneDriveQueuedItem> | OneDriveQueuedItem, onChange) {
+    console.log("uploadToQueue", data);
     onChange = onChange || (() => void(0));
 
     // Treat it differently based on if it is an array of just one

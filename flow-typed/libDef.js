@@ -6,6 +6,12 @@ declare type OneDriveItem = {
 declare type OneDriveImageItem = OneDriveItem & {
   +thumbnails: string,
 };
+// The item to be uploaded
+declare type OneDriveQueuedItem = {|
+  name: string,
+  content: ArrayBuffer,
+  contentType: string,
+|};
 
 declare type GeoCoordinate = {|
   latitude: number,

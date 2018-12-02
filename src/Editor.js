@@ -1565,7 +1565,8 @@ class Editor extends React.Component<Props, State> {
             >library_add</Button>
             <ImagePicker
               className={this.state.isDisplayingMore === DISPLAYING.PHOTOS && this.state.isEditing ? "" : "hidden"}
-              onFinish={this.refreshPhoto} multiple
+              onFinish={this.refreshPhoto}
+              multiple={true}
             />
             <span
               className={`${this.state.isDisplayingMore !== DISPLAYING.PHOTOS && this.state.isDisplayingMore !== DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>

@@ -978,19 +978,19 @@ export default class MainContent extends Component {
    * Prompts the user and ask them if they really want it removed
    * @param articleIndex
    */
-  handleArticleRemove(articleIndex: number): void {
+  handleArticleRemove(articleIndex: number): Promise<void> {
     let index = this.findDataIndexByArticleIndex(articleIndex);
 
     return this.handleDataRemoveByIndex(index);
   }
 
-  handleBulbRemove(bulbIndex: number): void {
+  handleBulbRemove(bulbIndex: number): Promise<void> {
     let index = this.findDataIndexByBulbIndex(bulbIndex);
 
     return this.handleDataRemoveByIndex(index);
   }
 
-  handleBulbLocationClick(place): void {
+  handleBulbLocationClick(place:GeoCoordinate): void {
     this.setState({
       bulbMapCenter      : place,
       mapVersion         : new Date().getTime(),
@@ -1002,7 +1002,7 @@ export default class MainContent extends Component {
     this.mapBound = bound;
   }
 
-  handleDataRemoveByIndex(index) {
+  handleDataRemoveByIndex(index: number): Promise<void> {
     let dataCopy = [...this.data];
 
     if (index !== -1) {
@@ -1076,7 +1076,7 @@ export default class MainContent extends Component {
 
   }
 
-  handleSettingsSave(settings) {
+  handleSettingsSave(settings): Promise<void> {
     return new Promise(res => {
       this.password = settings.password;
       this.setState({

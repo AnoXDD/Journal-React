@@ -39,7 +39,7 @@ type State = {|
   loadingLocation: boolean,
   src: ?string,
 
-  clipboardImage: mixed,
+  clipboardImage: ?File,
   clipboardImageVersion: number,
 |};
 
@@ -143,7 +143,7 @@ export default class BulbEditor extends React.Component<Props, State> {
     }
   };
 
-  handleFinish = (image: OneDriveItem): Promise<*> => {
+  handleFinish = (image: OneDriveItem): Promise<void> => {
     if (this._id) {
       // There is a previous image uploaded, and we want to remove it
       return OneDriveManager.removeItemById(this._id)
@@ -234,7 +234,7 @@ export default class BulbEditor extends React.Component<Props, State> {
                                   onKeyDown={this.handleKeyDown}
                                   onChange={
                                     e => this.setState({value: e.target.value})}
-                                  placeholder="Write something here ..."
+                                  placeholder="Write something or paste an image here ..."
                                   ref={this._assignInputRef}
                                   value={this.state.value}/>
                     </NoScrollArea>
