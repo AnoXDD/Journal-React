@@ -3,7 +3,7 @@
 import {
   SortableContainer,
   SortableElement,
-  arrayMove
+  arrayMove,
 } from 'react-sortable-hoc';
 import AutosizeInput from "react-input-autosize";
 
@@ -35,11 +35,12 @@ type ExtraAttachmentsAddPropState = {|
   value: string,
 |};
 
-class ExtraAttachmentsAddProp extends React.Component<ExtraAttachmentsAddPropProps, ExtraAttachmentsAddPropState> {
+class ExtraAttachmentsAddProp
+  extends React.Component<ExtraAttachmentsAddPropProps, ExtraAttachmentsAddPropState> {
 
   state: ExtraAttachmentsAddPropState = {
-    key  : "",
-    value: ""
+    key: "",
+    value: "",
   };
 
   _onClick = (): void => {
@@ -98,18 +99,20 @@ type ExtraAttachmentsState = {|
   others: Array<OtherAttachment>,
 |};
 
-class ExtraAttachments extends React.Component<ExtraAttachmentsProps, ExtraAttachmentsState> {
+class ExtraAttachments
+  extends React.Component<ExtraAttachmentsProps, ExtraAttachmentsState> {
   constructor(props: ExtraAttachmentsProps) {
     super(props);
     let {others} = props;
 
     this.state = {
-      others: others
+      others: others,
     };
   }
 
   render(): React.Node {
-    const OtherProps = (({props, obj, index, removePanel, addPanel}) =>
+    const OtherProps = (
+      ({props, obj, index, removePanel, addPanel}) =>
         <div className="other-props">
           {props.map((prop) => {
             if (prop !== "type") {
@@ -122,9 +125,11 @@ class ExtraAttachments extends React.Component<ExtraAttachmentsProps, ExtraAttac
                       type="text"
                       className={`normal underlined ${this.props.isEditing ? "" : "disabled"}`}
                       onBlur={(e) => {
-                        this.props.onChange(index,
+                        this.props.onChange(
+                          index,
                           prop,
-                          e.target.value);
+                          e.target.value,
+                        );
                       }}
                       disabled={!this.props.isEditing}
                       defaultValue={this.state.others[index][prop] || ""}/>
@@ -154,9 +159,11 @@ class ExtraAttachments extends React.Component<ExtraAttachmentsProps, ExtraAttac
                       className={`type normal ${this.props.isEditing ? "" : "disabled"}`}
                       value={other.type}
                       onChange={(e) => {
-                        this.props.onChange(index,
+                        this.props.onChange(
+                          index,
                           "type",
-                          e.target.value);
+                          e.target.value,
+                        );
                       }}
                       disabled={!this.props.isEditing}
                     />
@@ -185,18 +192,17 @@ class ExtraAttachments extends React.Component<ExtraAttachmentsProps, ExtraAttac
   }
 }
 
-
 /**
  * The specific number is designed such that each toggle just need
  * to flip the last two bits
  * @type {{NOT_SELECTED: number, ADD: number, REMOVE: number,
-   *   SELECTED: number}}
+ *   SELECTED: number}}
  */
 const PHOTO_STATUS = {  //      | Originally | Now |
-  NOT_SELECTED      : 0b10, //  |   no       | no  |
-  ADD__DEPRECATED   : 0b01, //  |   no       | yes | depre.
+  NOT_SELECTED: 0b10, //  |   no       | no  |
+  ADD__DEPRECATED: 0b01, //  |   no       | yes | depre.
   REMOVE__DEPRECATED: 0b00, //  |   yes      | no  | depre.
-  SELECTED          : 0b01, //  |   yes      | yes |
+  SELECTED: 0b01, //  |   yes      | yes |
 };
 
 type PhotoStatusType = $Values<typeof PHOTO_STATUS>;
@@ -219,7 +225,8 @@ type PhotoPreviewState = {|
   src: string,
 |};
 
-class PhotoPreview extends React.Component<PhotoPreviewProps, PhotoPreviewState> {
+class PhotoPreview
+  extends React.Component<PhotoPreviewProps, PhotoPreviewState> {
   currentImage = "";
 
   state: PhotoPreviewState = {
@@ -231,7 +238,7 @@ class PhotoPreview extends React.Component<PhotoPreviewProps, PhotoPreviewState>
 
     let mapElem = this.props.imageMap[imageName];
     if (mapElem) {
-      if (mapElem.url) {
+      if (mapElem.url != null) {
         this.setState({src: mapElem.url});
       } else {
         // Try to get the url
@@ -281,7 +288,7 @@ class PhotoPreview extends React.Component<PhotoPreviewProps, PhotoPreviewState>
                      onMouseOver={() => this.handleMouseOver(photo.name)}
                 >
                   <img src={photo.src} alt="" height="90px"/>
-                </div>
+                </div>,
               )}
             </div>
           </NoScrollArea>
@@ -301,7 +308,7 @@ const SortableItem = SortableElement(({item, status, i, isSelected, handleClick,
     <img src={item.src}
          alt=""
          height="90px"/>
-  </div>
+  </div>,
 );
 
 const SortableList = SortableContainer(
@@ -310,7 +317,7 @@ const SortableList = SortableContainer(
      isEditing,
      isSelected,
      handleClick,
-     photosInTransfer
+     photosInTransfer,
    }) =>
     <NoScrollArea padding="10px">
       <div className="more-info-wrapper"
@@ -328,26 +335,37 @@ const SortableList = SortableContainer(
               handleClick={handleClick}
               disabled={!isEditing && photosInTransfer !== 0}
               item={item}
-            />
+            />,
           )}
         </div>
       </div>
-    </NoScrollArea>
+    </NoScrollArea>,
 );
 
 const DISPLAYING = {
-  NONE          : -1,
-  PHOTOS        : 1,
-  MUSICS        : 2,
-  MOVIES        : 3,
-  LINKS         : 4,
-  OTHERS        : 10,
+  NONE: -1,
+  PHOTOS: 1,
+  MUSICS: 2,
+  MOVIES: 3,
+  LINKS: 4,
+  OTHERS: 10,
   PHOTOS_PREVIEW: 15,
 };
 
 type DisplayingType = $Values<typeof DISPLAYING>;
 
-type Props = ArticleEntry & {|
+type Props = {|
+  +body?: string,
+  +images?: Array<string>, // array of filenames
+  +links?: Array<LinkAttachment>,
+  +movie?: Array<MovieAttachment>,
+  +music?: Array<MusicAttachment>,
+  +others?: Array<OtherAttachment>,
+  +tags?: Array<string>,
+  +time?: ArticleEntryTime,
+  +title?: string,
+  +type?: "article", // not used, but I'm lazy to delete it when passed in
+
   +bodyWidth?: number,
   +className?: string,
   +debug?: boolean,
@@ -355,9 +373,9 @@ type Props = ArticleEntry & {|
   +imageMap: ImageMap,
   +newData?: string, // updating the body of the editor
   +onChange: (entry: ArticleEntry) => Promise<void>,
+  +oneDriveManager: OneDriveManager,
   +onPromptCancel: () => void,
   +onRefreshQueue: () => Promise<Array<OneDriveImageItem>>,
-  +oneDriveManager: OneDriveManager,
   +tagPrediction: Array<string>,
   +version: number,
   +year: number,
@@ -396,32 +414,36 @@ type State = {|
 
 class Editor extends React.Component<Props, State> {
   // Go back three hours for midnight sesh
-  DEFAULT_TITLE: string = this.convertToDateTime(new Date() - 3 * 60 * 60 * 1000)
+  DEFAULT_TITLE: string = this.convertToDateTime(new Date() -
+    3 *
+    60 *
+    60 *
+    1000)
     .substr(0, 7);
 
   DEFAULT_STATE: $Shape<State> = {
-    title           : this.DEFAULT_TITLE,
-    body            : "",
-    bodyObject      : "",
-    stats           : {
+    title: this.DEFAULT_TITLE,
+    body: "",
+    bodyObject: "",
+    stats: {
       timeCreated: 0,
-      timeBegin  : 0,
-      timeEnd    : 0,
+      timeBegin: 0,
+      timeEnd: 0,
     },
-    timeElapsed     : 0,
-    tags            : [],
+    timeElapsed: 0,
+    tags: [],
     isDisplayingMore: -1,
-    photos          : [],
-    musics          : [],
-    movies          : [],
-    links           : [],
-    others          : [],
-    isEditing       : false,
+    photos: [],
+    musics: [],
+    movies: [],
+    links: [],
+    others: [],
+    isEditing: false,
     isEditingLoading: false,
-    isFullscreen    : false,
-    hasPrompt       : false,
+    isFullscreen: false,
+    hasPrompt: false,
 
-    isLoadingImages : false,
+    isLoadingImages: false,
     photosInTransfer: [],
 
     isSaving: false,
@@ -448,57 +470,58 @@ class Editor extends React.Component<Props, State> {
     if (this.props.debug === true) {
       this.state = {
         ...this.DEFAULT_STATE,
-        title           : "This is title 题目",
-        body            : "This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文",
-        stats           : {
+        title: "This is title 题目",
+        body: "This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文 This is body 正文",
+        stats: {
           timeCreated: 0,
-          timeBegin  : 0,
-          timeEnd    : 0,
+          timeBegin: 0,
+          timeEnd: 0,
         },
-        timeElapsed     : 0,
-        tags            : ["tag1", "tag2", "tag3"],
+        timeElapsed: 0,
+        tags: ["tag1", "tag2", "tag3"],
         isDisplayingMore: DISPLAYING.NONE,
-        photos          : [{
-          id    : "1",
-          src   : "http://placehold.it/120x150",
-          status: PHOTO_STATUS.ADD__DEPRECATED,
-          name  : "",
-        }, {
-          id    : "2",
-          src   : "http://placehold.it/150x150",
-          status: PHOTO_STATUS.NOT_SELECTED,
-          name  : "",
-        }, {
-          id    : "3",
-          src   : "http://placehold.it/130x150",
-          status: PHOTO_STATUS.SELECTED,
-          name  : "",
-        }, {
-          id    : "4",
-          src   : "http://placehold.it/150x120",
-          status: PHOTO_STATUS.REMOVE__DEPRECATED,
-          name  : "",
-        }, {
-          id    : "5",
-          src   : "http://placehold.it/130x150",
-          status: PHOTO_STATUS.ADD__DEPRECATED,
-          name  : "",
-        }, {
-          id    : "6",
-          src   : "http://placehold.it/150x150",
-          status: PHOTO_STATUS.NOT_SELECTED,
-          name  : "",
-        }, {
-          id    : "7",
-          src   : "http://placehold.it/150x150",
-          status: PHOTO_STATUS.SELECTED,
-          name  : "",
-        }, {
-          id    : "8",
-          src   : "http://placehold.it/120x150",
-          status: PHOTO_STATUS.REMOVE__DEPRECATED,
-          name  : "",
-        }
+        photos: [
+          {
+            id: "1",
+            src: "http://placehold.it/120x150",
+            status: PHOTO_STATUS.ADD__DEPRECATED,
+            name: "",
+          }, {
+            id: "2",
+            src: "http://placehold.it/150x150",
+            status: PHOTO_STATUS.NOT_SELECTED,
+            name: "",
+          }, {
+            id: "3",
+            src: "http://placehold.it/130x150",
+            status: PHOTO_STATUS.SELECTED,
+            name: "",
+          }, {
+            id: "4",
+            src: "http://placehold.it/150x120",
+            status: PHOTO_STATUS.REMOVE__DEPRECATED,
+            name: "",
+          }, {
+            id: "5",
+            src: "http://placehold.it/130x150",
+            status: PHOTO_STATUS.ADD__DEPRECATED,
+            name: "",
+          }, {
+            id: "6",
+            src: "http://placehold.it/150x150",
+            status: PHOTO_STATUS.NOT_SELECTED,
+            name: "",
+          }, {
+            id: "7",
+            src: "http://placehold.it/150x150",
+            status: PHOTO_STATUS.SELECTED,
+            name: "",
+          }, {
+            id: "8",
+            src: "http://placehold.it/120x150",
+            status: PHOTO_STATUS.REMOVE__DEPRECATED,
+            name: "",
+          },
           // , {
           //   id    : 11,
           //   src   : "http://placehold.it/320x150",
@@ -565,45 +588,55 @@ class Editor extends React.Component<Props, State> {
           //   status: PHOTO_STATUS.REMOVE__DEPRECATED,
           // }
         ],
-        musics          : [{
-          title: "Never Gonna Give You Up",
-          by   : "Rick Astley"
-        }],
-        movies          : [{
-          title: "Rose and Jack"
-        }],
-        links           : [{
-          url  : "anoxic.me",
-          title: "I'm awesome!"
-        }],
-        others          : [{
-          type  : "book",
-          author: "My Ass",
-          title : "A Random Book",
-        }, {
-          type  : "audio",
-          url   : "http://anoxic.me",
-          title : "My personal site",
-          extra1: "lol",
-          extra2: "lol",
-          extra3: "lol",
-          extra4: "lol",
-        }, {
-          type : "video",
-          url  : "https://google.com",
-          title: "This is actually a Google website"
-        }],
-        isEditing       : false,
+        musics: [
+          {
+            title: "Never Gonna Give You Up",
+            by: "Rick Astley",
+          },
+        ],
+        movies: [
+          {
+            title: "Rose and Jack",
+          },
+        ],
+        links: [
+          {
+            url: "anoxic.me",
+            title: "I'm awesome!",
+          },
+        ],
+        others: [
+          {
+            type: "book",
+            author: "My Ass",
+            title: "A Random Book",
+          }, {
+            type: "audio",
+            url: "http://anoxic.me",
+            title: "My personal site",
+            extra1: "lol",
+            extra2: "lol",
+            extra3: "lol",
+            extra4: "lol",
+          }, {
+            type: "video",
+            url: "https://google.com",
+            title: "This is actually a Google website",
+          },
+        ],
+        isEditing: false,
         isEditingLoading: false,
-        isFullscreen    : false,
-        isDarkMode      : false,
+        isFullscreen: false,
+        isDarkMode: false,
       };
     }
 
     this._timeElapsedUpdateInterval = setInterval(() => {
       // On purpose: to avoid laggy update
       // eslint-disable-next-line
-      this.state.timeElapsed = this.state.isEditing ? (this.state.timeElapsed + 1) : 0;
+      this.state.timeElapsed = this.state.isEditing ? (
+        this.state.timeElapsed + 1
+      ) : 0;
     }, 1000);
   }
 
@@ -626,16 +659,18 @@ class Editor extends React.Component<Props, State> {
         if (typeof nextProps.newData !== "undefined") {
           // This is to create a new entry
           // $FlowFixMe this works for componentWillUpdate
-          nextState = Object.assign(nextState,
+          nextState = Object.assign(
+            nextState,
             this.DEFAULT_STATE,
             {
               isEditing: true,
-              stats    : {
+              stats: {
                 timeCreated: new Date().getTime(),
-                timeBegin  : new Date().getTime(),
+                timeBegin: new Date().getTime(),
               },
-              body     : nextProps.newData || "",
-            })
+              body: nextProps.newData || "",
+            },
+          )
           ;
           this.hasUnsavedChanges = true;
         } else {
@@ -643,11 +678,13 @@ class Editor extends React.Component<Props, State> {
           nextState.bodyObject = R.highlightArrayToJSX(nextProps.body);
           nextState.body = R.highlightArrayToString(nextProps.body);
 
-          nextState.stats = {
-            timeCreated: nextProps.time.created,
-            timeBegin  : nextProps.time.begin || nextProps.time.created,
-            timeEnd    : nextProps.time.end,
-          };
+          const {time} = nextProps;
+          if (time != null) {
+            nextState.stats = {
+            timeCreated: time.created,
+            timeBegin: time.begin || time.created,
+            timeEnd: time.end,
+          };}
 
           if (nextProps.tags) {
             nextState.tags = [...nextProps.tags];
@@ -656,14 +693,32 @@ class Editor extends React.Component<Props, State> {
           nextState.photos = [];
 
           if (nextProps[R.PROP_PHOTO]) {
-            nextState.photos = this.convertPhotoNames([...nextProps[R.PROP_PHOTO]],
-              PHOTO_STATUS.SELECTED);
+            nextState.photos = this.convertPhotoNames(
+              [...nextProps[R.PROP_PHOTO]],
+              PHOTO_STATUS.SELECTED,
+            );
           }
 
-          nextState.musics = [...(nextProps[R.PROP_MUSIC] || [])];
-          nextState.movies = [...(nextProps[R.PROP_MOVIE] || [])];
-          nextState.links = [...(nextProps[R.PROP_LINK] || [])];
-          nextState.others = [...(nextProps[R.PROP_OTHER] || [])];
+          nextState.musics = [
+            ...(
+              nextProps[R.PROP_MUSIC] || []
+            ),
+          ];
+          nextState.movies = [
+            ...(
+              nextProps[R.PROP_MOVIE] || []
+            ),
+          ];
+          nextState.links = [
+            ...(
+              nextProps[R.PROP_LINK] || []
+            ),
+          ];
+          nextState.others = [
+            ...(
+              nextProps[R.PROP_OTHER] || []
+            ),
+          ];
 
           nextState.isEditing = false;
           nextState.isDisplayingMore = -1;
@@ -682,15 +737,17 @@ class Editor extends React.Component<Props, State> {
    * @param photoNames
    * @param status - the status of these photos
    */
-  convertPhotoNames(photoNames: Array<string>,
-                    status: PhotoStatusType): Array<Photo> {
+  convertPhotoNames(
+    photoNames: Array<string>,
+    status: PhotoStatusType,
+  ): Array<Photo> {
     let result = [];
 
     for (let photo of photoNames) {
       result.push({
-        id    : this.props.imageMap[photo].id,
-        name  : photo,
-        src   : this.props.imageMap[photo].thumbnail,
+        id: this.props.imageMap[photo].id,
+        name: photo,
+        src: this.props.imageMap[photo].thumbnail,
         status: status,
       });
     }
@@ -704,14 +761,15 @@ class Editor extends React.Component<Props, State> {
    */
   extractUploadableData = (): ArticleEntry => {
     let data: ArticleEntry = {
-      type : R.TYPE_ARTICLE,
-      time : {
+      type: R.TYPE_ARTICLE,
+      time: {
         created: this.state.stats.timeCreated,
-        begin  : this.state.stats.timeBegin || this.state.stats.timeCreated,
-        end    : this.state.stats.timeEnd == null ? new Date().getTime() : this.state.stats.timeEnd,
+        begin: this.state.stats.timeBegin || this.state.stats.timeCreated,
+        end: this.state.stats.timeEnd ==
+        null ? new Date().getTime() : this.state.stats.timeEnd,
       },
       title: this.state.title,
-      body : this.state.body,
+      body: this.state.body,
     };
 
     if (this.state.photos) {
@@ -771,7 +829,7 @@ class Editor extends React.Component<Props, State> {
 
     this.setState({
       isFullscreen: !state,
-      isDarkMode  : false,
+      isDarkMode: false,
     });
   };
 
@@ -799,7 +857,8 @@ class Editor extends React.Component<Props, State> {
 
     this.addToPhotosInTransfer(id);
 
-    (this.state.photos[i].status === PHOTO_STATUS.NOT_SELECTED ?
+    (
+      this.state.photos[i].status === PHOTO_STATUS.NOT_SELECTED ?
         this.props.oneDriveManager
           .addImageById(id, this.props.year, name) :
         this.props.oneDriveManager
@@ -810,7 +869,7 @@ class Editor extends React.Component<Props, State> {
         photos[i].status = ~photos[i].status & 0b11;
         photos[i].name = name;
         this.setState({
-          photos: photos
+          photos: photos,
         });
 
         this.removeFromPhotosInTransfer(id);
@@ -840,7 +899,7 @@ class Editor extends React.Component<Props, State> {
         this.hasUnsavedChanges = false;
 
         this.setState({
-          isEditing       : false,
+          isEditing: false,
           isEditingLoading: false,
         });
       }, () => {
@@ -899,8 +958,10 @@ class Editor extends React.Component<Props, State> {
    * @param propKey - (Optional) the key to be removed
    * @returns {*}
    */
-  generateRemovePanelForOthers = (otherIndex: number,
-                                  propKey?: string): React.Node => {
+  generateRemovePanelForOthers = (
+    otherIndex: number,
+    propKey?: string,
+  ): React.Node => {
     if (propKey !== undefined) {
       // Remove a specific property
       let handleClick = () => {
@@ -948,7 +1009,7 @@ class Editor extends React.Component<Props, State> {
         let others = this.state.others;
         others.push({type: ""});
         this.setState({
-          others: others
+          others: others,
         });
       };
 
@@ -966,7 +1027,7 @@ class Editor extends React.Component<Props, State> {
         others[otherIndex][propKey] = value;
 
         this.setState({
-          others: others
+          others: others,
         });
       };
 
@@ -989,7 +1050,7 @@ class Editor extends React.Component<Props, State> {
                 have any photos for now</p>
             </div>
 
-          )
+          );
         }
 
         return (
@@ -1000,7 +1061,7 @@ class Editor extends React.Component<Props, State> {
                         photosInTransfer={this.state.photosInTransfer}
                         distance={5}
                         handleClick={(i) => {
-                          this.togglePhotoStatus(i)
+                          this.togglePhotoStatus(i);
                         }}
                         axis="xy"
                         onSortEnd={this.onPhotoSortEnd}/>
@@ -1102,11 +1163,11 @@ class Editor extends React.Component<Props, State> {
   setIsDisplaying = (isDisplaying: DisplayingType): void => {
     if (this.state.isDisplayingMore === isDisplaying) {
       this.setState({
-        isDisplayingMore: DISPLAYING.NONE
+        isDisplayingMore: DISPLAYING.NONE,
       });
     } else {
       this.setState({
-        isDisplayingMore: isDisplaying
+        isDisplayingMore: isDisplaying,
       });
     }
   };
@@ -1116,7 +1177,7 @@ class Editor extends React.Component<Props, State> {
     others[index][prop] = value;
 
     this.setState({
-      others: others
+      others: others,
     });
   };
 
@@ -1132,31 +1193,33 @@ class Editor extends React.Component<Props, State> {
 
   onDecreasingTextBodyWidth = (): void => {
     this.setState({
-      bodyWidth: Math.max(this.state.bodyWidth - 5, 10)
+      bodyWidth: Math.max(this.state.bodyWidth - 5, 10),
     });
   };
 
   onIncreasingTextBodyWidth = (): void => {
     this.setState({
-      bodyWidth: Math.min(this.state.bodyWidth + 5, 100)
+      bodyWidth: Math.min(this.state.bodyWidth + 5, 100),
     });
   };
 
   onTitleChange = (event: SyntheticInputEvent<>): void => {
     this.setState({
-      title: event.target.value
+      title: event.target.value,
     });
   };
 
   onBodyChange = (event: SyntheticInputEvent<>): void => {
     this.setState({
-      body: event.target.value
+      body: event.target.value,
     });
   };
 
   onBodyKeyDown = (e: SyntheticKeyboardEvent<>): void => {
     const t = e.target;
-    if (!(t instanceof HTMLInputElement)) {
+    if (!(
+      t instanceof HTMLInputElement
+    )) {
       return;
     }
 
@@ -1168,11 +1231,15 @@ class Editor extends React.Component<Props, State> {
 
       // Set textarea value to text before caret + tab + text after
       // caret
-      t.value = t.value.substring(0,
-          start) + "\t" + t.value.substring(end);
+      t.value = t.value.substring(
+        0,
+        start,
+      ) + "\t" + t.value.substring(end);
 
       // Put caret at right position again
-      t.selectionStart = (t.selectionEnd) = start + 1;
+      t.selectionStart = (
+        t.selectionEnd
+      ) = start + 1;
     } else if (e.key === "Enter") {
 
       // Process the body
@@ -1184,9 +1251,11 @@ class Editor extends React.Component<Props, State> {
 
       let selectionStart = t.selectionStart;
 
-      const tags = [["Begin @ ", "timeBegin"],
+      const tags = [
+        ["Begin @ ", "timeBegin"],
         ["End @ ", "timeEnd"],
-        ["Created @ ", "timeCreated"]];
+        ["Created @ ", "timeCreated"],
+      ];
 
       for (let i = 0; i < lines.length; ++i) {
         let line = lines[i],
@@ -1219,12 +1288,13 @@ class Editor extends React.Component<Props, State> {
         }
       }
 
-
       this.setState({
         stats: stats,
-        body : lines.join("\r\n"),
+        body: lines.join("\r\n"),
       }, () => {
-        t.selectionStart = (t.selectionEnd = selectionStart);
+        t.selectionStart = (
+          t.selectionEnd = selectionStart
+        );
       });
     } else {
 
@@ -1240,9 +1310,11 @@ class Editor extends React.Component<Props, State> {
     newIndex: number
   }): void => {
     this.setState({
-      photos: arrayMove([...this.state.photos],
+      photos: arrayMove(
+        [...this.state.photos],
         obj.oldIndex,
-        obj.newIndex),
+        obj.newIndex,
+      ),
     });
   };
 
@@ -1250,7 +1322,7 @@ class Editor extends React.Component<Props, State> {
     const music = this.state.musics[0];
     music.title = e.target.value;
     this.setState({
-      musics: [music]
+      musics: [music],
     });
   };
 
@@ -1258,7 +1330,7 @@ class Editor extends React.Component<Props, State> {
     const music = this.state.musics[0];
     music.by = e.target.value;
     this.setState({
-      musics: [music]
+      musics: [music],
     });
   };
 
@@ -1266,7 +1338,7 @@ class Editor extends React.Component<Props, State> {
     const movie = this.state.movies[0];
     movie.title = e.target.value;
     this.setState({
-      movies: [movie]
+      movies: [movie],
     });
   };
 
@@ -1274,7 +1346,7 @@ class Editor extends React.Component<Props, State> {
     const link = this.state.links[0];
     link.title = e.target.value;
     this.setState({
-      links: [link]
+      links: [link],
     });
   };
 
@@ -1282,7 +1354,7 @@ class Editor extends React.Component<Props, State> {
     const link = this.state.links[0];
     link.url = e.target.value;
     this.setState({
-      links: [link]
+      links: [link],
     });
   };
 
@@ -1329,9 +1401,12 @@ class Editor extends React.Component<Props, State> {
 
         this.setState({
           isLoadingImages: false,
-          photos         : [...this.state.photos, ...this.convertPhotoNames(
-            newNames,
-            PHOTO_STATUS.NOT_SELECTED)]
+          photos: [
+            ...this.state.photos, ...this.convertPhotoNames(
+              newNames,
+              PHOTO_STATUS.NOT_SELECTED,
+            ),
+          ],
         });
       });
   };
@@ -1381,13 +1456,22 @@ class Editor extends React.Component<Props, State> {
     }
 
     const c = (i) => {
-      return ("0" + i % 60).slice(-2);
+      return (
+        "0" + i % 60
+      ).slice(-2);
     };
 
     let date = new Date(seconds);
 
-    return c(date.getMonth() + 1) + c(date.getDate()) + (date.getFullYear() % 100) + " "
-      + c(date.getHours()) + c(date.getMinutes());
+    return c(date.getMonth() + 1) +
+      c(date.getDate()) +
+      (
+        date.getFullYear() % 100
+      ) +
+      " "
+      +
+      c(date.getHours()) +
+      c(date.getMinutes());
   }
 
   convertFromDateTime(time: string): number {
@@ -1406,7 +1490,9 @@ class Editor extends React.Component<Props, State> {
   }
 
   convertToElapsed(seconds: number): string {
-    return `${parseInt(seconds / 60, 10)}:${("0" + seconds % 60).slice(
+    return `${parseInt(seconds / 60, 10)}:${(
+      "0" + seconds % 60
+    ).slice(
       -2)}`;
   }
 
@@ -1436,8 +1522,10 @@ class Editor extends React.Component<Props, State> {
         <nav className="nav has-hint">
           <Button
             tooltip="Restore draft"
-            className={(this.state.isEditing && localStorage.getItem(
-              'previousBody')) ? "" : "hidden"}
+            className={(
+              this.state.isEditing && localStorage.getItem(
+                'previousBody')
+            ) ? "" : "hidden"}
             onClick={this.restorePreviousBody}>restore</Button>
           <Button
             tooltip="Toggle dark mode"
@@ -1498,11 +1586,12 @@ class Editor extends React.Component<Props, State> {
         </header>
 
         <div
-          className={`text-body-wrapper ${this.state.isDisplayingMore === DISPLAYING.PHOTOS_PREVIEW ? "transparent" : ""}`}>
+          className={`text-body-wrapper ${this.state.isDisplayingMore ===
+          DISPLAYING.PHOTOS_PREVIEW ? "transparent" : ""}`}>
           <div className="text-body-wrapper-2"
                style={{
                  padding: `0 ${50 - this.state.bodyWidth / 2}%`,
-                 width  : `${this.state.bodyWidth}%`
+                 width: `${this.state.bodyWidth}%`,
                }}
           >
             <NoScrollArea
@@ -1541,53 +1630,81 @@ class Editor extends React.Component<Props, State> {
             </div>
             <div className="flex-last-item"></div>
             <span
-              className={`${this.state.isDisplayingMore !== DISPLAYING.PHOTOS && this.state.isDisplayingMore !== DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
+              className={`${this.state.isDisplayingMore !==
+              DISPLAYING.PHOTOS &&
+              this.state.isDisplayingMore !==
+              DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
             <Toggle
               className="btn"
-              isHidden={(this.state.isDisplayingMore !== DISPLAYING.PHOTOS && this.state.isDisplayingMore !== DISPLAYING.PHOTOS_PREVIEW) || !this.state.photos.length}
-              isChanging={this.state.isDisplayingMore === DISPLAYING.PHOTOS_PREVIEW}
+              isHidden={(
+                this.state.isDisplayingMore !==
+                DISPLAYING.PHOTOS &&
+                this.state.isDisplayingMore !==
+                DISPLAYING.PHOTOS_PREVIEW
+              ) || !this.state.photos.length}
+              isChanging={this.state.isDisplayingMore ===
+              DISPLAYING.PHOTOS_PREVIEW}
               onClick={this.togglePhotoPreview}
               firstIcon="zoom_in"
               secondIcon="zoom_out"
               tooltip="Preview images"
             ></Toggle>
             <Button
-              className={(this.state.isDisplayingMore !== DISPLAYING.PHOTOS && this.state.isDisplayingMore !== DISPLAYING.PHOTOS_PREVIEW) || !this.state.isEditing ? "hidden" : ""}
+              className={(
+                this.state.isDisplayingMore !==
+                DISPLAYING.PHOTOS &&
+                this.state.isDisplayingMore !==
+                DISPLAYING.PHOTOS_PREVIEW
+              ) || !this.state.isEditing ? "hidden" : ""}
               onClick={this.refreshPhoto}
               loading={this.state.isLoadingImages}
               tooltip="Refresh available images"
             >refresh</Button>
             <Button
-              className={this.state.isDisplayingMore === DISPLAYING.PHOTOS && this.state.photos.length && this.state.isEditing ? "" : "hidden"}
+              className={this.state.isDisplayingMore ===
+              DISPLAYING.PHOTOS &&
+              this.state.photos.length &&
+              this.state.isEditing ? "" : "hidden"}
               onClick={this.addAllPhotos}
               loading={this.state.photosInTransfer.length}
               tooltip="Add all"
             >library_add</Button>
             <ImagePicker
-              className={this.state.isDisplayingMore === DISPLAYING.PHOTOS && this.state.isEditing ? "" : "hidden"}
+              className={this.state.isDisplayingMore ===
+              DISPLAYING.PHOTOS &&
+              this.state.isEditing ? "" : "hidden"}
               onFinish={this.refreshPhoto}
               multiple={true}
             />
             <span
-              className={`${this.state.isDisplayingMore !== DISPLAYING.PHOTOS && this.state.isDisplayingMore !== DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
-            {[["photos", "photo_library"],
+              className={`${this.state.isDisplayingMore !==
+              DISPLAYING.PHOTOS &&
+              this.state.isDisplayingMore !==
+              DISPLAYING.PHOTOS_PREVIEW ? "hidden" : ""} btn-breaker`}></span>
+            {[
+              ["photos", "photo_library"],
               ["musics", "library_music"],
               ["movies", "movie"],
               ["links", "link"],
-              ["others", "more_horiz"]].map(
+              ["others", "more_horiz"],
+            ].map(
               tag => {
                 return (
                   <Toggle
                     key={tag[0]}
-                    className={`${tag[0]} btn ${this.props.className || ""} ${this.state[tag[0]].length ? "underlined" : ""} ${this.state.isDisplayingMore === DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
+                    className={`${tag[0]} btn ${this.props.className ||
+                    ""} ${this.state[tag[0]].length ? "underlined" : ""} ${this.state.isDisplayingMore ===
+                    DISPLAYING[tag[0].toUpperCase()] ? "active" : ""}  `}
                     onClick={() => {
-                      this.setIsDisplaying(DISPLAYING[tag[0].toUpperCase()])
+                      this.setIsDisplaying(DISPLAYING[tag[0].toUpperCase()]);
                     }}
                     firstIcon={tag[1]}
                     secondIcon="add_circle_outline"
                     isChangingOnHover={true}
                     isChanging={!this.state[tag[0]].length}
-                    disabled={this.state[tag[0]].length === 0 && !this.state.isEditing}
+                    disabled={this.state[tag[0]].length ===
+                    0 &&
+                    !this.state.isEditing}
                   />
                 );
               })}
@@ -1608,7 +1725,8 @@ class Editor extends React.Component<Props, State> {
             />
           </div>
           <div
-            className={`more-info ${this.state.isDisplayingMore === DISPLAYING.NONE ? "hidden" : ""}`}>
+            className={`more-info ${this.state.isDisplayingMore ===
+            DISPLAYING.NONE ? "hidden" : ""}`}>
             {this.generateMoreInfo()}
           </div>
         </div>

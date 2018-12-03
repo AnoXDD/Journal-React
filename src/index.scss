@@ -630,6 +630,7 @@ nav.nav {
           margin-left: $button-width / 2;
           flex: 0 0 $button-width-accent;
         }
+
         //
         //span {
         //  transition: opacity .4s ease;
@@ -778,6 +779,7 @@ nav.nav {
     }
 
     $text-padding-left: 10px;
+
     .text {
       font-size: 15px;
       padding: 7px $text-padding-left 0px;
@@ -831,6 +833,7 @@ nav.nav {
             padding: 0;
             height: 18px;
           }
+
           .btn {
             background: inherit;
           }

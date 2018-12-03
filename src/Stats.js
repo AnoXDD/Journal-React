@@ -187,7 +187,7 @@ export default class Stats extends React.Component<Props> {
       let imageNumber = entry.images ? entry.images.length : 0;
       this.totalEntryImages += imageNumber;
 
-      if (entry.type === R.TYPE_ARTICLE) {
+      if (entry.type === "article") {
         ++this.totalArticles;
         this.totalArticleChar += char;
         this.totalArticleImages += imageNumber;

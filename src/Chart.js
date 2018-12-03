@@ -13,7 +13,7 @@ import {
   YAxis,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
 
 import NoScrollArea from "./lib/NoScrollArea";
@@ -22,7 +22,6 @@ import Toggle from "./lib/Toggle";
 import R from "./R";
 
 import * as React from "react";
-
 
 const KEYWORD_DELIMITOR = ",";
 
@@ -107,8 +106,8 @@ export default class Chart extends React.Component<ChartProps, ChartState> {
   constructor(props: ChartProps) {
     super(props);
     this.state = {
-      keywords        : [],
-      hiddenKeywords  : [],
+      keywords: [],
+      hiddenKeywords: [],
       isGroupedByMonth: false,
     };
 
@@ -128,7 +127,9 @@ export default class Chart extends React.Component<ChartProps, ChartState> {
       // A new data, clean up everything
 
       this.data = [];
-      this.dataMonthChart = R.MONTH.map(month => ({time: month}));
+      this.dataMonthChart = R.MONTH.map(month => (
+        {time: month}
+      ));
       this.dataMonthTable = {};
       this.processedKeyWords = [];
 
@@ -146,10 +147,16 @@ export default class Chart extends React.Component<ChartProps, ChartState> {
     }
     for (i = 0; i < word.length; i++) {
       chr = word.charCodeAt(i);
-      hash = ((hash << 5) - hash) + chr;
+      hash = (
+        (
+          hash << 5
+        ) - hash
+      ) + chr;
       hash |= 0; // Convert to 32bit integer
     }
-    return `#${(1 / hash).toString(16).substr(-6)}`;
+    return `#${(
+      1 / hash
+    ).toString(16).substr(-6)}`;
   }
 
   handleKeywordBlur = (e: SyntheticInputEvent<>, index: number): void => {
@@ -180,8 +187,8 @@ export default class Chart extends React.Component<ChartProps, ChartState> {
       hiddenKeywords.splice(hiddenKeywordIndex, 1);
 
       this.setState({
-        keywords      : keywords,
-        hiddenKeywords: hiddenKeywords
+        keywords: keywords,
+        hiddenKeywords: hiddenKeywords,
       });
     }
   };
@@ -207,8 +214,10 @@ export default class Chart extends React.Component<ChartProps, ChartState> {
     }
   };
 
-  handleStateChange = (keywords: Array<string>,
-                       newData: Data = this.props.data): void => {
+  handleStateChange = (
+    keywords: Array<string>,
+    newData: Data = this.props.data,
+  ): void => {
     let hasNewData = !!newData;
     let index = 0;
 
@@ -231,14 +240,18 @@ export default class Chart extends React.Component<ChartProps, ChartState> {
       for (let keyword of keywords) {
         // Initialize the key in the data if necessary
         this.data[index][keyword] = this.data[index][keyword] || 0;
-        this.dataMonthChart[month][keyword] = this.dataMonthChart[month][keyword] || 0;
-        this.dataMonthTable[keyword] = this.dataMonthTable[keyword] || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        this.dataMonthChart[month][keyword] = this.dataMonthChart[month][keyword] ||
+          0;
+        this.dataMonthTable[keyword] = this.dataMonthTable[keyword] ||
+          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         // Test if this key needs to be re-calculated
         if (this.processedKeyWords.indexOf(keyword) === -1 || hasNewData) {
           let keywordArray = keyword.split(KEYWORD_DELIMITOR);
 
           for (let k of keywordArray) {
-            if ((data.title && data.title.indexOf(k) !== -1) ||
+            if ((
+              data.title != null && data.title.indexOf(k) !== -1
+              ) ||
               R.highlightArrayToString(data.body).indexOf(k) !== -1) {
               // This keyword is found
               ++this.dataMonthTable[keyword][month];
@@ -271,7 +284,7 @@ export default class Chart extends React.Component<ChartProps, ChartState> {
                 <XAxis dataKey="time"/>
                 <YAxis/>
                 <Tooltip/>
-                <Legend />
+                <Legend/>
                 {this.state.keywords.map(keyword => {
                   if (this.state.hiddenKeywords.indexOf(keyword) === -1) {
                     return (
@@ -293,7 +306,7 @@ export default class Chart extends React.Component<ChartProps, ChartState> {
                 <tr className="row-header">
                   <td className="cell-blank"></td>
                   {R.month.map(month =>
-                    <td key={month} className="cell-data">{month}</td>
+                    <td key={month} className="cell-data">{month}</td>,
                   )}
                 </tr>
                 </thead>
@@ -327,14 +340,16 @@ export default class Chart extends React.Component<ChartProps, ChartState> {
                                      defaultValue={keyword}
                                      onFocus={
                                        e => this.lastKeywordInput = e.target.value}
-                                     onBlur={e => this.handleKeywordBlur(e,
-                                       index)}
+                                     onBlur={e => this.handleKeywordBlur(
+                                       e,
+                                       index,
+                                     )}
                               />
                             </div>
                           </td>
                           {this.dataMonthTable[keyword].map((data, index) =>
                             <td key={`${keyword}-${index}`}
-                                className="cell-data">{data || 0}</td>
+                                className="cell-data">{data || 0}</td>,
                           )}
                         </tr>
                       );

@@ -25,7 +25,7 @@ type Props = {|
   +notificationSystem: React.ElementRef<Class<NotificationSystem>>,
   +onClose: () => void,
   +onEdit: (bulbContent: string) => void,
-  +onSend: (bulbContent: string, imageId: ?{|
+  +onSend: (bulbContent: string, imageId?: {|
     +id: string,
     +name: string,
   |}) => Promise<void>,

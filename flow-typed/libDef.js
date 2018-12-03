@@ -2,12 +2,23 @@
 
 declare type OneDriveItem = {
   +"@microsoft.graph.downloadUrl": string,
+  +content: string,
   +id: string,
   +name: string,
 };
 declare type OneDriveImageItem = OneDriveItem & {
   +thumbnails: string,
 };
+declare type OneDriveRawBulbItem = {|
+  content: string,
+  +id?: string,
+  imageId?: string,
+  merged?: boolean,
+  +name: string,
+  links?: Array<LinkAttachment>,
+  place?: PlaceAttachment,
+  time: BulbEntryTime,
+|};
 // The item to be uploaded
 declare type OneDriveQueuedItem = {|
   name: string,
@@ -51,14 +62,14 @@ declare type SearchCriteria = {|
 declare type ImageData = {|
   id: string,
   thumbnail: string, // url
-  url: string, // url
+  url?: string, // url
 |}
 declare type ImageMap = {|
   [fileName: string]: ImageData
-|};
+|} | {};
 
 declare type LinkAttachment = {|
-  title: string,
+  title?: string,
   url: string,
 |}
 declare type MovieAttachment = {|
@@ -71,8 +82,12 @@ declare type MusicAttachment = {|
 declare type OtherAttachment = {
   [key: string]: string,
 };
+declare type PlaceAttachment = {|
+  ...GeoCoordinate,
+  +title?: string,
+|};
 
-declare type Data = any;
+declare type Data = Array<ArticleEntry | BulbEntry>;
 declare type ArticleEntryTime = {|
   created: number,
   begin: number,
@@ -97,18 +112,25 @@ declare type BulbEntryTime = {|
 declare type BulbEntry = {|
   body: string,
   images?: Array<string>, // array of filenames
-  place: GeoCoordinate,
+  links?: Array<LinkAttachment>,
+  place?: PlaceAttachment,
   time: BulbEntryTime,
   type: "bulb",
 |};
 declare type ContentStyle = {|
-  +[createdTime: string]: number, // scrollTop, how many px from the top of
-                                  // scroll area
-  +height: number,
+  [createdTime: string]: number, // scrollTop, how many px from the top of
+  // scroll area
+  height: number,
 |};
 
 declare type Style = {
   [string]: mixed
 };
+
+declare type SettingsType = {|
+  bulbAttachLocation: boolean,
+  bulbMapCenter: GeoCoordinate,
+  password?: string,
+|};
 
 declare type GoogleMapRef = any;

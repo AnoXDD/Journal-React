@@ -58,21 +58,31 @@ type ContentArticleState = {|
   isRemoving: boolean,
 |}
 
-class ContentArticle extends React.Component<ContentArticleProps, ContentArticleState> {
+class ContentArticle
+  extends React.Component<ContentArticleProps, ContentArticleState> {
 
   state: ContentArticleState = {
-    image     : (this.props.article.images && this.props.imageMap[this.props.article.images[0]]) ? this.props.imageMap[this.props.article.images[0]].thumbnail : undefined,
+    image: (
+      this.props.article.images &&
+      this.props.imageMap[this.props.article.images[0]]
+    ) ? this.props.imageMap[this.props.article.images[0]].thumbnail : undefined,
     isRemoving: false,
   };
 
   handleMouseMove(e: SyntheticMouseEvent<>, images: Array<string>): void {
     const {target} = e;
-    if (!(target instanceof HTMLElement)) {
+    if (!(
+      target instanceof HTMLElement
+    )) {
       return;
     }
 
-    let i = parseInt(Math.min((e.clientX - target.getBoundingClientRect().left) / target.offsetWidth,
-        .999999999) * images.length, 10);
+    let i = parseInt(Math.min(
+      (
+        e.clientX - target.getBoundingClientRect().left
+      ) / target.offsetWidth,
+      .999999999,
+    ) * images.length, 10);
 
     if (this.props.imageMap[images[i]]) {
       this.setState({
@@ -83,7 +93,7 @@ class ContentArticle extends React.Component<ContentArticleProps, ContentArticle
 
   handleRemoveClick = (e: SyntheticMouseEvent<>): void => {
     this.setState({
-      isRemoving: true
+      isRemoving: true,
     });
 
     this.props.onRemoveClick()
@@ -103,8 +113,8 @@ class ContentArticle extends React.Component<ContentArticleProps, ContentArticle
     let {style, article, time} = this.props,
       articleProp = {
         className: `${this.props.className || ""}`,
-        style    : style,
-        onClick  : this.props.onClick,
+        style: style,
+        onClick: this.props.onClick,
       };
 
     const {images} = article;
@@ -131,7 +141,7 @@ class ContentArticle extends React.Component<ContentArticleProps, ContentArticle
 
 type ContentBulbProps = {|
   +bulb: BulbEntry,
-  +onLocationClick: () => void,
+  +onLocationClick?: () => void,
   +onPhotoClick?: () => void,
   +onRemoveClick: () => Promise<void>,
   +style: Style,
@@ -195,7 +205,7 @@ class ContentBulb extends React.Component<ContentBulbProps, ContentBulbState> {
                   onClick={this.handleRemoveClick}>delete</Button>
         </div>
       </article>
-    )
+    );
   }
 }
 
@@ -241,12 +251,18 @@ class EntryList extends React.Component<EntryListProps> {
 
     if (year === nowYear) {
       var firstDay = new Date(year, 0, 1),
-        yearDay = Math.floor((date - firstDay) / 86400000),
-        nowYearDay = Math.floor((now - firstDay) / 86400000);
+        yearDay = Math.floor((
+          date - firstDay
+        ) / 86400000),
+        nowYearDay = Math.floor((
+          now - firstDay
+        ) / 86400000);
       // Test for today and yesterday
       if (yearDay === nowYearDay) {
         // Test for hours
-        var deltaMinutes = Math.floor((now - date) / 60000);
+        var deltaMinutes = Math.floor((
+          now - date
+        ) / 60000);
         if (deltaMinutes === 0) {
           return "Just now";
         } else if (deltaMinutes < 60) {
@@ -261,8 +277,12 @@ class EntryList extends React.Component<EntryListProps> {
       } else {
         // Test for this week
         var firstWeekDay = firstDay.getDay(),
-          yearWeek = Math.floor((yearDay - firstWeekDay) / 7),
-          nowYearWeek = Math.floor((nowYearDay - firstWeekDay) / 7);
+          yearWeek = Math.floor((
+            yearDay - firstWeekDay
+          ) / 7),
+          nowYearWeek = Math.floor((
+            nowYearDay - firstWeekDay
+          ) / 7);
         dateHeader = "";
         switch (nowYearWeek - yearWeek) {
           case 1:
@@ -292,7 +312,14 @@ class EntryList extends React.Component<EntryListProps> {
 
     // Get the time of when it ends
     date = new Date(time.end);
-    dateHeader += " - " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(
+    dateHeader += " - " +
+      (
+        "0" + date.getHours()
+      ).slice(-2) +
+      ":" +
+      (
+        "0" + date.getMinutes()
+      ).slice(
         -2);
 
     return dateHeader;
@@ -309,7 +336,7 @@ class EntryList extends React.Component<EntryListProps> {
 
     return {
       className: className,
-      style    : {
+      style: {
         top: this.props.contentStyle[String(article.time.created)],
       },
     };
@@ -351,8 +378,12 @@ class EntryList extends React.Component<EntryListProps> {
     // }; }
 
     return {
-      className: `${top >= this.props.scrollTop && top <= this.props.scrollBottom ? "" : "hidden"} ${this.props.highlightBulbIndex === i ? "active" : ""}`,
-      style    : {top: top},
+      className: `${top >=
+      this.props.scrollTop &&
+      top <=
+      this.props.scrollBottom ? "" : "hidden"} ${this.props.highlightBulbIndex ===
+      i ? "active" : ""}`,
+      style: {top: top},
     };
   }
 
@@ -362,15 +393,19 @@ class EntryList extends React.Component<EntryListProps> {
            style={{height: `${this.props.contentStyle.height || 0}px`}}>
         <div className="flex-extend-inner-wrapper">
           {this.props.bulbs.map((bulb, i) => {
-            const {images} = bulb;
+            const {images, place} = bulb;
 
             return (
               <ContentBulb key={`bulb-preview-${bulb.time.created}`}
                            style={this.generateBulbProp(bulb, i)}
                            bulb={bulb}
                            time={this.generateHumanFormTimeFromArticle(bulb.time)}
-                           onLocationClick={() => this.props.onLocationClick(
-                             bulb.place)}
+                           onLocationClick={place !=
+                           null ? () => this.props.onLocationClick(
+                             {
+                               longitude: place.longitude,
+                               latitude: place.latitude,
+                             }) : undefined}
                            onPhotoClick={images ? () => this.handlePhotoClick(
                              images[0]) : undefined}
                            onRemoveClick={() => this.props.onBulbRemove(i)}
@@ -387,7 +422,7 @@ class EntryList extends React.Component<EntryListProps> {
 
     let mapElem = this.props.imageMap[imageName];
     if (mapElem) {
-      if (mapElem.url) {
+      if (mapElem.url != null) {
         this.props.onBulbImageClick(mapElem.url);
       } else {
         // Try to get the url
@@ -396,14 +431,18 @@ class EntryList extends React.Component<EntryListProps> {
         OneDriveManager.updateImageMapElement(mapElem)
           .then(newElem => {
             if (this.currentImage === imageName) {
+              const {url} = mapElem;
               // Update the viewer with new image
               let image = new window.Image();
               image.onload = () => {
-                if (this.currentImage === imageName) {
-                  this.props.onBulbImageClick(mapElem.url);
+                if (this.currentImage === imageName && url != null) {
+                  this.props.onBulbImageClick(url);
                 }
               };
-              image.src = mapElem.url;
+
+              if (url != null) {
+                image.src = mapElem.url;
+              }
             }
           });
       }
@@ -416,7 +455,10 @@ class EntryList extends React.Component<EntryListProps> {
         {this.generateArticleList()}
         <div className="timeline-wrapper">
                 <span className="timeline"
-                      style={{height: `${this.props.contentStyle.height || 0}px`}}/>
+                      style={{
+                        height: `${this.props.contentStyle.height ||
+                        0}px`,
+                      }}/>
         </div>
         {this.generateBulbList()}
       </div>
@@ -449,7 +491,6 @@ type State = {|
   displayVersion: number,
 |};
 
-
 export default class EntryView extends React.Component<Props, State> {
 
   UPDATE_TRIGGER = 2000;
@@ -464,12 +505,12 @@ export default class EntryView extends React.Component<Props, State> {
   isBulbImageCooldown: boolean = false;
 
   state: State = {
-    bulbImage          : "",
+    bulbImage: "",
     isShowingBulbViewer: false,
-    scrollTop          : 0,
-    scrollBottom       : this.UPDATE_STEP,
+    scrollTop: 0,
+    scrollBottom: this.UPDATE_STEP,
 
-    version       : 0,
+    version: 0,
     displayVersion: 0,
   };
 
@@ -492,11 +533,15 @@ export default class EntryView extends React.Component<Props, State> {
     if (nextProps.version > nextState.displayVersion) {
       nextState.displayVersion = nextProps.version;
 
-      this.refs.scrollArea.removeEventListener("scroll",
-        this.handleScroll.bind(this));
+      this.refs.scrollArea.removeEventListener(
+        "scroll",
+        this.handleScroll.bind(this),
+      );
       this.refs.scrollArea.scrollTop = nextProps.scrollTop;
-      this.refs.scrollArea.addEventListener("scroll",
-        this.handleScroll.bind(this));
+      this.refs.scrollArea.addEventListener(
+        "scroll",
+        this.handleScroll.bind(this),
+      );
 
       // Handles highlightbulb index to update which image is currently on
       // display
@@ -522,14 +567,18 @@ export default class EntryView extends React.Component<Props, State> {
       this.hideBulbViewer();
 
       this.isBulbImageCooldown = true;
-      setTimeout(() => this.isBulbImageCooldown = false,
-        this.BULB_IMAGE_COOLDOWN);
+      setTimeout(
+        () => this.isBulbImageCooldown = false,
+        this.BULB_IMAGE_COOLDOWN,
+      );
     }
   };
 
   handleScroll = (e: SyntheticWheelEvent<>): void => {
     const {target} = e;
-    if (!(target instanceof HTMLElement)) {
+    if (!(
+      target instanceof HTMLElement
+    )) {
       return;
     }
 
@@ -542,8 +591,8 @@ export default class EntryView extends React.Component<Props, State> {
 
       this.setState({
         displayVersion: new Date().getTime(),
-        scrollTop     : top - this.UPDATE_STEP,
-        scrollBottom  : bottom + this.UPDATE_STEP
+        scrollTop: top - this.UPDATE_STEP,
+        scrollBottom: bottom + this.UPDATE_STEP,
       });
     }
   };
@@ -552,11 +601,10 @@ export default class EntryView extends React.Component<Props, State> {
     if (!this.isBulbImageCooldown) {
       this.setState({
         isShowingBulbViewer: true,
-        bulbImage          : src,
+        bulbImage: src,
       });
     }
   };
-
 
   render(): React.Node {
     const {data, ...restProps} = this.props;
@@ -581,12 +629,12 @@ export default class EntryView extends React.Component<Props, State> {
             />
           </div>
         </NoScrollArea>
-        { this.props.data.length === 0 ? (
+        {this.props.data.length === 0 ? (
           <div className="empty-prompt flex-center">
             Nothing can be found here. Maybe you would like to write
             something?
           </div>
-        ) : null }
+        ) : null}
       </div>
     );
   }

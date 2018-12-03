@@ -47,21 +47,18 @@ const DEFAULT_SETTINGS_STATE = {
 };
 
 type Props = {|
-  +data: Data,
+  +data: SettingsType,
   +handleMissingImages: () => Promise<void>,
   +hidden: boolean,
   +notificationSystem: NotificationSystem,
-  +onSave: (data: Data) => Promise<void>,
+  +onSave: (data: SettingsType) => Promise<void>,
   +version: number,
 |};
 
-type State = {|
-  bulbAttachLocation: boolean,
-  bulbMapCenter: GeoCoordinate,
+type State = SettingsType & {|
   isEmptyingQueueFolder: boolean,
   isLoadingMissingImages: boolean,
   isSaving: boolean,
-  password: string,
   passwordConfirm: string,
   passwordEnabled: boolean,
 |};
@@ -87,17 +84,15 @@ export default class Settings extends React.Component<Props, State> {
       this.version = nextProps.version;
 
       // Apply settings from props
-      nextState.passwordEnabled = !!nextProps.data.password;
-      nextState.passwordConfirm = nextProps.data.password;
-
-      let keys = Object.keys(nextProps.data);
-      for (let key of keys) {
-        if (typeof nextProps.data[key] === "object") {
-          nextState[key] = R.copy(nextProps.data[key]);
-        } else {
-          nextState[key] = nextProps.data[key];
-        }
+      const {password} = nextProps.data;
+      nextState.passwordEnabled = !!password;
+      if (password != null && password !== "") {
+        nextState.password = password;
+        nextState.passwordConfirm = password;
       }
+
+      nextState.bulbAttachLocation = nextProps.data.bulbAttachLocation;
+      nextState.bulbMapCenter = {...nextProps.data.bulbMapCenter};
     }
   }
 
@@ -184,19 +179,12 @@ export default class Settings extends React.Component<Props, State> {
     return true;
   }
 
-  generateSettingsData() {
-    let settings = {};
-
-    let keys = Object.keys(this.props.data);
-    for (let key of keys) {
-      if (typeof this.state[key] === "object") {
-        settings[key] = R.copy(this.state[key]);
-      } else {
-        settings[key] = this.state[key];
-      }
-    }
-
-    return settings;
+  generateSettingsData(): SettingsType {
+    return {
+      bulbAttachLocation: this.props.data.bulbAttachLocation,
+      bulbMapCenter: {...this.props.data.bulbMapCenter},
+      password: this.props.data.password,
+    };
   }
 
   handleSave = (): void => {

@@ -1,9 +1,10 @@
+// @flow strict-local
+
 /**
  * Created by Anoxic on 042917.
  * The main frame of the whole thing
  */
 
-import React, {Component} from "react";
 import NotificationSystem from "react-notification-system";
 
 import Button from "./lib/Button";
@@ -22,6 +23,9 @@ import Stats from "./Stats";
 import OneDriveManager from "./OneDriveManager";
 
 import R from "./R";
+
+import * as React from "react";
+
 // import TestData from "./TestData";
 
 const CryptoJS = require("crypto-js");
@@ -30,7 +34,7 @@ const BULB_WEB_URL_PATTERN = /(.+)@(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,2
   BULB_LOCATION_PATTERN = /(.+)#\[(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/,
   BULB_LOCATION_PATTERN_WITH_NAME = /(.+)#\[(.+),(-?[0-9]+\.[0-9]+),(-?[0-9]+\.[0-9]+)\](.*)/;
 
-function upgradeDataFromVersion2To3(oldData) {
+function upgradeDataFromVersion2To3(oldData): Data {
   let data = [],
     list = ["video", "voice", "place", "book"];
 
@@ -205,37 +209,65 @@ const DEFAULT_SETTINGS = {
   // passcode: undefined,
 };
 
-export default class MainContent extends Component {
+const TAB = {
+  calendar: 0,
+  "map view": 0,
+  NO_CHANGE: 0,
+  LIST: 1 << 1,
+  EDITOR: 1 << 2,
+  HISTORY: 1 << 3,
+  INSIGHT: 1 << 4,
+  STATS: 1 << 5,
+  OPTIONS: 1 << 6,
+};
+
+const DEFAULT_IMAGE_MAP: ImageMap = {};
+
+type Props = {||};
+
+type State = {|
+  bulbMapCenter?: GeoCoordinate,
+  data: Data,
+  editArticleIndex: number,
+  enabledTabs: number,
+  isDisplaying: $Values<typeof TAB>,
+  isDisplayingCalendar: boolean,
+  isDisplayingMapView: boolean,
+  isLoadingNextYear: boolean,
+  isLoadingPreviousYear: boolean,
+  isShowingBulbEditor: boolean,
+  loadingProgress: number,
+  loadingPrompt: string,
+  loadingPromptRequiringPassword: boolean,
+  mapVersion: number,
+  settings: SettingsType,
+  settingsVersion: number,
+  version: number,
+|};
+
+export default class MainContent extends React.Component<Props, State> {
 
   SEARCH_BAR_TAGS = ["tags", "months", "attachments"];
-  TAB = {
-    NO_CHANGE: 0,
-    LIST: 1 << 1,
-    EDITOR: 1 << 2,
-    HISTORY: 1 << 3,
-    INSIGHT: 1 << 4,
-    STATS: 1 << 5,
-    OPTIONS: 1 << 6,
-  };
   /* The interval between each backup should occur, in miliseconds */
   BACKUP_INTERVAL = 3600000;
 
-  state = {
+  state: State = {
     data: [],
     version: 0,
 
-    isDisplaying: this.TAB.LIST,
+    isDisplaying: TAB.LIST,
     isDisplayingCalendar: false,
     isDisplayingMapView: true,
 
     // Use | to connect them later
-    enabledTabs: this.TAB.LIST |
-      this.TAB.STATS |
-      this.TAB.OPTIONS |
-      this.TAB.INSIGHT,
+    enabledTabs: TAB.LIST |
+      TAB.STATS |
+      TAB.OPTIONS |
+      TAB.INSIGHT,
 
-    editArticleIndex: undefined,
+    editArticleIndex: -1,
 
+    loadingProgress: 0,
     loadingPrompt: "Signing in ...",
     loadingPromptRequiringPassword: false,
     isLoadingPreviousYear: false,
@@ -248,43 +280,47 @@ export default class MainContent extends Component {
     settings: R.copy(DEFAULT_SETTINGS),
   };
 
-  data = [];
-  imageMap = {};
+  data: Data = [];
+  imageMap: ImageMap = DEFAULT_IMAGE_MAP;
 
-  year = new Date().getFullYear();
+  year: number = new Date().getFullYear();
 
-  notificationSystem = null;
+  notificationSystem: ?NotificationSystem = null;
 
   /**
    * Stores the original positions and times of articles and bulbs
    * @type {{}}
    */
-  contentStyle = {};
-  articleList = [];
-  bulbList = [];
-  highlightBulbIndex = -1;
+  contentStyle: ContentStyle = {
+    height: 0,
+  };
+  articleList: Array<ArticleEntry> = [];
+  bulbList: Array<BulbEntry> = [];
+  highlightBulbIndex: number = -1;
 
-  editorVersion = 0;
-  editedEntryTimestamp = 0;
-  bulbEditorContent = "";
+  editorVersion: number = 0;
+  editedEntryTimestamp: number = 0;
+  bulbEditorContent: string = "";
 
-  unprocessedBulbs = 0;
+  unprocessedBulbs: number = 0;
 
   /* Press escape anywhere to return to this tab */
-  escapeToReturn = this.TAB.NO_CHANGE;
+  escapeToReturn: $Values<typeof TAB> = TAB.NO_CHANGE;
 
-  lastBackup = 0;
+  lastBackup: number = 0;
 
-  mapBound = null;
+  mapBound: ?MapBound = null;
 
-  password = "";
+  password: string = "";
   /* This function is to be called in the loading menu to process the password given by the user. */
   redeemPassword = () => {
   };
 
-  tagPrediction = "";
+  tagPrediction: Array<string> = [];
 
-  constructor(props) {
+  scrollTop: number = 0;
+
+  constructor(props: Props) {
     super(props);
 
     /**
@@ -293,51 +329,10 @@ export default class MainContent extends Component {
      */
     this.data = [...this.state.data];
 
-    this.updateContentStyle = this.updateContentStyle.bind(this);
-    this.updateTagPrediction = this.updateTagPrediction.bind(this);
-
-    this.loadData = this.loadData.bind(this);
-    this.extractRawContent = this.extractRawContent.bind(this);
-    this.handleNewRawBulbs = this.handleNewRawBulbs.bind(this);
-    this.handleNewContent = this.handleNewContent.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleChangeCriteria = this.handleChangeCriteria.bind(this);
-    this.handleCalendarClick = this.handleCalendarClick.bind(this);
-    this.handleArticleClick = this.handleArticleClick.bind(this);
-    this.handleArticleRemove = this.handleArticleRemove.bind(this);
-    this.handleArticleChange = this.handleArticleChange.bind(this);
-    this.handleEditorRefreshQueue = this.handleEditorRefreshQueue.bind(this);
-    this.handleBulbClick = this.handleBulbClick.bind(this);
-    this.handleBulbLocationClick = this.handleBulbLocationClick.bind(this);
-    this.handleBulbRemove = this.handleBulbRemove.bind(this);
-    this.handleDataRemoveByIndex = this.handleDataRemoveByIndex.bind(this);
-    this.handleCreateArticle = this.handleCreateArticle.bind(this);
-    this.handlePromptCancel = this.handlePromptCancel.bind(this);
-    this.handleBulbEditorSend = this.handleBulbEditorSend.bind(this);
-    this.handleBulbEditorEdit = this.handleBulbEditorEdit.bind(this);
-    this.handleMissingImages = this.handleMissingImages.bind(this);
-    this.handleBoundChange = this.handleBoundChange.bind(this);
-    this.handleSettingsSave = this.handleSettingsSave.bind(this);
-    this.applySettings = this.applySettings.bind(this);
-    this.encryptData = this.encryptData.bind(this);
-    this.decryptData = this.decryptData.bind(this);
-    this.removeInvalidImageNames = this.removeInvalidImageNames.bind(this);
-    this.toggleIsDisplayingCalendar = this.toggleIsDisplayingCalendar.bind(this);
-    this.toggleIsDisplayingMapView = this.toggleIsDisplayingMapView.bind(this);
-    this.findDataIndexByArticleIndex = this.findDataIndexByArticleIndex.bind(
-      this);
-    this.findDataIndexByBulbIndex = this.findDataIndexByBulbIndex.bind(
-      this);
-    this.backupAndUploadData = this.backupAndUploadData.bind(this);
-    this.backupData = this.backupData.bind(this);
-    this.uploadData = this.uploadData.bind(this);
-    this.toPreviousYear = this.toPreviousYear.bind(this);
-    this.toNextYear = this.toNextYear.bind(this);
-
     this.updateContentStyle(this.state.data);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps: Props, nextState: State) {
     this.updateContentStyle(nextState.data);
 
     // Update `editArticleIndex`
@@ -350,21 +345,21 @@ export default class MainContent extends Component {
     }
   }
 
-  componentWillMount() {
-    document.addEventListener("keydown", this.handleKeyDown.bind(this));
+  componentWillMount(): void {
+    document.addEventListener("keydown", this.handleKeyDown);
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.notificationSystem = this.refs.notificationSystem;
 
     this.loadData();
   }
 
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown.bind(this));
+  componentWillUnmount(): void {
+    document.removeEventListener("keydown", this.handleKeyDown);
   }
 
-  loadData() {
+  loadData = (): Promise<void> => {
     // Fetch data from server
     return OneDriveManager.verifyFileStructure(
       this.year,
@@ -386,7 +381,7 @@ export default class MainContent extends Component {
           }
 
           // Set the way to use the password
-          this.redeemPassword = password => {
+          this.redeemPassword = (password: string) => {
             this.password = password;
 
             if (this.handleNewContent(content)) {
@@ -442,44 +437,37 @@ export default class MainContent extends Component {
           version: new Date().getTime(),
         });
       });
-  }
+  };
 
   // region Utility functions
 
   /**
    *
-   * @param dataArray
+   * @param data
    * @param keyword
    * @returns {Array|*} - an array of mixed strings and JSX
    */
-  highlightDataWithKeyword(dataArray, keyword) {
-    for (let i = 0; i < dataArray.length; ++i) {
-      if (typeof dataArray[i] === "string") {
-        // For each string, break them into different groups
-        let group = dataArray[i].split(keyword),
-          realGroup = [];
+  highlightDataWithKeyword(data: string, keyword: string) {
+    // For each string, break them into different groups
+    let group = data.split(keyword),
+      realGroup = [];
 
-        // Then insert a highlighted version of keyword between each element
-        for (let g of group) {
-          realGroup.push(g);
-          realGroup.push({highlight: keyword});
-        }
-
-        realGroup.pop();
-
-        dataArray[i] = realGroup;
-      }
+    // Then insert a highlighted version of keyword between each element
+    for (let g of group) {
+      realGroup.push(g);
+      realGroup.push({highlight: keyword});
     }
 
-    // Flatten the array
-    return dataArray.reduce((a, b) => a.concat(b));
+    realGroup.pop();
+
+    return realGroup;
   }
 
   /**
    * Converts the data (or this.state.data) to the form that to be stored online
    * @param data
    */
-  convertDataToString(data) {
+  convertDataToString(data: Data) {
     return JSON.stringify({
       version: R.DATA_VERSION,
       data: this.encryptData(data),
@@ -487,21 +475,23 @@ export default class MainContent extends Component {
     });
   }
 
-  generateBackupFileName() {
+  generateBackupFileName(): string {
     return `data_${new Date().getTime()}.js`;
   }
 
-  extractWebsiteFromContent(bulb) {
+  extractWebsiteFromContent(bulb: OneDriveRawBulbItem): OneDriveRawBulbItem {
     var result = BULB_WEB_URL_PATTERN.exec(bulb.content);
     if (result) {
-      bulb.links = result[2];
+      bulb.links = [{url: result[2]}];
 
       // Remove the website
       bulb.content = result[1] + result[result.length - 1];
     }
+
+    return bulb;
   }
 
-  extractLocationFromContent(bulb) {
+  extractLocationFromContent(bulb: OneDriveRawBulbItem): OneDriveRawBulbItem {
     // Location, without name
     var data = bulb.content;
     var result = BULB_LOCATION_PATTERN.exec(data);
@@ -509,8 +499,8 @@ export default class MainContent extends Component {
     if (result) {
       bulb.place = {
         title: result[2] + "," + result[3],
-        latitude: result[2],
-        longitude: result[3],
+        latitude: parseFloat(result[2]),
+        longitude: parseFloat(result[3]),
       };
 
       // Remove the location
@@ -521,19 +511,20 @@ export default class MainContent extends Component {
       if (result) {
         bulb.place = {
           title: result[2],
-          latitude: result[3],
-          longitude: result[4],
+          latitude: parseFloat(result[3]),
+          longitude: parseFloat(result[4]),
         };
 
         // Remove the location
         bulb.content = result[1] + result[result.length - 1];
       }
     }
+
+    return bulb;
   }
 
-  extractRawContent(bulb) {
-    this.extractWebsiteFromContent(bulb);
-    this.extractLocationFromContent(bulb);
+  extractRawContent(bulb: OneDriveRawBulbItem): OneDriveRawBulbItem {
+    return this.extractLocationFromContent(this.extractWebsiteFromContent(bulb));
   }
 
   /**
@@ -541,7 +532,7 @@ export default class MainContent extends Component {
    * @param myStr - e.g. 050711_080523
    * @returns {number}
    */
-  convertBulbTime(myStr) {
+  convertBulbTime(myStr: string): number {
     var month = parseInt(myStr.substr(0, 2), 10);
     var day = parseInt(myStr.substr(2, 2), 10);
     var year = 2000 + parseInt(myStr.substr(4, 2), 10);
@@ -564,16 +555,17 @@ export default class MainContent extends Component {
    */
   handleNewRawBulb(
     bulbContent: string,
-    image: ?{|
+    image?: {|
       +id: string,
       +name: string
     |},
   ): Promise<void> {
     this.unprocessedBulbs = 1;
 
-    let bulb = {
+    let bulb: OneDriveRawBulbItem = {
       time: {created: new Date().getTime()},
       content: bulbContent,
+      name: "",
     };
 
     this.extractRawContent(bulb);
@@ -593,7 +585,7 @@ export default class MainContent extends Component {
    *     OneDriveManager.getBulbs()
    * @returns {Promise}
    */
-  handleNewRawBulbs(bulbObject) {
+  handleNewRawBulbs(bulbObject: Array<OneDriveRawBulbItem>): Promise<void> {
     return new Promise((resolve, rej) => {
       if (!bulbObject || bulbObject.length === 0) {
         resolve();
@@ -638,7 +630,7 @@ export default class MainContent extends Component {
         bulb.time = {created: time};
 
         // Transfer the image (if any)
-        if (bulb.imageId) {
+        if (bulb.imageId != null) {
           OneDriveManager.addImageById(bulb.imageId, this.year)
             .then(image => {
               uploadedImages.push({id: image.id, name: image.name});
@@ -658,48 +650,59 @@ export default class MainContent extends Component {
    * @param bulbObjects - a list of bulb object { content: xxx, (imageId: xxx)}
    * @param uploadedImages - a list of image objects { id: xxx, name: xxx}
    */
-  handleNewProcessedBulbs(bulbObjects, uploadedImages) {
-    let processedBulbs = [],
+  handleNewProcessedBulbs(
+    bulbObjects: Array<OneDriveRawBulbItem>,
+    uploadedImages: Array<{|
+      +id: string,
+      +name: string
+    |}>,
+  ): Promise<void> {
+    let processedBulbs: Array<BulbEntry> = [],
       processedBulbIds = [];
 
     for (let bulb of bulbObjects) {
       // First see if this bulb has been merged already
-      if (bulb.merged) {
+      if (bulb.merged === true) {
         processedBulbIds.push(bulb.id);
-        if (bulb.imageId) {
+        if (bulb.imageId != null) {
           processedBulbIds.push(bulb.imageId);
         }
 
         continue;
       }
 
-      bulb.body = bulb.content;
-      bulb.type = R.TYPE_BULB;
+      const bulbEntry: BulbEntry = {
+        body: bulb.content,
+        type: R.TYPE_BULB,
+        time: bulb.time,
+      };
+
+      if (bulb.place) {
+        bulbEntry.place = bulb.place;
+      }
+
+      if (bulb.links) {
+        bulbEntry.links = bulb.links;
+      }
 
       // Add image to the bulb if applicable
-      if (bulb.imageId) {
+      if (bulb.imageId != null) {
         let image = uploadedImages.find(
           image => image.id === bulb.imageId);
 
         if (image) {
           // Uploaded successfully!
-          bulb.images = [image.name];
+          bulbEntry.images = [image.name];
         } else {
           continue;
         }
       }
 
-      if (bulb.id) {
+      if (bulb.id != null) {
         processedBulbIds.push(bulb.id);
       }
 
-      // Remove unnecessary keys
-      delete bulb.id;
-      delete bulb.name;
-      delete bulb.content;
-      delete bulb.imageId;
-
-      processedBulbs.push(R.copy(bulb));
+      processedBulbs.push(bulbEntry);
     }
 
     if (processedBulbs.length) {
@@ -715,8 +718,8 @@ export default class MainContent extends Component {
     return OneDriveManager.removeItemsById(processedBulbIds);
   };
 
-  handleNewImageMap(images) {
-    this.imageMap = {};
+  handleNewImageMap(images: Array<OneDriveImageItem>): void {
+    this.imageMap = DEFAULT_IMAGE_MAP;
     for (let image of images) {
       this.imageMap[image.name] = {
         id: image.id,
@@ -734,7 +737,7 @@ export default class MainContent extends Component {
    * @return boolean - true if handle is successful, false otherwise (e.g.
    *     wrong password)
    */
-  handleNewContent(raw) {
+  handleNewContent(raw: string): boolean {
     // raw = '2' + JSON.stringify(TestData.data);
     if (raw) {
 
@@ -786,15 +789,15 @@ export default class MainContent extends Component {
     return true;
   }
 
-  handleKeyDown(e) {
+  handleKeyDown = (e: KeyboardEvent): void => {
     if (e.key === "Escape") {
       this.handleViewChange(this.escapeToReturn);
     }
 
-    this.escapeToReturn = this.TAB.NO_CHANGE;
-  }
+    this.escapeToReturn = TAB.NO_CHANGE;
+  };
 
-  handleCalendarClick(top: ?number) {
+  handleCalendarClick = (top: ?number): void => {
     if (top == null) {
       return;
     }
@@ -804,9 +807,9 @@ export default class MainContent extends Component {
     this.setState({
       version: new Date().getTime(),
     });
-  }
+  };
 
-  handleChangeCriteria(c) {
+  handleChangeCriteria = (c: SearchCriteria): void => {
     let data = this.data;
     if (!c.clear && this.state.isDisplayingMapView && this.mapBound) {
       let {west, east, north, south} = this.mapBound;
@@ -818,7 +821,7 @@ export default class MainContent extends Component {
           return latitude >= south && latitude <= north &&
             (
               west < east ? (
-                longitude >= west && longitude <= east
+                  longitude >= west && longitude <= east
                 ) :
                 (
                   longitude >= west || longitude <= east
@@ -857,7 +860,9 @@ export default class MainContent extends Component {
         // Second, keywords
         if (c.keywords && c.keywords.length && c.keywords.findIndex(k => {
           return (
-            d.title && d.title.indexOf(k) !== -1
+              (
+                d.title || ""
+              ).indexOf(k) !== -1
             ) ||
             d.body.indexOf(k) !== -1;
         }) === -1) {
@@ -873,9 +878,11 @@ export default class MainContent extends Component {
 
         // Tag
         if (c.tags && c.tags.length && d.tags) {
-          if (c.tags.findIndex(t => {
-            return d.tags.indexOf(t) !== -1;
-          }) === -1) {
+          if (!(
+            c.tags.some(t => (
+              d.tags || []
+            ).includes(t) !== -1)
+          )) {
             return false;
           }
         }
@@ -893,14 +900,7 @@ export default class MainContent extends Component {
 
       // Highlight the keyword
       if (c.keywords && c.keywords.length) {
-        newData = newData.map(d => {
-
-          d = R.copy(d);
-          if (d.title) {
-            d.title = [d.title];
-          }
-          d.body = [d.body];
-
+        newData = newData.map(d => R.copy(d)).map(d => {
           for (let keyword of c.keywords) {
             if (d.title) {
               d.title = this.highlightDataWithKeyword(d.title, keyword);
@@ -918,46 +918,52 @@ export default class MainContent extends Component {
         version: new Date().getTime(),
       });
     }
-  }
+  };
 
-  handleViewChange(newView) {
-    if (newView && newView !== this.TAB.NO_CHANGE) {
+  handleViewChange(newView: $Values<typeof TAB>): void {
+    if (newView && newView !== TAB.NO_CHANGE) {
       this.setState({
         isDisplaying: newView,
       });
     }
   }
 
-  handlePromptCancel(e) {
+  handlePromptCancel = (): void => {
     // Set to zero to tell the editor that that data is not the latest
     this.editorVersion = 0;
-    this.handleViewChange(this.TAB.LIST);
-  }
+    this.handleViewChange(TAB.LIST);
+  };
 
   handleCreateArticle() {
     this.editorVersion = new Date().getTime();
     this.setState({
       editArticleIndex: -1,
-      enabledTabs: this.state.enabledTabs | this.TAB.EDITOR,
+      enabledTabs: this.state.enabledTabs | TAB.EDITOR,
       isShowingBulbEditor: false,
-    }, this.handleViewChange(this.TAB.EDITOR));
+    }, this.handleViewChange(TAB.EDITOR));
   }
 
-  handleArticleClick(i) {
+  handleArticleClick = (i: number) => {
     this.editorVersion = new Date().getTime();
-    this.escapeToReturn = this.TAB.LIST;
+    this.escapeToReturn = TAB.LIST;
     this.setState({
       editArticleIndex: i,
-      enabledTabs: this.state.enabledTabs | this.TAB.EDITOR,
-    }, this.handleViewChange(this.TAB.EDITOR));
-  }
+      enabledTabs: this.state.enabledTabs | TAB.EDITOR,
+    }, this.handleViewChange(TAB.EDITOR));
+  };
 
-  handleBulbClick(top, index) {
+  handleBulbClick = (top: number, index: number): void => {
     this.highlightBulbIndex = index;
     this.handleCalendarClick(top);
-  }
+  };
 
-  handleBulbEditorSend(bulbContent, imageId) {
+  handleBulbEditorSend = (
+    bulbContent: string,
+    imageId?: {|
+      +id: string,
+      +name: string
+    |},
+  ): Promise<void> => {
     return this.handleNewRawBulb(bulbContent, imageId)
       .then(() => {
         this.setState({
@@ -972,14 +978,14 @@ export default class MainContent extends Component {
           "There is an error when publishing the bulb. Try again",
         );
       });
-  }
+  };
 
-  handleBulbEditorEdit(bulbContent) {
+  handleBulbEditorEdit = (bulbContent: string): void => {
     this.bulbEditorContent = bulbContent;
     this.handleCreateArticle();
-  }
+  };
 
-  handleArticleChange(newEntry: ArticleEntry): Promise<void> {
+  handleArticleChange = (newEntry: ArticleEntry): Promise<void> => {
     this.editedEntryTimestamp = newEntry.time.created;
 
     if (this.articleList[this.state.editArticleIndex]) {
@@ -1001,35 +1007,35 @@ export default class MainContent extends Component {
 
     // Adding a new entry
     return this.uploadUnprocessedData([...this.data, newEntry]);
-  }
+  };
 
   /**
    * Prompts the user and ask them if they really want it removed
    * @param articleIndex
    */
-  handleArticleRemove(articleIndex: number): Promise<void> {
+  handleArticleRemove = (articleIndex: number): Promise<void> => {
     let index = this.findDataIndexByArticleIndex(articleIndex);
 
     return this.handleDataRemoveByIndex(index);
-  }
+  };
 
-  handleBulbRemove(bulbIndex: number): Promise<void> {
+  handleBulbRemove = (bulbIndex: number): Promise<void> => {
     let index = this.findDataIndexByBulbIndex(bulbIndex);
 
     return this.handleDataRemoveByIndex(index);
-  }
+  };
 
-  handleBulbLocationClick(place: GeoCoordinate): void {
+  handleBulbLocationClick = (place: GeoCoordinate): void => {
     this.setState({
       bulbMapCenter: place,
       mapVersion: new Date().getTime(),
       isDisplayingMapView: true,
     });
-  }
+  };
 
-  handleBoundChange(bound) {
+  handleBoundChange = (bound: MapBound): void => {
     this.mapBound = bound;
-  }
+  };
 
   handleDataRemoveByIndex(index: number): Promise<void> {
     let dataCopy = [...this.data];
@@ -1048,7 +1054,7 @@ export default class MainContent extends Component {
     }
   }
 
-  handleEditorRefreshQueue(): Promise<Array<OneDriveImageItem>> {
+  handleEditorRefreshQueue = (): Promise<Array<OneDriveImageItem>> => {
     return OneDriveManager.getImages(this.year)
       .then(imageMap => {
         this.handleNewImageMap(imageMap);
@@ -1063,13 +1069,13 @@ export default class MainContent extends Component {
           "There was an error when fetching the queue. Try again",
         );
       });
-  }
+  };
 
   /**
    * Finds all the images in the resource folder that doesn't belong to any
    * bulbs and articles and move them to `queue`
    */
-  handleMissingImages(): Promise<void> {
+  handleMissingImages = (): Promise<void> => {
     // First, make a list of all the images
     let images = [];
 
@@ -1109,11 +1115,11 @@ export default class MainContent extends Component {
         });
       });
 
-  }
+  };
 
-  handleSettingsSave(settings): Promise<void> {
+  handleSettingsSave = (settings: SettingsType): Promise<void> => {
     return new Promise(res => {
-      this.password = settings.password;
+      this.password = settings.password || "";
       this.setState({
         settings: R.copy(settings),
       }, () => {
@@ -1125,14 +1131,14 @@ export default class MainContent extends Component {
 
       // R.notify(this.notificationSystem, "Saved");
     });
-  }
+  };
 
   /**
    * Applies the settings from somewhere, assuming that `settings` has every
    * field of settings
    * @param settings
    */
-  applySettings(settings) {
+  applySettings(settings: SettingsType): void {
     let state = {};
 
     // Bulb map center
@@ -1149,7 +1155,7 @@ export default class MainContent extends Component {
    * @returns {string} - the JSON representation of the data, or the encrypted
    *     data
    */
-  encryptData(data) {
+  encryptData(data: Data): string {
     if (this.password) {
       return CryptoJS.AES.encrypt(
         JSON.stringify(data),
@@ -1168,7 +1174,7 @@ export default class MainContent extends Component {
    * @returns {object} - the decrypted object if the password is correct.
    *     `null` if the password is invalid
    */
-  decryptData(encrypted) {
+  decryptData(encrypted: string): Data {
     // Try to convert to JSON
     try {
       let decrypted = encrypted;
@@ -1184,13 +1190,13 @@ export default class MainContent extends Component {
       // type-checking, but... JSON.parse(null) returns null, and typeof null
       // === "object",  so we must check for that, too. Thankfully, null is
       // falsey, so this suffices:
-      if (o && typeof o === "object") {
+      if (Array.isArray(o)) {
         return o;
       }
     } catch (e) {
     }
 
-    return null;
+    return [];
   }
 
   /**
@@ -1198,7 +1204,7 @@ export default class MainContent extends Component {
    * processed and then uploaded
    * @param data
    */
-  uploadUnprocessedData(data): Promise<void> {
+  uploadUnprocessedData(data: Data): Promise<void> {
     return this.backupAndUploadData(
       data.sort((lhs, rhs) => rhs.time.created - lhs.time.created),
     );
@@ -1208,9 +1214,7 @@ export default class MainContent extends Component {
    * Backs up and uploads the data, assuming that the data is sorted
    * @param data
    */
-  backupAndUploadData(data): Promise<void> {
-    data = data || this.data;
-
+  backupAndUploadData(data?: Data = this.data): Promise<void> {
     let dataString = this.convertDataToString(data);
 
     return this.backupData(dataString)
@@ -1231,7 +1235,7 @@ export default class MainContent extends Component {
    * Uploads the data to server
    * @param dataString - the EXACT string data to be uploaded
    */
-  uploadData(dataString) {
+  uploadData(dataString: string): Promise<void> {
     return OneDriveManager.upload(this.year, dataString)
       .then(() => {
         R.notify(this.notificationSystem, "Uploaded");
@@ -1249,7 +1253,7 @@ export default class MainContent extends Component {
    * Backs up current data
    * @param currentDataString - the EXACT string data to be uploaded
    */
-  backupData(currentDataString) {
+  backupData(currentDataString: string): Promise<void> {
     if (new Date().getTime() - this.lastBackup >= this.BACKUP_INTERVAL) {
       return OneDriveManager.getLatestBackupData(this.year)
         .then(backupData => {
@@ -1271,17 +1275,17 @@ export default class MainContent extends Component {
     });
   }
 
-  toggleIsDisplayingCalendar() {
+  toggleIsDisplayingCalendar = (): void => {
     this.setState({
       isDisplayingCalendar: !this.state.isDisplayingCalendar,
     });
-  }
+  };
 
-  toggleIsDisplayingMapView() {
+  toggleIsDisplayingMapView = (): void => {
     this.setState({
       isDisplayingMapView: !this.state.isDisplayingMapView,
     });
-  }
+  };
 
   /**
    * To make the querying easier, the program breaks the data into a list of
@@ -1290,7 +1294,7 @@ export default class MainContent extends Component {
    * index.
    * @param articleIndex
    */
-  findDataIndexByArticleIndex(articleIndex) {
+  findDataIndexByArticleIndex(articleIndex: number): number {
     let timestamp = this.articleList[articleIndex].time.created;
 
     return this.data.findIndex(
@@ -1307,7 +1311,7 @@ export default class MainContent extends Component {
    * index.
    * @param articleIndex
    */
-  findDataIndexByBulbIndex(bulbIndex) {
+  findDataIndexByBulbIndex(bulbIndex: number): number {
     let timestamp = this.bulbList[bulbIndex].time.created;
 
     return this.data.findIndex(
@@ -1321,7 +1325,7 @@ export default class MainContent extends Component {
    * Removes the photos that are not indexed by imageMap
    * @param data
    */
-  removeInvalidImageNames(data) {
+  removeInvalidImageNames(data: Data): void {
     for (let d of data) {
       if (d.images && d.images.filter) {
         d.images = d.images.filter(image => this.imageMap[image]);
@@ -1329,11 +1333,12 @@ export default class MainContent extends Component {
     }
   }
 
-  sanitizeBulbContent(content) {
-    if (content.place) {
+  sanitizeBulbContent(content: BulbEntry): void {
+    const {place} = content;
+    if (place != null) {
       content.place = {
-        latitude: parseFloat(content.place.latitude, 10),
-        longitude: parseFloat(content.place.longitude, 10),
+        latitude: parseFloat(place.latitude),
+        longitude: parseFloat(place.longitude),
       };
     }
   }
@@ -1342,7 +1347,7 @@ export default class MainContent extends Component {
    * Give the prediction based on the tags we have so far
    * @param data
    */
-  updateTagPrediction(data) {
+  updateTagPrediction(data: Data): void {
     // this.tagPrediction = "";
     let map = {};
 
@@ -1361,15 +1366,16 @@ export default class MainContent extends Component {
     }
 
     this.tagPrediction = Object.keys(map)
-      .sort((a, b) => map[b] - map[a])
-      .join(" ");
+      .sort((a, b) => map[b] - map[a]);
   }
 
   /**
    * Return the correct state based on this.props
    */
-  updateContentStyle(data) {
-    this.contentStyle = {};
+  updateContentStyle(data: Data): void {
+    this.contentStyle = {
+      height: 0,
+    };
     this.bulbList = [];
     this.articleList = [];
 
@@ -1377,7 +1383,7 @@ export default class MainContent extends Component {
       bulbHeight = 0;
 
     for (let content of data) {
-      if (content.type === R.TYPE_BULB) {
+      if (content.type === "bulb") {
         // Bulb
         this.sanitizeBulbContent(content);
         this.bulbList.push(content);
@@ -1387,10 +1393,10 @@ export default class MainContent extends Component {
           articleHeight - R.BULB_HEIGHT_ORIGINAL,
           bulbHeight,
         );
-        this.contentStyle[content.time.created] = top;
+        this.contentStyle[String(content.time.created)] = top;
 
         bulbHeight = top + R.BULB_HEIGHT;
-      } else {
+      } else if (content.type === "article") {
         // Article
         this.articleList.push(content);
 
@@ -1402,7 +1408,7 @@ export default class MainContent extends Component {
             ),
             articleHeight,
           );
-        this.contentStyle[content.time.created] = top;
+        this.contentStyle[String(content.time.created)] = top;
 
         articleHeight = top + currentHeight;
       }
@@ -1411,7 +1417,7 @@ export default class MainContent extends Component {
     this.contentStyle.height = Math.max(articleHeight, bulbHeight);
   }
 
-  toPreviousYear() {
+  toPreviousYear = (): void => {
     this.setState({
       isLoadingPreviousYear: true,
     });
@@ -1438,9 +1444,9 @@ export default class MainContent extends Component {
           );
         }
       });
-  }
+  };
 
-  toNextYear() {
+  toNextYear = (): void => {
     this.setState({
       isLoadingNextYear: true,
     });
@@ -1464,7 +1470,7 @@ export default class MainContent extends Component {
           R.notify(this.notificationSystem, "You can't travel to the future");
         }
       });
-  }
+  };
 
   render() {
     const BUTTONS = [
@@ -1472,15 +1478,15 @@ export default class MainContent extends Component {
         text: "LIST",
         icon: "list",
         className: `list-tab dark ${this.state.isDisplaying ===
-        this.TAB.LIST ? "active" : ""}`,
+        TAB.LIST ? "active" : ""}`,
       }, {
         text: "calendar",
         icon: "date_range",
         indent: "indent",
         className: `dark ${this.state.isDisplayingCalendar &&
         this.state.isDisplaying ===
-        this.TAB.LIST ? "active" : ""} ${this.state.isDisplaying ===
-        this.TAB.LIST ? "" : "disabled"}`,
+        TAB.LIST ? "active" : ""} ${this.state.isDisplaying ===
+        TAB.LIST ? "" : "disabled"}`,
         onClick: this.toggleIsDisplayingCalendar,
       }, {
         text: "map view",
@@ -1488,8 +1494,8 @@ export default class MainContent extends Component {
         indent: "indent",
         className: `dark ${this.state.isDisplayingMapView &&
         this.state.isDisplaying ===
-        this.TAB.LIST ? "active" : ""} ${this.state.isDisplaying ===
-        this.TAB.LIST ? "" : "disabled"}`,
+        TAB.LIST ? "active" : ""} ${this.state.isDisplaying ===
+        TAB.LIST ? "" : "disabled"}`,
         onClick: this.toggleIsDisplayingMapView,
       }, {
         text: "EDITOR",
@@ -1507,7 +1513,7 @@ export default class MainContent extends Component {
         text: "OPTIONS",
         icon: "settings",
         className: `list-tab dark ${this.state.isDisplaying ===
-        this.TAB.OPTIONS ? "active" : ""}`,
+        TAB.OPTIONS ? "active" : ""}`,
       },
     ];
 
@@ -1536,15 +1542,16 @@ export default class MainContent extends Component {
             {BUTTONS.map(b =>
               <Button key={b.text}
                       className={`${(
-                        this.state.enabledTabs & this.TAB[b.text]
-                      ) || b.indent ? "" : "disabled"} ${b.className ||
-                      `dark ${this.state.isDisplaying ===
-                      this.TAB[b.text] ? "active" : ""}`} ${b.indent || ""}`}
+                        this.state.enabledTabs & TAB[b.text]
+                      ) || b.indent ? "" : "disabled"} ${b.className !=
+                      null ? b.className :
+                        `dark ${this.state.isDisplaying ===
+                        TAB[b.text] ? "active" : ""}`} ${b.indent || ""}`}
                       text={b.text}
                       onClick={b.onClick ||
                       (
                         () => this.handleViewChange(
-                          this.TAB[b.text])
+                          TAB[b.text])
                       )}
               >{b.icon}</Button>,
             )}
@@ -1553,7 +1560,7 @@ export default class MainContent extends Component {
         <main>
           <div
             className={`flex-extend-inner-wrapper inner-main ${this.state.isDisplaying ===
-            this.TAB.LIST ? "" : "hidden"}`}>
+            TAB.LIST ? "" : "hidden"}`}>
             <header className="main-header flex-center">
               <SearchBar tagPrediction={this.tagPrediction}
                          onChange={this.handleChangeCriteria}
@@ -1633,27 +1640,29 @@ export default class MainContent extends Component {
           </div>
           <div
             className={`flex-extend-inner-wrapper editor-view ${this.state.isDisplaying ===
-            this.TAB.EDITOR ? "" : "hidden"}`}>
+            TAB.EDITOR ? "" : "hidden"}`}>
             <Editor {...(
               R.copy(this.articleList[this.state.editArticleIndex]) ||
               {newData: this.bulbEditorContent}
             )}
-                    hidden={this.state.isDisplaying !== this.TAB.EDITOR}
-                    onPromptCancel={this.handlePromptCancel}
+                    hidden={this.state.isDisplaying !== TAB.EDITOR}
                     imageMap={this.imageMap}
-                    version={this.editorVersion}
-                    tagPrediction={this.tagPrediction}
+                    newData={this.state.editArticleIndex ===
+                    -1 ? this.bulbEditorContent : undefined}
                     onChange={this.handleArticleChange}
-                    onRefreshQueue={this.handleEditorRefreshQueue}
-                    year={this.year}
                     oneDriveManager={OneDriveManager}
+                    onPromptCancel={this.handlePromptCancel}
+                    onRefreshQueue={this.handleEditorRefreshQueue}
+                    tagPrediction={this.tagPrediction}
+                    version={this.editorVersion}
+                    year={this.year}
             />
           </div>
           <div
             className={`flex-extend-inner-wrapper insight-view ${this.state.isDisplaying ===
-            this.TAB.INSIGHT ? "" : "hidden"}`}>
+            TAB.INSIGHT ? "" : "hidden"}`}>
             <Stats
-              hidden={this.state.isDisplaying !== this.TAB.INSIGHT}
+              hidden={this.state.isDisplaying !== TAB.INSIGHT}
               data={this.state.data}
               version={this.state.version}
               year={this.year}
@@ -1661,17 +1670,17 @@ export default class MainContent extends Component {
           </div>
           <div
             className={`flex-extend-inner-wrapper stats-view ${this.state.isDisplaying ===
-            this.TAB.STATS ? "" : "hidden"}`}>
+            TAB.STATS ? "" : "hidden"}`}>
             <Chart
-              hidden={this.state.isDisplaying !== this.TAB.STATS}
+              hidden={this.state.isDisplaying !== TAB.STATS}
               data={this.state.data}
               version={this.state.version}
             />
           </div>
           <div
             className={`flex-extend-inner-wrapper options-view ${this.state.isDisplaying ===
-            this.TAB.OPTIONS ? "" : "hidden"}`}>
-            <Settings hidden={this.state.isDisplaying !== this.TAB.OPTIONS}
+            TAB.OPTIONS ? "" : "hidden"}`}>
+            <Settings hidden={this.state.isDisplaying !== TAB.OPTIONS}
                       notificationSystem={this.notificationSystem}
                       handleMissingImages={this.handleMissingImages}
                       data={this.state.settings || DEFAULT_SETTINGS}

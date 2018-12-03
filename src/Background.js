@@ -21,10 +21,11 @@ export default class Background extends Component {
    */
   images = [image0, image1, image2, image3];
 
+
   componentDidMount() {
     for (let i = 0; i < this.images.length; ++i) {
       let image = new window.Image(),
-          imageName = this.images[i];
+        imageName = this.images[i];
 
       image.onload = () => {
         if (this.state.loadedIndex > i || i === 0) {
@@ -40,8 +41,8 @@ export default class Background extends Component {
 
   render() {
     return (
-        <div className="background"
-             style={{backgroundImage: `url(${this.state.backgroundImage})`}}></div>
+      <div className="background"
+           style={{backgroundImage: `url(${this.state.backgroundImage})`}}></div>
     );
   }
 }
