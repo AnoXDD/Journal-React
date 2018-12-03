@@ -1,37 +1,41 @@
+// @flow strict-local
+
 /**
  * Created by Anoxic on 5/28/2017.
  *
  * The whole app starts here
  */
 
-import React, {Component} from "react";
 import Background from "./Background";
 import Button from "./lib/Button";
 import MainContent from "./MainContent";
 import OneDriveManager from "./OneDriveManager";
 
-export default class Trak extends Component {
+import * as React from "react";
 
-  constructor(props) {
-    super(props);
+type State = {|
+  signedIn: boolean,
+  signingIn: boolean,
+  signInError: string,
+|};
 
-    this.state = {
-      signedIn: false,
-      signingIn: false,
-      signInError: "",
-    };
-  }
+export default class Trak extends React.Component<{||}, State> {
+  state: State = {
+    signedIn: false,
+    signingIn: false,
+    signInError: "",
+  };
 
-  componentDidMount() {
+  componentDidMount(): void {
     OneDriveManager.silentSignIn()
       .then(() => {
         this.setState({
           signedIn: true,
         });
-      })
+      });
   }
 
-  handleSignIn() {
+  handleSignIn(): void {
     this.setState({
       signingIn: true,
     });
@@ -48,7 +52,7 @@ export default class Trak extends Component {
       });
   }
 
-  render() {
+  render(): React.Node {
     return (
       <div className="trak">
         <div
@@ -69,7 +73,7 @@ export default class Trak extends Component {
                   text="About me"
                   onClick={() => window.open("http://anoxic.me")}>supervisor_account</Button>
         </div>
-        { this.state.signedIn ? <MainContent/> : null }
+        {this.state.signedIn ? <MainContent/> : null}
       </div>
     );
   }
