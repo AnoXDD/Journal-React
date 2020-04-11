@@ -10,7 +10,7 @@ import {
   GoogleMap,
   Marker,
 } from "react-google-maps";
-import MarkerClusterer from 'react-google-maps/lib/addons/MarkerClusterer';
+import MarkerClusterer from "react-google-maps/lib/components/addons/MarkerClusterer";
 
 import * as React from "react";
 
@@ -174,12 +174,14 @@ export default class BulbMap extends React.Component<Props> {
 
     const bound = this._map.getBounds();
 
+    console.log(bound);
+
     // todo for some reason this part is obfuscated
     this.props.onBoundChange({
-      south: bound.l.j,
-      north: bound.l.l,
-      west : bound.j.j,
-      east : bound.j.l,
+      south: bound.Ya.i,
+      north: bound.Ya.j,
+      west : bound.Ua.i,
+      east : bound.Ua.j,
     });
   };
 

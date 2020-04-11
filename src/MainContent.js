@@ -415,7 +415,7 @@ export default class MainContent extends React.Component<Props, State> {
       })
       .catch(err => {
         this.setState({
-          loadingPrompt: "Looks like there is an error fetching you data. Refresh the website and try again.",
+          loadingPrompt: "Looks like there is an error fetching you data. If this is your first time using Trak, please make sure you can access your OneDrive, and then refresh the website and try again.",
         });
         console.error(err.stack);
 
