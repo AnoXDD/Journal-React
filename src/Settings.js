@@ -181,9 +181,14 @@ export default class Settings extends React.Component<Props, State> {
 
   generateSettingsData(): SettingsType {
     return {
-      bulbAttachLocation: this.props.data.bulbAttachLocation,
-      bulbMapCenter: {...this.props.data.bulbMapCenter},
-      password: this.props.data.password,
+      bulbAttachLocation: this.state.bulbAttachLocation ||
+        this.props.data.bulbAttachLocation,
+      bulbMapCenter: {
+        ...(
+          this.state.bulbMapCenter || this.props.data.bulbMapCenter
+        ),
+      },
+      password: this.state.password || this.props.data.password,
     };
   }
 

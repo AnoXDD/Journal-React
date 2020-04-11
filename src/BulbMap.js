@@ -174,8 +174,6 @@ export default class BulbMap extends React.Component<Props> {
 
     const bound = this._map.getBounds();
 
-    console.log(bound);
-
     // todo for some reason this part is obfuscated
     this.props.onBoundChange({
       south: bound.Ya.i,
