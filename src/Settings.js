@@ -188,7 +188,9 @@ export default class Settings extends React.Component<Props, State> {
           this.state.bulbMapCenter || this.props.data.bulbMapCenter
         ),
       },
-      password: this.state.password || this.props.data.password,
+      password: (
+        this.state.password == null || this.state.password === ""
+      ) ? this.props.data.password : this.state.password,
     };
   }
 
