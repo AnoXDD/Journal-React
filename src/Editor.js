@@ -410,6 +410,9 @@ type State = {|
 
   bodyWidth: number,
   isDarkMode: boolean,
+
+  clipboardImage?: File,
+  clipboardImageVersion?: number,
 |};
 
 class Editor extends React.Component<Props, State> {
@@ -1374,6 +1377,24 @@ class Editor extends React.Component<Props, State> {
     this.setState({hasPrompt: false});
   };
 
+
+  handlePaste = (e: SyntheticClipboardEvent<*>): void => {
+    if (e.clipboardData.items && e.clipboardData.items.length) {
+      let item = e.clipboardData.items[0];
+
+      if (item.type && item.type.match(/image\/*/)) {
+        // This is an image
+        let file = item.getAsFile();
+
+        this.setState({
+          clipboardImage       : file,
+          clipboardImageVersion: new Date().getTime(),
+        });
+        this.setIsDisplaying(DISPLAYING.PHOTOS);
+      }
+    }
+  };
+
   refreshPhoto = (): Promise<void> => {
     this.setState({
       isLoadingImages: true,
@@ -1600,7 +1621,8 @@ class Editor extends React.Component<Props, State> {
                 <textarea className="text-body"
                           value={this.state.body}
                           onChange={this.onBodyChange}
-                          onKeyDown={this.onBodyKeyDown}/>
+                          onKeyDown={this.onBodyKeyDown}
+                          onPaste={this.handlePaste}/>
                 :
                 <pre
                   className="text-body">{this.state.bodyObject}</pre>
@@ -1673,6 +1695,8 @@ class Editor extends React.Component<Props, State> {
               className={this.state.isDisplayingMore ===
               DISPLAYING.PHOTOS &&
               this.state.isEditing ? "" : "hidden"}
+              version={this.state.clipboardImageVersion}
+              file={this.state.clipboardImage}
               onFinish={this.refreshPhoto}
               multiple={true}
             />
