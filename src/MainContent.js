@@ -1197,6 +1197,11 @@ export default class MainContent extends React.Component<Props, State> {
         return o;
       }
     } catch (e) {
+      // Try to parse it without password
+      try {
+        return JSON.parse(encrypted);
+      } catch (e) {
+      }
     }
 
     return null;
