@@ -633,7 +633,10 @@ export default class MainContent extends React.Component<Props, State> {
         if (bulb.imageId != null) {
           OneDriveManager.addImageById(bulb.imageId, this.year)
             .then(image => {
-              uploadedImages.push({id: image.id, name: image.name});
+              uploadedImages.push({
+                id: image.id,
+                name: image.name,
+              });
               onBulbFinish();
             }, () => {
               onBulbFinish();
@@ -1174,7 +1177,7 @@ export default class MainContent extends React.Component<Props, State> {
    * @returns {object} - the decrypted object if the password is correct.
    *     `null` if the password is invalid
    */
-  decryptData(encrypted: string): Data {
+  decryptData(encrypted: string): ?Data {
     // Try to convert to JSON
     try {
       let decrypted = encrypted;
@@ -1196,7 +1199,7 @@ export default class MainContent extends React.Component<Props, State> {
     } catch (e) {
     }
 
-    return [];
+    return null;
   }
 
   /**

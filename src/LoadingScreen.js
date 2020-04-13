@@ -5,7 +5,6 @@
  * A loading screen with progress bar and title
  */
 
-
 import Button from "./lib/Button";
 import ProgressBar from "./ProgressBar";
 import Prompt from "./lib/Prompt";
@@ -32,7 +31,11 @@ export default class LoadingScreen extends React.Component<Props, State> {
   };
 
   shouldComponentUpdate(nextProps: Props): boolean {
-    return nextProps.title !== "" || this.props.title !== "";
+    return nextProps.title !==
+      "" ||
+      this.props.title !==
+      "" ||
+      this.props.requirePassword;
   }
 
   componentDidUpdate(prevProps: Props): void {
